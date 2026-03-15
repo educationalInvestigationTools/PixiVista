@@ -1,17 +1,23 @@
-export class ChannelRenderModel {
+export class OneDimSignals {
+    samples: Float32Array
+    channels: Float32Array[]
 
+    constructor(samples: Float32Array, channels: Float32Array[]) {
+        this.samples = samples;
+        this.channels = channels;
+    }
 }
 
 export class RenderModel {
     readonly width: number;
     readonly height: number;
 
-    readonly channels: Array<ChannelRenderModel>
+    readonly oneDimSignals: OneDimSignals
 
-    constructor(width: number, height: number, channels: Array<ChannelRenderModel>) {
+    constructor(width: number, height: number, signals: OneDimSignals) {
         this.width = width;
         this.height = height;
-        this.channels = channels;
+        this.oneDimSignals = signals;
     }
 }
 
