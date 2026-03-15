@@ -1,4 +1,4 @@
-import type {Renderer} from "@/lib/signal-visualizer/core/Renderer.ts";
+import {ChannelRenderModel, type Renderer} from "@/lib/signal-visualizer/core/Renderer.ts";
 import {RenderModel} from "@/lib/signal-visualizer/core/Renderer.ts";
 
 export class Interpreter {
@@ -16,6 +16,6 @@ export class Interpreter {
     }
 
     async resize(width: number, height: number) {
-        await this.renderer.draw(new RenderModel(width, height));
+        await this.renderer.draw(new RenderModel(width, height, [new ChannelRenderModel()]));
     }
 }

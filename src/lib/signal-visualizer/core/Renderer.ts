@@ -1,10 +1,17 @@
-export class RenderModel {
-    width: number;
-    height: number;
+export class ChannelRenderModel {
 
-    constructor(width: number, height: number) {
+}
+
+export class RenderModel {
+    readonly width: number;
+    readonly height: number;
+
+    readonly channels: Array<ChannelRenderModel>
+
+    constructor(width: number, height: number, channels: Array<ChannelRenderModel>) {
         this.width = width;
         this.height = height;
+        this.channels = channels;
     }
 }
 
