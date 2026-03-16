@@ -3,7 +3,7 @@
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {DIContainer} from "@/lib/signal-visualizer/application/DIContainer.ts";
 import {ResizeDto} from "@/lib/signal-visualizer/application/Commands/ResizeCommand.ts";
-import {TestSignalSource} from "@/lib/signal-visualizer/infrastructure/TestSampledSignal.ts";
+import {TestSignalSource} from "@/lib/signal-visualizer/infrastructure/test-sampled-signal.ts";
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
 let diContainer: DIContainer | null = null;

@@ -19,7 +19,7 @@ export class Interpreter {
         this.renderModel = {
             width: container.clientWidth,
             height: container.clientHeight,
-            oneDimSignals : this.fetchData(0, signalsSource.totalSamples)
+            oneDimSignals: this.fetchData(0, signalsSource.totalSamples)
         }
     }
 
@@ -27,7 +27,7 @@ export class Interpreter {
         this.renderer.destroy();
     }
 
-     fetchData(sampleStart: number, n: number): OneDimSignals {
+    fetchData(sampleStart: number, n: number): OneDimSignals {
         const data = this.signalsSource.read(sampleStart, n)
 
         const samples = new Float32Array(n)
@@ -47,6 +47,7 @@ export class Interpreter {
             }
         )
     }
+
     async resize(width: number, height: number) {
         await this.renderer.draw({
                 width: width,

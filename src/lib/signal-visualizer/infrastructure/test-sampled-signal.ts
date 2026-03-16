@@ -16,7 +16,7 @@ export class TestSignalSource implements SampledSignalSource {
         for (let j = 0; j < this.numberOfSignals; j++) {
             const data = new Float32Array(n)
             for (let i = 0; i < n; i++) {
-                data[i] = Math.sin(i * this.totalSamples / this.samplingFrequency)
+                data[i] = Math.sin( (i / n) * 360 )
             }
             result.push(data)
         }

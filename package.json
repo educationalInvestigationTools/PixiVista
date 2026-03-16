@@ -15,6 +15,7 @@
     "format": "oxfmt src/"
   },
   "dependencies": {
+    "@pixi/devtools": "^2.0.1",
     "pinia": "^3.0.4",
     "pixi.js": "^8.17.0",
     "vue": "^3.5.29",

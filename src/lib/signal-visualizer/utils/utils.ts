@@ -32,16 +32,18 @@ export class Envelope {
         }
         this.maxValues = maxValues
         this.minValues = minValues
-        this.normalized = normalizeCoords(this.array, this.min, this.max)
+        this.normalized = this.normalizeCoords(this.array, this.min, this.max)
+    }
+
+    private normalizeCoords(samples: Float32Array, min: number, max: number): Float32Array {
+        const n = samples.length
+        const normalized = new Float32Array(n)
+        for (let i = 0; i < n; i++) {
+            const sample = samples[i]!
+            normalized[i] = (sample - min) / (max - min)
+        }
+        return normalized
     }
 }
 
-function normalizeCoords(samples: Float32Array, min: number, max: number): Float32Array {
-    const n = samples.length
-    const normalized = new Float32Array(n)
-    for (let i = 0; i < n; i++) {
-        const sample = samples[i]!
-        normalized[i] = (sample - min) / (max - min)
-    }
-    return normalized
-}
+

@@ -1,14 +1,23 @@
-import {
-    type Renderer,
-    type RenderModel
-} from "@/lib/signal-visualizer/core/Renderer.ts";
-import {Application, Container, Graphics, Text} from "pixi.js";
+import {type Renderer, type RenderModel} from "@/lib/signal-visualizer/core/Renderer.ts";
+import {Application, Container, Graphics} from "pixi.js";
 import {Envelope} from "@/lib/signal-visualizer/utils/utils.ts";
+import {AxisLayer} from "@/lib/signal-visualizer/infrastructure/axis-layer.ts";
+import {ChannelLayer} from "@/lib/signal-visualizer/infrastructure/channel-layer.ts";
 
 export class PixiRenderer implements Renderer {
     private readonly _canvas: HTMLCanvasElement;
     private app: Application;
+    private xAxis?: AxisLayer;
+    private channelPlots?: ChannelLayer[]
     private started: boolean = false;
+
+    constructor() {
+        this._canvas = document.createElement("canvas");
+        this._canvas.style.height = "100%";
+        this._canvas.style.width = "100%";
+        this._canvas.style.display = "block";
+        this.app = new Application();
+    }
 
     destroy(): void {
         this.app.destroy()
@@ -23,28 +32,23 @@ export class PixiRenderer implements Renderer {
     }
 
     async draw(model: Readonly<RenderModel>): Promise<void> {
+        const verticalDivisions = 10
+        const horizontalDivisions = 5
         if (!this.started) {
-            await this.startPixiApp(model.width, model.height);
+            await this.startPixiApp(model.width, model.height, model.oneDimSignals.channels.length, horizontalDivisions, verticalDivisions);
         }
-
-        this._canvas.width = model.width;
-        this._canvas.height = model.height;
-
+        const data = model.oneDimSignals
+        this.app.renderer.resize(model.width, model.height)
+        const xValues = new Envelope(data.samples)
         const totalChannels = model.oneDimSignals.channels.length
         const xAxisHeight = this.height * 0.1
         const plotHeight = (this.height - xAxisHeight) / totalChannels;
         const plotWidth = this.width
-        const data = model.oneDimSignals
-        const coordinateSystem = new Container()
 
-        const xValues = new Envelope(data.samples)
         const yValuesPerChannel = data.channels.map(channel => new Envelope(channel))
-
         const marginHorizontal = plotHeight * 0.05
         const marginVerticalLeft = plotWidth * 0.15
         const marginVerticalRight = plotWidth * 0.05
-        const xDivisions = 10
-        const yDivisions = 4
         const xCord = 0
         const xLeft = xCord + marginVerticalLeft
         const xRight = xCord + this.width - marginVerticalRight
@@ -55,128 +59,59 @@ export class PixiRenderer implements Renderer {
             const yHigh = yCord + plotHeight - marginHorizontal
             const heightAfterMargin = (yHigh - yLow)
 
-            const channelRect = new Graphics()
-                .rect(xCord, yCord, plotWidth, plotHeight)
-                .stroke({width: 2, color: 'orange'})
-
-            coordinateSystem.addChild(channelRect)
-
-            const plot = this.draw1DPlot(widthAfterMargin, heightAfterMargin, xValues, yValuesPerChannel[i]!, xDivisions, yDivisions)
-            plot.x = xLeft
-            plot.y = yLow
-            coordinateSystem.addChild(plot)
+            const channelLayer = this.channelPlots![i]
+            channelLayer?.updateData(
+                {
+                    width: widthAfterMargin,
+                    height: heightAfterMargin,
+                    horizontalDivisions: horizontalDivisions,
+                    verticalDivisions: verticalDivisions,
+                    xValues: xValues,
+                    yValues: yValuesPerChannel[i]!
+                }
+            )
+            channelLayer?.draw(xLeft, yLow)
         }
         const xAxisY = this.height - xAxisHeight
-        const xAxisRect = new Graphics()
-            .rect(xCord, xAxisY, plotWidth, xAxisHeight)
-            .stroke({width: 2, color: 'orange'})
-        const xAxisGraphic = this.drawXAxis(widthAfterMargin, xAxisHeight, xValues.min, xValues.max, 10)
-        xAxisGraphic.x = xLeft
-        xAxisGraphic.y = xAxisY
-        coordinateSystem.addChild(xAxisGraphic, xAxisRect)
-        this.app.stage.addChild(coordinateSystem)
+        this.xAxis?.updateData({
+            width: widthAfterMargin,
+            height: xAxisHeight,
+            minValue: xValues.min,
+            maxValue: xValues.max,
+            divisions: verticalDivisions,
+        })
+        this.xAxis?.draw(xLeft, xAxisY)
     }
 
-    private drawXAxis(width: number, height: number, xMin: number, xMax: number, divisions: number): Graphics {
-        const graphics = new Graphics()
-            .rect(0, 0, width, height)
-            .stroke({width: 2, color: 'red'})
-
-        const yCoordinate = height * 0.2
-        const stepSize = (xMax - xMin) / divisions
-        for (let i = 0; i <= divisions; i++) {
-            const xDivision = (i / divisions) * width
-            graphics.circle(xDivision, yCoordinate, 4)
-            graphics.stroke({width: 2, color: 'green'})
-            const text = new Text(
-                {
-                    text: (xMin + i * (stepSize)).toPrecision(2),
-                    style: {
-                        fontSize: height * 0.40,
-                        fontWeight: 'bold',
-                    }
-                }
-            )
-            text.x = xDivision - text.width / 2
-            text.y = yCoordinate
-
-            graphics.addChild(text)
-        }
-
-        return graphics
-    }
-
-    private draw1DPlot(width: number, height: number, xValues: Envelope, yValues: Envelope, xDivisions: number, yDivisions: number): Graphics {
-        const graphics = new Graphics().rect(
-            0, 0, width, height
-        ).stroke({width: 2, color: 'black'})
-
-        const n = yValues.length
-        const xCoords = new Float32Array(n)
-        const yCoords = new Float32Array(n)
-
-        for (let i = 0; i <= xDivisions; i++) {
-            const xDivision = (i / xDivisions) * width
-            graphics.moveTo(xDivision, height).lineTo(xDivision, 0).stroke({color: 'red', width: 1})
-        }
-
-        const stepSize = (yValues.max - xValues.min) / yDivisions
-        for (let i = 0; i <= yDivisions; i++) {
-            const yDivision = (i / yDivisions) * height
-            graphics
-                .moveTo(0, yDivision)
-                .lineTo(width, yDivision).stroke({color: 'red', width: 1})
-            const text = new Text(
-                {
-                    text: (yValues.max - i * stepSize).toPrecision(2),
-                    style: {
-                        fontSize: height * 0.10,
-                        fontWeight: 'bold',
-                    }
-                }
-            )
-            text.x = - 1.3 * text.width
-            text.y = yDivision - text.height / 3
-
-            graphics.addChild(text)
-        }
-
-        for (let i = 0; i < n; i++) {
-            const xMappedCord = width * xValues.normalized[i]!
-            const yMappedCord = height * yValues.normalized[i]!
-
-            xCoords[i] = xMappedCord
-            yCoords[i] = height - yMappedCord
-
-            graphics.circle(xCoords[i]!, yCoords[i]!, width * 0.005).stroke(
-                {color: 'green'}
-            )
-            if (i > 0) {
-                graphics.moveTo(xCoords[i - 1]!, yCoords[i - 1]!)
-                graphics.lineTo(xCoords[i]!, yCoords[i]!)
-                graphics.stroke({color: 'pink', width: 1})
-            }
-        }
-        return graphics
-    }
-
-    private async startPixiApp(width: number, height: number): Promise<void> {
+    private async startPixiApp(width: number, height: number, numberChannels: number, horizontalDivisions: number, verticalDivisions: number): Promise<void> {
         await this.app.init({
             width: width,
             height: height,
-            preference: 'webgpu',
             canvas: this._canvas,
             backgroundAlpha: 0,
         })
         this.started = true;
-    }
-
-    constructor() {
-        this._canvas = document.createElement("canvas");
-        this._canvas.style.height = "100%";
-        this._canvas.style.width = "100%";
-        this._canvas.style.display = "block";
-        this.app = new Application();
+        this.xAxis = new AxisLayer({
+            width: 0,
+            height: 0,
+            minValue: 0,
+            maxValue: 0,
+            divisions: verticalDivisions
+        })
+        this.app.stage.addChild(this.xAxis.container)
+        this.channelPlots = []
+        for (let i = 0; i < numberChannels; i++) {
+            const channelLayer = new ChannelLayer({
+                width: 0,
+                height: 0,
+                horizontalDivisions: horizontalDivisions,
+                verticalDivisions: verticalDivisions,
+                xValues: new Envelope(new Float32Array(0)),
+                yValues: new Envelope(new Float32Array(0)),
+            })
+            this.channelPlots.push(channelLayer)
+            this.app.stage.addChild(channelLayer.container)
+        }
     }
 
     get canvas(): HTMLCanvasElement {
