@@ -1,5 +1,5 @@
 import {type Renderer, type RenderModel} from "@/lib/signal-visualizer/core/Renderer.ts";
-import {Application, Container, Graphics} from "pixi.js";
+import {Application} from "pixi.js";
 import {Envelope} from "@/lib/signal-visualizer/utils/utils.ts";
 import {AxisLayer} from "@/lib/signal-visualizer/infrastructure/axis-layer.ts";
 import {ChannelLayer} from "@/lib/signal-visualizer/infrastructure/channel-layer.ts";
