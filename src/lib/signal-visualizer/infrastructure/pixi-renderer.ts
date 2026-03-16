@@ -88,7 +88,7 @@ export class PixiRenderer implements Renderer {
             width: width,
             height: height,
             canvas: this._canvas,
-            backgroundAlpha: 0,
+            backgroundAlpha: 0.2,
         })
         this.started = true;
         this.xAxis = new AxisLayer({

@@ -49,11 +49,14 @@ export class AxisLayer {
             this.graphics.stroke({width: 1, color: 'green'})
 
             const textValue = (xMin + i * (stepSize)).toPrecision(2)
-            const fontSize = this.data.height * 0.40
+            const fontSize = this.data.height * 0.30
             const fontWeight = 'bold'
-            const text = new Text(textValue, {
-                fontSize: fontSize,
-                fontWeight: fontWeight
+            const text = new Text({
+                text: textValue,
+                style: {
+                    fontSize: fontSize,
+                    fontWeight: fontWeight
+                }
             })
             this.labels.push(text)
             this.container.addChild(text)

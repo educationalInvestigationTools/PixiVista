@@ -87,13 +87,13 @@ export class ChannelLayer {
             xCoords[i] = xMappedCord
             yCoords[i] = height - yMappedCord
 
-            this.graphics.circle(xCoords[i]!, yCoords[i]!, width * 0.005).stroke(
+            this.graphics.circle(xCoords[i]!, yCoords[i]!, width * 0.001).stroke(
                 {color: 'green'}
             )
             if (i > 0) {
                 this.graphics.moveTo(xCoords[i - 1]!, yCoords[i - 1]!)
                 this.graphics.lineTo(xCoords[i]!, yCoords[i]!)
-                this.graphics.stroke({color: 'pink', width: 1})
+                this.graphics.stroke({color: 'black', width: 1})
             }
         }
         this.container.position.set(x, y)
