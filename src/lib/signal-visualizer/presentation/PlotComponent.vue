@@ -3,6 +3,7 @@
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {DIContainer} from "@/lib/signal-visualizer/application/DIContainer.ts";
 import {ResizeDto} from "@/lib/signal-visualizer/application/Commands/ResizeCommand.ts";
+import {TestSignalSource} from "@/lib/signal-visualizer/infrastructure/TestSampledSignal.ts";
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
 let diContainer: DIContainer | null = null;
@@ -11,7 +12,7 @@ onMounted(() => {
     if (!htmlContainerRef.value) {
         return;
     }
-    diContainer = new DIContainer(htmlContainerRef.value);
+    diContainer = new DIContainer(htmlContainerRef.value, new TestSignalSource(200, 200, 5));
 
     const ro = new ResizeObserver(() => {
         if (htmlContainerRef.value) {

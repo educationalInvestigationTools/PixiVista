@@ -1,27 +1,58 @@
-import {OneDimSignals, type Renderer} from "@/lib/signal-visualizer/core/Renderer.ts";
-import {RenderModel} from "@/lib/signal-visualizer/core/Renderer.ts";
+import {
+    OneDimSignals,
+    type Renderer,
+    type RenderModel
+} from "@/lib/signal-visualizer/core/Renderer.ts";
+import type {SampledSignalSource} from "@/lib/signal-visualizer/application/SampledSignalSource.ts";
 
 export class Interpreter {
     private renderer: Renderer
     private htmlElement: HTMLElement
+    private renderModel: RenderModel
+    private signalsSource: SampledSignalSource
 
-    constructor(renderer: Renderer, container: HTMLElement) {
+    constructor(renderer: Renderer, container: HTMLElement, signalsSource: SampledSignalSource) {
         this.renderer = renderer;
+        this.signalsSource = signalsSource;
         this.htmlElement = container;
         this.htmlElement.appendChild(this.renderer.canvas);
+        this.renderModel = {
+            width: container.clientWidth,
+            height: container.clientHeight,
+            oneDimSignals : this.fetchData(0, signalsSource.totalSamples)
+        }
     }
 
     async destroy(): Promise<void> {
         this.renderer.destroy();
     }
 
+     fetchData(sampleStart: number, n: number): OneDimSignals {
+        const data = this.signalsSource.read(sampleStart, n)
+
+        const samples = new Float32Array(n)
+        for (let i = 0; i < n; i++) {
+            samples[i] = ((sampleStart + i) / this.signalsSource.samplingFrequency)
+        }
+        return new OneDimSignals(samples, data)
+    }
+
+    async updateData(sampleStart: number, n: number): Promise<void> {
+        const signalData = this.fetchData(sampleStart, n)
+        await this.renderer.draw(
+            {
+                width: this.renderModel.width,
+                height: this.renderModel.height,
+                oneDimSignals: signalData
+            }
+        )
+    }
     async resize(width: number, height: number) {
-        const samples = new Float32Array([0.1, 0.2, 0.3, 0.4, 1, 2, 3, 4, 5, 6, 7])
-        const values1 = new Float32Array([0.1, 0.2, 0.3, 0.4, 1, 2, 3, 4, 0.1, 0.2, 5])
-        const values2 = new Float32Array([0.1, 0.2, 0.3, 0.4, 1, 2, 3, 4, 5, 6, 7])
-        const channels = [values1, values2]
-        await this.renderer.draw(new RenderModel(width, height, new OneDimSignals(
-            samples, channels
-        )));
+        await this.renderer.draw({
+                width: width,
+                height: height,
+                oneDimSignals: this.renderModel.oneDimSignals
+            }
+        )
     }
 }

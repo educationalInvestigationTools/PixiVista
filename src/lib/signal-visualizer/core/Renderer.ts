@@ -8,17 +8,10 @@ export class OneDimSignals {
     }
 }
 
-export class RenderModel {
+export type RenderModel = {
     readonly width: number;
     readonly height: number;
-
     readonly oneDimSignals: OneDimSignals
-
-    constructor(width: number, height: number, signals: OneDimSignals) {
-        this.width = width;
-        this.height = height;
-        this.oneDimSignals = signals;
-    }
 }
 
 export interface Renderer {
