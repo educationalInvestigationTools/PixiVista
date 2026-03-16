@@ -24,11 +24,11 @@ export class PixiRenderer implements Renderer {
     }
 
     get height(): number {
-        return this._canvas.height;
+        return this._canvas.clientHeight;
     }
 
     get width(): number {
-        return this._canvas.width;
+        return this._canvas.clientWidth;
     }
 
     async draw(model: Readonly<RenderModel>): Promise<void> {
@@ -89,6 +89,8 @@ export class PixiRenderer implements Renderer {
             height: height,
             canvas: this._canvas,
             backgroundAlpha: 0.2,
+            resolution: window.devicePixelRatio || 1,
+            autoDensity: true,
         })
         this.started = true;
         this.xAxis = new AxisLayer({
