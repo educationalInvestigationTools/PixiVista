@@ -1,59 +1,83 @@
 import {
+    type OneDimSignal,
     OneDimSignals,
-    type Renderer,
-    type RenderModel
 } from "@/lib/signal-visualizer/core/Renderer.ts";
-import type {SampledSignalSource} from "@/lib/signal-visualizer/application/SampledSignalSource.ts";
+import {type CompatibleSignal, ViewPort} from "@/lib/signal-visualizer/application/SignalSource.ts";
+import {PixiRenderer} from "@/lib/signal-visualizer/infrastructure/rendering/pixi-renderer.ts";
+import {Envelope} from "@/lib/signal-visualizer/utils/utils.ts";
+import type {AxisSignal} from "@/lib/signal-visualizer/core/axis-signal.ts";
 
 export class Interpreter {
-    private renderer: Renderer
+    private renderer: PixiRenderer
     private htmlElement: HTMLElement
-    private renderModel: RenderModel
-    private signalsSource: SampledSignalSource
+    private readonly signalsSource: CompatibleSignal[]
+    private viewPort: ViewPort
 
-    constructor(renderer: Renderer, container: HTMLElement, signalsSource: SampledSignalSource) {
-        this.renderer = renderer;
+    constructor(container: HTMLElement, viewPort: ViewPort, signalsSource: CompatibleSignal[]) {
+        this.viewPort = viewPort
         this.signalsSource = signalsSource;
+        this.renderer = new PixiRenderer();
         this.htmlElement = container;
         this.htmlElement.appendChild(this.renderer.canvas);
-        this.renderModel = {
-            width: container.clientWidth,
-            height: container.clientHeight,
-            oneDimSignals: this.fetchData(0, signalsSource.totalSamples)
-        }
+    }
+
+    async init() {
+        const data = await this.fetchData()
+        await this.renderer.init(data)
     }
 
     async destroy(): Promise<void> {
         this.renderer.destroy();
     }
 
-    fetchData(sampleStart: number, n: number): OneDimSignals {
-        const data = this.signalsSource.read(sampleStart, n)
+    private async fetchData(): Promise<OneDimSignals> {
+        const viewPort = this.viewPort
+        const signals = []
+        for (let i = 0; i < this.signalsSource.length; i++) {
+            const signalSource = this.signalsSource[i]!
+            const data = signalSource.read(viewPort)
+            const xEnvelope = new Envelope(data.xValues)
+            const xAxisSignal: AxisSignal = {
+                valuesNormalized: xEnvelope.normalized,
+                minMaxValues:
+                    {
+                        min: xEnvelope.min,
+                        max: xEnvelope.max
+                    }
+            }
 
-        const samples = new Float32Array(n)
-        for (let i = 0; i < n; i++) {
-            samples[i] = ((sampleStart + i) / this.signalsSource.samplingFrequency)
+            const yEnvelope = new Envelope(data.yValues)
+            const yAxisSignal: AxisSignal = {
+                valuesNormalized: yEnvelope.normalized,
+                minMaxValues:
+                    {
+                        min: yEnvelope.min,
+                        max: yEnvelope.max
+                    }
+            }
+            const oneDimensionalSignalData: OneDimSignal = {
+                xSignal: xAxisSignal,
+                ySignal: yAxisSignal
+            }
+            signals.push(oneDimensionalSignalData)
         }
-        return new OneDimSignals(samples, data)
+        const oneDimSignal = new OneDimSignals(viewPort, signals)
+        return Promise.resolve(oneDimSignal)
     }
 
-    async updateData(sampleStart: number, n: number): Promise<void> {
-        const signalData = this.fetchData(sampleStart, n)
-        await this.renderer.draw(
-            {
-                width: this.renderModel.width,
-                height: this.renderModel.height,
-                oneDimSignals: signalData
-            }
-        )
+    async changeViewPort(viewPort: ViewPort): Promise<void> {
+        this.viewPort = viewPort
+        const updatedData = await this.fetchData()
+        await this.renderer.updateSignalData(updatedData)
+    }
+
+    async updateViewport(startSeconds: number) {
+        this.viewPort.updateStartSeconds(startSeconds)
+        const updatedData = await this.fetchData()
+        await this.renderer.updateSignalData(updatedData)
     }
 
     async resize(width: number, height: number) {
-        await this.renderer.draw({
-                width: width,
-                height: height,
-                oneDimSignals: this.renderModel.oneDimSignals
-            }
-        )
+        await this.renderer.setSizes(width, height)
     }
 }
