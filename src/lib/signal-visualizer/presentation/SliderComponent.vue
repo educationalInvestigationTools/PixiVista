@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import {fmtTime} from "@/lib/signal-visualizer/utils/utils.ts";
 
 const props = defineProps<{
@@ -13,17 +13,25 @@ const emit = defineEmits<{
     (e: 'update-value', value: number): void
 }>()
 
-let windowStartSeconds = ref(props.windowStartSeconds)
-let sliderPositionSeconds = ref(windowStartSeconds.value)
-let windowLengthSeconds = ref(Math.min(props.windowLengthSeconds, props.totalSeconds))
+let windowStartSeconds = props.windowStartSeconds
+let sliderPositionSeconds = ref(windowStartSeconds)
+let windowLengthSeconds = computed( () => Math.min(props.windowLengthSeconds, props.totalSeconds))
 
 let windowEndSeconds = computed(
-    () => Math.max(windowStartSeconds.value, props.totalSeconds - windowLengthSeconds.value)
+    () => Math.max(windowStartSeconds, props.totalSeconds - windowLengthSeconds.value)
 )
 
-function onSliderChange() {
-    emit('update-value', sliderPositionSeconds.value)
-}
+watch(
+    () => sliderPositionSeconds.value,
+    () => emit('update-value', sliderPositionSeconds.value)
+)
+
+watch(
+    () => props.windowLengthSeconds,
+    () => {
+        sliderPositionSeconds.value = windowStartSeconds
+    }
+)
 
 </script>
 
@@ -36,7 +44,6 @@ function onSliderChange() {
                :max="windowEndSeconds"
                v-model.number="sliderPositionSeconds"
                step="1"
-               @input="onSliderChange"
         />
         <span class="slider-time-end"> {{ fmtTime(windowEndSeconds) }} </span>
         <span> {{ fmtTime(sliderPositionSeconds) }} </span>

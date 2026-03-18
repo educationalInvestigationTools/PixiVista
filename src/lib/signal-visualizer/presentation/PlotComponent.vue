@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
-import {onBeforeUnmount, onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {DIContainer} from "@/lib/signal-visualizer/application/DIContainer.ts";
 import {ResizeDto} from "@/lib/signal-visualizer/application/Commands/ResizeCommand.ts";
 import {type CompatibleSignal, ViewPort} from "@/lib/signal-visualizer/application/SignalSource.ts";
 import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
+import SettingsComponent from "@/lib/signal-visualizer/presentation/SettingsComponent.vue";
 
 const props = defineProps<{
     signalSources: CompatibleSignal[]
@@ -44,21 +45,41 @@ onBeforeUnmount(async () => {
     diContainer?.destroyHandler.handle()
 })
 
-async function updateViewPort(currentPositionSeconds: number)  {
+async function updateViewPort(currentPositionSeconds: number) {
     await diContainer?.updateViewPortHandler.handle(currentPositionSeconds)
 }
+
+async function changeWindowLength(windowLength : number) {
+    windowLengthSeconds.value = windowLength
+}
+
+async function changeViewPort() {
+    await diContainer?.changeViewPortHandler.handle(windowStartSeconds.value, windowLengthSeconds.value)
+}
+
+watch(
+    () => windowLengthSeconds.value,
+    () => changeViewPort()
+)
 
 </script>
 
 
 <template>
+    <SettingsComponent
+        :windowLengthSeconds="windowLengthSeconds"
+        @update-windowLength="changeWindowLength"
+    >
+    </SettingsComponent>
     <div ref="htmlContainerRef" class="plot_container"></div>
     <SliderComponent
         :windowStartSeconds="windowStartSeconds"
         :windowLengthSeconds="windowLengthSeconds"
         :totalSeconds=totalSeconds
-        @update-value = 'updateViewPort' >
+        @update-value='updateViewPort'
+    >
     </SliderComponent>
+
 </template>
 
 <style scoped>
