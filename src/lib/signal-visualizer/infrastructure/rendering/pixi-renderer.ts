@@ -2,9 +2,9 @@ import {
     OneDimSignals,
     type RenderModel
 } from "@/lib/signal-visualizer/core/Renderer.ts";
-import {Application} from "pixi.js";
-import {AxisLayer} from "@/lib/signal-visualizer/infrastructure/rendering/axis-layer.ts";
-import {ChannelLayer} from "@/lib/signal-visualizer/infrastructure/rendering/channel-layer.ts";
+import { Application } from "pixi.js";
+import { AxisLayer } from "@/lib/signal-visualizer/infrastructure/rendering/axis-layer.ts";
+import { ChannelLayer } from "@/lib/signal-visualizer/infrastructure/rendering/channel-layer.ts";
 import {
     OneDimensionalSignalData
 } from "@/lib/signal-visualizer/infrastructure/rendering/one-dimensional-signal-data.ts";
@@ -32,47 +32,43 @@ export class PixiRenderer {
             height: this._canvas.clientHeight,
             oneDimSignals: oneDimSignals
         }
-        await this.startPixiApp()
-    }
-
-    private async startPixiApp(): Promise<void> {
-        const model = this.renderModel!
         await this.app.init({
-            width: model.width,
-            height: model.height,
+            width: this.renderModel.width,
+            height: this.renderModel.height,
             canvas: this._canvas,
             backgroundAlpha: 0.2,
             resolution: window.devicePixelRatio || 1,
             autoDensity: true,
         })
         this.channelPlots = []
-        for (let i = 0; i < model.oneDimSignals.channels.length; i++) {
+        for (let i = 0; i < this.renderModel.oneDimSignals.channels.length; i++) {
             const channelLayer = new ChannelLayer(
                 {
-                    width: model.width,
-                    height: model.height,
+                    width: this.renderModel.width,
+                    height: this.renderModel.height,
                 },
                 {
-                    horizontalDivisions: model.horizontalDivisions,
-                    verticalDivisions: model.verticalDivisions
+                    horizontalDivisions: this.renderModel.horizontalDivisions,
+                    verticalDivisions: this.renderModel.verticalDivisions
                 }, new OneDimensionalSignalData(
-                    model.oneDimSignals.channels[i]!.xSignal,
-                    model.oneDimSignals.channels[i]!.ySignal,
+                    this.renderModel.oneDimSignals.channels[i]!.xSignal,
+                    this.renderModel.oneDimSignals.channels[i]!.ySignal,
                 ))
             this.channelPlots.push(channelLayer)
             this.app.stage.addChild(channelLayer.container)
         }
         this.xAxis = new AxisLayer(
             {
-                width: model.width,
-                height: model.height,
+                width: this.renderModel.width,
+                height: this.renderModel.height,
             },
-            model.verticalDivisions,
+            this.renderModel.verticalDivisions,
             {
-                min: model.oneDimSignals.viewPort.startSeconds,
-                max: model.oneDimSignals.viewPort.startSeconds + model.oneDimSignals.viewPort.lengthSeconds
+                min: this.renderModel.oneDimSignals.viewPort.startSeconds,
+                max: this.renderModel.oneDimSignals.viewPort.startSeconds + this.renderModel.oneDimSignals.viewPort.lengthSeconds
             }
         )
+        this.app.stage.addChild(this.xAxis.container)
     }
 
     destroy(): void {

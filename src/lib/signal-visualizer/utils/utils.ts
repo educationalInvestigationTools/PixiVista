@@ -45,5 +45,3 @@ export class Envelope {
         return normalized
     }
 }
-
-
