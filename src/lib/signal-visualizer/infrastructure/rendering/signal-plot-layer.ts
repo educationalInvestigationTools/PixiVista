@@ -1,31 +1,29 @@
-import { Container, Graphics } from "pixi.js";
+import { Graphics } from "pixi.js";
 import type { SizeData } from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
 import type {
     OneDimensionalSignalData
 } from "@/lib/signal-visualizer/infrastructure/rendering/one-dimensional-signal-data.ts";
+import { Layer } from "./layer";
 
-export class SignalPlotLayer {
+export class SignalPlotLayer extends Layer {
     private readonly graphics: Graphics
-    private sizeData: SizeData
     signalData: OneDimensionalSignalData
-    container: Container
 
     constructor(sizeData: SizeData, signalData: OneDimensionalSignalData) {
+        super(sizeData)
         this.graphics = new Graphics()
-        this.container = new Container()
         this.container.addChild(this.graphics)
         this.signalData = signalData
-        this.sizeData = sizeData
     }
 
-    setSize(sizeData: SizeData) {
-        this.sizeData = sizeData
+    customSetSize(): void {
+
     }
 
-    draw(x: number, y: number) {
+    async draw(x: number, y: number) {
         this.graphics.clear()
-        const width = this.sizeData.width
-        const height = this.sizeData.height
+        const width = this._sizeData.width
+        const height = this._sizeData.height
         const xValues = this.signalData.xPart
         const yValues = this.signalData.yPart
         const n = yValues.valuesNormalized.length

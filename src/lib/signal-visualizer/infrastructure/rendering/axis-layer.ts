@@ -1,35 +1,33 @@
-import { Container, Graphics, Text } from "pixi.js";
+import { Graphics, Text } from "pixi.js";
 import type {
     MinMaxValues
 } from "@/lib/signal-visualizer/infrastructure/rendering/min-max-values.ts";
 import type { SizeData } from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
+import { Layer } from "./layer";
 
-export class AxisLayer {
-    sizeData: SizeData
+export class AxisLayer extends Layer {
     private readonly divisions: number
     minMaxValues: MinMaxValues
-    container: Container
     private verticalLabels: Text[]
     private readonly graphics: Graphics
 
     constructor(sizeData: SizeData, divisions: number, minMaxValues: MinMaxValues) {
-        this.sizeData = sizeData
+        super(sizeData);
         this.divisions = divisions
         this.minMaxValues = minMaxValues
-        this.container = new Container()
         this.graphics = new Graphics();
         this.container.addChild(this.graphics)
         this.verticalLabels = []
     }
 
-    setSize(sizeData: SizeData) {
-        this.sizeData = sizeData
+    customSetSize(): void {
+        
     }
 
     draw(x: number, y: number) {
         this.graphics.clear()
-        const width = this.sizeData.width;
-        const height = this.sizeData.height;
+        const width = this._sizeData.width;
+        const height = this._sizeData.height;
         const xMin = this.minMaxValues.min
         const xMax = this.minMaxValues.max
         const divisions = this.divisions
@@ -64,5 +62,6 @@ export class AxisLayer {
             text.y = yCoordinate
         }
         this.container.position.set(x, y)
+        return Promise.resolve()
     }
 }

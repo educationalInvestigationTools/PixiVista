@@ -1,4 +1,3 @@
-import { Container } from "pixi.js";
 import {
     OneDimensionalSignalData
 } from "@/lib/signal-visualizer/infrastructure/rendering/one-dimensional-signal-data.ts";
@@ -8,18 +7,16 @@ import {
     SignalPlotLayer
 } from "@/lib/signal-visualizer/infrastructure/rendering/signal-plot-layer.ts";
 import { GridLayer } from "@/lib/signal-visualizer/infrastructure/rendering/grid-layer.ts";
+import { Layer } from "./layer";
 
 
-export class ChannelLayer {
-    sizeData: SizeData
+export class ChannelLayer extends Layer {
     private gridData: GridData
     private readonly signalPlotLayer: SignalPlotLayer
     private gridLayer: GridLayer
-    container: Container
 
     constructor(sizeData: SizeData, gridData: GridData, oneDimensionalSignalData: OneDimensionalSignalData) {
-        this.container = new Container()
-        this.sizeData = sizeData
+        super(sizeData);
         this.gridData = gridData
         this.gridLayer = new GridLayer(sizeData, this.gridData, {
             min: oneDimensionalSignalData.yPart.minMaxValues.min,
@@ -30,10 +27,9 @@ export class ChannelLayer {
         this.container.addChild(this.gridLayer.container)
     }
 
-    setSize(sizeData: SizeData) {
-        this.sizeData = sizeData
-        this.signalPlotLayer.setSize(sizeData)
-        this.gridLayer.setSize(sizeData)
+    customSetSize(): void {
+        this.signalPlotLayer.setSize(this._sizeData)
+        this.gridLayer.setSize(this._sizeData)
     }
 
     async updateData(oneDimensionalSignalData: OneDimensionalSignalData) {
@@ -44,8 +40,8 @@ export class ChannelLayer {
         }
     }
 
-    draw(x: number, y: number) {
-        this.gridLayer.draw(x, y)
-        this.signalPlotLayer.draw(x, y)
+    async draw(x: number, y: number) {
+        await this.gridLayer.draw(x, y)
+        await this.signalPlotLayer.draw(x, y)
     }
 }

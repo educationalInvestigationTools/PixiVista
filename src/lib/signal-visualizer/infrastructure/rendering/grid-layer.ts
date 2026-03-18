@@ -1,37 +1,35 @@
 import type { SizeData } from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
 import type { GridData } from "@/lib/signal-visualizer/infrastructure/rendering/grid-data.ts";
-import { Container, Graphics, Text } from "pixi.js";
+import { Graphics, Text } from "pixi.js";
 
 import type {
     MinMaxValues
 } from "@/lib/signal-visualizer/infrastructure/rendering/min-max-values.ts";
+import { Layer } from "./layer";
 
-export class GridLayer {
-    private sizeData: SizeData
+export class GridLayer extends Layer {
     private gridData: GridData
     minMaxValues: MinMaxValues
     private horizontalLabels: Text[]
     private readonly graphics: Graphics
-    container: Container
 
     constructor(sizeData: SizeData, gridData: GridData, minMaxValues: MinMaxValues) {
+        super(sizeData);
         this.graphics = new Graphics()
-        this.container = new Container()
         this.container.addChild(this.graphics)
-        this.sizeData = sizeData
         this.gridData = gridData
         this.minMaxValues = minMaxValues
         this.horizontalLabels = []
     }
 
-    setSize(sizeData: SizeData) {
-        this.sizeData = sizeData
+    customSetSize(): void {
+
     }
 
-    draw(x: number, y: number) {
+    async draw(x: number, y: number) {
         this.graphics.clear()
-        const width = this.sizeData.width
-        const height = this.sizeData.height
+        const width = this._sizeData.width
+        const height = this._sizeData.height
         const xDivisions = this.gridData.verticalDivisions
         const yDivisions = this.gridData.horizontalDivisions
         this.graphics
