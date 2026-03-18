@@ -13,11 +13,11 @@ const emit = defineEmits<{
     (e: 'update-value', value: number): void
 }>()
 
-let windowStartSeconds = props.windowStartSeconds
-let sliderPositionSeconds = ref(windowStartSeconds)
-let windowLengthSeconds = computed( () => Math.min(props.windowLengthSeconds, props.totalSeconds))
+const windowStartSeconds = props.windowStartSeconds
+const sliderPositionSeconds = ref(windowStartSeconds)
+const windowLengthSeconds = computed( () => Math.min(props.windowLengthSeconds, props.totalSeconds))
 
-let windowEndSeconds = computed(
+const windowEndSeconds = computed(
     () => Math.max(windowStartSeconds, props.totalSeconds - windowLengthSeconds.value)
 )
 

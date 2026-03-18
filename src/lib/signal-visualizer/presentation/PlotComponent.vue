@@ -6,6 +6,7 @@ import {ResizeDto} from "@/lib/signal-visualizer/application/Commands/ResizeComm
 import {type CompatibleSignal, ViewPort} from "@/lib/signal-visualizer/application/SignalSource.ts";
 import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
 import SettingsComponent from "@/lib/signal-visualizer/presentation/SettingsComponent.vue";
+import MetricsComponent from "./MetricsComponent.vue";
 
 const props = defineProps<{
     signalSources: CompatibleSignal[]
@@ -19,6 +20,8 @@ let diContainer: DIContainer | null = null;
 const totalSeconds = Math.max(...props.signalSources.map(signal => signal.totalSeconds))
 const windowStartSeconds = ref(0)
 const windowLengthSeconds = ref(10)
+
+const showMetricsPanel = ref(true)
 
 
 onMounted(async () => {
@@ -79,6 +82,9 @@ watch(
         @update-value='updateViewPort'
     >
     </SliderComponent>
+    <MetricsComponent v-show="showMetricsPanel">
+
+    </MetricsComponent>
 
 </template>
 
