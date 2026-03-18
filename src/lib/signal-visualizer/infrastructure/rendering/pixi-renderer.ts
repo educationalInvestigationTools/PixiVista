@@ -157,6 +157,7 @@ export class PixiRenderer {
             min: oneDimSignals.viewPort.startSeconds,
             max: oneDimSignals.viewPort.startSeconds + oneDimSignals.viewPort.lengthSeconds
         }
+        await this.draw()
     }
 
     async draw(): Promise<void> {

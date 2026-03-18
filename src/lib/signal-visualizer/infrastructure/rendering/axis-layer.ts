@@ -21,7 +21,7 @@ export class AxisLayer extends Layer {
     }
 
     customSetSize(): void {
-        
+
     }
 
     draw(x: number, y: number) {
@@ -45,8 +45,7 @@ export class AxisLayer extends Layer {
             const xDivision = (i / divisions) * width
             this.graphics.circle(xDivision, yCoordinate, height * 0.05)
             this.graphics.stroke({ width: 1, color: 'green' })
-
-            const textValue = (xMin + i * (stepSize)).toPrecision(2)
+            const textValue = (xMin + i * (stepSize))
             const fontSize = height * 0.20
             const fontWeight = 'bold'
             const text = new Text({

@@ -7,7 +7,7 @@ export abstract class Layer {
     protected _sizeData: SizeData
     container: Container
 
-    constructor(sizeData: SizeData) {
+    protected constructor(sizeData: SizeData) {
         this._sizeData = sizeData
         this.container = new Container()
     }

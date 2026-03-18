@@ -22,11 +22,11 @@ export class TestSignalSource implements CompatibleSignal {
         const endSeconds = startSeconds + viewport.lengthSeconds
         const startSample = this.samplingFrequency * startSeconds
         const endSample = Math.min(this.samplingFrequency * (endSeconds), this.totalSamples - 1)
-        const n = endSample - startSample + 1
+        const n = Math.max(0, endSample - startSample + 1)
         const xValues = new Float32Array(n)
         const yValues = new Float32Array(n)
         for (let i = 0; i < n; i++) {
-            yValues[i] = Math.sin((i / n) * 360)
+            yValues[i] = Math.random() * Math.sin((i / n) * 360)
             xValues[i] = startSeconds + (i / this.samplingFrequency)
         }
         return {
