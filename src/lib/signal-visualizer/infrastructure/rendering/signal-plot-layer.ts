@@ -1,5 +1,5 @@
-import {Container, Graphics} from "pixi.js";
-import type {SizeData} from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
+import { Container, Graphics } from "pixi.js";
+import type { SizeData } from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
 import type {
     OneDimensionalSignalData
 } from "@/lib/signal-visualizer/infrastructure/rendering/one-dimensional-signal-data.ts";
@@ -17,6 +17,11 @@ export class SignalPlotLayer {
         this.signalData = signalData
         this.sizeData = sizeData
     }
+
+    setSize(sizeData: SizeData) {
+        this.sizeData = sizeData
+    }
+
     draw(x: number, y: number) {
         this.graphics.clear()
         const width = this.sizeData.width
@@ -35,7 +40,7 @@ export class SignalPlotLayer {
 
             this.graphics
                 .circle(xCoords[i]!, yCoords[i]!, width * 0.001)
-                .stroke({color: 'green'})
+                .stroke({ color: 'green' })
 
             if (i > 0) {
                 this.graphics
@@ -43,7 +48,7 @@ export class SignalPlotLayer {
                 this.graphics
                     .lineTo(xCoords[i]!, yCoords[i]!)
                 this.graphics
-                    .stroke({color: 'black', width: 1})
+                    .stroke({ color: 'black', width: 1 })
             }
         }
         this.container.position.set(x, y)

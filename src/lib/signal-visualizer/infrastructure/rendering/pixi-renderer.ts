@@ -122,10 +122,10 @@ export class PixiRenderer {
     async setSizes(width: number, height: number) {
         this.renderModel!.width = width
         this.renderModel!.height = height
-        this.xAxis!.sizeData = {
+        this.xAxis!.setSize({
             width: this.widthAfterMargin,
             height: this.xAxisHeight
-        }
+        })
 
         for (let i = 0; i < this.renderModel?.oneDimSignals.totalSignals!; i++) {
             const yCord = i * this.plotHeight
@@ -133,10 +133,10 @@ export class PixiRenderer {
             const yHigh = yCord + this.plotHeight - this.marginHorizontal
             const heightAfterMargin = (yHigh - yLow)
             const channelLayer = this.channelPlots![i]!
-            channelLayer.sizeData = {
+            channelLayer.setSize({
                 width: this.widthAfterMargin,
                 height: heightAfterMargin
-            }
+            })
         }
         this.app.renderer.resize(width, height)
         await this.draw()

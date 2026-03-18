@@ -1,8 +1,8 @@
-import {Container, Graphics, Text} from "pixi.js";
+import { Container, Graphics, Text } from "pixi.js";
 import type {
     MinMaxValues
 } from "@/lib/signal-visualizer/infrastructure/rendering/min-max-values.ts";
-import type {SizeData} from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
+import type { SizeData } from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
 
 export class AxisLayer {
     sizeData: SizeData
@@ -22,6 +22,10 @@ export class AxisLayer {
         this.verticalLabels = []
     }
 
+    setSize(sizeData: SizeData) {
+        this.sizeData = sizeData
+    }
+
     draw(x: number, y: number) {
         this.graphics.clear()
         const width = this.sizeData.width;
@@ -32,7 +36,7 @@ export class AxisLayer {
 
         this.graphics
             .rect(0, 0, width, height)
-            .stroke({width: 1, color: 'red'})
+            .stroke({ width: 1, color: 'red' })
         const yCoordinate = height * 0.2
         const stepSize = (xMax - xMin) / divisions
         for (let i = 0; i < this.verticalLabels.length; i++) {
@@ -42,7 +46,7 @@ export class AxisLayer {
         for (let i = 0; i <= divisions; i++) {
             const xDivision = (i / divisions) * width
             this.graphics.circle(xDivision, yCoordinate, height * 0.05)
-            this.graphics.stroke({width: 1, color: 'green'})
+            this.graphics.stroke({ width: 1, color: 'green' })
 
             const textValue = (xMin + i * (stepSize)).toPrecision(2)
             const fontSize = height * 0.20

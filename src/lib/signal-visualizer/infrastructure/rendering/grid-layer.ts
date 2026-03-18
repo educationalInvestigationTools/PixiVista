@@ -1,6 +1,6 @@
-import type {SizeData} from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
-import type {GridData} from "@/lib/signal-visualizer/infrastructure/rendering/grid-data.ts";
-import {Container, Graphics, Text} from "pixi.js";
+import type { SizeData } from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
+import type { GridData } from "@/lib/signal-visualizer/infrastructure/rendering/grid-data.ts";
+import { Container, Graphics, Text } from "pixi.js";
 
 import type {
     MinMaxValues
@@ -24,6 +24,10 @@ export class GridLayer {
         this.horizontalLabels = []
     }
 
+    setSize(sizeData: SizeData) {
+        this.sizeData = sizeData
+    }
+
     draw(x: number, y: number) {
         this.graphics.clear()
         const width = this.sizeData.width
@@ -33,7 +37,7 @@ export class GridLayer {
         this.graphics
             .rect(
                 0, 0, width, height
-            ).stroke({width: 1, color: 'black', alpha: 0.1})
+            ).stroke({ width: 1, color: 'black', alpha: 0.1 })
 
         for (let i = 0; i <= xDivisions; i++) {
             const xDivision = (i / xDivisions) * width
@@ -54,7 +58,7 @@ export class GridLayer {
             const yDivision = (i / yDivisions) * height
             this.graphics
                 .moveTo(0, yDivision)
-                .lineTo(width, yDivision).stroke({color: 'red', width: 1, alpha: 0.3})
+                .lineTo(width, yDivision).stroke({ color: 'red', width: 1, alpha: 0.3 })
             const text = new Text(
                 {
                     text: (this.minMaxValues.max - i * stepSize).toPrecision(2),
