@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-    (e: 'update-value', value: number): void
+    (e: 'updateValue', value: number): void
 }>()
 
 const windowStartSeconds = props.windowStartSeconds
@@ -21,9 +21,10 @@ const windowEndSeconds = computed(
     () => Math.max(windowStartSeconds, props.totalSeconds - windowLengthSeconds.value)
 )
 
+
 watch(
     () => sliderPositionSeconds.value,
-    () => emit('update-value', sliderPositionSeconds.value)
+    () => emit('updateValue', sliderPositionSeconds.value)
 )
 
 watch(

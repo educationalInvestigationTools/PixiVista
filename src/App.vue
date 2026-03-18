@@ -4,7 +4,7 @@ import {
     TestSignalSource
 } from "@/lib/signal-visualizer/infrastructure/signals/test-sampled-signal.ts";
 
-let signalSources = [
+const signalSources = [
     new TestSignalSource(200, 5000),
     new TestSignalSource(200, 3000),
     new TestSignalSource(200, 2000)]
