@@ -63,7 +63,7 @@ export class GridLayer {
                 {
                     text: (this.minMaxValues.max - i * stepSize).toPrecision(2),
                     style: {
-                        fontSize: height * 0.10,
+                        fontSize: height * 0.025,
                         fontWeight: 'bold',
                     }
                 }
