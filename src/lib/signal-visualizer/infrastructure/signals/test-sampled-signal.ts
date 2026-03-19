@@ -7,14 +7,20 @@ import {
 export class TestSignalSource implements CompatibleSignal {
     private readonly samplingFrequency: number;
     private readonly totalSamples: number;
+    private readonly _label : string
 
-    constructor(samplingFrequency: number, totalSamples: number) {
+    constructor(label : string, samplingFrequency: number, totalSamples: number) {
         this.samplingFrequency = samplingFrequency;
         this.totalSamples = totalSamples;
+        this._label = label
     }
 
     get totalSeconds(): number {
         return this.totalSamples / this.samplingFrequency
+    }
+
+    get label() : string{
+        return this._label
     }
 
     read(viewport: ViewPort): One1DSignal {

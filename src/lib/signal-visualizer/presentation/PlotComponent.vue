@@ -1,17 +1,31 @@
 <script setup lang="ts">
 
-import { onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { DIContainer } from "@/lib/signal-visualizer/application/DIContainer.ts";
-import { ResizeDto } from "@/lib/signal-visualizer/application/Commands/ResizeCommand.ts";
-import { type CompatibleSignal, ViewPort } from "@/lib/signal-visualizer/application/SignalSource.ts";
+import {onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {DIContainer} from "@/lib/signal-visualizer/application/DIContainer.ts";
+import {ResizeDto} from "@/lib/signal-visualizer/application/Commands/ResizeCommand.ts";
+import {type CompatibleSignal, ViewPort} from "@/lib/signal-visualizer/application/SignalSource.ts";
 import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
 import SettingsComponent from "@/lib/signal-visualizer/presentation/SettingsComponent.vue";
-import MetricsComponent from "./MetricsComponent.vue";
+import AnnotationsComponent from "@/lib/signal-visualizer/presentation/AnnotationsComponent.vue";
+import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsComponent.vue"
+
 
 const props = defineProps<{
     signalSources: CompatibleSignal[]
 }>()
 
+export type SignalVisibility = {
+    label: string
+    visibility: boolean
+}
+
+const signalsVisibility: Record<string, SignalVisibility> = props.signalSources.reduce<Record<string, SignalVisibility>>((acc, signal) => {
+    acc[signal.label] = {
+        label: signal.label,
+        visibility: true
+    }
+    return acc
+}, {})
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
 const resizeObserverRef = ref<ResizeObserver | null>(null)
@@ -60,6 +74,11 @@ async function changeViewPort() {
     await diContainer?.changeViewPortHandler.handle(windowStartSeconds.value, windowLengthSeconds.value)
 }
 
+async function toggleChannelVisibility(signalInfo: SignalVisibility) {
+    signalsVisibility[signalInfo.label] = signalInfo
+    await diContainer?.changeChannelVisibilityHandler.handle(signalInfo.label, signalInfo.visibility)
+}
+
 watch(
     () => windowLengthSeconds.value,
     () => changeViewPort()
@@ -69,13 +88,18 @@ watch(
 
 
 <template>
-    <SettingsComponent v-model:showMetrics="showMetricsPanel" :windowLengthSeconds="windowLengthSeconds"
-        @updateWindowLength="changeWindowLength">
+    <SettingsComponent v-model:showMetrics="showMetricsPanel"
+                       :windowLengthSeconds="windowLengthSeconds"
+                       @updateWindowLength="changeWindowLength">
     </SettingsComponent>
+    <AnnotationsComponent
+        :signalsInfo="signalsVisibility"
+        @toggleChannelVisibility="toggleChannelVisibility"></AnnotationsComponent>
     <div ref="htmlContainerRef" class="plot_container">
     </div>
-    <SliderComponent :windowStartSeconds="windowStartSeconds" :windowLengthSeconds="windowLengthSeconds"
-        :totalSeconds=totalSeconds @updateValue='updateViewPort'>
+    <SliderComponent :windowStartSeconds="windowStartSeconds"
+                     :windowLengthSeconds="windowLengthSeconds"
+                     :totalSeconds=totalSeconds @updateValue='updateViewPort'>
     </SliderComponent>
     <MetricsComponent v-show="showMetricsPanel"></MetricsComponent>
 

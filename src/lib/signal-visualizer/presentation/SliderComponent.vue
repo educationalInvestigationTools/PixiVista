@@ -15,12 +15,11 @@ const emit = defineEmits<{
 
 const windowStartSeconds = props.windowStartSeconds
 const sliderPositionSeconds = ref(windowStartSeconds)
-const windowLengthSeconds = computed( () => Math.min(props.windowLengthSeconds, props.totalSeconds))
+const windowLengthSeconds = computed(() => Math.min(props.windowLengthSeconds, props.totalSeconds))
 
 const windowEndSeconds = computed(
     () => Math.max(windowStartSeconds, props.totalSeconds - windowLengthSeconds.value)
 )
-
 
 watch(
     () => sliderPositionSeconds.value,

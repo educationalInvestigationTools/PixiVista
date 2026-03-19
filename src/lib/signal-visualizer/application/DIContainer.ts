@@ -8,6 +8,9 @@ import {
 import {
     ChangeViewPortCommand
 } from "@/lib/signal-visualizer/application/Commands/ChangeViewPortCommand.ts";
+import {
+    ChangeChannelVisibilityCommand
+} from "@/lib/signal-visualizer/application/Commands/ChangeChannelVisibilityCommand.ts";
 
 export class DIContainer {
     private readonly interpreter: Interpreter
@@ -16,6 +19,7 @@ export class DIContainer {
     public readonly destroyHandler: DestroyCommand
     public readonly updateViewPortHandler: UpdateViewPortCommand
     public readonly changeViewPortHandler: ChangeViewPortCommand
+    public readonly changeChannelVisibilityHandler: ChangeChannelVisibilityCommand
 
     constructor(htmlElement: HTMLElement, viewPort: ViewPort, signalsSource: CompatibleSignal[]) {
         this.interpreter = new Interpreter(htmlElement, viewPort, signalsSource)
@@ -23,6 +27,7 @@ export class DIContainer {
         this.destroyHandler = new DestroyCommand(this.interpreter)
         this.updateViewPortHandler = new UpdateViewPortCommand(this.interpreter)
         this.changeViewPortHandler = new ChangeViewPortCommand(this.interpreter)
+        this.changeChannelVisibilityHandler = new ChangeChannelVisibilityCommand(this.interpreter)
     }
 
     async init() {

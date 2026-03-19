@@ -80,4 +80,8 @@ export class Interpreter {
     async resize(width: number, height: number) {
         await this.renderer.setSizes(width, height)
     }
+
+    async changeChannelVisibility(channelLabel : string, visibility : boolean) {
+
+    }
 }

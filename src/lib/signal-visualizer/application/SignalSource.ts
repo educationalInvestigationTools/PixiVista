@@ -18,7 +18,7 @@ export type One1DSignal = {
 }
 
 export interface CompatibleSignal {
-    totalSeconds: number
-
+    readonly totalSeconds: number
+    readonly label : string
     read(viewport: ViewPort): One1DSignal
 }

@@ -27,12 +27,12 @@ function toggleShow() {
 </script>
 
 <template>
+    <span> This is the settings panel </span>
     <input type="range" :min="5" :max='10' step=1 v-model.number='windowLengthSeconds'>
 
     <span> {{ windowLengthSeconds }} </span>
 
     <input type="checkbox" :checked="showMetrics" @change="toggleShow">
-
 </template>
 
 <style scoped></style>
