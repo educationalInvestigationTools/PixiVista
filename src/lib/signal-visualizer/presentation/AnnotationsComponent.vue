@@ -22,7 +22,7 @@ function toggleShow(key: string) {
 
 <template>
     <span> This is the annotations panel </span>
-    <li v-for="(signalInfo, key) in props.signalsInfo">
+    <li v-for="(signalInfo, key) in props.signalsInfo" :key="key">
         <span> {{ signalInfo.label }}</span>
         <input type="checkbox" :checked="signalInfo.visibility" @change="toggleShow(key)">>
     </li>
