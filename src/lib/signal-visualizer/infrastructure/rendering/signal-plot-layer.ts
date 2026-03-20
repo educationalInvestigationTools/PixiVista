@@ -1,9 +1,7 @@
-import { Graphics } from "pixi.js";
-import type { SizeData } from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
-import type {
-    OneDimensionalSignalData
-} from "@/lib/signal-visualizer/infrastructure/rendering/one-dimensional-signal-data.ts";
-import { Layer } from "./layer";
+import { Graphics } from 'pixi.js'
+import type { SizeData } from '@/lib/signal-visualizer/core/size-data.ts'
+import type { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/one-dimensional-signal-data.ts'
+import { Layer } from './layer'
 
 export class SignalPlotLayer extends Layer {
     private readonly graphics: Graphics
@@ -16,9 +14,7 @@ export class SignalPlotLayer extends Layer {
         this.signalData = signalData
     }
 
-    customSetSize(): void {
-
-    }
+    customSetSize(): void {}
 
     async draw(x: number, y: number) {
         this.graphics.clear()
@@ -36,17 +32,12 @@ export class SignalPlotLayer extends Layer {
             xCoords[i] = xMappedCord
             yCoords[i] = height - yMappedCord
 
-            this.graphics
-                .circle(xCoords[i]!, yCoords[i]!, width * 0.001)
-                .stroke({ color: 'green' })
+            this.graphics.circle(xCoords[i]!, yCoords[i]!, width * 0.001).stroke({ color: 'green' })
 
             if (i > 0) {
-                this.graphics
-                    .moveTo(xCoords[i - 1]!, yCoords[i - 1]!)
-                this.graphics
-                    .lineTo(xCoords[i]!, yCoords[i]!)
-                this.graphics
-                    .stroke({ color: 'black', width: 1 })
+                this.graphics.moveTo(xCoords[i - 1]!, yCoords[i - 1]!)
+                this.graphics.lineTo(xCoords[i]!, yCoords[i]!)
+                this.graphics.stroke({ color: 'black', width: 1 })
             }
         }
         this.container.position.set(x, y)

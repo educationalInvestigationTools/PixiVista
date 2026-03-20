@@ -1,11 +1,9 @@
-import type { SizeData } from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
-import type { GridData } from "@/lib/signal-visualizer/infrastructure/rendering/grid-data.ts";
-import { Graphics, Text } from "pixi.js";
+import type { SizeData } from '@/lib/signal-visualizer/core/size-data.ts'
+import type { GridData } from '@/lib/signal-visualizer/core/grid-data.ts'
+import { Graphics, Text } from 'pixi.js'
 
-import type {
-    MinMaxValues
-} from "@/lib/signal-visualizer/infrastructure/rendering/min-max-values.ts";
-import { Layer } from "./layer";
+import type { MinMaxValues } from '@/lib/signal-visualizer/infrastructure/rendering/min-max-values.ts'
+import { Layer } from './layer'
 
 export class GridLayer extends Layer {
     private gridData: GridData
@@ -14,7 +12,7 @@ export class GridLayer extends Layer {
     private readonly graphics: Graphics
 
     constructor(sizeData: SizeData, gridData: GridData, minMaxValues: MinMaxValues) {
-        super(sizeData);
+        super(sizeData)
         this.graphics = new Graphics()
         this.container.addChild(this.graphics)
         this.gridData = gridData
@@ -22,9 +20,7 @@ export class GridLayer extends Layer {
         this.horizontalLabels = []
     }
 
-    customSetSize(): void {
-
-    }
+    customSetSize(): void {}
 
     async draw(x: number, y: number) {
         this.graphics.clear()
@@ -32,17 +28,14 @@ export class GridLayer extends Layer {
         const height = this._sizeData.height
         const xDivisions = this.gridData.verticalDivisions
         const yDivisions = this.gridData.horizontalDivisions
-        this.graphics
-            .rect(
-                0, 0, width, height
-            ).stroke({ width: 1, color: 'black', alpha: 0.1 })
+        this.graphics.rect(0, 0, width, height).stroke({ width: 1, color: 'black', alpha: 0.1 })
 
         for (let i = 0; i <= xDivisions; i++) {
             const xDivision = (i / xDivisions) * width
             this.graphics.moveTo(xDivision, height).lineTo(xDivision, 0).stroke({
                 color: 'red',
                 width: 1,
-                alpha: 0.3
+                alpha: 0.3,
             })
         }
 
@@ -56,16 +49,15 @@ export class GridLayer extends Layer {
             const yDivision = (i / yDivisions) * height
             this.graphics
                 .moveTo(0, yDivision)
-                .lineTo(width, yDivision).stroke({ color: 'red', width: 1, alpha: 0.3 })
-            const text = new Text(
-                {
-                    text: (this.minMaxValues.max - i * stepSize).toPrecision(2),
-                    style: {
-                        fontSize: height * 0.08,
-                        fontWeight: 'bold',
-                    }
-                }
-            )
+                .lineTo(width, yDivision)
+                .stroke({ color: 'red', width: 1, alpha: 0.3 })
+            const text = new Text({
+                text: (this.minMaxValues.max - i * stepSize).toPrecision(2),
+                style: {
+                    fontSize: height * 0.08,
+                    fontWeight: 'bold',
+                },
+            })
             text.x = -1.3 * text.width
             text.y = yDivision - text.height / 3
             this.container.addChild(text)

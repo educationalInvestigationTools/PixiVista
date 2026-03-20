@@ -1,5 +1,7 @@
-import {ViewPort} from "@/lib/signal-visualizer/application/SignalSource.ts";
-import type {AxisSignal} from "@/lib/signal-visualizer/core/axis-signal.ts";
+import { ViewPort } from '@/lib/signal-visualizer/application/SignalSource.ts'
+import type { AxisSignal } from '@/lib/signal-visualizer/core/axis-signal.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/size-data.ts'
+import type { GridData } from '@/lib/signal-visualizer/core/grid-data.ts'
 
 export class OneDimSignals {
     viewPort: ViewPort
@@ -10,7 +12,7 @@ export class OneDimSignals {
         this.channels = signals
     }
 
-    get totalSignals() : number {
+    get totalSignals(): number {
         return this.channels.length
     }
 }
@@ -21,9 +23,7 @@ export type OneDimSignal = {
 }
 
 export type RenderModel = {
-    width: number;
-    height: number;
+    sizeData: SizeData
     oneDimSignals: OneDimSignals
-    readonly horizontalDivisions: number
-    readonly verticalDivisions: number
+    gridData: GridData
 }

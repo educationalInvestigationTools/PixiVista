@@ -1,9 +1,7 @@
-import { Graphics, Text } from "pixi.js";
-import type {
-    MinMaxValues
-} from "@/lib/signal-visualizer/infrastructure/rendering/min-max-values.ts";
-import type { SizeData } from "@/lib/signal-visualizer/infrastructure/rendering/size-data.ts";
-import { Layer } from "./layer";
+import { Graphics, Text } from 'pixi.js'
+import type { MinMaxValues } from '@/lib/signal-visualizer/infrastructure/rendering/min-max-values.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/size-data.ts'
+import { Layer } from './layer'
 
 export class AxisLayer extends Layer {
     private readonly divisions: number
@@ -12,29 +10,25 @@ export class AxisLayer extends Layer {
     private readonly graphics: Graphics
 
     constructor(sizeData: SizeData, divisions: number, minMaxValues: MinMaxValues) {
-        super(sizeData);
+        super(sizeData)
         this.divisions = divisions
         this.minMaxValues = minMaxValues
-        this.graphics = new Graphics();
+        this.graphics = new Graphics()
         this.container.addChild(this.graphics)
         this.verticalLabels = []
     }
 
-    customSetSize(): void {
-
-    }
+    customSetSize(): void {}
 
     draw(x: number, y: number) {
         this.graphics.clear()
-        const width = this._sizeData.width;
-        const height = this._sizeData.height;
+        const width = this._sizeData.width
+        const height = this._sizeData.height
         const xMin = this.minMaxValues.min
         const xMax = this.minMaxValues.max
         const divisions = this.divisions
 
-        this.graphics
-            .rect(0, 0, width, height)
-            .stroke({ width: 1, color: 'red' })
+        this.graphics.rect(0, 0, width, height).stroke({ width: 1, color: 'red' })
         const yCoordinate = height * 0.2
         const stepSize = (xMax - xMin) / divisions
         for (let i = 0; i < this.verticalLabels.length; i++) {
@@ -45,15 +39,15 @@ export class AxisLayer extends Layer {
             const xDivision = (i / divisions) * width
             this.graphics.circle(xDivision, yCoordinate, height * 0.05)
             this.graphics.stroke({ width: 1, color: 'green' })
-            const textValue = (xMin + i * (stepSize))
-            const fontSize = height * 0.20
+            const textValue = xMin + i * stepSize
+            const fontSize = height * 0.2
             const fontWeight = 'bold'
             const text = new Text({
                 text: textValue,
                 style: {
                     fontSize: fontSize,
-                    fontWeight: fontWeight
-                }
+                    fontWeight: fontWeight,
+                },
             })
             this.verticalLabels.push(text)
             this.container.addChild(text)

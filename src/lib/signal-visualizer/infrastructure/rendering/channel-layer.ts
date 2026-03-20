@@ -1,6 +1,6 @@
 import { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/one-dimensional-signal-data.ts'
-import type { GridData } from '@/lib/signal-visualizer/infrastructure/rendering/grid-data.ts'
-import type { SizeData } from '@/lib/signal-visualizer/infrastructure/rendering/size-data.ts'
+import type { GridData } from '@/lib/signal-visualizer/core/grid-data.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/size-data.ts'
 import { SignalPlotLayer } from '@/lib/signal-visualizer/infrastructure/rendering/signal-plot-layer.ts'
 import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/grid-layer.ts'
 import { Layer } from './layer'

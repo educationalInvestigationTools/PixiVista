@@ -1,11 +1,11 @@
+import { type OneDimSignal, OneDimSignals } from '@/lib/signal-visualizer/core/Renderer.ts'
 import {
-    type OneDimSignal,
-    OneDimSignals,
-} from "@/lib/signal-visualizer/core/Renderer.ts";
-import {type CompatibleSignal, ViewPort} from "@/lib/signal-visualizer/application/SignalSource.ts";
-import {PixiRenderer} from "@/lib/signal-visualizer/infrastructure/rendering/pixi-renderer.ts";
-import {Envelope} from "@/lib/signal-visualizer/utils/utils.ts";
-import type {AxisSignal} from "@/lib/signal-visualizer/core/axis-signal.ts";
+    type CompatibleSignal,
+    ViewPort,
+} from '@/lib/signal-visualizer/application/SignalSource.ts'
+import { PixiRenderer } from '@/lib/signal-visualizer/infrastructure/rendering/pixi-renderer.ts'
+import { Envelope } from '@/lib/signal-visualizer/utils/utils.ts'
+import type { AxisSignal } from '@/lib/signal-visualizer/core/axis-signal.ts'
 
 export class Interpreter {
     private renderer: PixiRenderer
@@ -15,10 +15,10 @@ export class Interpreter {
 
     constructor(container: HTMLElement, viewPort: ViewPort, signalsSource: CompatibleSignal[]) {
         this.viewPort = viewPort
-        this.signalsSource = signalsSource;
-        this.renderer = new PixiRenderer();
-        this.htmlElement = container;
-        this.htmlElement.appendChild(this.renderer.canvas);
+        this.signalsSource = signalsSource
+        this.renderer = new PixiRenderer()
+        this.htmlElement = container
+        this.htmlElement.appendChild(this.renderer.canvas)
     }
 
     async init() {
@@ -27,7 +27,7 @@ export class Interpreter {
     }
 
     async destroy(): Promise<void> {
-        this.renderer.destroy();
+        this.renderer.destroy()
     }
 
     private async fetchData(): Promise<OneDimSignals> {
@@ -39,25 +39,23 @@ export class Interpreter {
             const xEnvelope = new Envelope(data.xValues)
             const xAxisSignal: AxisSignal = {
                 valuesNormalized: xEnvelope.normalized,
-                minMaxValues:
-                    {
-                        min: xEnvelope.min,
-                        max: xEnvelope.max
-                    }
+                minMaxValues: {
+                    min: xEnvelope.min,
+                    max: xEnvelope.max,
+                },
             }
 
             const yEnvelope = new Envelope(data.yValues)
             const yAxisSignal: AxisSignal = {
                 valuesNormalized: yEnvelope.normalized,
-                minMaxValues:
-                    {
-                        min: yEnvelope.min,
-                        max: yEnvelope.max
-                    }
+                minMaxValues: {
+                    min: yEnvelope.min,
+                    max: yEnvelope.max,
+                },
             }
             const oneDimensionalSignalData: OneDimSignal = {
                 xSignal: xAxisSignal,
-                ySignal: yAxisSignal
+                ySignal: yAxisSignal,
             }
             signals.push(oneDimensionalSignalData)
         }
@@ -78,10 +76,11 @@ export class Interpreter {
     }
 
     async resize(width: number, height: number) {
-        await this.renderer.setSizes(width, height)
+        await this.renderer.setSizes({
+            width: width,
+            height: height,
+        })
     }
 
-    async changeChannelVisibility(channelLabel : string, visibility : boolean) {
-
-    }
+    async changeChannelVisibility(channelLabel: string, visibility: boolean) {}
 }
