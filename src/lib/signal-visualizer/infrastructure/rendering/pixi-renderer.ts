@@ -154,15 +154,23 @@ export class PixiRenderer {
         await this.draw()
     }
 
-    async draw(): Promise<void> {
+    async drawXAxis(): Promise<void> {
         const xAxisY = this.height - this.xAxisHeight
         this.xAxis?.draw(this.xLeft, xAxisY)
+    }
+
+    async drawChannels(): Promise<void> {
         for (let i = 0; i < this.renderModel?.oneDimSignals.totalSignals!; i++) {
             const yCord = i * this.plotHeight
             const yLow = yCord + this.marginHorizontal
             const channelLayer = this.channelPlots![i]!
             channelLayer?.draw(this.xLeft, yLow)
         }
+    }
+
+    async draw(): Promise<void> {
+        await this.drawXAxis()
+        await this.drawChannels()
     }
 
     get canvas(): HTMLCanvasElement {
