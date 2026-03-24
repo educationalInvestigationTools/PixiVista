@@ -1,9 +1,10 @@
 import { Graphics } from 'pixi.js'
-import type { SizeData } from '@/lib/signal-visualizer/core/size-data.ts'
-import type { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/one-dimensional-signal-data.ts'
-import { Layer } from './layer'
+import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
+import type { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
 
-export class SignalPlotLayer extends Layer {
+import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
+
+export class SignalPlotLayer extends RenderLayer {
     private readonly graphics: Graphics
     signalData: OneDimensionalSignalData
 

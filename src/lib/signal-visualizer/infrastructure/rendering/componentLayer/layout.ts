@@ -1,0 +1,108 @@
+import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
+import { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
+import type { PositionData } from '@/lib/signal-visualizer/core/positionData.ts'
+
+export class ComponentBaseLayout extends LayoutDesign {
+    constructor(sizeData: SizeData, positionData: PositionData) {
+        super(sizeData, positionData)
+    }
+
+    get marginVerticalLeft(): number {
+        return this.width * 0.15
+    }
+
+    get marginVerticalRight(): number {
+        return this.width * 0.05
+    }
+
+    get xLeft(): number {
+        return this.marginVerticalLeft
+    }
+
+    get xRight(): number {
+        return this.width - this.marginVerticalRight
+    }
+
+    get widthAfterMargin(): number {
+        return this.xRight - this.xLeft
+    }
+}
+
+export class ChannelsLayerLayout extends ComponentBaseLayout {
+    visibleChannels: number = 0
+    constructor(sizeData: SizeData, positionData: PositionData) {
+        super(sizeData, positionData)
+    }
+
+    get channelHeight(): number {
+        return this.height / this.visibleChannels
+    }
+
+    get channelWidth(): number {
+        return this.width
+    }
+
+    get channelMarginHorizontal(): number {
+        return this.channelHeight * 0.05
+    }
+
+    yChannelCoordinate(i: number) {
+        return i * this.channelHeight
+    }
+
+    yChannelLow(i: number) {
+        return this.yChannelCoordinate(i) + this.channelMarginHorizontal
+    }
+    buildChannelSize(): SizeData {
+        const heightAfterMargin = this.channelHeight - 2 * this.channelMarginHorizontal
+        return {
+            width: this.widthAfterMargin,
+            height: heightAfterMargin,
+        }
+    }
+
+    buildChannelPos(i: number): PositionData {
+        return {
+            x: 0,
+            y: this.yChannelLow(i),
+        }
+    }
+}
+
+export class ComponentLayout extends ComponentBaseLayout {
+    get xAxisHeight(): number {
+        return this.height * 0.1
+    }
+
+    get xAxisY(): number {
+        return this.height - this.xAxisHeight
+    }
+
+    buildXAxisSize(): SizeData {
+        return {
+            width: this.widthAfterMargin,
+            height: this.xAxisHeight,
+        }
+    }
+
+    buildXAxisPos(): PositionData {
+        return {
+            x: this.xLeft,
+            y: this.xAxisY,
+        }
+    }
+
+    buildChannelsSize(): SizeData {
+        return {
+            width: this.width,
+            height: this.height - this.xAxisHeight,
+        }
+    }
+
+    buildChannelsPos(): PositionData {
+        return {
+            x: this.xLeft,
+            y: 0,
+        }
+    }
+}

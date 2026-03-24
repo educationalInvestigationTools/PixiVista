@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
 import {onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {DIContainer} from "@/lib/signal-visualizer/application/DIContainer.ts";
-import {ResizeDto} from "@/lib/signal-visualizer/application/Commands/ResizeCommand.ts";
-import {type CompatibleSignal, ViewPort} from "@/lib/signal-visualizer/application/SignalSource.ts";
+import {DiContainer} from "@/lib/signal-visualizer/application/diContainer.ts";
+import {ResizeDto} from "@/lib/signal-visualizer/application/Commands/resizeCommand.ts";
+import {type CompatibleSignal, ViewPort} from "@/lib/signal-visualizer/application/signalSource.ts";
 import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
 import SettingsComponent from "@/lib/signal-visualizer/presentation/SettingsComponent.vue";
 import AnnotationsComponent from "@/lib/signal-visualizer/presentation/AnnotationsComponent.vue";
@@ -29,7 +29,7 @@ const signalsVisibility: Record<string, SignalVisibility> = props.signalSources.
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
 const resizeObserverRef = ref<ResizeObserver | null>(null)
-let diContainer: DIContainer | null = null;
+let diContainer: DiContainer | null = null;
 
 const totalSeconds = Math.max(...props.signalSources.map(signal => signal.totalSeconds))
 const windowStartSeconds = ref(0)
@@ -43,7 +43,7 @@ onMounted(async () => {
         return;
     }
     const viewPort = new ViewPort(windowStartSeconds.value, windowLengthSeconds.value)
-    diContainer = new DIContainer(htmlContainerRef.value, viewPort, props.signalSources);
+    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSources);
     await diContainer.init()
 
     resizeObserverRef.value = new ResizeObserver(async () => {
@@ -106,8 +106,4 @@ watch(
 </template>
 
 <style scoped>
-.plot_container {
-    width: 100%;
-    height: 100%
-}
 </style>

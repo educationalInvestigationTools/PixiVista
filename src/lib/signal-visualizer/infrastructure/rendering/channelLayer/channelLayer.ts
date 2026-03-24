@@ -1,11 +1,12 @@
-import { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/one-dimensional-signal-data.ts'
-import type { GridData } from '@/lib/signal-visualizer/core/grid-data.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/size-data.ts'
-import { SignalPlotLayer } from '@/lib/signal-visualizer/infrastructure/rendering/signal-plot-layer.ts'
-import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/grid-layer.ts'
-import { Layer } from './layer'
+import { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
+import type { GridData } from '@/lib/signal-visualizer/core/gridData.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
+import { SignalPlotLayer } from '@/lib/signal-visualizer/infrastructure/rendering/OneDimensionalSignalLayer/signalPlotLayer.ts'
+import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayer.ts'
 
-export class ChannelLayer extends Layer {
+import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
+
+export class ChannelLayer extends RenderLayer {
     private readonly gridData: GridData
     private readonly signalPlotLayer: SignalPlotLayer
     private gridLayer: GridLayer

@@ -2,7 +2,7 @@
 import PlotComponent from "@/lib/signal-visualizer/presentation/PlotComponent.vue";
 import {
     TestSignalSource
-} from "@/lib/signal-visualizer/infrastructure/signals/test-sampled-signal.ts";
+} from "@/lib/signal-visualizer/infrastructure/signals/testSampledSignal.ts";
 
 const signalSources = [
     new TestSignalSource("A", 200, 5000),

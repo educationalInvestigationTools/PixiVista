@@ -1,18 +1,15 @@
-import {Interpreter} from "@/lib/signal-visualizer/core/Interpreter.ts";
-import {ResizeCommand} from "@/lib/signal-visualizer/application/Commands/ResizeCommand.ts";
-import {DestroyCommand} from "@/lib/signal-visualizer/application/Commands/DestroyCommand.ts";
-import {type CompatibleSignal, ViewPort} from "@/lib/signal-visualizer/application/SignalSource.ts";
+import { Interpreter } from '@/lib/signal-visualizer/core/interpreter.ts'
+import { ResizeCommand } from '@/lib/signal-visualizer/application/Commands/resizeCommand.ts'
+import { DestroyCommand } from '@/lib/signal-visualizer/application/Commands/destroyCommand.ts'
 import {
-    UpdateViewPortCommand
-} from "@/lib/signal-visualizer/application/Commands/UpdateViewPortCommand.ts";
-import {
-    ChangeViewPortCommand
-} from "@/lib/signal-visualizer/application/Commands/ChangeViewPortCommand.ts";
-import {
-    ChangeChannelVisibilityCommand
-} from "@/lib/signal-visualizer/application/Commands/ChangeChannelVisibilityCommand.ts";
+    type CompatibleSignal,
+    ViewPort,
+} from '@/lib/signal-visualizer/application/signalSource.ts'
+import { UpdateViewPortCommand } from '@/lib/signal-visualizer/application/Commands/updateViewPortCommand.ts'
+import { ChangeViewPortCommand } from '@/lib/signal-visualizer/application/Commands/changeViewPortCommand.ts'
+import { ChangeChannelVisibilityCommand } from '@/lib/signal-visualizer/application/Commands/changeChannelVisibilityCommand.ts'
 
-export class DIContainer {
+export class DiContainer {
     private readonly interpreter: Interpreter
 
     public readonly resizeHandler: ResizeCommand

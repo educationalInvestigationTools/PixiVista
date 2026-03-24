@@ -1,4 +1,4 @@
-import type {AxisSignal} from "@/lib/signal-visualizer/core/axis-signal.ts";
+import type { AxisSignal } from '@/lib/signal-visualizer/core/axisSignal.ts'
 
 export class OneDimensionalSignalData {
     xPart: AxisSignal

@@ -1,11 +1,11 @@
-import { type OneDimSignal, OneDimSignals } from '@/lib/signal-visualizer/core/Renderer.ts'
+import { type OneDimSignal, OneDimSignals } from '@/lib/signal-visualizer/core/renderer.ts'
 import {
     type CompatibleSignal,
     ViewPort,
-} from '@/lib/signal-visualizer/application/SignalSource.ts'
-import { PixiRenderer } from '@/lib/signal-visualizer/infrastructure/rendering/pixi-renderer.ts'
+} from '@/lib/signal-visualizer/application/signalSource.ts'
+import { PixiRenderer } from '@/lib/signal-visualizer/infrastructure/rendering/core/pixiRenderer.ts'
 import { Envelope } from '@/lib/signal-visualizer/utils/utils.ts'
-import type { AxisSignal } from '@/lib/signal-visualizer/core/axis-signal.ts'
+import type { AxisSignal } from '@/lib/signal-visualizer/core/axisSignal.ts'
 
 export class Interpreter {
     private renderer: PixiRenderer
@@ -54,6 +54,7 @@ export class Interpreter {
                 },
             }
             const oneDimensionalSignalData: OneDimSignal = {
+                label: signalSource.label,
                 xSignal: xAxisSignal,
                 ySignal: yAxisSignal,
             }
@@ -82,5 +83,12 @@ export class Interpreter {
         })
     }
 
-    async changeChannelVisibility(channelLabel: string, visibility: boolean) {}
+    async changeChannelVisibility(channelLabel: string, visibility: boolean) {
+        console.log(channelLabel, visibility)
+        if (!visibility) {
+            this.renderer.removeChannel(channelLabel)
+        } else {
+            this.renderer.addChannel(channelLabel, { min: 10, max: 20 })
+        }
+    }
 }
