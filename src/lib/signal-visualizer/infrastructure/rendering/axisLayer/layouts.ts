@@ -1,10 +1,10 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
-import type { MinMaxValues } from '@/lib/signal-visualizer/infrastructure/rendering/minMaxValues.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/positionData.ts'
+
+import type { MinMaxValues, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class AxisLayerBaseLayout extends LayoutDesign {
     divisions: number
+
     constructor(sizeData: SizeData, positionData: PositionData, divisions: number) {
         super(sizeData, positionData)
         this.divisions = divisions
@@ -13,6 +13,7 @@ export class AxisLayerBaseLayout extends LayoutDesign {
     get yCoordinate() {
         return this.height * 0.2
     }
+
     xDivision(i: number) {
         return (i / this.divisions) * this.width
     }
@@ -20,6 +21,7 @@ export class AxisLayerBaseLayout extends LayoutDesign {
 
 export class LabelsAxisLayerLayout extends AxisLayerBaseLayout {
     minMaxValues: MinMaxValues
+
     constructor(
         sizeData: SizeData,
         positionData: PositionData,
@@ -33,9 +35,11 @@ export class LabelsAxisLayerLayout extends AxisLayerBaseLayout {
     get stepSize(): number {
         return (this.minMaxValues.max - this.minMaxValues.min) / this.divisions
     }
+
     textValue(i: number): string {
         return (this.minMaxValues.min + i * this.stepSize).toPrecision(2)
     }
+
     get fontSize() {
         return this.height * 0.2
     }

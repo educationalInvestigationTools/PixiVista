@@ -1,7 +1,5 @@
-import { ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
-import type { AxisSignal } from '@/lib/signal-visualizer/core/axisSignal.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
-import type { GridData } from '@/lib/signal-visualizer/core/gridData.ts'
+import {ViewPort} from '@/lib/signal-visualizer/application/signalSource.ts'
+import type {AxisSignal, GridData, SizeData} from "@/lib/signal-visualizer/core/types.ts";
 
 export class OneDimSignals {
     viewPort: ViewPort

@@ -4,16 +4,15 @@ import {
 } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
 import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
 import { AxisLayer } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/axisLayer.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/positionData.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
 import { AxisLayerLayout } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/layouts.ts'
-import type { MinMaxValues } from '@/lib/signal-visualizer/infrastructure/rendering/minMaxValues.ts'
 import { ChannelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/channelsLayer.ts'
+import type { MinMaxValues, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class ComponentLayer extends RenderLayer<ComponentLayout> {
     readonly axisLayer: AxisLayer
     readonly channelsLayer: ChannelsLayer
+
     get Children(): RenderLayer<LayoutDesign>[] {
         return [this.axisLayer, this.channelsLayer]
     }
@@ -39,6 +38,7 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
     }
 
     protected _draw(): void {}
+
     updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
         this._needsRendering = true

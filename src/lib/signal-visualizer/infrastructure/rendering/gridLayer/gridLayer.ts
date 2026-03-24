@@ -1,30 +1,30 @@
-import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
-
-import type { MinMaxValues } from '@/lib/signal-visualizer/infrastructure/rendering/minMaxValues.ts'
-
 import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
 import {
     GridLabelsLayout,
     GridLayout,
 } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/layouts.ts'
 import { VerticalLabelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/verticalLabelsLayer.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/positionData.ts'
 import type { LayoutDesign } from '../core/layoutDesign'
+import type { MinMaxValues, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class GridLayer extends RenderLayer<GridLayout> {
     verticalLabelsLayer: VerticalLabelsLayer
+
     get Children(): RenderLayer<LayoutDesign>[] {
         return [this.verticalLabelsLayer]
     }
+
     updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
         this._needsRendering = true
     }
+
     updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
         this._needsRendering = true
         this.verticalLabelsLayer.updateSize(sizeData)
     }
+
     constructor(gridLayout: GridLayout, minMaxValues: MinMaxValues) {
         super(gridLayout)
         this.verticalLabelsLayer = new VerticalLabelsLayer(

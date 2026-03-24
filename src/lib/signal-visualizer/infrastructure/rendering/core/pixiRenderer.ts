@@ -1,10 +1,9 @@
 import { OneDimSignals, type RenderModel } from '@/lib/signal-visualizer/core/renderer.ts'
 import { Application } from 'pixi.js'
-import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
 import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
 import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
 import { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
-import type { MinMaxValues } from '@/lib/signal-visualizer/infrastructure/rendering/minMaxValues.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
@@ -56,10 +55,7 @@ export class PixiRenderer {
                 signal.xSignal,
                 signal.ySignal,
             )
-            this.componentLayer.channelsLayer.addChannel(
-                signal.label,
-                oneDimensionalSignalData.yPart.minMaxValues,
-            )
+            this.componentLayer.channelsLayer.addChannel(signal.label, oneDimensionalSignalData)
         }
         this.app.stage.addChild(this.componentLayer.container)
         this.app.ticker.add(() => this.componentLayer?.Draw())
@@ -81,12 +77,13 @@ export class PixiRenderer {
             max: oneDimSignals.viewPort.startSeconds + oneDimSignals.viewPort.lengthSeconds,
         })
     }
+
     get canvas(): HTMLCanvasElement {
         return this._canvas
     }
 
-    addChannel(label: string, minMaxValues: MinMaxValues) {
-        this.componentLayer?.channelsLayer.addChannel(label, minMaxValues)
+    addChannel(label: string, oneDimensionalSignalData: OneDimensionalSignalData) {
+        this.componentLayer?.channelsLayer.addChannel(label, oneDimensionalSignalData)
     }
 
     removeChannel(label: string) {

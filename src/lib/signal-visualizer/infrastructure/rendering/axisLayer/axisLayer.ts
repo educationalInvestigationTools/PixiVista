@@ -1,6 +1,3 @@
-import type { MinMaxValues } from '@/lib/signal-visualizer/infrastructure/rendering/minMaxValues.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/positionData.ts'
 import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
 import {
     AxisLayerLayout,
@@ -8,12 +5,15 @@ import {
 } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/layouts.ts'
 import { LabelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/labelsLayer.ts'
 import type { LayoutDesign } from '../core/layoutDesign'
+import type { MinMaxValues, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class AxisLayer extends RenderLayer<AxisLayerLayout> {
     get Children(): RenderLayer<LayoutDesign>[] {
         return [this.labelsLayer]
     }
+
     private readonly labelsLayer: LabelsLayer
+
     constructor(axisLayerLayout: AxisLayerLayout, minMaxValues: MinMaxValues) {
         super(axisLayerLayout)
         this.labelsLayer = new LabelsLayer(
@@ -26,16 +26,19 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
         )
         this.container.addChild(this.labelsLayer.container)
     }
+
     updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
         this._needsRendering = true
         this.labelsLayer.updatePosition(this.layoutDesign.labelsLayerPosition)
     }
+
     updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
         this._needsRendering = true
         this.labelsLayer.updateSize(this.layoutDesign.labelsLayerSize)
     }
+
     updateMinMaxValues(minMaxValues: MinMaxValues) {
         this.labelsLayer.updateMinMaxValues(minMaxValues)
     }

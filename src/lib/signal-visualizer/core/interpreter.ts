@@ -1,11 +1,15 @@
-import { type OneDimSignal, OneDimSignals } from '@/lib/signal-visualizer/core/renderer.ts'
+import {type OneDimSignal, OneDimSignals} from '@/lib/signal-visualizer/core/renderer.ts'
 import {
     type CompatibleSignal,
     ViewPort,
 } from '@/lib/signal-visualizer/application/signalSource.ts'
-import { PixiRenderer } from '@/lib/signal-visualizer/infrastructure/rendering/core/pixiRenderer.ts'
-import { Envelope } from '@/lib/signal-visualizer/utils/utils.ts'
-import type { AxisSignal } from '@/lib/signal-visualizer/core/axisSignal.ts'
+import {PixiRenderer} from '@/lib/signal-visualizer/infrastructure/rendering/core/pixiRenderer.ts'
+import {Envelope} from '@/lib/signal-visualizer/utils/utils.ts'
+
+import type {AxisSignal} from '@/lib/signal-visualizer/core/types.ts'
+import {
+    OneDimensionalSignalData
+} from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
 
 export class Interpreter {
     private renderer: PixiRenderer
@@ -84,11 +88,16 @@ export class Interpreter {
     }
 
     async changeChannelVisibility(channelLabel: string, visibility: boolean) {
-        console.log(channelLabel, visibility)
         if (!visibility) {
             this.renderer.removeChannel(channelLabel)
         } else {
-            this.renderer.addChannel(channelLabel, { min: 10, max: 20 })
+            const data = await this.fetchData()
+            const signal = data.channels[0]!
+            const oneDimensionalSignalData = new OneDimensionalSignalData(
+                signal.xSignal,
+                signal.ySignal,
+            )
+            this.renderer.addChannel(channelLabel, oneDimensionalSignalData)
         }
     }
 }

@@ -2,9 +2,7 @@ import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/co
 import { GridLabelsLayout } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/layouts.ts'
 import { Text } from 'pixi.js'
 import { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/positionData.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
-import type { MinMaxValues } from '@/lib/signal-visualizer/infrastructure/rendering/minMaxValues.ts'
+import type { MinMaxValues, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
     private horizontalLabels: Text[] = []
@@ -27,7 +25,7 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
                 },
             })
             text.x = -1.3 * text.width
-            text.y = this.layoutDesign.textYPosition(i) - text.height / 3 // !! I think I messed the text.y component.
+            text.y = this.layoutDesign.textYPosition(i) - text.height / 3
             this.container.addChild(text)
             this.horizontalLabels.push(text)
         }

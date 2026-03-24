@@ -106,4 +106,9 @@ watch(
 </template>
 
 <style scoped>
+
+.plot_container {
+}
+
+
 </style>

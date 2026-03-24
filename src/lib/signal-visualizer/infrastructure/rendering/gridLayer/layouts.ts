@@ -1,11 +1,14 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
-import type { GridData } from '@/lib/signal-visualizer/core/gridData.ts'
-import type { MinMaxValues } from '@/lib/signal-visualizer/infrastructure/rendering/minMaxValues.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/positionData.ts'
+import type {
+    GridData,
+    MinMaxValues,
+    PositionData,
+    SizeData,
+} from '@/lib/signal-visualizer/core/types.ts'
 
 export class GridBaseLayout extends LayoutDesign {
     private gridData: GridData
+
     get horizontalDivisions(): number {
         return this.gridData.horizontalDivisions
     }

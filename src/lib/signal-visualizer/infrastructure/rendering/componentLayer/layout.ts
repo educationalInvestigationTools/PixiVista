@@ -1,6 +1,6 @@
-import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
 import { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/positionData.ts'
+
+import type { PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class ComponentBaseLayout extends LayoutDesign {
     constructor(sizeData: SizeData, positionData: PositionData) {
@@ -29,13 +29,14 @@ export class ComponentBaseLayout extends LayoutDesign {
 }
 
 export class ChannelsLayerLayout extends ComponentBaseLayout {
-    visibleChannels: number = 0
+    private _visibleChannels: number = 0
+
     constructor(sizeData: SizeData, positionData: PositionData) {
         super(sizeData, positionData)
     }
 
     get channelHeight(): number {
-        return this.height / this.visibleChannels
+        return this.height / this._visibleChannels
     }
 
     get channelWidth(): number {
@@ -53,12 +54,21 @@ export class ChannelsLayerLayout extends ComponentBaseLayout {
     yChannelLow(i: number) {
         return this.yChannelCoordinate(i) + this.channelMarginHorizontal
     }
+
     buildChannelSize(): SizeData {
         const heightAfterMargin = this.channelHeight - 2 * this.channelMarginHorizontal
         return {
             width: this.widthAfterMargin,
             height: heightAfterMargin,
         }
+    }
+
+    changeVisibleChannels(newVal: number) {
+        this._visibleChannels = newVal
+    }
+
+    get visibleChannels() {
+        return this._visibleChannels
     }
 
     buildChannelPos(i: number): PositionData {
