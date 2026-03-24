@@ -38,12 +38,7 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
         this.container.addChild(this.channelsLayer.container)
     }
 
-    protected _draw(): void {
-        this.graphics.clear()
-        this.graphics
-            .rect(0, 0, this.layoutDesign.width, this.layoutDesign.height)
-            .fill({ width: 1, color: 'red', alpha: 0.3 })
-    }
+    protected _draw(): void {}
     updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
         this._needsRendering = true

@@ -46,7 +46,6 @@ export class GridLayer extends RenderLayer<GridLayout> {
     }
 
     protected _draw() {
-        this.graphics.clear()
         const width = this.layoutDesign.width
         const height = this.layoutDesign.height
         const xDivisions = this.layoutDesign.verticalDivisions

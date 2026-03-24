@@ -41,7 +41,6 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
     }
 
     _draw(): void {
-        this.graphics.clear()
         const width = this.layoutDesign.width
         const height = this.layoutDesign.height
         const divisions = this.layoutDesign.divisions

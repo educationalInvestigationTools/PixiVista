@@ -9,7 +9,9 @@ import type { SizeData } from '@/lib/signal-visualizer/core/sizeData.ts'
 
 export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     private channels: Record<string, GridLayer> = {}
+
     protected _draw(): void {}
+
     get Children(): RenderLayer<LayoutDesign>[] {
         const children = []
         for (const labelChild in this.channels) {
@@ -18,25 +20,25 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
         }
         return children
     }
+
     updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
         this._needsRendering = true
         this._updateChannels()
     }
+
     updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
         this._needsRendering = true
         this._updateChannels()
     }
+
     addChannel(label: string, minMaxValues: MinMaxValues) {
         this.layoutDesign.visibleChannels += 1
         const gridLayer = new GridLayer(
             new GridLayout(
                 this.layoutDesign.buildChannelSize(),
-                {
-                    x: 0,
-                    y: 0,
-                },
+                this.layoutDesign.buildChannelPos(0),
                 {
                     horizontalDivisions: 4,
                     verticalDivisions: 10,
@@ -76,7 +78,6 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
             child.updateSize(sizeData)
             const posData = this.layoutDesign.buildChannelPos(index)
             child.updatePosition(posData)
-            console.log(posData)
             index += 1
         }
     }
