@@ -1,6 +1,6 @@
 # signalVisualization
 
-A library for visualizing signals, 
+A library for visualizing signals,
 
 ## Project Setup
 

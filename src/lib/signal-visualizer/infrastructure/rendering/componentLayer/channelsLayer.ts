@@ -48,7 +48,6 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
         this.container.addChild(gridLayer.container)
         this._updateChannels()
         this._needsRendering = true
-        console.log('Added a new channel with label ', label)
     }
 
     removeChannel(label: string) {
