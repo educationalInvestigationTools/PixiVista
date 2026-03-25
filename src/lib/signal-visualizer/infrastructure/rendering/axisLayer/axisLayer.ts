@@ -27,15 +27,13 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
         this.container.addChild(this.labelsLayer.container)
     }
 
-    updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
-        this._needsRendering = true
         this.labelsLayer.updatePosition(this.layoutDesign.labelsLayerPosition)
     }
 
-    updateSize(sizeData: SizeData): void {
+    _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
-        this._needsRendering = true
         this.labelsLayer.updateSize(this.layoutDesign.labelsLayerSize)
     }
 

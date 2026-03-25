@@ -20,11 +20,12 @@ export class PixiRenderer {
     }
 
     async init(oneDimSignals: OneDimSignals) {
+        const sizeData = {
+            width: this._canvas.clientWidth,
+            height: this._canvas.clientHeight,
+        }
         this.renderModel = {
-            sizeData: {
-                width: this._canvas.clientWidth,
-                height: this._canvas.clientHeight,
-            },
+            sizeData,
             gridData: {
                 verticalDivisions: 10,
                 horizontalDivisions: 5,
@@ -32,8 +33,8 @@ export class PixiRenderer {
             oneDimSignals: oneDimSignals,
         }
         await this.app.init({
-            width: this.renderModel.sizeData.width,
-            height: this.renderModel.sizeData.height,
+            width: sizeData.width,
+            height: sizeData.height,
             canvas: this._canvas,
             backgroundAlpha: 0.2,
             resolution: window.devicePixelRatio || 1,

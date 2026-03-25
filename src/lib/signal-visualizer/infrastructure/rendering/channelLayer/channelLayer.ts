@@ -52,7 +52,6 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
             ),
         )
         this.container.addChild(this.oneDimensionalSignalLayer.container)
-        console.log('Instantiated')
     }
 
     get label(): string {
@@ -65,16 +64,14 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
 
     protected _draw(): void {}
 
-    updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
-        this._needsRendering = true
         this.oneDimensionalSignalLayer.updatePosition(positionData)
         this.gridLayer.updatePosition(positionData)
     }
 
-    updateSize(sizeData: SizeData): void {
+    _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
-        this._needsRendering = true
         this.oneDimensionalSignalLayer.updateSize(sizeData)
         this.gridLayer.updateSize(sizeData)
     }

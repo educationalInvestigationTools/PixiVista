@@ -39,16 +39,14 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
 
     protected _draw(): void {}
 
-    updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
-        this._needsRendering = true
         this.axisLayer.updatePosition(this.layoutDesign.buildXAxisPos())
         this.channelsLayer.updatePosition(this.layoutDesign.buildChannelsPos())
     }
 
-    updateSize(sizeData: SizeData): void {
+    _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
-        this._needsRendering = true
         this.axisLayer.updateSize(this.layoutDesign.buildXAxisSize())
         this.channelsLayer.updateSize(this.layoutDesign.buildChannelsSize())
     }

@@ -1,8 +1,6 @@
-import {Container, Graphics} from 'pixi.js'
-import type {
-    LayoutDesign
-} from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
-import type {PositionData, SizeData} from "@/lib/signal-visualizer/core/types.ts";
+import { Container, Graphics } from 'pixi.js'
+import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
+import type { PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export abstract class RenderLayer<LayoutData extends LayoutDesign> {
     protected graphics: Graphics = new Graphics()
@@ -41,7 +39,15 @@ export abstract class RenderLayer<LayoutData extends LayoutDesign> {
 
     abstract get Children(): RenderLayer<LayoutDesign>[]
 
-    abstract updatePosition(positionData: PositionData): void
+    updatePosition(positionData: PositionData) {
+        this._updatePosition(positionData)
+        this._needsRendering = true
+    }
+    protected abstract _updatePosition(positionData: PositionData): void
 
-    abstract updateSize(sizeData: SizeData): void
+    updateSize(sizeData: SizeData) {
+        this._updateSize(sizeData)
+        this._needsRendering = true
+    }
+    protected abstract _updateSize(sizeData: SizeData): void
 }

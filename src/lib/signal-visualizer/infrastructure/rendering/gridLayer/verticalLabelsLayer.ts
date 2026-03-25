@@ -31,14 +31,12 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
         }
     }
 
-    updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
-        this._needsRendering = true
     }
 
-    updateSize(sizeData: SizeData): void {
+    _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
-        this._needsRendering = true
     }
 
     updateMinMaxValues(minMaxValues: MinMaxValues) {
