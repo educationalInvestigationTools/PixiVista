@@ -1,11 +1,11 @@
 import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
-import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
 import { Envelope } from '@/lib/signal-visualizer/utils/utils.ts'
 
 import type { AxisSignal, OneDimSignal } from '@/lib/signal-visualizer/core/types.ts'
+import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 
 export class Interpreter {
-    private renderer: PixiRenderer
+    private renderer: RenderManager
     private htmlElement: HTMLElement
     private readonly signalsSources: Record<string, SignalSource>
     private viewPort: ViewPort
@@ -16,7 +16,7 @@ export class Interpreter {
             acc[signal.label] = signal
             return acc
         }, {})
-        this.renderer = new PixiRenderer()
+        this.renderer = new RenderManager()
         this.htmlElement = container
         this.htmlElement.appendChild(this.renderer.canvas)
     }
