@@ -12,7 +12,7 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
     }
 
     protected _draw(): void {
-        for (let i = 0; i <= this.horizontalLabels.length; i++) {
+        for (let i = 0; i < this.horizontalLabels.length; i++) {
             this.container.removeChild(this.horizontalLabels[i]!)
         }
         this.horizontalLabels = []
