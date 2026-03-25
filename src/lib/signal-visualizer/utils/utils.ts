@@ -18,13 +18,13 @@ export class Envelope {
 
     constructor(array: Float32Array) {
         this.array = array
+        const n = array.length
+        const minValues = new Float32Array(n)
+        const maxValues = new Float32Array(n)
 
-        const minValues = new Float32Array(array.length)
-        const maxValues = new Float32Array(array.length)
-
-        if (array.length > 0) {
+        if (n > 0) {
             minValues[0] = array[0]!
-            for (let i = 1; i < array.length; i++) {
+            for (let i = 1; i < n; i++) {
                 const next: number = array[i]!
                 minValues[i] = Math.min(next, minValues[i - 1]!)
                 maxValues[i] = Math.max(next, maxValues[i - 1]!)
@@ -46,7 +46,7 @@ export class Envelope {
     }
 }
 
-export function fmtTime(seconds : number) : string {
+export function fmtTime(seconds: number): string {
     if (seconds < 60) return `${seconds}s`
     if (seconds < 3600) return seconds % 60 === 0 ? `${seconds / 60}min` : `${(seconds / 60).toFixed(1)}min`
     return seconds % 3600 === 0 ? `${seconds / 3600}h` : `${(seconds / 3600).toFixed(1)}h`

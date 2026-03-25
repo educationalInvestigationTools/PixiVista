@@ -26,8 +26,8 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
                     height: channelLayout.height,
                 },
                 {
-                    x: channelLayout.x,
-                    y: channelLayout.y,
+                    x: 0,
+                    y: 0,
                 },
                 gridData,
             ),
@@ -45,8 +45,8 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
                     height: channelLayout.height,
                 },
                 {
-                    x: channelLayout.x,
-                    y: channelLayout.y,
+                    x: 0,
+                    y: 0,
                 },
                 oneDimensionalSignalData,
             ),
@@ -66,8 +66,6 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
 
     _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
-        this.oneDimensionalSignalLayer.updatePosition(positionData)
-        this.gridLayer.updatePosition(positionData)
     }
 
     _updateSize(sizeData: SizeData): void {
