@@ -1,7 +1,7 @@
-import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
+import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import { GridLabelsLayout } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/layouts.ts'
 import { Text } from 'pixi.js'
-import { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
+import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { MinMaxValues, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {

@@ -1,7 +1,7 @@
 import { OneDimensionalSignalLayer } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalPlotLayer.ts'
 import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayer.ts'
 
-import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
+import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type {
     GridData,
     OneDimSignal,
@@ -9,7 +9,7 @@ import type {
     SizeData,
 } from '@/lib/signal-visualizer/core/types.ts'
 import { ChannelLayout } from '@/lib/signal-visualizer/infrastructure/rendering/channelLayer/layout.ts'
-import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
+import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import { GridLayout } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/layouts.ts'
 import { OneDimensionalSignalLayout } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalLayer/layout.ts'
 

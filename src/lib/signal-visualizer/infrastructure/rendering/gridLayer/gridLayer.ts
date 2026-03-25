@@ -1,10 +1,10 @@
-import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
+import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import {
     GridLabelsLayout,
     GridLayout,
 } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/layouts.ts'
 import { VerticalLabelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/verticalLabelsLayer.ts'
-import type { LayoutDesign } from '../core/layoutDesign'
+import type { LayoutDesign } from '../../../core/rendering/layoutDesign.ts'
 import type { MinMaxValues, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class GridLayer extends RenderLayer<GridLayout> {

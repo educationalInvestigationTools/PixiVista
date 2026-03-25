@@ -1,7 +1,7 @@
-import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
+import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { OneDimSignal, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 import { type OneDimensionalSignalLayout } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalLayer/layout.ts'
-import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
+import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 
 export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalLayout> {
     get Children(): RenderLayer<LayoutDesign>[] {

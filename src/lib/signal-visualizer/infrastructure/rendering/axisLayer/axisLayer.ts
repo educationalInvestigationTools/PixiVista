@@ -1,10 +1,10 @@
-import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
+import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import {
     AxisLayerLayout,
     LabelsAxisLayerLayout,
 } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/layouts.ts'
 import { LabelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/labelsLayer.ts'
-import type { LayoutDesign } from '../core/layoutDesign'
+import type { LayoutDesign } from '../../../core/rendering/layoutDesign.ts'
 import type { MinMaxValues, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class AxisLayer extends RenderLayer<AxisLayerLayout> {

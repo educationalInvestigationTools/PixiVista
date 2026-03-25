@@ -2,9 +2,9 @@ import {
     ChannelsLayerLayout,
     type ComponentLayout,
 } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
-import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
+import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import { AxisLayer } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/axisLayer.ts'
-import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
+import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import { AxisLayerLayout } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/layouts.ts'
 import { ChannelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/channelsLayer.ts'
 import type { MinMaxValues, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'

@@ -1,5 +1,5 @@
 import { Container, Graphics } from 'pixi.js'
-import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
+import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export abstract class RenderLayer<LayoutData extends LayoutDesign> {

@@ -1,6 +1,6 @@
-import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
+import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import { ChannelsLayerLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
-import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
+import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { OneDimSignal, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 import { ChannelLayer } from '@/lib/signal-visualizer/infrastructure/rendering/channelLayer/channelLayer.ts'
 import { ChannelLayout } from '@/lib/signal-visualizer/infrastructure/rendering/channelLayer/layout.ts'

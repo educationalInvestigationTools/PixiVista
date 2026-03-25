@@ -1,5 +1,5 @@
 import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
-import { PixiRenderer } from '@/lib/signal-visualizer/infrastructure/rendering/core/pixiRenderer.ts'
+import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
 import { Envelope } from '@/lib/signal-visualizer/utils/utils.ts'
 
 import type { AxisSignal, OneDimSignal } from '@/lib/signal-visualizer/core/types.ts'
