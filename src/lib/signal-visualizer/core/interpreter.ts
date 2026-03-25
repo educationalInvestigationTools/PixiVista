@@ -1,4 +1,3 @@
-import { OneDimSignals } from '@/lib/signal-visualizer/core/renderer.ts'
 import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
 import { PixiRenderer } from '@/lib/signal-visualizer/infrastructure/rendering/core/pixiRenderer.ts'
 import { Envelope } from '@/lib/signal-visualizer/utils/utils.ts'
@@ -8,70 +7,78 @@ import type { AxisSignal, OneDimSignal } from '@/lib/signal-visualizer/core/type
 export class Interpreter {
     private renderer: PixiRenderer
     private htmlElement: HTMLElement
-    private readonly signalsSource: SignalSource[]
+    private readonly signalsSources: Record<string, SignalSource>
     private viewPort: ViewPort
 
     constructor(container: HTMLElement, viewPort: ViewPort, signalsSource: SignalSource[]) {
         this.viewPort = viewPort
-        this.signalsSource = signalsSource
+        this.signalsSources = signalsSource.reduce<Record<string, SignalSource>>((acc, signal) => {
+            acc[signal.label] = signal
+            return acc
+        }, {})
         this.renderer = new PixiRenderer()
         this.htmlElement = container
         this.htmlElement.appendChild(this.renderer.canvas)
     }
 
     async init() {
-        const data = await this.fetchData()
-        await this.renderer.init(data)
+        const data: OneDimSignal[] = []
+        for (const label in this.signalsSources) {
+            data.push(await this.fetchData(label))
+        }
+        await this.renderer.init(data, this.viewPort)
     }
 
     async destroy(): Promise<void> {
         this.renderer.destroy()
     }
 
-    private async fetchData(): Promise<OneDimSignals> {
+    private async fetchData(label: string): Promise<OneDimSignal> {
         const viewPort = this.viewPort
-        const signals = []
-        for (let i = 0; i < this.signalsSource.length; i++) {
-            const signalSource = this.signalsSource[i]!
-            const data = signalSource.read(viewPort)
-            const xEnvelope = new Envelope(data.xValues)
-            const xAxisSignal: AxisSignal = {
-                valuesNormalized: xEnvelope.normalized,
-                minMaxValues: {
-                    min: xEnvelope.min,
-                    max: xEnvelope.max,
-                },
-            }
-
-            const yEnvelope = new Envelope(data.yValues)
-            const yAxisSignal: AxisSignal = {
-                valuesNormalized: yEnvelope.normalized,
-                minMaxValues: {
-                    min: yEnvelope.min,
-                    max: yEnvelope.max,
-                },
-            }
-            const oneDimensionalSignalData: OneDimSignal = {
-                label: signalSource.label,
-                xSignal: xAxisSignal,
-                ySignal: yAxisSignal,
-            }
-            signals.push(oneDimensionalSignalData)
+        const signalSource = this.signalsSources[label]!
+        const data = signalSource.read(viewPort)
+        const xEnvelope = new Envelope(data.xValues)
+        const xAxisSignal: AxisSignal = {
+            valuesNormalized: xEnvelope.normalized,
+            minMaxValues: {
+                min: xEnvelope.min,
+                max: xEnvelope.max,
+            },
         }
-        const oneDimSignal = new OneDimSignals(viewPort, signals)
-        return Promise.resolve(oneDimSignal)
+
+        const yEnvelope = new Envelope(data.yValues)
+        const yAxisSignal: AxisSignal = {
+            valuesNormalized: yEnvelope.normalized,
+            minMaxValues: {
+                min: yEnvelope.min,
+                max: yEnvelope.max,
+            },
+        }
+        return Promise.resolve({
+            label: signalSource.label,
+            xSignal: xAxisSignal,
+            ySignal: yAxisSignal,
+        })
+    }
+
+    async updateChannelsState(): Promise<void> {
+        const viewPort = this.viewPort
+        const activeChannels = this.renderer.visibleChannels
+        const updatedData: OneDimSignal[] = []
+        for (const label of activeChannels) {
+            updatedData.push(await this.fetchData(label))
+        }
+        await this.renderer.updateSignalData(updatedData, viewPort)
     }
 
     async changeViewPort(viewPort: ViewPort): Promise<void> {
         this.viewPort = viewPort
-        const updatedData = await this.fetchData()
-        await this.renderer.updateSignalData(updatedData)
+        await this.updateChannelsState()
     }
 
     async updateViewport(startSeconds: number) {
         this.viewPort.updateStartSeconds(startSeconds)
-        const updatedData = await this.fetchData()
-        await this.renderer.updateSignalData(updatedData)
+        await this.updateChannelsState()
     }
 
     async resize(width: number, height: number) {
@@ -85,9 +92,8 @@ export class Interpreter {
         if (!visibility) {
             this.renderer.removeChannel(channelLabel)
         } else {
-            const data = await this.fetchData()
-            const signal = data.channels[0]!
-            this.renderer.addChannel(channelLabel, signal)
+            const signal = await this.fetchData(channelLabel)
+            this.renderer.addChannel(signal)
         }
     }
 }

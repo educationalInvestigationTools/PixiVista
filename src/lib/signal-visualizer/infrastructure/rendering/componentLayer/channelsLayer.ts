@@ -10,6 +10,14 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
 
     protected _draw(): void {}
 
+    get activeChannels(): string[] {
+        const result = []
+        for (const label in this.channels) {
+            result.push(label)
+        }
+        return result
+    }
+
     get Children(): RenderLayer<LayoutDesign>[] {
         const children = []
         for (const labelChild in this.channels) {

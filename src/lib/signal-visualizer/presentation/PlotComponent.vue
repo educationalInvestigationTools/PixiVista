@@ -107,8 +107,5 @@ watch(
 
 <style scoped>
 
-.plot_container {
-}
-
 
 </style>

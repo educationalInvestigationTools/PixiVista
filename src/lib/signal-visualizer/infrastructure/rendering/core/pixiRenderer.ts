@@ -1,8 +1,8 @@
-import { OneDimSignals } from '@/lib/signal-visualizer/core/renderer.ts'
 import { Application } from 'pixi.js'
 import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
 import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
 import type { OneDimSignal, SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import type { ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
 
 export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
@@ -17,7 +17,7 @@ export class PixiRenderer {
         this.app = new Application()
     }
 
-    async init(oneDimSignals: OneDimSignals) {
+    async init(signals: OneDimSignal[], viewPort: ViewPort) {
         const sizeData = {
             width: this._canvas.clientWidth,
             height: this._canvas.clientHeight,
@@ -40,12 +40,12 @@ export class PixiRenderer {
                 y: 0,
             }),
             {
-                min: oneDimSignals.viewPort.startSeconds,
-                max: oneDimSignals.viewPort.startSeconds + oneDimSignals.viewPort.lengthSeconds,
+                min: viewPort.startSeconds,
+                max: viewPort.startSeconds + viewPort.lengthSeconds,
             },
             gridData.verticalDivisions,
         )
-        for (const signal of oneDimSignals.channels) {
+        for (const signal of signals) {
             this.componentLayer.channelsLayer.addChannel(signal)
         }
         this.app.stage.addChild(this.componentLayer.container)
@@ -61,18 +61,21 @@ export class PixiRenderer {
         this.componentLayer?.updateSize(sizeData)
     }
 
-    async updateSignalData(oneDimSignals: OneDimSignals) {
-        for (const signal of oneDimSignals.channels) {
-            const label = signal.label
-            const channelLayer = this.componentLayer?.channelsLayer.getByLabel(label)
+    get visibleChannels(): string[] {
+        return this.componentLayer?.channelsLayer.activeChannels!
+    }
+
+    async updateSignalData(signals: OneDimSignal[], viewPort: ViewPort) {
+        for (const signal of signals) {
+            const channelLayer = this.componentLayer?.channelsLayer.getByLabel(signal.label)
             if (channelLayer != undefined) {
                 channelLayer.updateData(signal)
             }
         }
 
         this.componentLayer?.axisLayer.updateMinMaxValues({
-            min: oneDimSignals.viewPort.startSeconds,
-            max: oneDimSignals.viewPort.startSeconds + oneDimSignals.viewPort.lengthSeconds,
+            min: viewPort.startSeconds,
+            max: viewPort.startSeconds + viewPort.lengthSeconds,
         })
     }
 
@@ -80,8 +83,8 @@ export class PixiRenderer {
         return this._canvas
     }
 
-    addChannel(label: string, oneDimensionalSignalData: OneDimSignal) {
-        this.componentLayer?.channelsLayer.addChannel(oneDimensionalSignalData)
+    addChannel(oneDimSignal: OneDimSignal) {
+        this.componentLayer?.channelsLayer.addChannel(oneDimSignal)
     }
 
     removeChannel(label: string) {
