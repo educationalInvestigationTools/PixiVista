@@ -20,6 +20,10 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
         return children
     }
 
+    getByLabel(label: string): ChannelLayer | undefined {
+        return this.channels[label]
+    }
+
     _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
         this._updateChannels()

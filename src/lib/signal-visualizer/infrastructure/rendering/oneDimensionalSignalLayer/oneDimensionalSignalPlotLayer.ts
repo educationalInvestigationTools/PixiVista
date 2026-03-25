@@ -2,6 +2,7 @@ import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/co
 import type { PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 import { type OneDimensionalSignalLayout } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalLayer/layout.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
+import type { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
 
 export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalLayout> {
     get Children(): RenderLayer<LayoutDesign>[] {
@@ -31,6 +32,11 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
                 this.graphics.stroke({ color: 'black', width: 1 })
             }
         }
+    }
+
+    updateData(signalData: OneDimensionalSignalData) {
+        this.layoutDesign.signalData = signalData
+        this._needsRendering = true
     }
 
     _updatePosition(positionData: PositionData): void {

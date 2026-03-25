@@ -68,6 +68,15 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         this.layoutDesign.updatePosData(positionData)
     }
 
+    updateData(oneDimensionalSignalData: OneDimensionalSignalData) {
+        this._needsRendering = true
+        this.gridLayer.updateMinMaxValues({
+            min: oneDimensionalSignalData.yPart.minMaxValues.min,
+            max: oneDimensionalSignalData.yPart.minMaxValues.max,
+        })
+        this.oneDimensionalSignalLayer.updateData(oneDimensionalSignalData)
+    }
+
     _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
         this.oneDimensionalSignalLayer.updateSize(sizeData)

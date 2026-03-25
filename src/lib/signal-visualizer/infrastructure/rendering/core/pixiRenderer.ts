@@ -73,6 +73,19 @@ export class PixiRenderer {
 
     async updateSignalData(oneDimSignals: OneDimSignals) {
         this.renderModel!.oneDimSignals = oneDimSignals
+
+        for (const signal of oneDimSignals.channels) {
+            const label = signal.label
+            const channelLayer = this.componentLayer?.channelsLayer.getByLabel(label)
+            if (channelLayer != undefined) {
+                const oneDimensionalSignalData = new OneDimensionalSignalData(
+                    signal.xSignal,
+                    signal.ySignal,
+                )
+                channelLayer.updateData(oneDimensionalSignalData)
+            }
+        }
+
         this.componentLayer?.axisLayer.updateMinMaxValues({
             min: oneDimSignals.viewPort.startSeconds,
             max: oneDimSignals.viewPort.startSeconds + oneDimSignals.viewPort.lengthSeconds,
