@@ -2,7 +2,7 @@
 
 import {onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {DiContainer} from "@/lib/signal-visualizer/application/diContainer.ts";
-import {ResizeDto} from "@/lib/signal-visualizer/application/Commands/resizeCommand.ts";
+import {ResizeDto} from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
 import {type SignalSource, ViewPort} from "@/lib/signal-visualizer/application/signalSource.ts";
 import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
 import SettingsComponent from "@/lib/signal-visualizer/presentation/SettingsComponent.vue";
