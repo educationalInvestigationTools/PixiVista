@@ -1,4 +1,4 @@
-import { OneDimSignals, type RenderModel } from '@/lib/signal-visualizer/core/renderer.ts'
+import { OneDimSignals} from '@/lib/signal-visualizer/core/renderer.ts'
 import { Application } from 'pixi.js'
 import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
 import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
@@ -8,7 +8,6 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types.ts'
 export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
     private app: Application
-    private renderModel?: RenderModel // source of truth, to render anything, search for it here.
     private componentLayer?: ComponentLayer
 
     constructor() {
@@ -24,13 +23,9 @@ export class PixiRenderer {
             width: this._canvas.clientWidth,
             height: this._canvas.clientHeight,
         }
-        this.renderModel = {
-            sizeData,
-            gridData: {
-                verticalDivisions: 10,
-                horizontalDivisions: 5,
-            },
-            oneDimSignals: oneDimSignals,
+        const gridData = {
+            verticalDivisions: 10,
+            horizontalDivisions: 5,
         }
         await this.app.init({
             width: sizeData.width,
@@ -41,7 +36,7 @@ export class PixiRenderer {
             autoDensity: true,
         })
         this.componentLayer = new ComponentLayer(
-            new ComponentLayout(this.renderModel.sizeData, {
+            new ComponentLayout(sizeData, {
                 x: 0,
                 y: 0,
             }),
@@ -49,7 +44,7 @@ export class PixiRenderer {
                 min: oneDimSignals.viewPort.startSeconds,
                 max: oneDimSignals.viewPort.startSeconds + oneDimSignals.viewPort.lengthSeconds,
             },
-            this.renderModel.gridData.verticalDivisions,
+            gridData.verticalDivisions,
         )
         for (const signal of oneDimSignals.channels) {
             const oneDimensionalSignalData = new OneDimensionalSignalData(
@@ -72,8 +67,6 @@ export class PixiRenderer {
     }
 
     async updateSignalData(oneDimSignals: OneDimSignals) {
-        this.renderModel!.oneDimSignals = oneDimSignals
-
         for (const signal of oneDimSignals.channels) {
             const label = signal.label
             const channelLayer = this.componentLayer?.channelsLayer.getByLabel(label)
