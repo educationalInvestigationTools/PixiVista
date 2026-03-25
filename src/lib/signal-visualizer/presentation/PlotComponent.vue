@@ -3,7 +3,7 @@
 import {onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {DiContainer} from "@/lib/signal-visualizer/application/diContainer.ts";
 import {ResizeDto} from "@/lib/signal-visualizer/application/Commands/resizeCommand.ts";
-import {type CompatibleSignal, ViewPort} from "@/lib/signal-visualizer/application/signalSource.ts";
+import {type SignalSource, ViewPort} from "@/lib/signal-visualizer/application/signalSource.ts";
 import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
 import SettingsComponent from "@/lib/signal-visualizer/presentation/SettingsComponent.vue";
 import AnnotationsComponent from "@/lib/signal-visualizer/presentation/AnnotationsComponent.vue";
@@ -11,7 +11,7 @@ import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsCompon
 
 
 const props = defineProps<{
-    signalSources: CompatibleSignal[]
+    signalSources: SignalSource[]
 }>()
 
 export type SignalVisibility = {

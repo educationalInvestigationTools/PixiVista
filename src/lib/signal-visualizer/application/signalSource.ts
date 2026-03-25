@@ -13,12 +13,12 @@ export class ViewPort {
 }
 
 export type One1DSignal = {
-    xValues : Float32Array
-    yValues : Float32Array
+    xValues: Float32Array
+    yValues: Float32Array
 }
 
-export interface CompatibleSignal {
+export interface SignalSource {
     readonly totalSeconds: number
-    readonly label : string
+    readonly label: string
     read(viewport: ViewPort): One1DSignal
 }

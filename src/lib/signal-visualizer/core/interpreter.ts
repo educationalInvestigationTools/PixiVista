@@ -1,23 +1,17 @@
-import {type OneDimSignal, OneDimSignals} from '@/lib/signal-visualizer/core/renderer.ts'
-import {
-    type CompatibleSignal,
-    ViewPort,
-} from '@/lib/signal-visualizer/application/signalSource.ts'
-import {PixiRenderer} from '@/lib/signal-visualizer/infrastructure/rendering/core/pixiRenderer.ts'
-import {Envelope} from '@/lib/signal-visualizer/utils/utils.ts'
+import { OneDimSignals } from '@/lib/signal-visualizer/core/renderer.ts'
+import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
+import { PixiRenderer } from '@/lib/signal-visualizer/infrastructure/rendering/core/pixiRenderer.ts'
+import { Envelope } from '@/lib/signal-visualizer/utils/utils.ts'
 
-import type {AxisSignal} from '@/lib/signal-visualizer/core/types.ts'
-import {
-    OneDimensionalSignalData
-} from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
+import type { AxisSignal, OneDimSignal } from '@/lib/signal-visualizer/core/types.ts'
 
 export class Interpreter {
     private renderer: PixiRenderer
     private htmlElement: HTMLElement
-    private readonly signalsSource: CompatibleSignal[]
+    private readonly signalsSource: SignalSource[]
     private viewPort: ViewPort
 
-    constructor(container: HTMLElement, viewPort: ViewPort, signalsSource: CompatibleSignal[]) {
+    constructor(container: HTMLElement, viewPort: ViewPort, signalsSource: SignalSource[]) {
         this.viewPort = viewPort
         this.signalsSource = signalsSource
         this.renderer = new PixiRenderer()
@@ -93,11 +87,7 @@ export class Interpreter {
         } else {
             const data = await this.fetchData()
             const signal = data.channels[0]!
-            const oneDimensionalSignalData = new OneDimensionalSignalData(
-                signal.xSignal,
-                signal.ySignal,
-            )
-            this.renderer.addChannel(channelLabel, oneDimensionalSignalData)
+            this.renderer.addChannel(channelLabel, signal)
         }
     }
 }

@@ -1,8 +1,7 @@
 import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
-import type { PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import type { OneDimSignal, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 import { type OneDimensionalSignalLayout } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalLayer/layout.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
-import type { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
 
 export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalLayout> {
     get Children(): RenderLayer<LayoutDesign>[] {
@@ -12,8 +11,8 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
     protected _draw(): void {
         const width = this.layoutDesign.width
         const height = this.layoutDesign.height
-        const xValues = this.layoutDesign.signalData.xPart
-        const yValues = this.layoutDesign.signalData.yPart
+        const xValues = this.layoutDesign.signalData.xSignal
+        const yValues = this.layoutDesign.signalData.ySignal
         const n = yValues.valuesNormalized.length
         const xCoords = new Float32Array(n)
         const yCoords = new Float32Array(n)
@@ -34,7 +33,7 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
         }
     }
 
-    updateData(signalData: OneDimensionalSignalData) {
+    updateData(signalData: OneDimSignal) {
         this.layoutDesign.signalData = signalData
         this._needsRendering = true
     }

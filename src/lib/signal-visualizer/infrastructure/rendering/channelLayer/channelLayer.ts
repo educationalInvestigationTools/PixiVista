@@ -1,9 +1,13 @@
-import { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
 import { OneDimensionalSignalLayer } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalPlotLayer.ts'
 import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayer.ts'
 
 import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
-import type { GridData, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import type {
+    GridData,
+    OneDimSignal,
+    PositionData,
+    SizeData,
+} from '@/lib/signal-visualizer/core/types.ts'
 import { ChannelLayout } from '@/lib/signal-visualizer/infrastructure/rendering/channelLayer/layout.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
 import { GridLayout } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/layouts.ts'
@@ -16,7 +20,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
     constructor(
         channelLayout: ChannelLayout,
         gridData: GridData,
-        oneDimensionalSignalData: OneDimensionalSignalData,
+        oneDimensionalSignalData: OneDimSignal,
     ) {
         super(channelLayout)
         this.gridLayer = new GridLayer(
@@ -31,10 +35,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
                 },
                 gridData,
             ),
-            {
-                min: oneDimensionalSignalData.yPart.minMaxValues.min,
-                max: oneDimensionalSignalData.yPart.minMaxValues.max,
-            },
+            oneDimensionalSignalData.ySignal.minMaxValues,
         )
         this.container.addChild(this.gridLayer.container)
 
@@ -68,13 +69,10 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         this.layoutDesign.updatePosData(positionData)
     }
 
-    updateData(oneDimensionalSignalData: OneDimensionalSignalData) {
+    updateData(signalData: OneDimSignal) {
         this._needsRendering = true
-        this.gridLayer.updateMinMaxValues({
-            min: oneDimensionalSignalData.yPart.minMaxValues.min,
-            max: oneDimensionalSignalData.yPart.minMaxValues.max,
-        })
-        this.oneDimensionalSignalLayer.updateData(oneDimensionalSignalData)
+        this.gridLayer.updateMinMaxValues(signalData.ySignal.minMaxValues)
+        this.oneDimensionalSignalLayer.updateData(signalData)
     }
 
     _updateSize(sizeData: SizeData): void {

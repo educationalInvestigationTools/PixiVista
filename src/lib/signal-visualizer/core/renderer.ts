@@ -1,5 +1,5 @@
 import { ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
-import type { AxisSignal } from '@/lib/signal-visualizer/core/types.ts'
+import type { OneDimSignal } from '@/lib/signal-visualizer/core/types.ts'
 
 export class OneDimSignals {
     viewPort: ViewPort
@@ -13,10 +13,4 @@ export class OneDimSignals {
     get totalSignals(): number {
         return this.channels.length
     }
-}
-
-export type OneDimSignal = {
-    label: string
-    xSignal: AxisSignal
-    ySignal: AxisSignal
 }

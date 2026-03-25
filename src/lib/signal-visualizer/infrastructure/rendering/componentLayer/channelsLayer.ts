@@ -1,10 +1,9 @@
 import { RenderLayer } from '@/lib/signal-visualizer/infrastructure/rendering/core/renderLayer.ts'
 import { ChannelsLayerLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/infrastructure/rendering/core/layoutDesign.ts'
-import type { PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import type { OneDimSignal, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 import { ChannelLayer } from '@/lib/signal-visualizer/infrastructure/rendering/channelLayer/channelLayer.ts'
 import { ChannelLayout } from '@/lib/signal-visualizer/infrastructure/rendering/channelLayer/layout.ts'
-import type { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
 
 export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     private channels: Record<string, ChannelLayer> = {}
@@ -34,7 +33,8 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
         this._updateChannels()
     }
 
-    addChannel(label: string, oneDimensionalSignalData: OneDimensionalSignalData) {
+    addChannel(oneDimensionalSignalData: OneDimSignal) {
+        const label = oneDimensionalSignalData.label
         this.layoutDesign.changeVisibleChannels(this.layoutDesign.visibleChannels + 1)
         const gridLayer = new ChannelLayer(
             new ChannelLayout(

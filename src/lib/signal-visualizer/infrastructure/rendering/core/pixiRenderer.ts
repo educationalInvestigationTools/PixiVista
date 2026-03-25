@@ -1,9 +1,8 @@
-import { OneDimSignals} from '@/lib/signal-visualizer/core/renderer.ts'
+import { OneDimSignals } from '@/lib/signal-visualizer/core/renderer.ts'
 import { Application } from 'pixi.js'
 import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
 import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
-import { OneDimensionalSignalData } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalData.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import type { OneDimSignal, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
@@ -47,11 +46,7 @@ export class PixiRenderer {
             gridData.verticalDivisions,
         )
         for (const signal of oneDimSignals.channels) {
-            const oneDimensionalSignalData = new OneDimensionalSignalData(
-                signal.xSignal,
-                signal.ySignal,
-            )
-            this.componentLayer.channelsLayer.addChannel(signal.label, oneDimensionalSignalData)
+            this.componentLayer.channelsLayer.addChannel(signal)
         }
         this.app.stage.addChild(this.componentLayer.container)
         this.app.ticker.add(() => this.componentLayer?.Draw())
@@ -71,11 +66,7 @@ export class PixiRenderer {
             const label = signal.label
             const channelLayer = this.componentLayer?.channelsLayer.getByLabel(label)
             if (channelLayer != undefined) {
-                const oneDimensionalSignalData = new OneDimensionalSignalData(
-                    signal.xSignal,
-                    signal.ySignal,
-                )
-                channelLayer.updateData(oneDimensionalSignalData)
+                channelLayer.updateData(signal)
             }
         }
 
@@ -89,8 +80,8 @@ export class PixiRenderer {
         return this._canvas
     }
 
-    addChannel(label: string, oneDimensionalSignalData: OneDimensionalSignalData) {
-        this.componentLayer?.channelsLayer.addChannel(label, oneDimensionalSignalData)
+    addChannel(label: string, oneDimensionalSignalData: OneDimSignal) {
+        this.componentLayer?.channelsLayer.addChannel(oneDimensionalSignalData)
     }
 
     removeChannel(label: string) {

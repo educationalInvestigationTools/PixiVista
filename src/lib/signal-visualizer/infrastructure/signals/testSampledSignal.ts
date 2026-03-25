@@ -1,10 +1,10 @@
 import {
-    type CompatibleSignal,
+    type SignalSource,
     type One1DSignal,
     ViewPort,
 } from '@/lib/signal-visualizer/application/signalSource.ts'
 
-export class TestSignalSource implements CompatibleSignal {
+export class TestSignalSource implements SignalSource {
     private readonly samplingFrequency: number
     private readonly totalSamples: number
     private readonly _label: string
