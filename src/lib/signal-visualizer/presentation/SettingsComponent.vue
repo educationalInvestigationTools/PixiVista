@@ -5,6 +5,7 @@ import { ref, watch } from "vue";
 const props = defineProps<{
     windowLengthSeconds: number
     showMetrics: boolean
+    showAnnotations : boolean
 }>()
 
 const windowLengthSeconds = ref(props.windowLengthSeconds)
@@ -12,6 +13,7 @@ const windowLengthSeconds = ref(props.windowLengthSeconds)
 const emit = defineEmits<{
     (e: "updateWindowLength", value: number): void
     (e: 'update:showMetrics', value: boolean): void
+    (e: 'update:showAnnotations', value : boolean) : void
 }>()
 
 watch(
@@ -20,8 +22,12 @@ watch(
 )
 
 
-function toggleShow() {
+function toggleShowMetrics() {
     emit('update:showMetrics', !props.showMetrics)
+}
+
+function toggleShowAnnotations() {
+    emit('update:showAnnotations', !props.showAnnotations)
 }
 
 </script>
@@ -38,8 +44,10 @@ function toggleShow() {
 
         <div>
             <span> Show metrics panel </span>
-            <input type="checkbox" :checked="showMetrics" @change="toggleShow">
+            <input type="checkbox" :checked="showMetrics" @change="toggleShowMetrics">
 
+            <span> Show annotations panel </span>
+            <input type="checkbox" :checked="showAnnotations" @change="toggleShowAnnotations">
         </div>
 
     </div>

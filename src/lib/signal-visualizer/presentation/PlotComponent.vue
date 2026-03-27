@@ -40,6 +40,7 @@ const windowLengthSeconds = ref(10)
 const performanceMetrics = ref<PerformanceMetrics | undefined>(undefined)
 
 const showMetricsPanel = ref(true)
+const showAnnotationsPanel = ref(true)
 
 
 onMounted(async () => {
@@ -94,10 +95,12 @@ watch(
 
 <template>
     <div class="m-4 border border-gray-900 rounded p-2">
-        <SettingsComponent v-model:showMetrics="showMetricsPanel" :windowLengthSeconds="windowLengthSeconds"
+        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel"
+            :windowLengthSeconds="windowLengthSeconds"
             @updateWindowLength="changeWindowLength">
         </SettingsComponent>
-        <AnnotationsComponent :signalsInfo="signalsVisibility" @toggleChannelVisibility="toggleChannelVisibility">
+        <AnnotationsComponent v-show="showAnnotationsPanel" :signalsInfo="signalsVisibility"
+            @toggleChannelVisibility="toggleChannelVisibility">
         </AnnotationsComponent>
         <div class="border border-gray-900 rounded p-2">
             <div ref="htmlContainerRef" class="plot_container">
