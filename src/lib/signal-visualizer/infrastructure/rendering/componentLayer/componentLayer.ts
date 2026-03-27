@@ -49,5 +49,7 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
         this.layoutDesign.updateSizeData(sizeData)
         this.axisLayer.updateSize(this.layoutDesign.buildXAxisSize())
         this.channelsLayer.updateSize(this.layoutDesign.buildChannelsSize())
+        this.axisLayer.updatePosition(this.layoutDesign.buildXAxisPos())
+        this.channelsLayer.updatePosition(this.layoutDesign.buildChannelsPos())
     }
 }
