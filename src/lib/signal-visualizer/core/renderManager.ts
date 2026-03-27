@@ -76,6 +76,10 @@ export class RenderManager {
         return this.componentLayer?.channelsLayer.activeChannels!
     }
 
+    get sizeData(): SizeData {
+        return this.pixiRenderer.sizeData()
+    }
+
     async updateSignalData(signals: OneDimSignal[], viewPort: ViewPort) {
         for (const signal of signals) {
             const channelLayer = this.componentLayer?.channelsLayer.getByLabel(signal.label)

@@ -19,18 +19,17 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
         for (let i = 0; i < n; i++) {
             const xMappedCord = width * xValues.valuesNormalized[i]!
             const yMappedCord = height * yValues.valuesNormalized[i]!
-
             xCoords[i] = xMappedCord
             yCoords[i] = height - yMappedCord
+        }
 
-            this.graphics.circle(xCoords[i]!, yCoords[i]!, width * 0.001).stroke({ color: 'green' })
-
+        for (let i = 0; i < n; i++) {
             if (i > 0) {
                 this.graphics.moveTo(xCoords[i - 1]!, yCoords[i - 1]!)
                 this.graphics.lineTo(xCoords[i]!, yCoords[i]!)
-                this.graphics.stroke({ color: 'black', width: 1 })
             }
         }
+        this.graphics.stroke({ color: 'black', width: 1 })
     }
 
     updateData(signalData: OneDimSignal) {
