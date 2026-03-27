@@ -23,9 +23,15 @@ export class Interpreter {
             acc[signal.label] = signal
             return acc
         }, {})
-        this.renderer = new RenderManager(eventMediator)
+
+        const canvas = document.createElement('canvas')
+        canvas.style.height = '100%'
+        canvas.style.width = '100%'
+        canvas.style.display = 'block'
+
         this.htmlElement = container
-        this.htmlElement.appendChild(this.renderer.canvas)
+        this.htmlElement.appendChild(canvas)
+        this.renderer = new RenderManager(canvas,  eventMediator)
     }
 
     async init() {

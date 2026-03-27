@@ -15,17 +15,14 @@ export class RenderManager {
     private componentLayer?: ComponentLayer
     private eventMediator: EventMediator<PerformanceMetrics>
 
-    constructor(eventMediator: EventMediator<PerformanceMetrics>) {
-        this.pixiRenderer = new PixiRenderer()
+    constructor( canvas : HTMLCanvasElement, eventMediator: EventMediator<PerformanceMetrics>) {
+        this.pixiRenderer = new PixiRenderer(canvas)
         this.eventMediator = eventMediator
     }
 
     async init(signals: OneDimSignal[], viewPort: ViewPort) {
         await this.pixiRenderer.init()
-        const sizeData = {
-            width: this.pixiRenderer.canvas.clientWidth,
-            height: this.pixiRenderer.canvas.clientHeight,
-        }
+        const sizeData = this.pixiRenderer.sizeData()
         const gridData = {
             verticalDivisions: 10,
             horizontalDivisions: 5,
@@ -54,8 +51,8 @@ export class RenderManager {
             const performanceMetrics: PerformanceMetrics = {
                 renderTime: timeEnd - timeStart,
                 sizeData: {
-                    width: windowDevicePixelRatio * this.pixiRenderer.canvas.clientWidth,
-                    height: windowDevicePixelRatio * this.pixiRenderer.canvas.clientHeight
+                    width: windowDevicePixelRatio * sizeData.width,
+                    height: windowDevicePixelRatio * sizeData.height
                 },
                 refreshRate :  this.pixiRenderer.app.ticker.FPS
             }
@@ -91,11 +88,6 @@ export class RenderManager {
             max: viewPort.startSeconds + viewPort.lengthSeconds,
         })
     }
-
-    get canvas(): HTMLCanvasElement {
-        return this.pixiRenderer.canvas
-    }
-
     destroy(): void {
         this.pixiRenderer.destroy()
     }

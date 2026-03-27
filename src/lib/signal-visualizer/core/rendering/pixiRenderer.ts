@@ -1,14 +1,12 @@
 import { Application } from 'pixi.js'
+import type { SizeData } from '../types'
 
 export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
     app: Application
 
-    constructor() {
-        this._canvas = document.createElement('canvas')
-        this._canvas.style.height = '100%'
-        this._canvas.style.width = '100%'
-        this._canvas.style.display = 'block'
+    constructor(canvas : HTMLCanvasElement) {
+        this._canvas = canvas
         this.app = new Application()
     }
 
@@ -28,10 +26,14 @@ export class PixiRenderer {
         })
     }
 
+    sizeData(): SizeData {
+        return {
+            width: this._canvas.clientWidth,
+            height : this._canvas.clientHeight
+        }
+    }
+
     destroy(): void {
         this.app.destroy()
-    }
-    get canvas(): HTMLCanvasElement {
-        return this._canvas
     }
 }
