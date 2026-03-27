@@ -1,10 +1,8 @@
 import { Application } from 'pixi.js'
-import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
 
 export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
     app: Application
-    private componentLayer?: ComponentLayer
 
     constructor() {
         this._canvas = document.createElement('canvas')
@@ -26,6 +24,7 @@ export class PixiRenderer {
             backgroundAlpha: 0.2,
             resolution: window.devicePixelRatio || 1,
             autoDensity: true,
+            resizeTo: this._canvas.parentElement!,
         })
     }
 

@@ -64,10 +64,6 @@ export class RenderManager {
     }
 
     async setSizes(sizeData: SizeData) {
-        this.pixiRenderer.app.renderer.resize(
-            sizeData.width,
-            sizeData.height,
-        )
         this.componentLayer?.updateSize(sizeData)
     }
 
