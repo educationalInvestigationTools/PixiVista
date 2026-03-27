@@ -50,11 +50,12 @@ export class RenderManager {
             const timeStart = performance.now()
             this.componentLayer?.Draw()
             const timeEnd = performance.now()
+            const windowDevicePixelRatio = window.devicePixelRatio
             const performanceMetrics: PerformanceMetrics = {
                 renderTime: timeEnd - timeStart,
                 sizeData: {
-                    width: this.pixiRenderer.canvas.clientWidth,
-                    height : this.pixiRenderer.canvas.clientHeight
+                    width: windowDevicePixelRatio * this.pixiRenderer.canvas.clientWidth,
+                    height: windowDevicePixelRatio * this.pixiRenderer.canvas.clientHeight
                 },
                 refreshRate :  this.pixiRenderer.app.ticker.FPS
             }
