@@ -67,7 +67,6 @@ export class RenderManager {
         this.pixiRenderer.app.renderer.resize(
             sizeData.width,
             sizeData.height,
-            window.devicePixelRatio,
         )
         this.componentLayer?.updateSize(sizeData)
     }
