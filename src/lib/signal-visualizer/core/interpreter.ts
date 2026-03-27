@@ -3,35 +3,23 @@ import {type SignalSource, ViewPort} from '@/lib/signal-visualizer/application/s
 import type {AxisSignal, OneDimSignal} from '@/lib/signal-visualizer/core/types.ts'
 import {RenderManager} from '@/lib/signal-visualizer/core/renderManager.ts'
 import {Envelope} from '@/lib/signal-visualizer/utils/envelope.ts'
-import type {EventMediator} from '@/lib/signal-visualizer/utils/eventMediator.ts'
-import type {PerformanceMetrics} from '@/lib/signal-visualizer/application/types.ts'
 
 export class Interpreter {
     private renderer: RenderManager
-    private htmlElement: HTMLElement
     private readonly signalsSources: Record<string, SignalSource>
     private viewPort: ViewPort
 
     constructor(
-        container: HTMLElement,
+        renderer : RenderManager,
         viewPort: ViewPort,
         signalsSource: SignalSource[],
-        eventMediator: EventMediator<PerformanceMetrics>,
     ) {
         this.viewPort = viewPort
         this.signalsSources = signalsSource.reduce<Record<string, SignalSource>>((acc, signal) => {
             acc[signal.label] = signal
             return acc
         }, {})
-
-        const canvas = document.createElement('canvas')
-        canvas.style.height = '100%'
-        canvas.style.width = '100%'
-        canvas.style.display = 'block'
-
-        this.htmlElement = container
-        this.htmlElement.appendChild(canvas)
-        this.renderer = new RenderManager(canvas,  eventMediator)
+        this.renderer = renderer
     }
 
     async init() {
