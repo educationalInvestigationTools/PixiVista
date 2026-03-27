@@ -1,15 +1,23 @@
-import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
-import type { OneDimSignal, SizeData } from '@/lib/signal-visualizer/core/types.ts'
-import type { ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
-import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
-import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
+import {
+    ComponentLayer
+} from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
+import type {OneDimSignal, SizeData} from '@/lib/signal-visualizer/core/types.ts'
+import type {ViewPort} from '@/lib/signal-visualizer/application/signalSource.ts'
+import {
+    ComponentLayout
+} from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
+import {PixiRenderer} from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
+import type {PerformanceMetrics} from '@/lib/signal-visualizer/application/types.ts'
+import type {EventMediator} from '@/lib/signal-visualizer/utils/eventMediator.ts'
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer
     private componentLayer?: ComponentLayer
+    private eventMediator: EventMediator<PerformanceMetrics>
 
-    constructor() {
+    constructor(eventMediator: EventMediator<PerformanceMetrics>) {
         this.pixiRenderer = new PixiRenderer()
+        this.eventMediator = eventMediator
     }
 
     async init(signals: OneDimSignal[], viewPort: ViewPort) {
@@ -38,7 +46,15 @@ export class RenderManager {
             this.componentLayer.channelsLayer.addChannel(signal)
         }
         this.pixiRenderer.app.stage.addChild(this.componentLayer.container)
-        this.pixiRenderer.app.ticker.add(() => this.componentLayer?.Draw())
+        this.pixiRenderer.app.ticker.add(() => {
+            const timeStart = performance.now()
+            this.componentLayer?.Draw()
+            const timeEnd = performance.now()
+            const performanceMetrics: PerformanceMetrics = {
+                renderTime: timeEnd - timeStart,
+            }
+            this.eventMediator.callback(performanceMetrics)
+        })
     }
 
     async setSizes(sizeData: SizeData) {
@@ -49,6 +65,7 @@ export class RenderManager {
         )
         this.componentLayer?.updateSize(sizeData)
     }
+
     addChannel(oneDimSignal: OneDimSignal) {
         this.componentLayer?.channelsLayer.addChannel(oneDimSignal)
     }

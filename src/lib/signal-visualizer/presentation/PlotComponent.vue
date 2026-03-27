@@ -8,6 +8,8 @@ import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponen
 import SettingsComponent from "@/lib/signal-visualizer/presentation/SettingsComponent.vue";
 import AnnotationsComponent from "@/lib/signal-visualizer/presentation/AnnotationsComponent.vue";
 import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsComponent.vue"
+import type {PerformanceMetrics} from "@/lib/signal-visualizer/application/types.ts";
+import {EventMediator} from "@/lib/signal-visualizer/utils/eventMediator.ts";
 
 
 const props = defineProps<{
@@ -35,6 +37,8 @@ const totalSeconds = Math.max(...props.signalSources.map(signal => signal.totalS
 const windowStartSeconds = ref(0)
 const windowLengthSeconds = ref(10)
 
+const performanceMetrics = ref<PerformanceMetrics | undefined>(undefined)
+
 const showMetricsPanel = ref(true)
 
 
@@ -43,7 +47,8 @@ onMounted(async () => {
         return;
     }
     const viewPort = new ViewPort(windowStartSeconds.value, windowLengthSeconds.value)
-    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSources);
+    const eventMediator = new EventMediator((metrics: PerformanceMetrics) => performanceMetrics.value = metrics)
+    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSources, eventMediator);
     await diContainer.init()
 
     resizeObserverRef.value = new ResizeObserver(async () => {
@@ -92,20 +97,17 @@ watch(
                        :windowLengthSeconds="windowLengthSeconds"
                        @updateWindowLength="changeWindowLength">
     </SettingsComponent>
-    <AnnotationsComponent
-        :signalsInfo="signalsVisibility"
-        @toggleChannelVisibility="toggleChannelVisibility"></AnnotationsComponent>
+    <AnnotationsComponent :signalsInfo="signalsVisibility"
+                          @toggleChannelVisibility="toggleChannelVisibility">
+    </AnnotationsComponent>
     <div ref="htmlContainerRef" class="plot_container">
     </div>
     <SliderComponent :windowStartSeconds="windowStartSeconds"
                      :windowLengthSeconds="windowLengthSeconds"
                      :totalSeconds=totalSeconds @updateValue='updateViewPort'>
     </SliderComponent>
-    <MetricsComponent v-show="showMetricsPanel"></MetricsComponent>
+    <MetricsComponent :metrics="performanceMetrics" v-show="showMetricsPanel"></MetricsComponent>
 
 </template>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>
