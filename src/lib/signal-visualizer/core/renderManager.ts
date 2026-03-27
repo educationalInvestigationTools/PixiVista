@@ -52,6 +52,11 @@ export class RenderManager {
             const timeEnd = performance.now()
             const performanceMetrics: PerformanceMetrics = {
                 renderTime: timeEnd - timeStart,
+                sizeData: {
+                    width: this.pixiRenderer.canvas.clientWidth,
+                    height : this.pixiRenderer.canvas.clientHeight
+                },
+                refreshRate :  this.pixiRenderer.app.ticker.FPS
             }
             this.eventMediator.callback(performanceMetrics)
         })

@@ -36,7 +36,7 @@ watch(
 </script>
 
 <template>
-    <div class="slider-container">
+    <div class="border border-gray-900 rounder p-2">
         <span class="slider-time-current"> {{ fmtTime(windowStartSeconds) }} </span>
         <input type='range'
                class="slider-time-range"
