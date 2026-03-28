@@ -1,24 +1,26 @@
 <script setup lang="ts">
 
-import {computed, ref, watch} from "vue";
-import {fmtTime} from "@/lib/signal-visualizer/utils/utils.ts";
+import { computed, ref, watch } from "vue";
+import { fmtTime } from "@/lib/signal-visualizer/utils/utils.ts";
 
 const props = defineProps<{
-    windowStartSeconds: number
+    leftSliderPosition: number,
+    rightSliderPosition: number,
+    signalsStartSeconds: number
     windowLengthSeconds: number
-    totalSeconds: number
+    signalsLargestDuration: number
 }>()
 
 const emit = defineEmits<{
     (e: 'updateValue', value: number): void
 }>()
 
-const windowStartSeconds = props.windowStartSeconds
+const windowStartSeconds = props.signalsStartSeconds
 const sliderPositionSeconds = ref(windowStartSeconds)
-const windowLengthSeconds = computed(() => Math.min(props.windowLengthSeconds, props.totalSeconds))
+const windowLengthSeconds = computed(() => Math.min(props.windowLengthSeconds, props.signalsLargestDuration))
 
 const windowEndSeconds = computed(
-    () => Math.max(windowStartSeconds, props.totalSeconds - windowLengthSeconds.value)
+    () => Math.max(windowStartSeconds, props.signalsLargestDuration)
 )
 
 watch(
@@ -37,19 +39,15 @@ watch(
 
 <template>
     <div class="border border-gray-900 rounded p-2">
-        <span class="slider-time-current"> {{ fmtTime(windowStartSeconds) }} </span>
-        <input type='range'
-               class="slider-time-range"
-               :min="fmtTime(windowStartSeconds)"
-               :max="windowEndSeconds"
-               v-model.number="sliderPositionSeconds"
-               step="1"
-        />
-        <span class="slider-time-end"> {{ fmtTime(windowEndSeconds) }} </span>
-        <span> {{ fmtTime(sliderPositionSeconds) }} </span>
+        <div>
+            <span> Signals starts at {{ fmtTime(props.signalsStartSeconds) }} </span>
+            <span> Longest signal has {{ fmtTime(props.signalsLargestDuration) }}</span>
+            <span> Window Length is {{ fmtTime(windowLengthSeconds) }} </span>
+            <span> Current Window starts at {{ fmtTime(sliderPositionSeconds) }}</span>
+        </div>
+        <input type='range' class="slider-time-range" :min="windowStartSeconds" :max="windowEndSeconds"
+            v-model.number="sliderPositionSeconds" step="1" />
     </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

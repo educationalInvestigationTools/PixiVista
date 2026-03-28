@@ -33,8 +33,8 @@ const htmlContainerRef = ref<HTMLDivElement | null>(null);
 const resizeObserverRef = ref<ResizeObserver | null>(null)
 let diContainer: DiContainer | null = null;
 
-const totalSeconds = Math.max(...props.signalSources.map(signal => signal.totalSeconds))
-const windowStartSeconds = ref(0)
+const signalsLargestDurationSeconds = Math.max(...props.signalSources.map(signal => signal.totalSeconds))
+const signalsStartSeconds = ref(0)
 const windowLengthSeconds = ref(10)
 
 const performanceMetrics = ref<PerformanceMetrics | undefined>(undefined)
@@ -47,7 +47,7 @@ onMounted(async () => {
     if (!htmlContainerRef.value) {
         return;
     }
-    const viewPort = new ViewPort(windowStartSeconds.value, windowLengthSeconds.value)
+    const viewPort = new ViewPort(signalsStartSeconds.value, windowLengthSeconds.value)
     const eventMediator = new EventMediator((metrics: PerformanceMetrics) => performanceMetrics.value = metrics)
     diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSources, eventMediator);
     await diContainer.init()
@@ -77,7 +77,7 @@ async function changeWindowLength(windowLength: number) {
 }
 
 async function changeViewPort() {
-    await diContainer?.changeViewPortHandler.handle(windowStartSeconds.value, windowLengthSeconds.value)
+    await diContainer?.changeViewPortHandler.handle(signalsStartSeconds.value, windowLengthSeconds.value)
 }
 
 async function toggleChannelVisibility(signalInfo: SignalVisibility) {
@@ -106,8 +106,9 @@ watch(
             <div ref="htmlContainerRef" class="plot_container">
             </div>
         </div>
-        <SliderComponent :windowStartSeconds="windowStartSeconds" :windowLengthSeconds="windowLengthSeconds"
-            :totalSeconds=totalSeconds @updateValue='updateViewPort'>
+        <SliderComponent :leftSliderPosition="15" :rightSliderPosition="5" :signalsStartSeconds="signalsStartSeconds"
+            :windowLengthSeconds="windowLengthSeconds" :signalsLargestDuration=signalsLargestDurationSeconds
+            @updateValue='updateViewPort'>
         </SliderComponent>
         <MetricsComponent :metrics="performanceMetrics" v-show="showMetricsPanel"></MetricsComponent>
     </div>

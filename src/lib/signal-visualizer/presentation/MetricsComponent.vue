@@ -38,17 +38,16 @@ watch(
 <template>
     <div class="flex flex-col border border-gray-900 rounded p-1">
         <span> Metrics panel:</span>
-        <span> Rendering resolution is {{ props.metrics?.sizeData.width }} x {{ props.metrics?.sizeData.height
+        <span> Rendering resolution is {{ Math.round(props.metrics?.sizeData.width!) }} x {{
+            Math.round(props.metrics?.sizeData.height!)
             }}</span>
         <div>
             <span> Worst refresh rates per seconds are: </span>
-            <span v-for="(rate, idx) in refreshRateStack" :key="idx" class="inline-block px-0.5"
-> {{ rate }}</span>
+            <span v-for="(rate, idx) in refreshRateStack" :key="idx" class="inline-block px-0.5"> {{ rate }}</span>
         </div>
         <div>
             <span> Worst render times in ms are: </span>
-            <span v-for="(renderTime, idx) in renderTimeStack" :key="idx" class="inline-block px-0.5"
-> {{ renderTime
+            <span v-for="(renderTime, idx) in renderTimeStack" :key="idx" class="inline-block px-0.5"> {{ renderTime
                 }}</span>
         </div>
     </div>
