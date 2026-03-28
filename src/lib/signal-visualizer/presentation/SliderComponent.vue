@@ -136,16 +136,16 @@ function pxToSeconds(px: number) {
 </script>
 <template>
     <div class="border border-gray-900 rounded p-2 flex flex-row">
-        <div class="left"
+        <div class="left flex items-center justify-center"
             :style="{ backgroundColor: 'lightblue', width: leftSliderPosition + '%', textAlign: 'right' }"> <span> {{
                 fmtTime(0)
                 }} </span></div>
         <div class="slider relative w-full flex items-center justify-center" ref="containerRef"
             :style="{ backgroundColor: 'lightpink', width: (100 - leftSliderPosition - rightSliderPosition) + '%' }">
-            <div class="absolute top-0 h-full bg-blue-400/40 rounded cursor-grab active:cursor-grabbing"
+            <div class="absolute top-0 h-full bg-blue-400/40 rounded cursor-grab active:cursor-grabbing flex items-center justify-center"
                 :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%', }"
                 @pointerdown="startDrag">
-
+                <span class="pointer-events-none select-none"> {{ fmtTime(props.windowLengthSeconds) }} </span>
                 <div class="absolute left-0 top-0 h-full w-2 bg-blue-600 cursor-ew-resize"
                     @pointerdown.stop="startResizeLeft"></div>
 
@@ -153,7 +153,7 @@ function pxToSeconds(px: number) {
                     @pointerdown.stop="startResizeRight"></div>
             </div>
         </div>
-        <div class="right"
+        <div class="right flex items-center justify-center"
             :style="{ backgroundColor: 'lightgreen', width: rightSliderPosition + '%', 'word-break': 'break-word' }">
             <span> {{ fmtTime(props.signalsLargestDuration) }} </span>
         </div>
