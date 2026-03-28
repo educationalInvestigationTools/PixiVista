@@ -1,15 +1,15 @@
 <script setup lang="ts">
 
-import {onBeforeUnmount, onMounted, ref} from "vue";
-import {DiContainer} from "@/lib/signal-visualizer/application/diContainer.ts";
-import {ResizeDto} from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
-import {type SignalSource, ViewPort} from "@/lib/signal-visualizer/application/signalSource.ts";
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts";
+import { ResizeDto } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
+import { type SignalSource, ViewPort } from "@/lib/signal-visualizer/application/signalSource.ts";
 import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
 import SettingsComponent from "@/lib/signal-visualizer/presentation/SettingsComponent.vue";
 import AnnotationsComponent from "@/lib/signal-visualizer/presentation/AnnotationsComponent.vue";
 import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsComponent.vue"
-import type {PerformanceMetrics} from "@/lib/signal-visualizer/application/types.ts";
-import {EventMediator} from "@/lib/signal-visualizer/utils/eventMediator.ts";
+import type { PerformanceMetrics } from "@/lib/signal-visualizer/application/types.ts";
+import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
 
 
 const props = defineProps<{
@@ -88,27 +88,21 @@ async function toggleChannelVisibility(signalInfo: SignalVisibility) {
 
 <template>
     <div class="m-4 border border-gray-900 rounded p-2">
-        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel"
-                           v-model:showMetrics="showMetricsPanel"
-                           :windowLengthSeconds="windowLengthSeconds"
-                           @updateWindowLength="updateWindowLength">
+        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel"
+            :windowLengthSeconds="windowLengthSeconds" @updateWindowLength="updateWindowLength">
         </SettingsComponent>
         <AnnotationsComponent v-show="showAnnotationsPanel" :signalsInfo="signalsVisibility"
-                              @toggleChannelVisibility="toggleChannelVisibility">
+            @toggleChannelVisibility="toggleChannelVisibility">
         </AnnotationsComponent>
         <div class="border border-gray-900 rounded p-2">
             <div ref="htmlContainerRef" class="plot_container">
             </div>
         </div>
-        <SliderComponent :leftSliderPosition="15" :rightSliderPosition="5"
-                         :viewPortStartSeconds="viewPortStartSeconds"
-                         :windowLengthSeconds="windowLengthSeconds"
-                         :signalsLargestDuration=signalsLargestDurationSeconds
-                         @update:viewPortStartSeconds='updateViewPort'
-                         @update:windowLengthSeconds="updateWindowLength">
+        <SliderComponent :leftSliderPosition="15" :rightSliderPosition="5" :viewPortStartSeconds="viewPortStartSeconds"
+            :windowLengthSeconds="windowLengthSeconds" :signalsLargestDuration=signalsLargestDurationSeconds
+            @update:viewPortStartSeconds='updateViewPort' @update:windowLengthSeconds="updateWindowLength">
         </SliderComponent>
-        <MetricsComponent :metrics="performanceMetrics"
-                          v-show="showMetricsPanel"></MetricsComponent>
+        <MetricsComponent :metrics="performanceMetrics" v-show="showMetricsPanel"></MetricsComponent>
     </div>
 
 </template>

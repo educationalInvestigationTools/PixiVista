@@ -51,14 +51,13 @@ const highlightWindowPosition = computed(() => {
 const containerRef = ref<HTMLElement | null>(null)
 
 function startDrag(e: MouseEvent) {
-    e.preventDefault()
     const startX = e.clientX
-    const startValue = viewPortStartSeconds.value
-
+    const currentPositionSeconds = viewPortStartSeconds.value
+    const windowLength = windowLengthSeconds.value
     function onMove(ev: MouseEvent) {
         const dx = ev.clientX - startX
         const delta = pxToSeconds(dx)
-        const newVal = Math.min(props.signalsLargestDuration - windowLengthSeconds.value, Math.max(0, startValue + delta))
+        const newVal = Math.min(props.signalsLargestDuration - windowLength, Math.max(0, Math.round(currentPositionSeconds + delta)))
         if (newVal != viewPortStartSeconds.value) {
             viewPortStartSeconds.value = newVal
         }
@@ -71,6 +70,55 @@ function startDrag(e: MouseEvent) {
 
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
+}
+
+function startResize(orientation: 'left' | 'right', e: MouseEvent) {
+    const startX = e.clientX
+    const currentLengthSeconds = windowLengthSeconds.value
+    const currentPositionSeconds = viewPortStartSeconds.value
+    function onMove(ev: PointerEvent) {
+        const dx = ev.clientX - startX
+        const delta = pxToSeconds(dx)
+        if (orientation === 'right') {
+            let newLength = Math.round(currentLengthSeconds + delta)
+            const maxLength = props.signalsLargestDuration - currentPositionSeconds
+            newLength = Math.max(1, Math.min(maxLength, newLength))
+            if (newLength !== windowLengthSeconds.value) {
+                windowLengthSeconds.value = newLength
+            }
+        }
+        if (orientation === 'left') {
+            let newStart = currentPositionSeconds + delta
+            newStart = Math.max(0, newStart)
+            const rightEdge = currentPositionSeconds + currentLengthSeconds
+            let newLength = Math.round(rightEdge - newStart)
+            const maxLength = props.signalsLargestDuration - newStart
+            newLength = Math.max(1, Math.min(maxLength, newLength))
+            newStart = rightEdge - newLength
+            if (
+                newStart !== viewPortStartSeconds.value ||
+                newLength !== windowLengthSeconds.value
+            ) {
+                viewPortStartSeconds.value = newStart
+                windowLengthSeconds.value = newLength
+            }
+        }
+    }
+    function onUp() {
+        window.removeEventListener('pointermove', onMove)
+        window.removeEventListener('pointerup', onUp)
+    }
+
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+}
+
+function startResizeRight(e: MouseEvent) {
+    startResize('right', e)
+}
+
+function startResizeLeft(e: MouseEvent) {
+    startResize('left', e)
 }
 
 function pxToSeconds(px: number) {
@@ -97,6 +145,12 @@ function pxToSeconds(px: number) {
             <div class="absolute top-0 h-full bg-blue-400/40 rounded cursor-grab active:cursor-grabbing"
                 :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%', }"
                 @pointerdown="startDrag">
+
+                <div class="absolute left-0 top-0 h-full w-2 bg-blue-600 cursor-ew-resize"
+                    @pointerdown.stop="startResizeLeft"></div>
+
+                <div class="absolute right-0 top-0 h-full w-2 bg-blue-600 cursor-ew-resize"
+                    @pointerdown.stop="startResizeRight"></div>
             </div>
         </div>
         <div class="right"
