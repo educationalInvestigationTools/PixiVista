@@ -33,30 +33,6 @@ watch(
     }
 )
 
-function refreshRateColor(value: number): string {
-    const green = { r: 34, g: 197, b: 94 };  // #22c55e
-    const red = { r: 239, g: 68, b: 68 };  // #ef4444
-    const t = Math.min(1, Math.max(0, value / 60));
-    const r = Math.round(red.r + t * (green.r - red.r));
-    const g = Math.round(red.g + t * (green.g - red.g));
-    const b = Math.round(red.b + t * (green.b - red.b));
-    return `rgb(${r}, ${g}, ${b})`;
-}
-
-function renderTimeColor(value: number): string {
-    const max = 1000 / 30; // 33.33...
-    const t = Math.min(1, Math.max(0, value / max));
-    // t_good = 1 - t because lower is better
-    const t_good = 1 - t;
-    const green = { r: 34, g: 197, b: 94 };
-    const red = { r: 239, g: 68, b: 68 };
-    const r = Math.round(red.r + t_good * (green.r - red.r));
-    const g = Math.round(red.g + t_good * (green.g - red.g));
-    const b = Math.round(red.b + t_good * (green.b - red.b));
-    return `rgb(${r}, ${g}, ${b})`;
-}
-
-
 </script>
 
 <template>
@@ -67,12 +43,13 @@ function renderTimeColor(value: number): string {
         <div>
             <span> Worst refresh rates per seconds are: </span>
             <span v-for="(rate, idx) in refreshRateStack" :key="idx" class="inline-block px-0.5"
-                :style="{ color: refreshRateColor(rate) }"> {{ rate }}</span>
+> {{ rate }}</span>
         </div>
         <div>
             <span> Worst render times in ms are: </span>
             <span v-for="(renderTime, idx) in renderTimeStack" :key="idx" class="inline-block px-0.5"
-                :style="{ color: renderTimeColor(renderTime) }"> {{ renderTime }}</span>
+> {{ renderTime
+                }}</span>
         </div>
     </div>
 </template>
