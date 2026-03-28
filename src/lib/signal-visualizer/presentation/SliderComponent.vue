@@ -15,6 +15,7 @@ const emit = defineEmits<{
     (e: 'updateValue', value: number): void
 }>()
 
+
 const windowStartSeconds = props.signalsStartSeconds
 const sliderPositionSeconds = ref(windowStartSeconds)
 const windowLengthSeconds = computed(() => Math.min(props.windowLengthSeconds, props.signalsLargestDuration))
@@ -38,15 +39,20 @@ watch(
 </script>
 
 <template>
-    <div class="border border-gray-900 rounded p-2">
-        <div>
-            <span> Signals starts at {{ fmtTime(props.signalsStartSeconds) }} </span>
-            <span> Longest signal has {{ fmtTime(props.signalsLargestDuration) }}</span>
-            <span> Window Length is {{ fmtTime(windowLengthSeconds) }} </span>
-            <span> Current Window starts at {{ fmtTime(sliderPositionSeconds) }}</span>
+    <div class="border border-gray-900 rounded p-2 flex flex-row">
+        <div class="left"
+            :style="{ backgroundColor: 'lightblue', width: leftSliderPosition + '%', textAlign: 'right' }">
+            <span> {{ fmtTime(windowStartSeconds) }} </span>
         </div>
-        <input type='range' class="slider-time-range" :min="windowStartSeconds" :max="windowEndSeconds"
-            v-model.number="sliderPositionSeconds" step="1" />
+        <div class="slider flex items-center justify-center"
+            :style="{ backgroundColor: 'lightpink', width: (100 - leftSliderPosition - rightSliderPosition) + '%' }">
+            <input type='range' class="slider-time-range" :min="windowStartSeconds" :max="windowEndSeconds"
+                v-model.number="sliderPositionSeconds" step="1" :style="{ width: '100%' }" />
+        </div>
+        <div class="right"
+            :style="{ backgroundColor: 'lightgreen', width: rightSliderPosition + '%', 'word-break': 'break-word' }">
+            <span> {{ fmtTime(windowEndSeconds) }} </span>
+        </div>
     </div>
 </template>
 
