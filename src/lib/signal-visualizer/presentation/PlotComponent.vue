@@ -88,8 +88,7 @@ async function toggleChannelVisibility(signalInfo: SignalVisibility) {
 
 <template>
     <div class="m-4 border border-gray-900 rounded p-2">
-        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel"
-            :windowLengthSeconds="windowLengthSeconds" @updateWindowLength="updateWindowLength">
+        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel">
         </SettingsComponent>
         <AnnotationsComponent v-show="showAnnotationsPanel" :signalsInfo="signalsVisibility"
             @toggleChannelVisibility="toggleChannelVisibility">
