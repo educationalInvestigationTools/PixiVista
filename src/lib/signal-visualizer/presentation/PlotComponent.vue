@@ -17,12 +17,12 @@ const props = defineProps<{
     signalSources: SignalSource[]
 }>()
 
-export type SignalVisibility = {
+export type ChannelVisibility = {
     label: string
     visibility: boolean
 }
 
-const signalsVisibility: Record<string, SignalVisibility> = props.signalSources.reduce<Record<string, SignalVisibility>>((acc, signal) => {
+const channelVisibility: Record<string, ChannelVisibility> = props.signalSources.reduce<Record<string, ChannelVisibility>>((acc, signal) => {
     acc[signal.label] = {
         label: signal.label,
         visibility: true
@@ -75,8 +75,8 @@ async function updateViewPort(viewPort: ViewPort) {
 }
 
 
-async function toggleChannelVisibility(signalInfo: SignalVisibility) {
-    signalsVisibility[signalInfo.label] = signalInfo
+async function toggleChannelVisibility(signalInfo: ChannelVisibility) {
+    channelVisibility[signalInfo.label] = signalInfo
     await diContainer?.changeChannelVisibilityHandler.handle(signalInfo.label, signalInfo.visibility)
 }
 
@@ -87,7 +87,7 @@ async function toggleChannelVisibility(signalInfo: SignalVisibility) {
     <div class="m-4 border border-gray-900 rounded p-2">
         <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel">
         </SettingsComponent>
-        <AnnotationsComponent v-show="showAnnotationsPanel" :signalsInfo="signalsVisibility"
+        <AnnotationsComponent v-show="showAnnotationsPanel" :signalsInfo="channelVisibility"
             @toggleChannelVisibility="toggleChannelVisibility">
         </AnnotationsComponent>
         <div class="border border-gray-900 rounded p-2">

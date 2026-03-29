@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
 
-import type { SignalVisibility } from "@/lib/signal-visualizer/presentation/PlotComponent.vue";
+import type { ChannelVisibility } from "@/lib/signal-visualizer/presentation/PlotComponent.vue";
 
 const props = defineProps<{
-    signalsInfo: Record<string, SignalVisibility>
+    signalsInfo: Record<string, ChannelVisibility>
 }>()
 
 const emit = defineEmits<{
-    (e: 'toggleChannelVisibility', signalInfo: SignalVisibility): void
+    (e: 'toggleChannelVisibility', signalInfo: ChannelVisibility): void
 }>()
 
 function toggleShow(key: string) {
