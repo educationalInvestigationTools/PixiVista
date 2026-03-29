@@ -1,46 +1,50 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { fmtTime } from "@/lib/signal-visualizer/utils/utils.ts";
+
+/*
+This is in samples to ensure it's abstract, and does not know about the unit of measure of the client, thus to interact with it, should receive data in terms of samples, and the data it outputs should be mapped from samples to what the client understands. It needs a function that maps the sample values to what the client needs to see on the component.
+*/
 
 const props = defineProps<{
     leftSliderPositionPercent: number // between 0 and 100
     rightSliderPositionPercent: number, // between 0 and 100
-    viewPortStartSeconds: number,
-    windowLengthSeconds: number,
-    viewPortLargestValueSeconds: number
+    viewPortStartSamples: number,
+    windowLengthSamples: number,
+    viewPortLargestValueSamples: number
+    sampleToString: ((arg0: number) => string)
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:viewPortStartSeconds', value: number): void
-    (e: 'update:windowLengthSeconds', value: number): void
+    (e: 'update:viewPortStartSamples', value: number): void
+    (e: 'update:windowLengthSamples', value: number): void
 }>()
 
-const viewPortStartSeconds = computed({
-    get: () => props.viewPortStartSeconds,
+const viewPortStartSample = computed({
+    get: () => props.viewPortStartSamples,
     set: (v) => {
-        emit('update:viewPortStartSeconds', v)
+        emit('update:viewPortStartSamples', v)
     }
 })
 
-const windowLengthSeconds = computed({
-    get: () => props.windowLengthSeconds,
+const windowLength = computed({
+    get: () => props.windowLengthSamples,
     set: (v) => {
-        emit('update:windowLengthSeconds', v)
+        emit('update:windowLengthSamples', v)
     }
 })
 
 const highlightWindowWidth = computed(() => {
-    const range = props.viewPortLargestValueSeconds
+    const range = props.viewPortLargestValueSamples
     const raw = Math.max(0, Math.min(
-        range - viewPortStartSeconds.value,
-        windowLengthSeconds.value
+        range - viewPortStartSample.value,
+        windowLength.value
     ))
     const result = (raw / range) * 100
     return result
 })
 const highlightWindowPosition = computed(() => {
-    const range = props.viewPortLargestValueSeconds
-    let pos = ((viewPortStartSeconds.value) / range) * 100
+    const range = props.viewPortLargestValueSamples
+    let pos = ((viewPortStartSample.value) / range) * 100
     const maxLeft = 100 - highlightWindowWidth.value
     if (pos > maxLeft) pos = maxLeft
     if (pos < 0)
@@ -52,14 +56,14 @@ const containerRef = ref<HTMLElement | null>(null)
 
 function startDrag(e: MouseEvent) {
     const startX = e.clientX
-    const currentPositionSeconds = viewPortStartSeconds.value
-    const windowLength = windowLengthSeconds.value
+    const currentPosition = viewPortStartSample.value
+    const currentWindowLength = windowLength.value
     function onMove(ev: MouseEvent) {
         const dx = ev.clientX - startX
-        const delta = pxToSeconds(dx)
-        const newVal = Math.min(props.viewPortLargestValueSeconds - windowLength, Math.max(0, Math.round(currentPositionSeconds + delta)))
-        if (newVal != viewPortStartSeconds.value) {
-            viewPortStartSeconds.value = newVal
+        const delta = pxToSamples(dx)
+        const newVal = Math.min(props.viewPortLargestValueSamples - currentWindowLength, Math.max(0, Math.round(currentPosition + delta)))
+        if (newVal != viewPortStartSample.value) {
+            viewPortStartSample.value = newVal
         }
     }
 
@@ -74,33 +78,33 @@ function startDrag(e: MouseEvent) {
 
 function startResize(orientation: 'left' | 'right', e: MouseEvent) {
     const startX = e.clientX
-    const currentLengthSeconds = windowLengthSeconds.value
-    const currentPositionSeconds = viewPortStartSeconds.value
+    const currentLength = windowLength.value
+    const currentPosition = viewPortStartSample.value
     function onMove(ev: PointerEvent) {
         const dx = ev.clientX - startX
-        const delta = pxToSeconds(dx)
+        const delta = pxToSamples(dx)
         if (orientation === 'right') {
-            let newLength = Math.round(currentLengthSeconds + delta)
-            const maxLength = props.viewPortLargestValueSeconds - currentPositionSeconds
+            let newLength = Math.round(currentLength + delta)
+            const maxLength = props.viewPortLargestValueSamples - currentPosition
             newLength = Math.max(1, Math.min(maxLength, newLength))
-            if (newLength !== windowLengthSeconds.value) {
-                windowLengthSeconds.value = newLength
+            if (newLength !== windowLength.value) {
+                windowLength.value = newLength
             }
         }
         if (orientation === 'left') {
-            let newStart = currentPositionSeconds + delta
+            let newStart = currentPosition + delta
             newStart = Math.max(0, newStart)
-            const rightEdge = currentPositionSeconds + currentLengthSeconds
+            const rightEdge = currentPosition + currentLength
             let newLength = Math.round(rightEdge - newStart)
-            const maxLength = props.viewPortLargestValueSeconds - newStart
+            const maxLength = props.viewPortLargestValueSamples - newStart
             newLength = Math.max(1, Math.min(maxLength, newLength))
             newStart = rightEdge - newLength
             if (
-                newStart !== viewPortStartSeconds.value ||
-                newLength !== windowLengthSeconds.value
+                newStart !== viewPortStartSample.value ||
+                newLength !== windowLength.value
             ) {
-                viewPortStartSeconds.value = newStart
-                windowLengthSeconds.value = newLength
+                viewPortStartSample.value = newStart
+                windowLength.value = newLength
             }
         }
     }
@@ -121,12 +125,12 @@ function startResizeLeft(e: MouseEvent) {
     startResize('left', e)
 }
 
-function pxToSeconds(px: number) {
+function pxToSamples(px: number) {
     const el = containerRef.value
     if (!el) return 0
 
     const width = el.clientWidth
-    const range = props.viewPortLargestValueSeconds
+    const range = props.viewPortLargestValueSamples
 
     if (width === 0 || range === 0) return 0
     return (px / width) * range
@@ -140,7 +144,7 @@ function pxToSeconds(px: number) {
         <!-- LEFT -->
         <div class="centered bg-slate-700" :style="{ width: leftSliderPositionPercent + '%', wordBreak: 'break-word' }">
             <span class="text-xs text-slate-300">
-                {{ fmtTime(0) }}
+                {{ props.sampleToString(0) }}
             </span>
         </div>
 
@@ -152,7 +156,7 @@ function pxToSeconds(px: number) {
                 :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%' }"
                 @pointerdown="startDrag">
                 <span class="pointer-events-none select-none text-xs font-medium text-blue-200">
-                    {{ fmtTime(props.windowLengthSeconds) }}
+                    {{ props.sampleToString(props.windowLengthSamples) }}
                 </span>
 
                 <!-- LEFT HANDLE -->
@@ -171,7 +175,7 @@ function pxToSeconds(px: number) {
         <div class="centered bg-slate-700"
             :style="{ width: rightSliderPositionPercent + '%', wordBreak: 'break-word' }">
             <span class="text-xs text-slate-300">
-                {{ fmtTime(props.viewPortLargestValueSeconds) }}
+                {{ props.sampleToString(props.viewPortLargestValueSamples) }}
             </span>
         </div>
 

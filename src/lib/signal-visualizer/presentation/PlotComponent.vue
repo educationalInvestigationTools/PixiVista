@@ -10,6 +10,7 @@ import AnnotationsComponent from "@/lib/signal-visualizer/presentation/Annotatio
 import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsComponent.vue"
 import type { PerformanceMetrics } from "@/lib/signal-visualizer/application/types.ts";
 import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
+import { fmtTime } from "../utils/utils";
 
 
 const props = defineProps<{
@@ -97,10 +98,10 @@ async function toggleChannelVisibility(signalInfo: SignalVisibility) {
             <div ref="htmlContainerRef" class="plot_container">
             </div>
         </div>
-        <SliderComponent :leftSliderPositionPercent="15" :rightSliderPositionPercent="5"
-            :viewPortStartSeconds="viewPortStartSeconds" :windowLengthSeconds="windowLengthSeconds"
-            :viewPortLargestValueSeconds=signalsLargestDurationSeconds
-            @update:viewPortStartSeconds='updateViewPort' @update:windowLengthSeconds="updateWindowLength">
+        <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="15" :rightSliderPositionPercent="5"
+            :viewPortStartSamples="viewPortStartSeconds" :windowLengthSamples="windowLengthSeconds"
+            :viewPortLargestValueSamples=signalsLargestDurationSeconds
+            @update:viewPortStartSamples='updateViewPort' @update:windowLengthSamples="updateWindowLength">
         </SliderComponent>
         <MetricsComponent :metrics="performanceMetrics" v-show="showMetricsPanel"></MetricsComponent>
     </div>
