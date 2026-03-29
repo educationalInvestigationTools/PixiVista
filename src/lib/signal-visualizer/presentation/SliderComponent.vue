@@ -135,28 +135,49 @@ function pxToSeconds(px: number) {
 
 </script>
 <template>
-    <div class="border border-gray-900 rounded p-2 flex flex-row">
-        <div class="left flex items-center justify-center"
-            :style="{ backgroundColor: 'lightblue', width: leftSliderPosition + '%', textAlign: 'right' }"> <span> {{
-                fmtTime(0)
-                }} </span></div>
-        <div class="slider relative w-full flex items-center justify-center" ref="containerRef"
-            :style="{ backgroundColor: 'lightpink', width: (100 - leftSliderPosition - rightSliderPosition) + '%' }">
-            <div class="absolute top-0 h-full bg-blue-400/40 rounded cursor-grab active:cursor-grabbing flex items-center justify-center"
-                :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%', }"
-                @pointerdown="startDrag">
-                <span class="pointer-events-none select-none"> {{ fmtTime(props.windowLengthSeconds) }} </span>
-                <div class="absolute left-0 top-0 h-full w-2 bg-blue-600 cursor-ew-resize"
-                    @pointerdown.stop="startResizeLeft"></div>
+    <div class="border border-slate-700 rounded p-2 flex flex-row bg-slate-900 text-slate-200">
 
-                <div class="absolute right-0 top-0 h-full w-2 bg-blue-600 cursor-ew-resize"
-                    @pointerdown.stop="startResizeRight"></div>
+        <!-- LEFT -->
+        <div class="centered bg-slate-700" :style="{ width: leftSliderPosition + '%', wordBreak: 'break-word' }">
+            <span class="text-xs text-slate-300">
+                {{ fmtTime(0) }}
+            </span>
+        </div>
+
+        <!-- SLIDER -->
+        <div class="relative bg-slate-800" ref="containerRef"
+            :style="{ width: (100 - leftSliderPosition - rightSliderPosition) + '%' }">
+
+            <div class="absolute top-0 left-0 h-full bg-blue-500/20 rounded cursor-grab active:cursor-grabbing hover:bg-blue-500/30 centered transition-colors"
+                :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%' }"
+                @pointerdown="startDrag">
+                <span class="pointer-events-none select-none text-xs font-medium text-blue-200">
+                    {{ fmtTime(props.windowLengthSeconds) }}
+                </span>
+
+                <!-- LEFT HANDLE -->
+                <div class="absolute left-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
+                    @pointerdown.stop="startResizeLeft">
+                </div>
+
+                <!-- RIGHT HANDLE -->
+                <div class="absolute right-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
+                    @pointerdown.stop="startResizeRight">
+                </div>
             </div>
         </div>
-        <div class="right flex items-center justify-center"
-            :style="{ backgroundColor: 'lightgreen', width: rightSliderPosition + '%', 'word-break': 'break-word' }">
-            <span> {{ fmtTime(props.signalsLargestDuration) }} </span>
+
+        <!-- RIGHT -->
+        <div class="centered bg-slate-700" :style="{ width: rightSliderPosition + '%', wordBreak: 'break-word' }">
+            <span class="text-xs text-slate-300">
+                {{ fmtTime(props.signalsLargestDuration) }}
+            </span>
         </div>
+
     </div>
 </template>
-<style scoped></style>
+<style scoped>
+.centered {
+    @apply flex items-center justify-center
+}
+</style>
