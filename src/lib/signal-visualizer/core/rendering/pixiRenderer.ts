@@ -5,7 +5,10 @@ export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
     app: Application
 
-    constructor(canvas : HTMLCanvasElement) {
+    private _resizeId: number | null = null;
+    private _pendingSize: SizeData | null = null;
+
+    constructor(canvas: HTMLCanvasElement) {
         this._canvas = canvas
         this.app = new Application()
     }
@@ -23,14 +26,28 @@ export class PixiRenderer {
             backgroundAlpha: 0.2,
             resolution: window.devicePixelRatio || 1,
             autoDensity: true,
-            resizeTo: this._canvas.parentElement!,
         })
+    }
+
+    async resize(sizeData: SizeData) {
+        this._pendingSize = sizeData;
+
+        if (this._resizeId !== null) {
+            cancelAnimationFrame(this._resizeId);
+        }
+
+        this._resizeId = requestAnimationFrame(() => {
+            const { width, height } = this._pendingSize!;
+            this.app.renderer.resize(width, height);
+            this.app.render();
+            this._resizeId = null;
+        });
     }
 
     sizeData(): SizeData {
         return {
             width: this._canvas.clientWidth,
-            height : this._canvas.clientHeight
+            height: this._canvas.clientHeight
         }
     }
 
