@@ -40,7 +40,7 @@ watch(
         <span> Metrics panel:</span>
         <span> Rendering resolution is {{ Math.round(props.metrics?.sizeData.width!) }} x {{
             Math.round(props.metrics?.sizeData.height!)
-            }}</span>
+            }} with a DPR={{ props.metrics?.windowDevicePixelRatio }}</span>
         <div>
             <span> Worst refresh rates per seconds are: </span>
             <span v-for="(rate, idx) in refreshRateStack" :key="idx" class="inline-block px-0.5"> {{ rate }}</span>

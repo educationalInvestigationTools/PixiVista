@@ -1,7 +1,8 @@
 import type { SizeData } from "../core/types"
 
 export type PerformanceMetrics = {
-    renderTime: number // Updated every time that Pixi does a rendering
+    renderTime: number
     sizeData: SizeData
+    windowDevicePixelRatio: number
     refreshRate : number
 }

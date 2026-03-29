@@ -2,13 +2,15 @@
 
 const props = defineProps<{
     showMetrics: boolean
-    showAnnotations : boolean
+    showAnnotations: boolean
+    heightPerChannel: number
 }>()
 
 
 const emit = defineEmits<{
     (e: 'update:showMetrics', value: boolean): void
     (e: 'update:showAnnotations', value : boolean) : void
+    (e: 'update:heightPerChannel', value: number): void
 }>()
 
 function toggleShowMetrics() {
@@ -30,6 +32,9 @@ function toggleShowAnnotations() {
 
             <span> Show annotations panel </span>
             <input type="checkbox" :checked="showAnnotations" @change="toggleShowAnnotations">
+
+            <span> Height per channel </span>
+            <input type="number" :value="heightPerChannel" @change="(e) => emit('update:heightPerChannel', parseInt((e.target as HTMLInputElement).value))">
         </div>
 
     </div>

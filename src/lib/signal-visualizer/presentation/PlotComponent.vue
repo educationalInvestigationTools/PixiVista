@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts";
 import { ResizeDto } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
 import { type SignalSource, ViewPort } from "@/lib/signal-visualizer/application/signalSource.ts";
@@ -22,13 +22,31 @@ export type ChannelVisibility = {
     visibility: boolean
 }
 
-const channelVisibility: Record<string, ChannelVisibility> = props.signalSources.reduce<Record<string, ChannelVisibility>>((acc, signal) => {
+const channelVisibility = ref(props.signalSources.reduce<Record<string, ChannelVisibility>>((acc, signal) => {
     acc[signal.label] = {
         label: signal.label,
         visibility: true
     }
     return acc
-}, {})
+}, {}))
+
+async function toggleChannelVisibility(signalInfo: ChannelVisibility) {
+    channelVisibility.value[signalInfo.label] = signalInfo
+    await diContainer?.changeChannelVisibilityHandler.handle(signalInfo.label, signalInfo.visibility)
+}
+
+const heightPerChannel = ref(200)
+
+const visibleChannels = computed(() => {
+    let visible = 0
+    for (const label of Object.keys(channelVisibility.value)) {
+        if (channelVisibility.value[label]!.visibility) {
+            visible++
+        }
+    }
+    return visible
+})
+
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
 const resizeObserverRef = ref<ResizeObserver | null>(null)
@@ -74,24 +92,20 @@ async function updateViewPort(viewPort: ViewPort) {
     await diContainer?.changeViewPortHandler.handle(viewPortRef.value)
 }
 
-
-async function toggleChannelVisibility(signalInfo: ChannelVisibility) {
-    channelVisibility[signalInfo.label] = signalInfo
-    await diContainer?.changeChannelVisibilityHandler.handle(signalInfo.label, signalInfo.visibility)
-}
-
 </script>
 
 
 <template>
     <div class="m-4 border border-gray-900 rounded p-2">
-        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel">
+        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel" v-model:heightPerChannel="heightPerChannel">
         </SettingsComponent>
         <AnnotationsComponent v-show="showAnnotationsPanel" :signalsInfo="channelVisibility"
             @toggleChannelVisibility="toggleChannelVisibility">
         </AnnotationsComponent>
         <div class="border border-gray-900 rounded p-2">
-            <div ref="htmlContainerRef" class="plot_container">
+            <div ref="htmlContainerRef" :style="{
+                height: heightPerChannel * (visibleChannels + 1) + 'px'
+            }">
             </div>
         </div>
         <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="15" :rightSliderPositionPercent="5"

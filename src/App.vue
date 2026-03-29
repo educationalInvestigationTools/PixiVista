@@ -7,7 +7,9 @@ import {
 const signalSources = [
     new TestSignalSource("A", 200, 5000),
     new TestSignalSource("B", 200, 3000),
-    new TestSignalSource("C", 200, 2000)]
+    new TestSignalSource("C", 200, 2000),
+    new TestSignalSource("D", 200, 2000),
+    new TestSignalSource("E", 200, 2000)]
 </script>
 
 <template>
