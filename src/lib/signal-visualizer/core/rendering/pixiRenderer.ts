@@ -39,7 +39,6 @@ export class PixiRenderer {
         this._resizeId = requestAnimationFrame(() => {
             const { width, height } = this._pendingSize!;
             this.app.renderer.resize(width, height);
-            this.app.render();
             this._resizeId = null;
         });
     }
