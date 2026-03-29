@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { ViewPort } from "../application/signalSource";
 
 /*
 This is in samples to ensure it's abstract, and does not know about the unit of measure of the client, thus to interact with it, should receive data in terms of samples, and the data it outputs should be mapped from samples to what the client understands. It needs a function that maps the sample values to what the client needs to see on the component.
@@ -8,28 +9,28 @@ This is in samples to ensure it's abstract, and does not know about the unit of 
 const props = defineProps<{
     leftSliderPositionPercent: number // between 0 and 100
     rightSliderPositionPercent: number, // between 0 and 100
-    viewPortStartSamples: number,
-    windowLengthSamples: number,
+    viewPort: ViewPort,
     viewPortLargestValueSamples: number
     sampleToString: ((arg0: number) => string)
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:viewPortStartSamples', value: number): void
-    (e: 'update:windowLengthSamples', value: number): void
+    (e: 'update:viewPort', value: ViewPort): void
 }>()
 
 const viewPortStartSample = computed({
-    get: () => props.viewPortStartSamples,
+    get: () => props.viewPort.startSeconds,
     set: (v) => {
-        emit('update:viewPortStartSamples', v)
+        emit('update:viewPort', new ViewPort(v, windowLength.value)
+
+        )
     }
 })
 
 const windowLength = computed({
-    get: () => props.windowLengthSamples,
+    get: () => props.viewPort.lengthSeconds,
     set: (v) => {
-        emit('update:windowLengthSamples', v)
+        emit('update:viewPort', new ViewPort(viewPortStartSample.value, v))
     }
 })
 
@@ -185,7 +186,7 @@ function handleKeyDown(e: KeyboardEvent) {
                 :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%' }"
                 @pointerdown="startDrag">
                 <span class="pointer-events-none select-none text-xs font-medium text-blue-200">
-                    {{ props.sampleToString(props.windowLengthSamples) }}
+                    {{ props.sampleToString(props.viewPort.lengthSeconds) }}
                 </span>
 
                 <!-- LEFT HANDLE -->

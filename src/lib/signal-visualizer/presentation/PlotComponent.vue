@@ -35,8 +35,7 @@ const resizeObserverRef = ref<ResizeObserver | null>(null)
 let diContainer: DiContainer | null = null;
 
 const signalsLargestDurationSeconds = Math.max(...props.signalSources.map(signal => signal.totalSeconds))
-const viewPortStartSeconds = ref(0)
-const windowLengthSeconds = ref(10)
+const viewPortRef = ref(new ViewPort(0, 10))
 
 const performanceMetrics = ref<PerformanceMetrics | undefined>(undefined)
 
@@ -48,7 +47,7 @@ onMounted(async () => {
     if (!htmlContainerRef.value) {
         return;
     }
-    const viewPort = new ViewPort(viewPortStartSeconds.value, windowLengthSeconds.value)
+    const viewPort = viewPortRef.value
     const eventMediator = new EventMediator((metrics: PerformanceMetrics) => performanceMetrics.value = metrics)
     diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSources, eventMediator);
     await diContainer.init()
@@ -69,15 +68,12 @@ onBeforeUnmount(async () => {
     diContainer?.destroyHandler.handle()
 })
 
-async function updateViewPort(currentPositionSeconds: number) {
-    viewPortStartSeconds.value = currentPositionSeconds
-    await diContainer?.updateViewPortHandler.handle(viewPortStartSeconds.value)
+
+async function updateViewPort(viewPort: ViewPort) {
+    viewPortRef.value = viewPort
+    await diContainer?.changeViewPortHandler.handle(viewPortRef.value)
 }
 
-async function updateWindowLength(windowLength: number) {
-    windowLengthSeconds.value = windowLength
-    await diContainer?.changeViewPortHandler.handle(viewPortStartSeconds.value, windowLength)
-}
 
 async function toggleChannelVisibility(signalInfo: SignalVisibility) {
     signalsVisibility[signalInfo.label] = signalInfo
@@ -99,9 +95,9 @@ async function toggleChannelVisibility(signalInfo: SignalVisibility) {
             </div>
         </div>
         <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="15" :rightSliderPositionPercent="5"
-            :viewPortStartSamples="viewPortStartSeconds" :windowLengthSamples="windowLengthSeconds"
+            :viewPort="viewPortRef"
             :viewPortLargestValueSamples=signalsLargestDurationSeconds
-            @update:viewPortStartSamples='updateViewPort' @update:windowLengthSamples="updateWindowLength">
+            @update:viewPort='updateViewPort'>
         </SliderComponent>
         <MetricsComponent :metrics="performanceMetrics" v-show="showMetricsPanel"></MetricsComponent>
     </div>

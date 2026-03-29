@@ -4,8 +4,7 @@ import { ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
 export class ChangeViewPortCommand {
     interpreter: Interpreter
 
-    async handle(startSeconds: number, lengthSeconds: number): Promise<void> {
-        const viewPort = new ViewPort(startSeconds, lengthSeconds)
+    async handle(viewPort : ViewPort): Promise<void> {
         await this.interpreter.changeViewPort(viewPort)
     }
 

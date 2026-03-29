@@ -3,9 +3,6 @@ import { ResizeCommand } from '@/lib/signal-visualizer/application/commands/resi
 import { DestroyCommand } from '@/lib/signal-visualizer/application/commands/destroyCommand.ts'
 import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
 import {
-    UpdateViewPortCommand
-} from '@/lib/signal-visualizer/application/commands/updateViewPortCommand.ts'
-import {
     ChangeViewPortCommand
 } from '@/lib/signal-visualizer/application/commands/changeViewPortCommand.ts'
 import {
@@ -19,7 +16,6 @@ export class DiContainer {
     private readonly interpreter: Interpreter
     public readonly resizeHandler: ResizeCommand
     public readonly destroyHandler: DestroyCommand
-    public readonly updateViewPortHandler: UpdateViewPortCommand
     public readonly changeViewPortHandler: ChangeViewPortCommand
     public readonly changeChannelVisibilityHandler: ChangeChannelVisibilityCommand
 
@@ -38,7 +34,6 @@ export class DiContainer {
         this.interpreter = new Interpreter(renderer, viewPort, signalsSource)
         this.resizeHandler = new ResizeCommand(this.interpreter)
         this.destroyHandler = new DestroyCommand(this.interpreter)
-        this.updateViewPortHandler = new UpdateViewPortCommand(this.interpreter)
         this.changeViewPortHandler = new ChangeViewPortCommand(this.interpreter)
         this.changeChannelVisibilityHandler = new ChangeChannelVisibilityCommand(this.interpreter)
     }

@@ -1,8 +1,8 @@
-import {type SignalSource, ViewPort} from '@/lib/signal-visualizer/application/signalSource.ts'
+import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
 
-import type {AxisSignal, OneDimSignal} from '@/lib/signal-visualizer/core/types.ts'
-import {RenderManager} from '@/lib/signal-visualizer/core/renderManager.ts'
-import {Envelope} from '@/lib/signal-visualizer/utils/envelope.ts'
+import type { AxisSignal, OneDimSignal } from '@/lib/signal-visualizer/core/types.ts'
+import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
+import { Envelope } from '@/lib/signal-visualizer/utils/envelope.ts'
 
 export class Interpreter {
     private renderer: RenderManager
@@ -10,7 +10,7 @@ export class Interpreter {
     private viewPort: ViewPort
 
     constructor(
-        renderer : RenderManager,
+        renderer: RenderManager,
         viewPort: ViewPort,
         signalsSource: SignalSource[],
     ) {
@@ -73,12 +73,11 @@ export class Interpreter {
     }
 
     async changeViewPort(viewPort: ViewPort): Promise<void> {
-        this.viewPort = viewPort
-        await this.updateChannelsState()
-    }
-
-    async updateViewport(startSeconds: number) {
-        this.viewPort.updateStartSeconds(startSeconds)
+        if (viewPort.lengthSeconds === this.viewPort.lengthSeconds) {
+            this.viewPort.updateStartSeconds(viewPort.startSeconds)
+        } else {
+            this.viewPort = viewPort
+        }
         await this.updateChannelsState()
     }
 
