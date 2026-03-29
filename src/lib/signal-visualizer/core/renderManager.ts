@@ -44,10 +44,14 @@ export class RenderManager {
         }
         this.pixiRenderer.app.stage.addChild(this.componentLayer.container)
         this.pixiRenderer.app.ticker.add(() => {
+            this.pixiRenderer.app.renderer.resolution = window.devicePixelRatio
+        })
+        this.pixiRenderer.app.ticker.add(() => {
+            const sizeData = this.pixiRenderer.sizeData()
             const timeStart = performance.now()
             this.componentLayer?.Draw()
             const timeEnd = performance.now()
-            const windowDevicePixelRatio = window.devicePixelRatio
+            const windowDevicePixelRatio = this.pixiRenderer.app.renderer.resolution
             const performanceMetrics: PerformanceMetrics = {
                 renderTime: timeEnd - timeStart,
                 sizeData: {
