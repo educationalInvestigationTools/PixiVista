@@ -97,8 +97,9 @@ async function toggleChannelVisibility(signalInfo: SignalVisibility) {
             <div ref="htmlContainerRef" class="plot_container">
             </div>
         </div>
-        <SliderComponent :leftSliderPosition="15" :rightSliderPosition="5" :viewPortStartSeconds="viewPortStartSeconds"
-            :windowLengthSeconds="windowLengthSeconds" :signalsLargestDuration=signalsLargestDurationSeconds
+        <SliderComponent :leftSliderPositionPercent="15" :rightSliderPositionPercent="5"
+            :viewPortStartSeconds="viewPortStartSeconds" :windowLengthSeconds="windowLengthSeconds"
+            :viewPortLargestValueSeconds=signalsLargestDurationSeconds
             @update:viewPortStartSeconds='updateViewPort' @update:windowLengthSeconds="updateWindowLength">
         </SliderComponent>
         <MetricsComponent :metrics="performanceMetrics" v-show="showMetricsPanel"></MetricsComponent>

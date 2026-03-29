@@ -3,11 +3,11 @@ import { computed, ref } from "vue";
 import { fmtTime } from "@/lib/signal-visualizer/utils/utils.ts";
 
 const props = defineProps<{
-    leftSliderPosition: number,
-    rightSliderPosition: number,
+    leftSliderPositionPercent: number // between 0 and 100
+    rightSliderPositionPercent: number, // between 0 and 100
     viewPortStartSeconds: number,
     windowLengthSeconds: number,
-    signalsLargestDuration: number
+    viewPortLargestValueSeconds: number
 }>()
 
 const emit = defineEmits<{
@@ -30,7 +30,7 @@ const windowLengthSeconds = computed({
 })
 
 const highlightWindowWidth = computed(() => {
-    const range = props.signalsLargestDuration
+    const range = props.viewPortLargestValueSeconds
     const raw = Math.max(0, Math.min(
         range - viewPortStartSeconds.value,
         windowLengthSeconds.value
@@ -39,7 +39,7 @@ const highlightWindowWidth = computed(() => {
     return result
 })
 const highlightWindowPosition = computed(() => {
-    const range = props.signalsLargestDuration
+    const range = props.viewPortLargestValueSeconds
     let pos = ((viewPortStartSeconds.value) / range) * 100
     const maxLeft = 100 - highlightWindowWidth.value
     if (pos > maxLeft) pos = maxLeft
@@ -57,7 +57,7 @@ function startDrag(e: MouseEvent) {
     function onMove(ev: MouseEvent) {
         const dx = ev.clientX - startX
         const delta = pxToSeconds(dx)
-        const newVal = Math.min(props.signalsLargestDuration - windowLength, Math.max(0, Math.round(currentPositionSeconds + delta)))
+        const newVal = Math.min(props.viewPortLargestValueSeconds - windowLength, Math.max(0, Math.round(currentPositionSeconds + delta)))
         if (newVal != viewPortStartSeconds.value) {
             viewPortStartSeconds.value = newVal
         }
@@ -81,7 +81,7 @@ function startResize(orientation: 'left' | 'right', e: MouseEvent) {
         const delta = pxToSeconds(dx)
         if (orientation === 'right') {
             let newLength = Math.round(currentLengthSeconds + delta)
-            const maxLength = props.signalsLargestDuration - currentPositionSeconds
+            const maxLength = props.viewPortLargestValueSeconds - currentPositionSeconds
             newLength = Math.max(1, Math.min(maxLength, newLength))
             if (newLength !== windowLengthSeconds.value) {
                 windowLengthSeconds.value = newLength
@@ -92,7 +92,7 @@ function startResize(orientation: 'left' | 'right', e: MouseEvent) {
             newStart = Math.max(0, newStart)
             const rightEdge = currentPositionSeconds + currentLengthSeconds
             let newLength = Math.round(rightEdge - newStart)
-            const maxLength = props.signalsLargestDuration - newStart
+            const maxLength = props.viewPortLargestValueSeconds - newStart
             newLength = Math.max(1, Math.min(maxLength, newLength))
             newStart = rightEdge - newLength
             if (
@@ -126,7 +126,7 @@ function pxToSeconds(px: number) {
     if (!el) return 0
 
     const width = el.clientWidth
-    const range = props.signalsLargestDuration
+    const range = props.viewPortLargestValueSeconds
 
     if (width === 0 || range === 0) return 0
     return (px / width) * range
@@ -138,7 +138,7 @@ function pxToSeconds(px: number) {
     <div class="border border-slate-700 rounded p-2 flex flex-row bg-slate-900 text-slate-200">
 
         <!-- LEFT -->
-        <div class="centered bg-slate-700" :style="{ width: leftSliderPosition + '%', wordBreak: 'break-word' }">
+        <div class="centered bg-slate-700" :style="{ width: leftSliderPositionPercent + '%', wordBreak: 'break-word' }">
             <span class="text-xs text-slate-300">
                 {{ fmtTime(0) }}
             </span>
@@ -146,7 +146,7 @@ function pxToSeconds(px: number) {
 
         <!-- SLIDER -->
         <div class="relative bg-slate-800" ref="containerRef"
-            :style="{ width: (100 - leftSliderPosition - rightSliderPosition) + '%' }">
+            :style="{ width: (100 - leftSliderPositionPercent - rightSliderPositionPercent) + '%' }">
 
             <div class="absolute top-0 left-0 h-full bg-blue-500/20 rounded cursor-grab active:cursor-grabbing hover:bg-blue-500/30 centered transition-colors"
                 :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%' }"
@@ -168,9 +168,10 @@ function pxToSeconds(px: number) {
         </div>
 
         <!-- RIGHT -->
-        <div class="centered bg-slate-700" :style="{ width: rightSliderPosition + '%', wordBreak: 'break-word' }">
+        <div class="centered bg-slate-700"
+            :style="{ width: rightSliderPositionPercent + '%', wordBreak: 'break-word' }">
             <span class="text-xs text-slate-300">
-                {{ fmtTime(props.signalsLargestDuration) }}
+                {{ fmtTime(props.viewPortLargestValueSeconds) }}
             </span>
         </div>
 
