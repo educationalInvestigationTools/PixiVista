@@ -136,6 +136,34 @@ function pxToSamples(px: number) {
     return (px / width) * range
 }
 
+function handleKeyDown(e: KeyboardEvent) {
+    e.preventDefault()
+    const key = e.key
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)) return
+
+    if (key === 'ArrowLeft') {
+        const newVal = Math.max(0, viewPortStartSample.value - 1)
+        if (newVal !== viewPortStartSample.value) viewPortStartSample.value = newVal
+    }
+
+    if (key === 'ArrowRight') {
+        const maxStart = props.viewPortLargestValueSamples - windowLength.value
+        const newVal = Math.min(maxStart, viewPortStartSample.value + 1)
+        if (newVal !== viewPortStartSample.value) viewPortStartSample.value = newVal
+    }
+
+    if (key === 'ArrowUp') {
+        const maxLength = props.viewPortLargestValueSamples - viewPortStartSample.value
+        const newLen = Math.min(maxLength, windowLength.value + 1)
+        if (newLen !== windowLength.value) windowLength.value = newLen
+    }
+
+    if (key === 'ArrowDown') {
+        const newLen = Math.max(1, windowLength.value - 1)
+        if (newLen !== windowLength.value) windowLength.value = newLen
+    }
+}
+
 
 </script>
 <template>
@@ -149,8 +177,9 @@ function pxToSamples(px: number) {
         </div>
 
         <!-- SLIDER -->
-        <div class="relative bg-slate-800" ref="containerRef"
-            :style="{ width: (100 - leftSliderPositionPercent - rightSliderPositionPercent) + '%' }">
+        <div class="relative bg-slate-800 " ref="containerRef" tabindex="0"
+            :style="{ width: (100 - leftSliderPositionPercent - rightSliderPositionPercent) + '%' }"
+            @keydown="handleKeyDown">
 
             <div class="absolute top-0 left-0 h-full bg-blue-500/20 rounded cursor-grab active:cursor-grabbing hover:bg-blue-500/30 centered transition-colors"
                 :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%' }"
