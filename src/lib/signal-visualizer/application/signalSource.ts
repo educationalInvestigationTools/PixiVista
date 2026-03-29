@@ -12,7 +12,7 @@ export class ViewPort {
     }
 }
 
-export type One1DSignal = {
+export type OneDimSignalRaw = {
     xValues: Float32Array
     yValues: Float32Array
 }
@@ -20,5 +20,5 @@ export type One1DSignal = {
 export interface SignalSource {
     readonly totalSeconds: number
     readonly label: string
-    read(viewport: ViewPort): One1DSignal
+    read(viewport: ViewPort): OneDimSignalRaw
 }

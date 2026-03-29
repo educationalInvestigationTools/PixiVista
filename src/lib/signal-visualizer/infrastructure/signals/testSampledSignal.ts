@@ -1,6 +1,6 @@
 import {
     type SignalSource,
-    type One1DSignal,
+    type OneDimSignalRaw,
     ViewPort,
 } from '@/lib/signal-visualizer/application/signalSource.ts'
 
@@ -23,7 +23,7 @@ export class TestSignalSource implements SignalSource {
         return this._label
     }
 
-    read(viewport: ViewPort): One1DSignal {
+    read(viewport: ViewPort): OneDimSignalRaw {
         const startSeconds = viewport.startSeconds
         const endSeconds = startSeconds + viewport.lengthSeconds
         const startSample = this.samplingFrequency * startSeconds
