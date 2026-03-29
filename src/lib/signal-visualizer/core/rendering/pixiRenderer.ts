@@ -23,8 +23,8 @@ export class PixiRenderer {
             height: sizeData.height,
             canvas: this._canvas,
             backgroundColor: "red",
-            backgroundAlpha: 0.2,
-            resolution: window.devicePixelRatio || 1,
+            backgroundAlpha: 0,
+            resolution: window.devicePixelRatio,
             autoDensity: true,
         })
     }
