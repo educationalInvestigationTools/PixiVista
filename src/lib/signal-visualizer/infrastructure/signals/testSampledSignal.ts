@@ -32,9 +32,10 @@ export class TestSignalSource implements SignalSource {
         const endSample = Math.min(this.samplingFrequency * endSeconds, this.totalSamples - 1)
         const n = Math.max(0, endSample - startSample + 1)
         const xValues = new Float32Array(n)
-        const yValues = this.data.slice(startSample, endSample)
+        const yValues = new Float32Array(n)
         for (let i = 0; i < n; i++) {
             xValues[i] = startSeconds + i / this.samplingFrequency
+            yValues[i] = this.data[startSample + i]!
         }
         return {
             xValues: xValues,

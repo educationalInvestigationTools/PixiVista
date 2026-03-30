@@ -40,9 +40,10 @@ export class Interpreter {
         const viewPort = this.viewPort
         const signalSource = this.signalsSources[label]!
         const data = signalSource.read(viewPort)
+        const expectedWidth = Math.floor(sizeData.width * this.renderer.devicePixelRatio)
         const downSampledData = largestTriangleThreeBuckets(
             data,
-            Math.floor(sizeData.width * this.renderer.devicePixelRatio),
+            expectedWidth,
         )
         const dataToUse = downSampledData
         const xEnvelope = new Envelope(dataToUse.xValues, { min: this.viewPort.startSeconds, max: this.viewPort.startSeconds + this.viewPort.lengthSeconds })
