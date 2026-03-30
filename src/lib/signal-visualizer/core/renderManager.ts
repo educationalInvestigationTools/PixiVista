@@ -2,20 +2,20 @@ import {
     ComponentLayer
 } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
 import type { OneDimNormalizedSignal, SizeData } from '@/lib/signal-visualizer/core/types.ts'
-import type {ViewPort} from '@/lib/signal-visualizer/application/signalSource.ts'
+import type { ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
 import {
     ComponentLayout
 } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
-import {PixiRenderer} from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
-import type {PerformanceMetrics} from '@/lib/signal-visualizer/application/types.ts'
-import type {EventMediator} from '@/lib/signal-visualizer/utils/eventMediator.ts'
+import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
+import type { PerformanceMetrics } from '@/lib/signal-visualizer/application/types.ts'
+import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer
     private componentLayer?: ComponentLayer
     private eventMediator: EventMediator<PerformanceMetrics>
 
-    constructor( canvas : HTMLCanvasElement, eventMediator: EventMediator<PerformanceMetrics>) {
+    constructor(canvas: HTMLCanvasElement, eventMediator: EventMediator<PerformanceMetrics>) {
         this.pixiRenderer = new PixiRenderer(canvas)
         this.eventMediator = eventMediator
     }
@@ -59,7 +59,7 @@ export class RenderManager {
                     height: sizeData.height
                 },
                 windowDevicePixelRatio: Math.round(windowDevicePixelRatio * 100) / 100,
-                refreshRate :  this.pixiRenderer.app.ticker.FPS
+                refreshRate: this.pixiRenderer.app.ticker.FPS
             }
             this.eventMediator.callback(performanceMetrics)
         })
@@ -88,6 +88,11 @@ export class RenderManager {
 
     get devicePixelRatio(): number {
         return window.devicePixelRatio
+    }
+
+    getChannelSizeData(): SizeData {
+        const sizeData = this.componentLayer?.channelsLayer.layoutDesign.buildChannelSize() ?? this.sizeData
+        return sizeData
     }
 
     async updateSignalData(signals: OneDimNormalizedSignal[], viewPort: ViewPort) {

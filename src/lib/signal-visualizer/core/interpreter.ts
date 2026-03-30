@@ -36,7 +36,7 @@ export class Interpreter {
     }
 
     private async fetchData(label: string): Promise<OneDimNormalizedSignal> {
-        const sizeData = this.renderer.sizeData
+        const sizeData = this.renderer.getChannelSizeData()
         const viewPort = this.viewPort
         const signalSource = this.signalsSources[label]!
         const data = signalSource.read(viewPort)
