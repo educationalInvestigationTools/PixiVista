@@ -8,11 +8,13 @@ export class TestSignalSource implements SignalSource {
     private readonly samplingFrequency: number
     private readonly totalSamples: number
     private readonly _label: string
+    private randomSeed : number[]
 
     constructor(label: string, samplingFrequency: number, totalSamples: number) {
         this.samplingFrequency = samplingFrequency
         this.totalSamples = totalSamples
         this._label = label
+        this.randomSeed = Array.from({ length: totalSamples }, () => Math.random())
     }
 
     get totalSeconds(): number {
@@ -32,7 +34,7 @@ export class TestSignalSource implements SignalSource {
         const xValues = new Float32Array(n)
         const yValues = new Float32Array(n)
         for (let i = 0; i < n; i++) {
-            yValues[i] = Math.random() * Math.sin((i / n) * 360)
+            yValues[i] = this.randomSeed[i]! * Math.sin((i / n) * 360)
             xValues[i] = startSeconds + i / this.samplingFrequency
         }
         return {

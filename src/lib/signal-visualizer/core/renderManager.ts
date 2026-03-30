@@ -86,6 +86,10 @@ export class RenderManager {
         return this.pixiRenderer.sizeData()
     }
 
+    get devicePixelRatio(): number {
+        return window.devicePixelRatio
+    }
+
     async updateSignalData(signals: OneDimSignal[], viewPort: ViewPort) {
         for (const signal of signals) {
             const channelLayer = this.componentLayer?.channelsLayer.getByLabel(signal.label)

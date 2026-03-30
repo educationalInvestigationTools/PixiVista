@@ -3,6 +3,7 @@ import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application
 import type { AxisSignal, OneDimSignal } from '@/lib/signal-visualizer/core/types.ts'
 import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 import { Envelope } from '@/lib/signal-visualizer/utils/envelope.ts'
+import { largestTriangleThreeBuckets } from '../utils/lttb'
 
 export class Interpreter {
     private renderer: RenderManager
@@ -38,7 +39,14 @@ export class Interpreter {
         const viewPort = this.viewPort
         const signalSource = this.signalsSources[label]!
         const data = signalSource.read(viewPort)
-        const xEnvelope = new Envelope(data.xValues)
+        const downSampledData = largestTriangleThreeBuckets(
+            data,
+            this.renderer.sizeData.width * this.renderer.devicePixelRatio,
+        )
+
+        const dataToUse = downSampledData
+
+        const xEnvelope = new Envelope(dataToUse.xValues)
         const xAxisSignal: AxisSignal = {
             valuesNormalized: xEnvelope.normalized,
             minMaxValues: {
@@ -47,7 +55,7 @@ export class Interpreter {
             },
         }
 
-        const yEnvelope = new Envelope(data.yValues)
+        const yEnvelope = new Envelope(dataToUse.yValues)
         const yAxisSignal: AxisSignal = {
             valuesNormalized: yEnvelope.normalized,
             minMaxValues: {
