@@ -56,66 +56,85 @@ const highlightWindowPosition = computed(() => {
 const containerRef = ref<HTMLElement | null>(null)
 
 function startDrag(e: MouseEvent) {
-    const startX = e.clientX
-    const currentPosition = viewPortStartSample.value
-    const currentWindowLength = windowLength.value
+    e.preventDefault();
+    document.body.style.userSelect = "none";
+
+    const startX = e.clientX;
+    const currentPosition = viewPortStartSample.value;
+    const currentWindowLength = windowLength.value;
+
     function onMove(ev: MouseEvent) {
-        const dx = ev.clientX - startX
-        const delta = pxToSamples(dx)
-        const newVal = Math.min(props.viewPortLargestValueSamples - currentWindowLength, Math.max(0, Math.round(currentPosition + delta)))
+        ev.preventDefault();
+        const dx = ev.clientX - startX;
+        const delta = pxToSamples(dx);
+        const newVal = Math.min(
+            props.viewPortLargestValueSamples - currentWindowLength,
+            Math.max(0, Math.round(currentPosition + delta))
+        );
         if (newVal != viewPortStartSample.value) {
-            viewPortStartSample.value = newVal
+            viewPortStartSample.value = newVal;
         }
     }
 
     function onUp() {
-        window.removeEventListener('pointermove', onMove)
-        window.removeEventListener('pointerup', onUp)
+        document.body.style.userSelect = "";
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
     }
 
-    window.addEventListener('pointermove', onMove)
-    window.addEventListener('pointerup', onUp)
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
 }
 
-function startResize(orientation: 'left' | 'right', e: MouseEvent) {
-    const startX = e.clientX
-    const currentLength = windowLength.value
-    const currentPosition = viewPortStartSample.value
+function startResize(orientation: "left" | "right", e: MouseEvent) {
+    e.preventDefault();
+    document.body.style.userSelect = "none";
+
+    const startX = e.clientX;
+    const currentLength = windowLength.value;
+    const currentPosition = viewPortStartSample.value;
+
     function onMove(ev: PointerEvent) {
-        const dx = ev.clientX - startX
-        const delta = pxToSamples(dx)
-        if (orientation === 'right') {
-            let newLength = Math.round(currentLength + delta)
-            const maxLength = props.viewPortLargestValueSamples - currentPosition
-            newLength = Math.max(1, Math.min(maxLength, newLength))
+        ev.preventDefault();
+        const dx = ev.clientX - startX;
+        const delta = pxToSamples(dx);
+
+        if (orientation === "right") {
+            let newLength = Math.round(currentLength + delta);
+            const maxLength = props.viewPortLargestValueSamples - currentPosition;
+            newLength = Math.max(1, Math.min(maxLength, newLength));
             if (newLength !== windowLength.value) {
-                windowLength.value = newLength
+                windowLength.value = newLength;
             }
         }
-        if (orientation === 'left') {
-            let newStart = currentPosition + delta
-            newStart = Math.max(0, newStart)
-            const rightEdge = currentPosition + currentLength
-            let newLength = Math.round(rightEdge - newStart)
-            const maxLength = props.viewPortLargestValueSamples - newStart
-            newLength = Math.max(1, Math.min(maxLength, newLength))
-            newStart = rightEdge - newLength
+
+        if (orientation === "left") {
+            let newStart = currentPosition + delta;
+            newStart = Math.max(0, newStart);
+            const rightEdge = currentPosition + currentLength;
+            let newLength = Math.round(rightEdge - newStart);
+            const maxLength = props.viewPortLargestValueSamples - newStart;
+            newLength = Math.max(1, Math.min(maxLength, newLength));
+            newStart = rightEdge - newLength;
+
             if (
                 newStart !== viewPortStartSample.value ||
                 newLength !== windowLength.value
             ) {
-                viewPortStartSample.value = newStart
-                windowLength.value = newLength
+                viewPortStartSample.value = newStart;
+                windowLength.value = newLength;
             }
         }
     }
+
     function onUp() {
-        window.removeEventListener('pointermove', onMove)
-        window.removeEventListener('pointerup', onUp)
+        document.body.style.userSelect = "";
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
     }
 
-    window.addEventListener('pointermove', onMove)
-    window.addEventListener('pointerup', onUp)
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
 }
 
 function startResizeRight(e: MouseEvent) {
@@ -212,7 +231,11 @@ function handleKeyDown(e: KeyboardEvent) {
     </div>
 </template>
 <style scoped>
-.centered {
-    @apply flex items-center justify-center
+@layer components {
+    .centered {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 </style>
