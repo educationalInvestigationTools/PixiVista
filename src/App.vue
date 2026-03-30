@@ -5,11 +5,11 @@ import {
 } from "@/lib/signal-visualizer/infrastructure/signals/testSampledSignal.ts";
 
 const signalSources = [
-    new TestSignalSource("A", 200, 5000),
-    new TestSignalSource("B", 200, 3000),
-    new TestSignalSource("C", 200, 2000),
-    new TestSignalSource("D", 200, 2000),
-    new TestSignalSource("E", 200, 2000)]
+    new TestSignalSource("A", 1000, 60),
+    new TestSignalSource("B", 1000, 30),
+    new TestSignalSource("C", 1000, 20),
+    new TestSignalSource("D", 1000, 10),
+    new TestSignalSource("E", 1000, 60)]
 </script>
 
 <template>

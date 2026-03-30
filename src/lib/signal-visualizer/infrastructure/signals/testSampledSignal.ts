@@ -10,11 +10,11 @@ export class TestSignalSource implements SignalSource {
     private readonly _label: string
     private data: Float32Array
 
-    constructor(label: string, samplingFrequency: number, totalSamples: number) {
+    constructor(label: string, samplingFrequency: number, durationSeconds: number) {
         this.samplingFrequency = samplingFrequency
-        this.totalSamples = totalSamples
+        this.totalSamples = Math.floor(samplingFrequency * durationSeconds)
         this._label = label
-        this.data = new Float32Array(Array.from({ length: totalSamples }, () => Math.random()).map((v, i) => v * Math.sin(i / totalSamples * 360)))
+        this.data = new Float32Array(Array.from({ length: this.totalSamples }, () => Math.random()).map((v, i) => v * Math.sin(i / this.totalSamples * 360)))
     }
 
     get totalSeconds(): number {

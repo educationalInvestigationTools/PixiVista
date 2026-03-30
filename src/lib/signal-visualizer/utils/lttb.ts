@@ -1,5 +1,5 @@
 /*
-Took from https://github.com/devoxi/lttb-py/blob/master/lttb/lttb.py
+Source: https://github.com/devoxi/lttb-py/blob/master/lttb/lttb.py
 */
 
 import type { OneDimSignalRaw } from "../application/signalSource";
