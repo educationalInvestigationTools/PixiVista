@@ -15,13 +15,13 @@ export type SizeData = {
     height: number
 }
 
-export type AxisSignal = {
-    valuesNormalized: Float32Array
+export type NormalizedSignal = {
+    values: Float32Array
     minMaxValues: MinMaxValues
 }
 
-export type OneDimSignal = {
+export type OneDimNormalizedSignal = {
     label: string
-    xSignal: AxisSignal
-    ySignal: AxisSignal
+    xSignal: NormalizedSignal
+    ySignal: NormalizedSignal
 }

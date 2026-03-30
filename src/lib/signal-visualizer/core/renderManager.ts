@@ -1,7 +1,7 @@
 import {
     ComponentLayer
 } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
-import type {OneDimSignal, SizeData} from '@/lib/signal-visualizer/core/types.ts'
+import type { OneDimNormalizedSignal, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 import type {ViewPort} from '@/lib/signal-visualizer/application/signalSource.ts'
 import {
     ComponentLayout
@@ -20,7 +20,7 @@ export class RenderManager {
         this.eventMediator = eventMediator
     }
 
-    async init(signals: OneDimSignal[], viewPort: ViewPort) {
+    async init(signals: OneDimNormalizedSignal[], viewPort: ViewPort) {
         await this.pixiRenderer.init()
         const sizeData = this.pixiRenderer.sizeData()
         const gridData = {
@@ -70,7 +70,7 @@ export class RenderManager {
         this.componentLayer?.updateSize(sizeData)
     }
 
-    addChannel(oneDimSignal: OneDimSignal) {
+    addChannel(oneDimSignal: OneDimNormalizedSignal) {
         this.componentLayer?.channelsLayer.addChannel(oneDimSignal)
     }
 
@@ -90,7 +90,7 @@ export class RenderManager {
         return window.devicePixelRatio
     }
 
-    async updateSignalData(signals: OneDimSignal[], viewPort: ViewPort) {
+    async updateSignalData(signals: OneDimNormalizedSignal[], viewPort: ViewPort) {
         for (const signal of signals) {
             const channelLayer = this.componentLayer?.channelsLayer.getByLabel(signal.label)
             if (channelLayer != undefined) {

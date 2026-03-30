@@ -1,6 +1,6 @@
 import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
 
-import type { AxisSignal, OneDimSignal } from '@/lib/signal-visualizer/core/types.ts'
+import type { NormalizedSignal, OneDimNormalizedSignal } from '@/lib/signal-visualizer/core/types.ts'
 import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 import { Envelope } from '@/lib/signal-visualizer/utils/envelope.ts'
 import { largestTriangleThreeBuckets } from '../utils/lttb'
@@ -24,7 +24,7 @@ export class Interpreter {
     }
 
     async init() {
-        const data: OneDimSignal[] = []
+        const data: OneDimNormalizedSignal[] = []
         for (const label in this.signalsSources) {
             data.push(await this.fetchData(label))
         }
@@ -35,7 +35,7 @@ export class Interpreter {
         this.renderer.destroy()
     }
 
-    private async fetchData(label: string): Promise<OneDimSignal> {
+    private async fetchData(label: string): Promise<OneDimNormalizedSignal> {
         const viewPort = this.viewPort
         const signalSource = this.signalsSources[label]!
         const data = signalSource.read(viewPort)
@@ -47,8 +47,8 @@ export class Interpreter {
         const dataToUse = downSampledData
 
         const xEnvelope = new Envelope(dataToUse.xValues)
-        const xAxisSignal: AxisSignal = {
-            valuesNormalized: xEnvelope.normalized,
+        const xAxisSignal: NormalizedSignal = {
+            values: xEnvelope.normalized,
             minMaxValues: {
                 min: xEnvelope.min,
                 max: xEnvelope.max,
@@ -56,8 +56,8 @@ export class Interpreter {
         }
 
         const yEnvelope = new Envelope(dataToUse.yValues)
-        const yAxisSignal: AxisSignal = {
-            valuesNormalized: yEnvelope.normalized,
+        const yAxisSignal: NormalizedSignal = {
+            values: yEnvelope.normalized,
             minMaxValues: {
                 min: yEnvelope.min,
                 max: yEnvelope.max,
@@ -73,7 +73,7 @@ export class Interpreter {
     async updateChannelsState(): Promise<void> {
         const viewPort = this.viewPort
         const activeChannels = this.renderer.visibleChannels
-        const updatedData: OneDimSignal[] = []
+        const updatedData: OneDimNormalizedSignal[] = []
         for (const label of activeChannels) {
             updatedData.push(await this.fetchData(label))
         }

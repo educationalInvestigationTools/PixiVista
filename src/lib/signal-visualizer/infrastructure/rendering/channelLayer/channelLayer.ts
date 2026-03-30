@@ -4,7 +4,7 @@ import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/grid
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type {
     GridData,
-    OneDimSignal,
+    OneDimNormalizedSignal,
     PositionData,
     SizeData,
 } from '@/lib/signal-visualizer/core/types.ts'
@@ -20,7 +20,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
     constructor(
         channelLayout: ChannelLayout,
         gridData: GridData,
-        oneDimensionalSignalData: OneDimSignal,
+        oneDimensionalSignalData: OneDimNormalizedSignal,
     ) {
         super(channelLayout)
         this.gridLayer = new GridLayer(
@@ -69,7 +69,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         this.layoutDesign.updatePosData(positionData)
     }
 
-    updateData(signalData: OneDimSignal) {
+    updateData(signalData: OneDimNormalizedSignal) {
         this._needsRendering = true
         this.gridLayer.updateMinMaxValues(signalData.ySignal.minMaxValues)
         this.oneDimensionalSignalLayer.updateData(signalData)

@@ -1,5 +1,5 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
-import type { OneDimSignal, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import type { OneDimNormalizedSignal, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 import { type OneDimensionalSignalLayout } from '@/lib/signal-visualizer/infrastructure/rendering/oneDimensionalSignalLayer/layout.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 
@@ -13,12 +13,12 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
         const height = this.layoutDesign.height
         const xValues = this.layoutDesign.signalData.xSignal
         const yValues = this.layoutDesign.signalData.ySignal
-        const n = yValues.valuesNormalized.length
+        const n = yValues.values.length
         const xCoords = new Float32Array(n)
         const yCoords = new Float32Array(n)
         for (let i = 0; i < n; i++) {
-            const xMappedCord = width * xValues.valuesNormalized[i]!
-            const yMappedCord = height * yValues.valuesNormalized[i]!
+            const xMappedCord = width * xValues.values[i]!
+            const yMappedCord = height * yValues.values[i]!
             xCoords[i] = xMappedCord
             yCoords[i] = height - yMappedCord
         }
@@ -32,7 +32,7 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
         this.graphics.stroke({ color: 'black', width: 1 })
     }
 
-    updateData(signalData: OneDimSignal) {
+    updateData(signalData: OneDimNormalizedSignal) {
         this.layoutDesign.signalData = signalData
         this._needsRendering = true
     }

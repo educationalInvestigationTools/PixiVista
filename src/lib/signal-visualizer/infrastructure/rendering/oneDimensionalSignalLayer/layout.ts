@@ -1,10 +1,10 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { OneDimSignal, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import type { OneDimNormalizedSignal, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 
 export class OneDimensionalSignalLayout extends LayoutDesign {
-    signalData: OneDimSignal
+    signalData: OneDimNormalizedSignal
 
-    constructor(sizeData: SizeData, posData: PositionData, signalData: OneDimSignal) {
+    constructor(sizeData: SizeData, posData: PositionData, signalData: OneDimNormalizedSignal) {
         super(sizeData, posData)
         this.signalData = signalData
     }
