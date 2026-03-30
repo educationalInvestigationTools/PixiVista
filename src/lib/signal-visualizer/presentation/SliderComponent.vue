@@ -55,24 +55,63 @@ const highlightWindowPosition = computed(() => {
 
 const containerRef = ref<HTMLElement | null>(null)
 
-function startDrag(e: MouseEvent) {
-    e.preventDefault();
-    document.body.style.userSelect = "none";
 
-    const startX = e.clientX;
+type Interaction = 'resize-left' | 'resize-right' | 'drag'
+
+function handleDrag(delta: number, currentPosition: number, currentWindowLength: number) {
+    const newVal = Math.min(
+        props.viewPortLargestValueSamples - currentWindowLength,
+        Math.max(0, Math.round(currentPosition + delta))
+    );
+    if (newVal != viewPortStartSample.value) {
+        viewPortStartSample.value = newVal;
+    }
+}
+
+function handleResizeLeft(delta: number, currentPosition: number, currentWindowLength: number) {
+    let newStart = currentPosition + delta;
+    newStart = Math.max(0, newStart);
+    const rightEdge = currentPosition + currentWindowLength;
+    let newLength = Math.round(rightEdge - newStart);
+    const maxLength = props.viewPortLargestValueSamples - newStart;
+    newLength = Math.max(1, Math.min(maxLength, newLength));
+    newStart = rightEdge - newLength;
+
+    if (
+        newStart !== viewPortStartSample.value ||
+        newLength !== windowLength.value
+    ) {
+        viewPortStartSample.value = newStart;
+        windowLength.value = newLength;
+    }
+}
+
+function handleResizeRight(delta: number, currentPosition: number, currentWindowLength: number) {
+    let newLength = Math.round(currentWindowLength + delta);
+    const maxLength = props.viewPortLargestValueSamples - currentPosition;
+    newLength = Math.max(1, Math.min(maxLength, newLength));
+    if (newLength !== windowLength.value) {
+        windowLength.value = newLength;
+    }
+}
+
+function startInteraction(interaction: Interaction, p: PointerEvent) {
+    p.preventDefault();
+    document.body.style.userSelect = "none";
+    const startX = p.clientX;
     const currentPosition = viewPortStartSample.value;
     const currentWindowLength = windowLength.value;
 
-    function onMove(ev: MouseEvent) {
-        ev.preventDefault();
-        const dx = ev.clientX - startX;
+    function onMove(p: PointerEvent) {
+        p.preventDefault()
+        const dx = p.clientX - startX;
         const delta = pxToSamples(dx);
-        const newVal = Math.min(
-            props.viewPortLargestValueSamples - currentWindowLength,
-            Math.max(0, Math.round(currentPosition + delta))
-        );
-        if (newVal != viewPortStartSample.value) {
-            viewPortStartSample.value = newVal;
+        if (interaction === 'resize-right') {
+            handleResizeRight(delta, currentPosition, currentWindowLength)
+        } else if (interaction === 'resize-left') {
+            handleResizeLeft(delta, currentPosition, currentWindowLength)
+        } else {
+            handleDrag(delta, currentPosition, currentWindowLength)
         }
     }
 
@@ -84,65 +123,6 @@ function startDrag(e: MouseEvent) {
 
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
-}
-
-function startResize(orientation: "left" | "right", e: MouseEvent) {
-    e.preventDefault();
-    document.body.style.userSelect = "none";
-
-    const startX = e.clientX;
-    const currentLength = windowLength.value;
-    const currentPosition = viewPortStartSample.value;
-
-    function onMove(ev: PointerEvent) {
-        ev.preventDefault();
-        const dx = ev.clientX - startX;
-        const delta = pxToSamples(dx);
-
-        if (orientation === "right") {
-            let newLength = Math.round(currentLength + delta);
-            const maxLength = props.viewPortLargestValueSamples - currentPosition;
-            newLength = Math.max(1, Math.min(maxLength, newLength));
-            if (newLength !== windowLength.value) {
-                windowLength.value = newLength;
-            }
-        }
-
-        if (orientation === "left") {
-            let newStart = currentPosition + delta;
-            newStart = Math.max(0, newStart);
-            const rightEdge = currentPosition + currentLength;
-            let newLength = Math.round(rightEdge - newStart);
-            const maxLength = props.viewPortLargestValueSamples - newStart;
-            newLength = Math.max(1, Math.min(maxLength, newLength));
-            newStart = rightEdge - newLength;
-
-            if (
-                newStart !== viewPortStartSample.value ||
-                newLength !== windowLength.value
-            ) {
-                viewPortStartSample.value = newStart;
-                windowLength.value = newLength;
-            }
-        }
-    }
-
-    function onUp() {
-        document.body.style.userSelect = "";
-        window.removeEventListener("pointermove", onMove);
-        window.removeEventListener("pointerup", onUp);
-    }
-
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-}
-
-function startResizeRight(e: MouseEvent) {
-    startResize('right', e)
-}
-
-function startResizeLeft(e: MouseEvent) {
-    startResize('left', e)
 }
 
 function pxToSamples(px: number) {
@@ -203,19 +183,19 @@ function handleKeyDown(e: KeyboardEvent) {
 
             <div class="absolute top-0 left-0 h-full bg-blue-500/20 rounded cursor-grab active:cursor-grabbing hover:bg-blue-500/30 centered transition-colors"
                 :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%' }"
-                @pointerdown="startDrag">
+                @pointerdown="(p) => startInteraction('drag', p)">
                 <span class="pointer-events-none select-none text-xs font-medium text-blue-200">
                     {{ props.sampleToString(props.viewPort.lengthSeconds) }}
                 </span>
 
                 <!-- LEFT HANDLE -->
                 <div class="absolute left-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
-                    @pointerdown.stop="startResizeLeft">
+                    @pointerdown.stop="(p) => startInteraction('resize-left', p)">
                 </div>
 
                 <!-- RIGHT HANDLE -->
                 <div class="absolute right-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
-                    @pointerdown.stop="startResizeRight">
+                    @pointerdown.stop="(p) => startInteraction('resize-right', p)">
                 </div>
             </div>
         </div>
