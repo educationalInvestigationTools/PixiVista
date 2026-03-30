@@ -8,25 +8,27 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
         return []
     }
 
+    mapXValue(xValue: number): number {
+        return this.layoutDesign.width * xValue
+    }
+
+    mapYValue(yValue: number): number {
+        return this.layoutDesign.height - this.layoutDesign.height * yValue
+    }
+
     protected _draw(): void {
-        const width = this.layoutDesign.width
-        const height = this.layoutDesign.height
         const xValues = this.layoutDesign.signalData.xSignal
         const yValues = this.layoutDesign.signalData.ySignal
         const n = yValues.values.length
-        const xCoords = new Float32Array(n)
-        const yCoords = new Float32Array(n)
-        for (let i = 0; i < n; i++) {
-            const xMappedCord = width * xValues.values[i]!
-            const yMappedCord = height * yValues.values[i]!
-            xCoords[i] = xMappedCord
-            yCoords[i] = height - yMappedCord
-        }
-
         for (let i = 0; i < n; i++) {
             if (i > 0) {
-                this.graphics.moveTo(xCoords[i - 1]!, yCoords[i - 1]!)
-                this.graphics.lineTo(xCoords[i]!, yCoords[i]!)
+                const xMappedCord = this.mapXValue(xValues.values[i]!)
+                const yMappedCord = this.mapYValue(yValues.values[i]!)
+
+                const xMappedCordPrev = this.mapXValue(xValues.values[i - 1]!)
+                const yMappedCordPrev = this.mapYValue(yValues.values[i - 1]!)
+                this.graphics.moveTo(xMappedCordPrev, yMappedCordPrev)
+                this.graphics.lineTo(xMappedCord, yMappedCord)
             }
         }
         this.graphics.stroke({ color: 'black', width: 1 })

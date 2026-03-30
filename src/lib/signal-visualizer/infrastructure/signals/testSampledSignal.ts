@@ -34,7 +34,7 @@ export class TestSignalSource implements SignalSource {
         const xValues = new Float32Array(n)
         const yValues = new Float32Array(n)
         for (let i = 0; i < n; i++) {
-            yValues[i] = this.randomSeed[i]! * Math.sin((i / n) * 360)
+            yValues[i] = this.randomSeed[i + startSample]! * Math.sin((i / n) * 360)
             xValues[i] = startSeconds + i / this.samplingFrequency
         }
         return {

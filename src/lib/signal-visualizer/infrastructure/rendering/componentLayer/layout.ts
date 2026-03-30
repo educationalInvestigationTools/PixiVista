@@ -36,6 +36,9 @@ export class ChannelsLayerLayout extends ComponentBaseLayout {
     }
 
     get channelHeight(): number {
+        if (this._visibleChannels === 0) {
+            return 0
+        }
         return this.height / this._visibleChannels
     }
 

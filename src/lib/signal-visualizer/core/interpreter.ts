@@ -36,17 +36,16 @@ export class Interpreter {
     }
 
     private async fetchData(label: string): Promise<OneDimNormalizedSignal> {
+        const sizeData = this.renderer.sizeData
         const viewPort = this.viewPort
         const signalSource = this.signalsSources[label]!
         const data = signalSource.read(viewPort)
         const downSampledData = largestTriangleThreeBuckets(
             data,
-            this.renderer.sizeData.width * this.renderer.devicePixelRatio,
+            Math.floor(sizeData.width * this.renderer.devicePixelRatio),
         )
-
         const dataToUse = downSampledData
-
-        const xEnvelope = new Envelope(dataToUse.xValues)
+        const xEnvelope = new Envelope(dataToUse.xValues, { min: this.viewPort.startSeconds, max: this.viewPort.startSeconds + this.viewPort.lengthSeconds })
         const xAxisSignal: NormalizedSignal = {
             values: xEnvelope.normalized,
             minMaxValues: {
@@ -54,7 +53,6 @@ export class Interpreter {
                 max: xEnvelope.max,
             },
         }
-
         const yEnvelope = new Envelope(dataToUse.yValues)
         const yAxisSignal: NormalizedSignal = {
             values: yEnvelope.normalized,
