@@ -13,7 +13,7 @@ const signalSources = [
 </script>
 
 <template>
-    <PlotComponent :signalSources=signalSources>
+    <PlotComponent :annotations="{}" :signalSources=signalSources>
     </PlotComponent>
 </template>
 

@@ -2,7 +2,6 @@
 
 
 import type { ChannelVisibility } from "@/lib/signal-visualizer/presentation/PlotComponent.vue";
-
 const props = defineProps<{
     signalsInfo: Record<string, ChannelVisibility>
 }>()

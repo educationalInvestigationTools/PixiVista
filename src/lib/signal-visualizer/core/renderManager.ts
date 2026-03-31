@@ -99,7 +99,7 @@ export class RenderManager {
     async updateSignalData(signals: OneDimNormalizedSignal[], viewPort: ViewPort) {
         for (const signal of signals) {
             const channelLayer = this.componentLayer?.channelsLayer.getByLabel(signal.label)
-            if (channelLayer != undefined) {
+            if (channelLayer !== undefined) {
                 channelLayer.updateData(signal)
             }
         }

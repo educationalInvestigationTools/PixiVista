@@ -14,10 +14,12 @@ import type {
 import {EventMediator} from "@/lib/signal-visualizer/utils/eventMediator.ts";
 import {fmtTime} from "../utils/utils";
 import {ViewPort} from "@/lib/signal-visualizer/application/types/viewPort.ts";
+import type { IntervalGroup } from "../application/types/highlightedInterval";
 
 
 const props = defineProps<{
     signalSources: SignalSource[]
+    annotations: Record<string, IntervalGroup>
 }>()
 
 export type ChannelVisibility = {

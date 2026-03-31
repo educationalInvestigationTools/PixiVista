@@ -5,12 +5,13 @@ export type HighlightedInterval = {
     endSeconds: number
     label: string
     signalsAssociated: string[]
-    groupLabel: string
     drawingColor: string
     drawingStyle: DrawingStyle
     hoverInfo: Record<string, string>
 }
 
-export type Group = {
+export type IntervalGroup = {
     label: string
+    priority: number // If a < b, then a should be draw first, then b over it, this is the rule.
+    intervals: HighlightedInterval[]
 }
