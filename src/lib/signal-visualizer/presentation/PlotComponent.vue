@@ -1,16 +1,19 @@
 <script setup lang="ts">
 
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
-import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts";
-import { ResizeDto } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
-import { type SignalSource, ViewPort } from "@/lib/signal-visualizer/application/signalSource.ts";
+import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {DiContainer} from "@/lib/signal-visualizer/application/diContainer.ts";
+import {ResizeDto} from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
+import {type SignalSource} from "@/lib/signal-visualizer/application/types/signalSource.ts";
 import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
 import SettingsComponent from "@/lib/signal-visualizer/presentation/SettingsComponent.vue";
 import AnnotationsComponent from "@/lib/signal-visualizer/presentation/AnnotationsComponent.vue";
 import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsComponent.vue"
-import type { PerformanceMetrics } from "@/lib/signal-visualizer/application/types.ts";
-import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
-import { fmtTime } from "../utils/utils";
+import type {
+    PerformanceMetrics
+} from "@/lib/signal-visualizer/application/types/performanceMetrics.ts";
+import {EventMediator} from "@/lib/signal-visualizer/utils/eventMediator.ts";
+import {fmtTime} from "../utils/utils";
+import {ViewPort} from "@/lib/signal-visualizer/application/types/viewPort.ts";
 
 
 const props = defineProps<{
@@ -97,10 +100,12 @@ async function updateViewPort(viewPort: ViewPort) {
 
 <template>
     <div class="m-4 border border-gray-900 rounded p-2">
-        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel" v-model:heightPerChannel="heightPerChannel">
+        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel"
+                           v-model:showMetrics="showMetricsPanel"
+                           v-model:heightPerChannel="heightPerChannel">
         </SettingsComponent>
         <AnnotationsComponent v-show="showAnnotationsPanel" :signalsInfo="channelVisibility"
-            @toggleChannelVisibility="toggleChannelVisibility">
+                              @toggleChannelVisibility="toggleChannelVisibility">
         </AnnotationsComponent>
         <div class="border border-gray-900 rounded p-2">
             <div ref="htmlContainerRef" :style="{
@@ -108,12 +113,14 @@ async function updateViewPort(viewPort: ViewPort) {
             }">
             </div>
         </div>
-        <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="15" :rightSliderPositionPercent="5"
-            :viewPort="viewPortRef"
-            :viewPortLargestValueSamples=signalsLargestDurationSeconds
-            @update:viewPort='updateViewPort'>
+        <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="15"
+                         :rightSliderPositionPercent="5"
+                         :viewPort="viewPortRef"
+                         :viewPortLargestValueSamples=signalsLargestDurationSeconds
+                         @update:viewPort='updateViewPort'>
         </SliderComponent>
-        <MetricsComponent :metrics="performanceMetrics" v-show="showMetricsPanel"></MetricsComponent>
+        <MetricsComponent :metrics="performanceMetrics"
+                          v-show="showMetricsPanel"></MetricsComponent>
     </div>
 
 </template>

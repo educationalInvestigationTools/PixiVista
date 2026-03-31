@@ -1,8 +1,8 @@
 import {
     type SignalSource,
     type OneDimSignalRaw,
-    ViewPort,
-} from '@/lib/signal-visualizer/application/signalSource.ts'
+} from '@/lib/signal-visualizer/application/types/signalSource.ts'
+import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
 
 export class TestSignalSource implements SignalSource {
     private readonly samplingFrequency: number

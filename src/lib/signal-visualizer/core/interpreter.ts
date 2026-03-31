@@ -1,4 +1,4 @@
-import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
+import { type SignalSource } from '@/lib/signal-visualizer/application/types/signalSource.ts'
 
 import type {
     NormalizedSignal,
@@ -7,6 +7,7 @@ import type {
 import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 import { Envelope } from '@/lib/signal-visualizer/utils/envelope.ts'
 import { largestTriangleThreeBuckets } from '../utils/lttb'
+import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
 
 export class Interpreter {
     private renderer: RenderManager

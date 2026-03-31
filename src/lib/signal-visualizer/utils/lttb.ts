@@ -2,21 +2,27 @@
 Source: https://github.com/devoxi/lttb-py/blob/master/lttb/lttb.py
 */
 
-import type { OneDimSignalRaw } from "../application/signalSource";
+import type { OneDimSignalRaw } from '../application/types/signalSource.ts'
 
-export function largestTriangleThreeBuckets(data: OneDimSignalRaw, threshold: number): OneDimSignalRaw {
+export function largestTriangleThreeBuckets(
+    data: OneDimSignalRaw,
+    threshold: number,
+): OneDimSignalRaw {
     const dataLength = data.xValues.length
     if (threshold <= 1 || threshold >= dataLength) {
         return { xValues: data.xValues, yValues: data.yValues }
     }
 
     const every = (dataLength - 2) / (threshold - 2)
-    let a = 0, nextA = 0, maxAreaPoint = [0, 0]
+    let a = 0,
+        nextA = 0,
+        maxAreaPoint = [0, 0]
     const sampledX: number[] = [data.xValues[0]!]
     const sampledY: number[] = [data.yValues[0]!]
 
     for (let i = 0; i < threshold - 2; i++) {
-        let avgX = 0, avgY = 0
+        let avgX = 0,
+            avgY = 0
         let avgRangeStart = Math.floor((i + 1) * every) + 1
         const avgRangeEnd = Math.min(Math.floor((i + 2) * every) + 1, dataLength)
         const avgRangeLength = avgRangeEnd - avgRangeStart
@@ -37,11 +43,11 @@ export function largestTriangleThreeBuckets(data: OneDimSignalRaw, threshold: nu
 
         let maxArea = -1
         while (rangeOffs < rangeTo) {
-
-            const area = Math.abs(
-                (pointAx - avgX) * (data.yValues[rangeOffs]! - pointAy) -
-                (pointAx - data.xValues[rangeOffs]!) * (avgY - pointAy)
-            ) * 0.5
+            const area =
+                Math.abs(
+                    (pointAx - avgX) * (data.yValues[rangeOffs]! - pointAy) -
+                        (pointAx - data.xValues[rangeOffs]!) * (avgY - pointAy),
+                ) * 0.5
 
             if (area > maxArea) {
                 maxArea = area
@@ -59,6 +65,6 @@ export function largestTriangleThreeBuckets(data: OneDimSignalRaw, threshold: nu
 
     return {
         xValues: new Float32Array(sampledX),
-        yValues: new Float32Array(sampledY)
+        yValues: new Float32Array(sampledY),
     }
 }

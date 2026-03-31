@@ -1,10 +1,16 @@
-import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
-import type { OneDimNormalizedSignal, SizeData } from '@/lib/signal-visualizer/core/types.ts'
-import type { ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
-import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
-import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
-import type { PerformanceMetrics } from '@/lib/signal-visualizer/application/types.ts'
-import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
+import {
+    ComponentLayer
+} from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
+import type {OneDimNormalizedSignal, SizeData} from '@/lib/signal-visualizer/core/types.ts'
+import {
+    ComponentLayout
+} from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
+import {PixiRenderer} from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
+import type {
+    PerformanceMetrics
+} from '@/lib/signal-visualizer/application/types/performanceMetrics.ts'
+import type {EventMediator} from '@/lib/signal-visualizer/utils/eventMediator.ts'
+import {ViewPort} from '@/lib/signal-visualizer/application/types/viewPort.ts'
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer
@@ -102,6 +108,7 @@ export class RenderManager {
             max: viewPort.startSeconds + viewPort.lengthSeconds,
         })
     }
+
     destroy(): void {
         this.pixiRenderer.destroy()
     }

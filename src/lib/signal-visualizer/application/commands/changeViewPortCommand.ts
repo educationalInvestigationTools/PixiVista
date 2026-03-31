@@ -1,10 +1,11 @@
 import type { Interpreter } from '@/lib/signal-visualizer/core/interpreter.ts'
-import { ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
+
+import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
 
 export class ChangeViewPortCommand {
     interpreter: Interpreter
 
-    async handle(viewPort : ViewPort): Promise<void> {
+    async handle(viewPort: ViewPort): Promise<void> {
         await this.interpreter.changeViewPort(viewPort)
     }
 
