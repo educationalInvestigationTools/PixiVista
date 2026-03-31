@@ -45,8 +45,7 @@ export class GridLabelsLayout extends GridBaseLayout {
     }
 
     textYPosition(i: number) {
-        const yDivision = (i / this.horizontalDivisions) * this.height
-        return yDivision
+        return (i / this.horizontalDivisions) * this.height
     }
 }
 

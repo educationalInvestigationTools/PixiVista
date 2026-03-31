@@ -54,11 +54,6 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         )
         this.container.addChild(this.oneDimensionalSignalLayer.container)
     }
-
-    get label(): string {
-        return this.layoutDesign.label
-    }
-
     get Children(): RenderLayer<LayoutDesign>[] {
         return [this.oneDimensionalSignalLayer, this.gridLayer]
     }

@@ -1,11 +1,7 @@
-import {
-    ComponentLayer
-} from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
+import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
 import type { OneDimNormalizedSignal, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 import type { ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
-import {
-    ComponentLayout
-} from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
+import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
 import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
 import type { PerformanceMetrics } from '@/lib/signal-visualizer/application/types.ts'
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
@@ -56,17 +52,17 @@ export class RenderManager {
                 renderTime: timeEnd - timeStart,
                 sizeData: {
                     width: sizeData.width,
-                    height: sizeData.height
+                    height: sizeData.height,
                 },
                 windowDevicePixelRatio: Math.round(windowDevicePixelRatio * 100) / 100,
-                refreshRate: this.pixiRenderer.app.ticker.FPS
+                refreshRate: this.pixiRenderer.app.ticker.FPS,
             }
             this.eventMediator.callback(performanceMetrics)
         })
     }
 
     async setSizes(sizeData: SizeData) {
-        this.pixiRenderer.resize(sizeData)
+        await this.pixiRenderer.resize(sizeData)
         this.componentLayer?.updateSize(sizeData)
     }
 
@@ -91,8 +87,7 @@ export class RenderManager {
     }
 
     getChannelSizeData(): SizeData {
-        const sizeData = this.componentLayer?.channelsLayer.layoutDesign.buildChannelSize() ?? this.sizeData
-        return sizeData
+        return this.componentLayer?.channelsLayer.layoutDesign.buildChannelSize() ?? this.sizeData
     }
 
     async updateSignalData(signals: OneDimNormalizedSignal[], viewPort: ViewPort) {

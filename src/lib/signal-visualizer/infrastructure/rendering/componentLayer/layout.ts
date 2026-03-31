@@ -41,11 +41,6 @@ export class ChannelsLayerLayout extends ComponentBaseLayout {
         }
         return this.height / this._visibleChannels
     }
-
-    get channelWidth(): number {
-        return this.width
-    }
-
     get channelMarginHorizontal(): number {
         return this.channelHeight * 0.05
     }

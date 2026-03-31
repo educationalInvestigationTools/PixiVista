@@ -1,6 +1,9 @@
 import { type SignalSource, ViewPort } from '@/lib/signal-visualizer/application/signalSource.ts'
 
-import type { NormalizedSignal, OneDimNormalizedSignal } from '@/lib/signal-visualizer/core/types.ts'
+import type {
+    NormalizedSignal,
+    OneDimNormalizedSignal,
+} from '@/lib/signal-visualizer/core/types.ts'
 import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 import { Envelope } from '@/lib/signal-visualizer/utils/envelope.ts'
 import { largestTriangleThreeBuckets } from '../utils/lttb'
@@ -10,11 +13,7 @@ export class Interpreter {
     private readonly signalsSources: Record<string, SignalSource>
     private viewPort: ViewPort
 
-    constructor(
-        renderer: RenderManager,
-        viewPort: ViewPort,
-        signalsSource: SignalSource[],
-    ) {
+    constructor(renderer: RenderManager, viewPort: ViewPort, signalsSource: SignalSource[]) {
         this.viewPort = viewPort
         this.signalsSources = signalsSource.reduce<Record<string, SignalSource>>((acc, signal) => {
             acc[signal.label] = signal
@@ -41,12 +40,11 @@ export class Interpreter {
         const signalSource = this.signalsSources[label]!
         const data = signalSource.read(viewPort)
         const expectedWidth = Math.floor(sizeData.width * this.renderer.devicePixelRatio)
-        const downSampledData = largestTriangleThreeBuckets(
-            data,
-            expectedWidth,
-        )
-        const dataToUse = downSampledData
-        const xEnvelope = new Envelope(dataToUse.xValues, { min: this.viewPort.startSeconds, max: this.viewPort.startSeconds + this.viewPort.lengthSeconds })
+        const dataToUse = largestTriangleThreeBuckets(data, expectedWidth)
+        const xEnvelope = new Envelope(dataToUse.xValues, {
+            min: this.viewPort.startSeconds,
+            max: this.viewPort.startSeconds + this.viewPort.lengthSeconds,
+        })
         const xAxisSignal: NormalizedSignal = {
             values: xEnvelope.normalized,
             minMaxValues: {

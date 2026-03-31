@@ -1,13 +1,9 @@
-import type { MinMaxValues } from "../core/types"
+import type { MinMaxValues } from '../core/types'
 
 export class Envelope {
     minMaxValues: MinMaxValues
     normalized: Float32Array
     array: Float32Array
-
-    get length(): number {
-        return this.array.length
-    }
 
     get min() {
         return this.minMaxValues.min
@@ -24,7 +20,6 @@ export class Envelope {
         this.array = array
         const n = array.length
 
-
         if (minMaxValues === undefined) {
             let minValue = this.array[0]!
             let maxValue = this.array[0]!
@@ -37,9 +32,7 @@ export class Envelope {
                 min: minValue,
                 max: maxValue,
             }
-        }
-
-        else {
+        } else {
             this.minMaxValues = minMaxValues
         }
         this.normalized = this.normalizeCoords(this.array, this.minMaxValues)

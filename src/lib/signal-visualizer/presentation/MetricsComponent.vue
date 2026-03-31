@@ -26,10 +26,7 @@ watch(
             if (refreshRateStack.value.length > 100) {
                 refreshRateStack.value = refreshRateStack.value.slice(0, 100)
             }
-
-
         }
-
     }
 )
 
