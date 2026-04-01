@@ -72,7 +72,7 @@ function toggleShow(groupLabel: string, objectLabel: string) {
 .annotations__col {
     display: flex;
     flex: 1 1 0;
-        min-width: 0;
+    min-width: 0;
     flex-direction: column;
     padding: 6px 12px;
     border-right: 1px solid #ffffff;
@@ -89,32 +89,32 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     border-bottom: 1px solid #ffffff;
     padding-bottom: 3px;
     min-width: 0;
-        width: 100%;
-        line-height: 1.25;
-        white-space: normal;
-        overflow-wrap: anywhere;
-        word-break: break-word;
+    width: 100%;
+    line-height: 1.25;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .annotations__group__items {
     display: flex;
     flex-wrap: wrap;
     min-width: 0;
-        width: 100%;
-        gap: 2px;
-        align-items: flex-start;
+    width: 100%;
+    gap: 2px;
+    align-items: flex-start;
 }
 
 .annotation__item {
     display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
-        align-items: flex-start;
-        column-gap: 5px;
-        min-width: 0;
-        max-width: 100%;
-        white-space: normal;
-        overflow-wrap: anywhere;
-        word-break: break-word;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: flex-start;
+    column-gap: 5px;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
     cursor: pointer;
     transition: opacity 0.15s;
 }
@@ -125,11 +125,11 @@ function toggleShow(groupLabel: string, objectLabel: string) {
 
 .annotation__item__style {
     display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 16px;
-        height: 12px;
-        min-width: 0;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 12px;
+    min-width: 0;
     flex-shrink: 0;
 }
 
@@ -138,6 +138,7 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     width: 16px;
     height: 10px;
 }
+
 .annotation__item__label {
     display: block;
     font-family: 'Inter', system-ui, sans-serif;
@@ -145,12 +146,12 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     color: #aaa;
     letter-spacing: 0.2px;
     min-width: 0;
-        width: 100%;
-        max-width: 100%;
-        line-height: 1.2;
-        white-space: normal;
-        overflow-wrap: anywhere;
-        word-break: break-word;
+    width: 100%;
+    max-width: 100%;
+    line-height: 1.2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .annotation__item--off .annotation__item__label {
@@ -158,7 +159,4 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     color: #666;
 }
 
-.annotation__item--off .annotation__item__style {
-    color: #555
-}
 </style>
