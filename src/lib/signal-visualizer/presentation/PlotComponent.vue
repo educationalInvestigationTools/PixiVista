@@ -72,7 +72,8 @@ onMounted(async () => {
             label: signal.label,
             group: 'Channels',
             visibility: true,
-            shape : 'rectangle'
+            shape: 'rectangle',
+            color : 'red'
         }
     }
 
@@ -85,7 +86,8 @@ onMounted(async () => {
                 label: interval.label,
                 group: groupLabel,
                 visibility: true,
-                shape : 'dashed-lines'
+                shape: 'dashed-lines',
+                color: 'blue',
             }
         }
     }
