@@ -8,7 +8,7 @@ export class ComponentBaseLayout extends LayoutDesign {
     }
 
     get marginVerticalLeft(): number {
-        return this.width * 0.15
+        return this.width * 0.05
     }
 
     get marginVerticalRight(): number {
@@ -42,7 +42,7 @@ export class ChannelsLayerLayout extends ComponentBaseLayout {
         return this.height / this._visibleChannels
     }
     get channelMarginHorizontal(): number {
-        return this.channelHeight * 0.05
+        return 0
     }
 
     yChannelCoordinate(i: number) {
@@ -79,7 +79,7 @@ export class ChannelsLayerLayout extends ComponentBaseLayout {
 
 export class ComponentLayout extends ComponentBaseLayout {
     get xAxisHeight(): number {
-        return this.height * 0.1
+        return this.height * 0.05
     }
 
     get xAxisY(): number {

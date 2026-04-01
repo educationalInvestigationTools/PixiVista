@@ -48,14 +48,14 @@ export class GridLayer extends RenderLayer<GridLayout> {
         const height = this.layoutDesign.height
         const xDivisions = this.layoutDesign.verticalDivisions
         const yDivisions = this.layoutDesign.horizontalDivisions
-        this.graphics.rect(0, 0, width, height).stroke({ width: 1, color: 'black', alpha: 0.1 })
+        this.graphics.rect(0, 0, width, height).stroke({ width: 1, color: 'white', alpha: 0.2 })
 
         for (let i = 0; i <= xDivisions; i++) {
             const xDivision = (i / xDivisions) * width
             this.graphics.moveTo(xDivision, height).lineTo(xDivision, 0).stroke({
-                color: 'red',
+                color: 'white',
                 width: 1,
-                alpha: 0.3,
+                alpha: 0.15,
             })
         }
 
@@ -64,7 +64,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
             this.graphics
                 .moveTo(0, yDivision)
                 .lineTo(width, yDivision)
-                .stroke({ color: 'red', width: 1, alpha: 0.3 })
+                .stroke({ color: 'white', width: 1, alpha: 0.15 })
         }
     }
 }

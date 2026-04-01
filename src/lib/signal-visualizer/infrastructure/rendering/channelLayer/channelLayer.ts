@@ -58,7 +58,12 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         return [this.oneDimensionalSignalLayer, this.gridLayer]
     }
 
-    protected _draw(): void {}
+    protected _draw(): void {
+        this.graphics.rect(0, 0, this.layoutDesign.width, this.layoutDesign.height).fill({
+            color: '#0f172a',
+            alpha: 1,
+        })
+    }
 
     _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)

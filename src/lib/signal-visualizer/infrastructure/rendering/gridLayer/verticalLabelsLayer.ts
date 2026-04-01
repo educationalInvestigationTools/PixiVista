@@ -20,8 +20,9 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
             const text = new Text({
                 text: this.layoutDesign.textLabel(i),
                 style: {
-                    fontSize: this.layoutDesign.height * 0.08,
+                    fontSize: 16,
                     fontWeight: 'bold',
+                    fill: '#d1d5db',
                 },
             })
             text.x = -1.3 * text.width

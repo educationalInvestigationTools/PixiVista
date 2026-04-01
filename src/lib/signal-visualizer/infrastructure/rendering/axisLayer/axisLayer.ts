@@ -45,12 +45,15 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
         const width = this.layoutDesign.width
         const height = this.layoutDesign.height
         const divisions = this.layoutDesign.divisions
-        this.graphics.rect(0, 0, width, height).stroke({ width: 2, color: 'red' })
+        this.graphics
+            .rect(0, 0, width, height)
+            .fill({ color: '#0f172a', alpha: 1 })
+            .stroke({ width: 1, color: 'white', alpha: 0.2 })
         const yCoordinate = this.layoutDesign.yCoordinate
         for (let i = 0; i <= divisions; i++) {
             const xDivision = this.layoutDesign.xDivision(i)
             this.graphics.circle(xDivision, yCoordinate, this.layoutDesign.circleRadius)
-            this.graphics.stroke({ width: 3, color: 'green' })
+            this.graphics.stroke({ width: 2, color: 'white', alpha: 0.85 })
         }
     }
 }

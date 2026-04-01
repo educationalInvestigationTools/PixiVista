@@ -41,7 +41,7 @@ export class LabelsAxisLayerLayout extends AxisLayerBaseLayout {
     }
 
     get fontSize() {
-        return this.height * 0.2
+        return 16
     }
 }
 

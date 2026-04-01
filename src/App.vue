@@ -6,11 +6,11 @@ import {
 import type { HighlightedInterval, IntervalGroup } from "./lib/signal-visualizer/application/types/highlightedInterval";
 
 const signalSources = [
-    new TestSignalSource("A", 1000, 60),
-    new TestSignalSource("B", 1000, 30),
-    new TestSignalSource("C", 1000, 20),
-    new TestSignalSource("D", 1000, 10),
-    new TestSignalSource("E", 1000, 60)]
+    new TestSignalSource("A", 400, 60),
+    new TestSignalSource("B", 400, 30),
+    new TestSignalSource("C", 400, 20),
+    new TestSignalSource("D", 400, 10),
+    new TestSignalSource("E", 400, 60)]
 
 
 const interval1: HighlightedInterval = {

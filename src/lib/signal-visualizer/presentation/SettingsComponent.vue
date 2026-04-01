@@ -28,7 +28,7 @@ const showSettings = ref(false)
 </script>
 
 <template>
-    <div class="flex flex-col border border-gray-900 rounded p-2">
+    <div class="flex flex-col border border-slate-700 rounded p-2 bg-slate-900 text-slate-200">
         <span> Settings panel: </span>
         <div>
             <input type="checkbox" :checked="showSettings" @change="(() => showSettings = !showSettings)">
@@ -41,7 +41,8 @@ const showSettings = ref(false)
             <input type="checkbox" :checked="showAnnotations" @change="toggleShowAnnotations">
 
             <span> Height per channel </span>
-            <input type="number" :value="heightPerChannel"
+            <input class="bg-slate-800 text-slate-200 border border-slate-600 rounded px-1" type="number"
+                :value="heightPerChannel"
                 @change="(e) => emit('update:heightPerChannel', parseInt((e.target as HTMLInputElement).value))">
         </div>
     </div>

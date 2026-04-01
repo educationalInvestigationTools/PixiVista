@@ -35,7 +35,7 @@ watch(
 </script>
 
 <template>
-    <div class="flex flex-col border border-gray-900 rounded p-1">
+    <div class="flex flex-col border border-slate-700 rounded p-1 bg-slate-900 text-slate-200">
         <span> Metrics panel:</span>
         <span> Rendering resolution is {{ Math.round(props.metrics?.sizeData.width!) }} x {{
                 Math.round(props.metrics?.sizeData.height!)

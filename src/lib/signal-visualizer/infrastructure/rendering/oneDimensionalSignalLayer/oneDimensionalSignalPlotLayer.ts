@@ -31,7 +31,7 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
                 this.graphics.lineTo(xMappedCord, yMappedCord)
             }
         }
-        this.graphics.stroke({ color: 'black', width: 1 })
+        this.graphics.stroke({ color: 'white', width: 1 })
     }
 
     updateData(signalData: OneDimNormalizedSignal) {

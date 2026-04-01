@@ -124,15 +124,15 @@ async function updateViewPort(viewPort: ViewPort) {
 
 
 <template>
-    <div class="m-4 border border-gray-900 rounded p-2">
+    <div class="m-4 border border-slate-700 rounded p-2 bg-slate-900 text-slate-200">
         <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel"
             v-model:heightPerChannel="heightPerChannel">
         </SettingsComponent>
         <AnnotationsComponent  v-show="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
             @toggleObjectVisibility="toggleObjectVisibility">
         </AnnotationsComponent>
-        <div class="border border-gray-900 rounded p-2">
-            <div ref="htmlContainerRef" :style="{
+        <div class="border border-slate-700 rounded p-2 bg-slate-900">
+            <div ref="htmlContainerRef" class="bg-slate-900" :style="{
                 height: heightPerChannel * (visibleChannels + 1) + 'px'
             }">
             </div>

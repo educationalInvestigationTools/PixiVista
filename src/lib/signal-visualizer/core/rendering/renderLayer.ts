@@ -20,16 +20,6 @@ export abstract class RenderLayer<LayoutData extends LayoutDesign> {
         if (this._needsRendering) {
             this.graphics.clear()
             this._draw()
-            this.graphics
-                .rect(0, 0, this.layoutDesign.width, this.layoutDesign.height)
-                .fill({
-                    width: 1,
-                    color: 'orange',
-                    alpha: 0.2,
-                })
-                .stroke({
-                    color: 'black',
-                })
             this._needsRendering = false
         }
         for (const child of this.Children) {

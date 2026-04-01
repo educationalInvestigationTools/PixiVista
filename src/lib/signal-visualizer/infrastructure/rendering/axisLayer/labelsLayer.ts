@@ -36,6 +36,7 @@ export class LabelsLayer extends RenderLayer<LabelsAxisLayerLayout> {
                 style: {
                     fontSize: fontSize,
                     fontWeight: fontWeight,
+                    fill: '#e5e7eb',
                 },
             })
             text.x = xDivision - text.width / 2
