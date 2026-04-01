@@ -25,14 +25,52 @@ const interval1: HighlightedInterval = {
     }
 }
 
-const group: IntervalGroup = {
+const interval2: HighlightedInterval = {
+    startSeconds: 0,
+    endSeconds: 10,
+    label: "N2",
+    signalsAssociated: ["A", "B", "C"],
+    drawingColor: 'red',
+    drawingStyle: 'background-rectangle',
+    hoverInfo: {
+        "nada": "mucho",
+    }
+}
+
+const interval3: HighlightedInterval = {
+    startSeconds: 0,
+    endSeconds: 10,
+    label: "N3",
+    signalsAssociated: ["A", "B", "C"],
+    drawingColor: 'red',
+    drawingStyle: 'background-rectangle',
+    hoverInfo: {
+        "nada": "mucho",
+    }
+}
+
+const group1: IntervalGroup = {
     label: 'Sleep Stages',
     priority: 0,
     intervals: [interval1]
 }
 
+const group2: IntervalGroup = {
+    label: 'Events',
+    priority: 0,
+    intervals: [interval2]
+}
+
+const group3: IntervalGroup = {
+    label: 'Patterns',
+    priority: 0,
+    intervals: [interval3]
+}
+
 const annotations: Record<string, IntervalGroup> = {}
-annotations[group.label] = group
+annotations[group1.label] = group1
+annotations[group2.label] = group2
+annotations[group3.label] = group3
 
 </script>
 

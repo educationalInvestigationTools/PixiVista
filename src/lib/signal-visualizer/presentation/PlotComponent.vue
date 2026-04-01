@@ -29,7 +29,7 @@ async function toggleObjectVisibility(objectVisibility: ObjectVisibility) {
     const label = objectVisibility.label
     const visibility = objectVisibility.visibility
     objectsAnnotationsData.value[groupLabel]![label]!.visibility = visibility
-    if(groupLabel === 'channels'){
+    if(groupLabel === 'Channels'){
         await diContainer?.changeChannelVisibilityHandler.handle(label, visibility)
     }
 }
@@ -38,7 +38,7 @@ const heightPerChannel = ref(200)
 
 const visibleChannels = computed(() => {
     let visible = 0
-    const channels = objectsAnnotationsData.value['channels']!
+    const channels = objectsAnnotationsData.value['Channels']!
     for (const label in channels) {
         if (channels[label]!.visibility) {
             visible++
@@ -65,12 +65,12 @@ onMounted(async () => {
     if (!htmlContainerRef.value) {
         return;
     }
-    objectsAnnotationsData.value['channels'] = {}
+    objectsAnnotationsData.value['Channels'] = {}
     for (let i = 0; i < props.signalSources.length; i++) {
         const signal = props.signalSources[i]!
-        objectsAnnotationsData.value['channels'][signal.label] = {
+        objectsAnnotationsData.value['Channels'][signal.label] = {
             label: signal.label,
-            group: 'channels',
+            group: 'Channels',
             visibility: true,
             shape : 'rectangle'
         }
