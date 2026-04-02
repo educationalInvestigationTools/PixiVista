@@ -11,6 +11,7 @@ import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsCompon
 import type {
     PerformanceMetrics
 } from "@/lib/signal-visualizer/application/types/performanceMetrics.ts";
+import type { SettingChoice, SettingChoiceUpdate } from "@/lib/signal-visualizer/presentation/types/settingsChoice.ts";
 import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
 import { fmtTime } from "../utils/utils";
 import { ViewPort } from "@/lib/signal-visualizer/application/types/viewPort.ts";
@@ -59,6 +60,47 @@ const performanceMetrics = ref<PerformanceMetrics | undefined>(undefined)
 
 const showMetricsPanel = ref(true)
 const showAnnotationsPanel = ref(true)
+const showMetricsSettingId = 'show-metrics-panel'
+const showAnnotationsSettingId = 'show-annotations-panel'
+const heightPerChannelSettingId = 'height-per-channel'
+
+const settingsChoices = computed<SettingChoice[]>(() => [
+    {
+        id: showMetricsSettingId,
+        label: 'Metrics',
+        kind: 'boolean',
+        value: showMetricsPanel.value,
+    },
+    {
+        id: showAnnotationsSettingId,
+        label: 'Annotations',
+        kind: 'boolean',
+        value: showAnnotationsPanel.value,
+    },
+    {
+        id: heightPerChannelSettingId,
+        label: 'Height / channel',
+        kind: 'number',
+        value: heightPerChannel.value,
+        min: 60,
+        max: 600,
+        step: 10,
+    }
+])
+
+function updateSettingChoice(settingUpdate: SettingChoiceUpdate) {
+    if (settingUpdate.id === showMetricsSettingId && typeof settingUpdate.value === 'boolean') {
+        showMetricsPanel.value = settingUpdate.value
+    }
+
+    if (settingUpdate.id === showAnnotationsSettingId && typeof settingUpdate.value === 'boolean') {
+        showAnnotationsPanel.value = settingUpdate.value
+    }
+
+    if (settingUpdate.id === heightPerChannelSettingId && typeof settingUpdate.value === 'number') {
+        heightPerChannel.value = settingUpdate.value
+    }
+}
 
 
 onMounted(async () => {
@@ -125,8 +167,7 @@ async function updateViewPort(viewPort: ViewPort) {
 
 <template>
     <div class="m-4 border border-slate-700 rounded p-2 bg-black text-slate-200">
-        <SettingsComponent v-model:showAnnotations="showAnnotationsPanel" v-model:showMetrics="showMetricsPanel"
-            v-model:heightPerChannel="heightPerChannel">
+        <SettingsComponent :choices="settingsChoices" @update:choice="updateSettingChoice">
         </SettingsComponent>
         <AnnotationsComponent  v-show="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
             @toggleObjectVisibility="toggleObjectVisibility">
