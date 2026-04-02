@@ -20,6 +20,8 @@ export class AxisLayerBaseLayout extends LayoutDesign {
 }
 
 export class LabelsAxisLayerLayout extends AxisLayerBaseLayout {
+    static readonly LABEL_FONT_SIZE = 14
+
     minMaxValues: MinMaxValues
 
     constructor(
@@ -41,7 +43,7 @@ export class LabelsAxisLayerLayout extends AxisLayerBaseLayout {
     }
 
     get fontSize() {
-        return 16
+        return LabelsAxisLayerLayout.LABEL_FONT_SIZE
     }
 }
 

@@ -1,4 +1,5 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
+import { LabelsAxisLayerLayout } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/layouts.ts'
 import type {
     GridData,
     MinMaxValues,
@@ -44,8 +45,25 @@ export class GridLabelsLayout extends GridBaseLayout {
         return (this.minMaxValues.max - i * this.stepSize).toPrecision(2)
     }
 
-    textYPosition(i: number) {
-        return (i / this.horizontalDivisions) * this.height
+    get fontSize(): number {
+        return LabelsAxisLayerLayout.LABEL_FONT_SIZE
+    }
+
+    get edgeMargin(): number {
+        return this.fontSize
+    }
+
+    textYPosition(i: number, labelHeight: number): number {
+        const halfLabelHeight = labelHeight / 2
+        const edgePadding = this.edgeMargin
+        const margin = halfLabelHeight + edgePadding
+        const usableHeight = Math.max(this.height - margin * 2, 0)
+
+        if (this.horizontalDivisions <= 0) {
+            return this.height / 2 - halfLabelHeight
+        }
+
+        return margin + (i / this.horizontalDivisions) * usableHeight - halfLabelHeight
     }
 }
 

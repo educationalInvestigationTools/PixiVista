@@ -20,13 +20,13 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
             const text = new Text({
                 text: this.layoutDesign.textLabel(i),
                 style: {
-                    fontSize: 16,
+                    fontSize: this.layoutDesign.fontSize,
                     fontWeight: 'bold',
                     fill: '#d1d5db',
                 },
             })
             text.x = -1.3 * text.width
-            text.y = this.layoutDesign.textYPosition(i) - text.height / 3
+            text.y = this.layoutDesign.textYPosition(i, text.height)
             this.container.addChild(text)
             this.horizontalLabels.push(text)
         }
