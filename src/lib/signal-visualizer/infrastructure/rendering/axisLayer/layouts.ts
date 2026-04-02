@@ -45,6 +45,26 @@ export class LabelsAxisLayerLayout extends AxisLayerBaseLayout {
     get fontSize() {
         return LabelsAxisLayerLayout.LABEL_FONT_SIZE
     }
+
+    get minFontSize(): number {
+        return 1
+    }
+
+    get maxLabelHeightAvailable(): number {
+        const bottomPadding = 1
+        return Math.max(this.height - this.yCoordinate - bottomPadding, 1)
+    }
+
+    fittedFontSize(maxLabelHeightAtBaseFont: number): number {
+        if (maxLabelHeightAtBaseFont <= this.maxLabelHeightAvailable) {
+            return this.fontSize
+        }
+
+        const scaledSize = Math.floor(
+            (this.fontSize * this.maxLabelHeightAvailable) / maxLabelHeightAtBaseFont,
+        )
+        return Math.max(this.minFontSize, scaledSize)
+    }
 }
 
 export class AxisLayerLayout extends AxisLayerBaseLayout {

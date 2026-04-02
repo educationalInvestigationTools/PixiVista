@@ -24,17 +24,32 @@ export class LabelsLayer extends RenderLayer<LabelsAxisLayerLayout> {
             this.container.removeChild(this.verticalLabels[i]!)
         }
         this.verticalLabels = []
+
+        let maxLabelHeightAtBaseFont = 0
+        for (let i = 0; i <= this.layoutDesign.divisions; i++) {
+            const measuredText = new Text({
+                text: this.layoutDesign.textValue(i),
+                style: {
+                    fontSize: this.layoutDesign.fontSize,
+                    fontWeight: 'bold',
+                    fill: '#e5e7eb',
+                },
+            })
+            maxLabelHeightAtBaseFont = Math.max(maxLabelHeightAtBaseFont, measuredText.height)
+            measuredText.destroy()
+        }
+
+        const fittedFontSize = this.layoutDesign.fittedFontSize(maxLabelHeightAtBaseFont)
         const divisions = this.layoutDesign.divisions
         const yCoordinate = this.layoutDesign.yCoordinate
         for (let i = 0; i <= divisions; i++) {
             const xDivision = this.layoutDesign.xDivision(i)
             const textValue = this.layoutDesign.textValue(i)
-            const fontSize = this.layoutDesign.fontSize
             const fontWeight = 'bold'
             const text = new Text({
                 text: textValue,
                 style: {
-                    fontSize: fontSize,
+                    fontSize: fittedFontSize,
                     fontWeight: fontWeight,
                     fill: '#e5e7eb',
                 },

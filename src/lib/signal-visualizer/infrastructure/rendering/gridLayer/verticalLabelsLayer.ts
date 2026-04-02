@@ -18,6 +18,7 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
         this.horizontalLabels = []
 
         let maxLabelWidthAtBaseFont = 0
+        let maxLabelHeightAtBaseFont = 0
         for (let i = 0; i <= this.layoutDesign.horizontalDivisions; i++) {
             const measureText = new Text({
                 text: this.layoutDesign.textLabel(i),
@@ -28,10 +29,14 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
                 },
             })
             maxLabelWidthAtBaseFont = Math.max(maxLabelWidthAtBaseFont, measureText.width)
+            maxLabelHeightAtBaseFont = Math.max(maxLabelHeightAtBaseFont, measureText.height)
             measureText.destroy()
         }
 
-        const fittedFontSize = this.layoutDesign.fittedFontSize(maxLabelWidthAtBaseFont)
+        const fittedFontSize = this.layoutDesign.fittedFontSize(
+            maxLabelWidthAtBaseFont,
+            maxLabelHeightAtBaseFont,
+        )
         for (let i = 0; i <= this.layoutDesign.horizontalDivisions; i++) {
             const text = new Text({
                 text: this.layoutDesign.textLabel(i),

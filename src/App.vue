@@ -43,7 +43,6 @@ onMounted(async () => {
     </div>
     <div v-else>
         <section>
-            <h2 class="mx-4 mt-4 text-slate-200 font-semibold">Pixi Renderer</h2>
             <PlotComponent :annotations="annotations" :signalSources="signalSources">
             </PlotComponent>
         </section>

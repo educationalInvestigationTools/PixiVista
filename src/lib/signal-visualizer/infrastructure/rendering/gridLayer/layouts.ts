@@ -50,7 +50,7 @@ export class GridLabelsLayout extends GridBaseLayout {
     }
 
     get minFontSize(): number {
-        return 8
+        return 1
     }
 
     get labelToGridGap(): number {
@@ -62,19 +62,28 @@ export class GridLabelsLayout extends GridBaseLayout {
         return Math.max(this.width / 18, this.minFontSize * 2)
     }
 
-    fittedFontSize(maxLabelWidthAtBaseFont: number): number {
+    get maxLabelHeightAvailable(): number {
+        const labelCount = Math.max(this.horizontalDivisions + 1, 1)
+        return Math.max((this.height - this.edgeMargin * 2) / labelCount, 1)
+    }
+
+    fittedFontSize(maxLabelWidthAtBaseFont: number, maxLabelHeightAtBaseFont: number): number {
         const availableWidth = Math.max(this.labelWidthAvailable - this.labelToGridGap, 1)
 
-        if (maxLabelWidthAtBaseFont <= availableWidth) {
-            return this.fontSize
-        }
+        const widthScale =
+            maxLabelWidthAtBaseFont > 0 ? availableWidth / maxLabelWidthAtBaseFont : 1
+        const heightScale =
+            maxLabelHeightAtBaseFont > 0
+                ? this.maxLabelHeightAvailable / maxLabelHeightAtBaseFont
+                : 1
 
-        const scaledSize = Math.floor((this.fontSize * availableWidth) / maxLabelWidthAtBaseFont)
+        const constrainedScale = Math.min(1, widthScale, heightScale)
+        const scaledSize = Math.floor(this.fontSize * constrainedScale)
         return Math.max(this.minFontSize, scaledSize)
     }
 
     get edgeMargin(): number {
-        return this.fontSize
+        return 2
     }
 
     textYPosition(i: number, labelHeight: number): number {
