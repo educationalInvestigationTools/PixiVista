@@ -33,7 +33,7 @@ function toggleShow(groupLabel: string, objectLabel: string) {
 </script>
 
 <template>
-    <div class="border border-slate-700 rounded p-2  bg-black text-slate-200">
+    <div class="border border-slate-700 rounded p-3 bg-black text-slate-200">
         <div class="annotations">
             <div class="annotations__col" v-for="(objectGroup, groupLabel) in props.objectsAnnotations"
                 :key="groupLabel">
@@ -67,6 +67,7 @@ function toggleShow(groupLabel: string, objectLabel: string) {
 .annotations {
     display: flex;
     min-width: 0;
+    gap: 6px;
 }
 
 .annotations__col {
@@ -74,23 +75,24 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     flex: 1 1 0;
     min-width: 0;
     flex-direction: column;
-    padding: 6px 12px;
+    padding: 9px 14px;
     border-right: 1px solid #ffffff;
 }
 
 .annotations__group__header {
     display: block;
     font-family: 'Inter', system-ui, sans-serif;
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
     color: #888;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.7px;
     border-bottom: 1px solid #ffffff;
-    padding-bottom: 3px;
+    padding-bottom: 5px;
+        margin-bottom: 4px;
     min-width: 0;
     width: 100%;
-    line-height: 1.25;
+    line-height: 1.35;
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -101,15 +103,15 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     flex-wrap: wrap;
     min-width: 0;
     width: 100%;
-    gap: 2px;
+    gap: 8px;
     align-items: flex-start;
 }
 
 .annotation__item {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
-    align-items: flex-start;
-    column-gap: 5px;
+    align-items: center;
+        column-gap: 8px;
     min-width: 0;
     max-width: 100%;
     white-space: normal;
@@ -127,28 +129,30 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 12px;
+    width: 18px;
+        height: 14px;
+        align-self: center;
     min-width: 0;
     flex-shrink: 0;
 }
 
 .annotation__item__icon {
     display: block;
-    width: 16px;
-    height: 10px;
+    width: 18px;
+        height: 12px;
 }
 
 .annotation__item__label {
     display: block;
     font-family: 'Inter', system-ui, sans-serif;
-    font-size: 11px;
+    font-size: 14px;
+        font-weight: 500;
     color: #aaa;
     letter-spacing: 0.2px;
     min-width: 0;
     width: 100%;
     max-width: 100%;
-    line-height: 1.2;
+    line-height: 1.35;
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
