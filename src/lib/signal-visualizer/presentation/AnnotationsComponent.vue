@@ -82,7 +82,7 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     letter-spacing: 0.7px;
     border-bottom: 1px solid #ffffff;
     padding-bottom: 5px;
-        margin-bottom: 4px;
+    margin-bottom: 4px;
     min-width: 0;
     width: 100%;
     line-height: 1.35;
@@ -104,7 +104,7 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
-        column-gap: 8px;
+    column-gap: 8px;
     min-width: 0;
     max-width: 100%;
     white-space: normal;
@@ -123,8 +123,8 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     align-items: center;
     justify-content: center;
     width: 18px;
-        height: 14px;
-        align-self: center;
+    height: 14px;
+    align-self: center;
     min-width: 0;
     flex-shrink: 0;
 }
@@ -156,7 +156,7 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     display: block;
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 14px;
-        font-weight: 500;
+    font-weight: 500;
     color: #aaa;
     letter-spacing: 0.2px;
     min-width: 0;
@@ -172,5 +172,4 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     text-decoration: line-through;
     color: #666;
 }
-
 </style>

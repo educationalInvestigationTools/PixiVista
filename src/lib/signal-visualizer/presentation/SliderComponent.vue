@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import { computed, ref } from "vue";
 
-import {ViewPort} from "@/lib/signal-visualizer/application/types/viewPort.ts";
+import { ViewPort } from "@/lib/signal-visualizer/application/types/viewPort.ts";
 
 /*
 This is in samples to ensure it's abstract, and does not know about the unit of measure of the client, thus to interact with it, should receive data in terms of samples, and the data it outputs should be mapped from samples to what the client understands. It needs a function that maps the sample values to what the client needs to see on the component.
@@ -167,8 +167,7 @@ function handleKeyDown(e: KeyboardEvent) {
     <div class="border border-slate-700 rounded p-2 flex flex-row bg-black text-slate-200">
 
         <!-- LEFT -->
-        <div class="centered bg-slate-700"
-             :style="{ width: leftSliderPositionPercent + '%', wordBreak: 'break-word' }">
+        <div class="centered bg-slate-700" :style="{ width: leftSliderPositionPercent + '%', wordBreak: 'break-word' }">
             <span class="text-xs text-slate-300">
                 {{ props.sampleToString(0) }}
             </span>
@@ -176,11 +175,10 @@ function handleKeyDown(e: KeyboardEvent) {
 
         <!-- SLIDER -->
         <div class="relative bg-slate-800 " ref="containerRef" tabindex="0"
-             :style="{ width: (100 - leftSliderPositionPercent - rightSliderPositionPercent) + '%' }"
-             @keydown="handleKeyDown">
+            :style="{ width: (100 - leftSliderPositionPercent - rightSliderPositionPercent) + '%' }"
+            @keydown="handleKeyDown">
 
-            <div
-                class="absolute top-0 left-0 h-full bg-blue-500/20 rounded cursor-grab active:cursor-grabbing hover:bg-blue-500/30 centered transition-colors"
+            <div class="absolute top-0 left-0 h-full bg-blue-500/20 rounded cursor-grab active:cursor-grabbing hover:bg-blue-500/30 centered transition-colors"
                 :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%' }"
                 @pointerdown="(p) => startInteraction('drag', p)">
                 <span class="pointer-events-none select-none text-xs font-medium text-blue-200">
@@ -188,14 +186,12 @@ function handleKeyDown(e: KeyboardEvent) {
                 </span>
 
                 <!-- LEFT HANDLE -->
-                <div
-                    class="absolute left-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
+                <div class="absolute left-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
                     @pointerdown.stop="(p) => startInteraction('resize-left', p)">
                 </div>
 
                 <!-- RIGHT HANDLE -->
-                <div
-                    class="absolute right-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
+                <div class="absolute right-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
                     @pointerdown.stop="(p) => startInteraction('resize-right', p)">
                 </div>
             </div>
@@ -203,7 +199,7 @@ function handleKeyDown(e: KeyboardEvent) {
 
         <!-- RIGHT -->
         <div class="centered bg-slate-700"
-             :style="{ width: rightSliderPositionPercent + '%', wordBreak: 'break-word' }">
+            :style="{ width: rightSliderPositionPercent + '%', wordBreak: 'break-word' }">
             <span class="text-xs text-slate-300">
                 {{ props.sampleToString(props.viewPortLargestValueSamples) }}
             </span>

@@ -23,14 +23,14 @@ const props = defineProps<{
     annotations: Record<string, IntervalGroup>
 }>()
 
-const objectsAnnotationsData : Ref<Record<string, Record<string, ObjectAnnotationData>>> = ref({})
+const objectsAnnotationsData: Ref<Record<string, Record<string, ObjectAnnotationData>>> = ref({})
 
 async function toggleObjectVisibility(objectVisibility: ObjectVisibility) {
     const groupLabel = objectVisibility.groupLabel
     const label = objectVisibility.label
     const visibility = objectVisibility.visibility
     objectsAnnotationsData.value[groupLabel]![label]!.visibility = visibility
-    if(groupLabel === 'Channels'){
+    if (groupLabel === 'Channels') {
         await diContainer?.changeChannelVisibilityHandler.handle(label, visibility)
     }
 }
@@ -115,14 +115,14 @@ onMounted(async () => {
             group: 'Channels',
             visibility: true,
             shape: 'rectangle',
-            color : 'red'
+            color: 'red'
         }
     }
 
     for (const groupLabel in props.annotations) {
         const intervalGroup = props.annotations[groupLabel]!
         objectsAnnotationsData.value[groupLabel] = {}
-        for (let i = 0; i < intervalGroup.intervals.length; i++){
+        for (let i = 0; i < intervalGroup.intervals.length; i++) {
             const interval = intervalGroup.intervals[i]!
             objectsAnnotationsData.value[groupLabel]![interval.label]! = {
                 label: interval.label,
@@ -169,7 +169,7 @@ async function updateViewPort(viewPort: ViewPort) {
     <div class="m-4 border border-slate-700 rounded p-2 bg-black text-slate-200">
         <SettingsComponent :choices="settingsChoices" @update:choice="updateSettingChoice">
         </SettingsComponent>
-        <AnnotationsComponent  v-show="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
+        <AnnotationsComponent v-show="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
             @toggleObjectVisibility="toggleObjectVisibility">
         </AnnotationsComponent>
         <div class="border border-slate-700 rounded p-2 bg-black">
