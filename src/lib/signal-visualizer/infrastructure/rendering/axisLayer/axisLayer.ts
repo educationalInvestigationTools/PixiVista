@@ -47,7 +47,7 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
         const divisions = this.layoutDesign.divisions
         this.graphics
             .rect(0, 0, width, height)
-            .fill({ color: '#0f172a', alpha: 1 })
+            .fill({ color: '#000000', alpha: 1 })
             .stroke({ width: 1, color: 'white', alpha: 0.2 })
         const yCoordinate = this.layoutDesign.yCoordinate
         for (let i = 0; i <= divisions; i++) {

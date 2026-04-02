@@ -49,6 +49,30 @@ export class GridLabelsLayout extends GridBaseLayout {
         return LabelsAxisLayerLayout.LABEL_FONT_SIZE
     }
 
+    get minFontSize(): number {
+        return 8
+    }
+
+    get labelToGridGap(): number {
+        return Math.max(2, this.fontSize * 0.25)
+    }
+
+    get labelWidthAvailable(): number {
+        // Channels use 5% horizontal margins on each side in the parent layout.
+        return Math.max(this.width / 18, this.minFontSize * 2)
+    }
+
+    fittedFontSize(maxLabelWidthAtBaseFont: number): number {
+        const availableWidth = Math.max(this.labelWidthAvailable - this.labelToGridGap, 1)
+
+        if (maxLabelWidthAtBaseFont <= availableWidth) {
+            return this.fontSize
+        }
+
+        const scaledSize = Math.floor((this.fontSize * availableWidth) / maxLabelWidthAtBaseFont)
+        return Math.max(this.minFontSize, scaledSize)
+    }
+
     get edgeMargin(): number {
         return this.fontSize
     }

@@ -60,7 +60,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
 
     protected _draw(): void {
         this.graphics.rect(0, 0, this.layoutDesign.width, this.layoutDesign.height).fill({
-            color: '#0f172a',
+            color: '#000000',
             alpha: 1,
         })
     }

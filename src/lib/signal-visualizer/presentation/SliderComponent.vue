@@ -164,7 +164,7 @@ function handleKeyDown(e: KeyboardEvent) {
 
 </script>
 <template>
-    <div class="border border-slate-700 rounded p-2 flex flex-row bg-slate-900 text-slate-200">
+    <div class="border border-slate-700 rounded p-2 flex flex-row bg-black text-slate-200">
 
         <!-- LEFT -->
         <div class="centered bg-slate-700"

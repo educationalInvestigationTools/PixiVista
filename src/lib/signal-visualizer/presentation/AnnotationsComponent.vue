@@ -33,7 +33,7 @@ function toggleShow(groupLabel: string, objectLabel: string) {
 </script>
 
 <template>
-    <div class="border border-slate-700 rounded p-2  bg-slate-900 text-slate-200">
+    <div class="border border-slate-700 rounded p-2  bg-black text-slate-200">
         <div class="annotations">
             <div class="annotations__col" v-for="(objectGroup, groupLabel) in props.objectsAnnotations"
                 :key="groupLabel">

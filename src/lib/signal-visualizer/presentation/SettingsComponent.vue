@@ -28,7 +28,7 @@ const showSettings = ref(false)
 </script>
 
 <template>
-    <div class="flex flex-col border border-slate-700 rounded p-2 bg-slate-900 text-slate-200">
+    <div class="flex flex-col border border-slate-700 rounded p-2 bg-black text-slate-200">
         <span> Settings panel: </span>
         <div>
             <input type="checkbox" :checked="showSettings" @change="(() => showSettings = !showSettings)">
