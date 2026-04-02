@@ -15,6 +15,7 @@
     "format": "oxfmt src/"
   },
   "dependencies": {
+    "@epicurrents/edf-reader": "0.2.0-0",
     "@pixi/devtools": "^2.0.1",
     "@tailwindcss/vite": "^4.2.2",
     "pinia": "^3.0.4",

@@ -39,7 +39,7 @@ export class Interpreter {
         const sizeData = this.renderer.getChannelSizeData()
         const viewPort = this.viewPort
         const signalSource = this.signalsSources[label]!
-        const data = signalSource.read(viewPort)
+        const data = await signalSource.read(viewPort)
         const expectedWidth = Math.floor(sizeData.width * this.renderer.devicePixelRatio)
         const dataToUse = largestTriangleThreeBuckets(data, expectedWidth)
         const xEnvelope = new Envelope(dataToUse.xValues, {

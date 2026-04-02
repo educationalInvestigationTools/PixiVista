@@ -1,83 +1,53 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import PlotComponent from "@/lib/signal-visualizer/presentation/PlotComponent.vue";
+import { loadEdfSignalSourcesFromPath } from "@/lib/signal-visualizer/infrastructure/signals/edfSignalSource.ts";
 import {
-    TestSignalSource
-} from "@/lib/signal-visualizer/infrastructure/signals/testSampledSignal.ts";
-import type { HighlightedInterval, IntervalGroup } from "./lib/signal-visualizer/application/types/highlightedInterval";
+    type SignalSource
+} from "@/lib/signal-visualizer/application/types/signalSource.ts";
+import type { IntervalGroup } from "./lib/signal-visualizer/application/types/highlightedInterval";
 
-const signalSources = [
-    new TestSignalSource("A", 400, 60),
-    new TestSignalSource("B", 400, 30),
-    new TestSignalSource("C", 400, 20),
-    new TestSignalSource("D", 400, 10),
-    new TestSignalSource("E", 400, 60)]
+const EDF_FILE_PATH = "/home/alvaro/Documents/Tesis/sleep-edf-database-expanded-1.0.0/sleep-cassette/SC4001E0-PSG.edf"
 
-
-const interval1: HighlightedInterval = {
-    startSeconds: 0,
-    endSeconds: 10,
-    label: "N1",
-    signalsAssociated: ["A", "B", "C"],
-    drawingColor: 'red',
-    drawingStyle: 'background-rectangle',
-    hoverInfo: {
-        "nada": "mucho",
-    }
-}
-
-const interval2: HighlightedInterval = {
-    startSeconds: 0,
-    endSeconds: 10,
-    label: "N2",
-    signalsAssociated: ["A", "B", "C"],
-    drawingColor: 'red',
-    drawingStyle: 'background-rectangle',
-    hoverInfo: {
-        "nada": "mucho",
-    }
-}
-
-const interval3: HighlightedInterval = {
-    startSeconds: 0,
-    endSeconds: 10,
-    label: "N3",
-    signalsAssociated: ["A", "B", "C"],
-    drawingColor: 'red',
-    drawingStyle: 'background-rectangle',
-    hoverInfo: {
-        "nada": "mucho",
-    }
-}
-
-const group1: IntervalGroup = {
-    label: 'Sleep Stages',
-    priority: 0,
-    intervals: [interval1]
-}
-
-const group2: IntervalGroup = {
-    label: 'Events',
-    priority: 0,
-    intervals: [interval2]
-}
-
-const group3: IntervalGroup = {
-    label: 'Patterns',
-    priority: 0,
-    intervals: [interval3]
-}
+const signalSources = ref<SignalSource[]>([])
+const isLoadingChannels = ref(true)
+const loadingError = ref<string | null>(null)
 
 const annotations: Record<string, IntervalGroup> = {}
-annotations[group1.label] = group1
-annotations[group2.label] = group2
-annotations[group3.label] = group3
+
+onMounted(async () => {
+    try {
+        signalSources.value = await loadEdfSignalSourcesFromPath(EDF_FILE_PATH)
+        if (signalSources.value.length === 0) {
+            loadingError.value = "EDF file was decoded, but no channels could be converted to signal sources."
+        }
+    } catch (error) {
+        loadingError.value =
+            error instanceof Error
+                ? error.message
+                : `Unknown EDF loading error: ${String(error)}`
+    } finally {
+        isLoadingChannels.value = false
+    }
+})
 
 </script>
 
 
 <template>
-    <PlotComponent :annotations="annotations" :signalSources=signalSources>
-    </PlotComponent>
+    <div v-if="isLoadingChannels" class="m-4 rounded border border-slate-700 bg-black p-3 text-slate-200">
+        Loading EDF channels from {{ EDF_FILE_PATH }}...
+    </div>
+    <div v-else-if="loadingError" class="m-4 rounded border border-red-700 bg-black p-3 text-red-300">
+        Failed to load EDF channels: {{ loadingError }}
+    </div>
+    <div v-else class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <section>
+            <h2 class="mx-4 mt-4 text-slate-200 font-semibold">Pixi Renderer</h2>
+            <PlotComponent :annotations="annotations" :signalSources="signalSources">
+            </PlotComponent>
+        </section>
+    </div>
 </template>
 
 <style scoped></style>

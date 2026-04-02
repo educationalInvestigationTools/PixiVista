@@ -12,6 +12,14 @@ export default defineConfig({
         vueDevTools(),
         tailwindcss(),
     ],
+    server: {
+        fs: {
+            allow: [
+                fileURLToPath(new URL('./', import.meta.url)),
+                '/home/alvaro/Documents/Tesis/sleep-edf-database-expanded-1.0.0',
+            ],
+        },
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))

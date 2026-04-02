@@ -8,5 +8,5 @@ export type OneDimSignalRaw = {
 export interface SignalSource {
     readonly totalSeconds: number
     readonly label: string
-    read(viewport: ViewPort): OneDimSignalRaw
+    read(viewport: ViewPort): OneDimSignalRaw | Promise<OneDimSignalRaw>
 }
