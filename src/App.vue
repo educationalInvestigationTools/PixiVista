@@ -41,7 +41,7 @@ onMounted(async () => {
     <div v-else-if="loadingError" class="m-4 rounded border border-red-700 bg-black p-3 text-red-300">
         Failed to load EDF channels: {{ loadingError }}
     </div>
-    <div v-else class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div v-else>
         <section>
             <h2 class="mx-4 mt-4 text-slate-200 font-semibold">Pixi Renderer</h2>
             <PlotComponent :annotations="annotations" :signalSources="signalSources">
