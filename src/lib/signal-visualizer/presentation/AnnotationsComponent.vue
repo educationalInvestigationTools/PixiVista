@@ -45,15 +45,8 @@ function toggleShow(groupLabel: string, objectLabel: string) {
                         @click="toggleShow(groupLabel, objectLabel)"
                         :title="object.visibility ? 'Click to hide' : 'Click to show'">
                         <span class="annotation__item__style" :style="{ color: object.color }" aria-hidden="true">
-                            <svg v-if="object.shape === 'rectangle'" class="annotation__item__icon" viewBox="0 0 16 10"
-                                fill="none">
-                                <rect x="1.25" y="1.25" width="13.5" height="7.5" stroke="currentColor"
-                                    stroke-width="1.5" />
-                            </svg>
-                            <svg v-else class="annotation__item__icon" viewBox="0 0 16 10" fill="none">
-                                <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-dasharray="3 2" />
-                            </svg>
+                            <span class="annotation__item__icon"
+                                :class="object.shape === 'rectangle' ? 'annotation__item__icon--rectangle' : 'annotation__item__icon--dashed-line'"></span>
                         </span>
                         <span class="annotation__item__label"> {{ object.label }}</span>
                     </div>
@@ -139,7 +132,24 @@ function toggleShow(groupLabel: string, objectLabel: string) {
 .annotation__item__icon {
     display: block;
     width: 18px;
-        height: 12px;
+    height: 12px;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+}
+
+.annotation__item__icon--rectangle {
+    -webkit-mask-image: url('../../../assets/icons/annotation-rectangle.svg');
+    mask-image: url('../../../assets/icons/annotation-rectangle.svg');
+}
+
+.annotation__item__icon--dashed-line {
+    -webkit-mask-image: url('../../../assets/icons/annotation-dashed-line.svg');
+    mask-image: url('../../../assets/icons/annotation-dashed-line.svg');
 }
 
 .annotation__item__label {
