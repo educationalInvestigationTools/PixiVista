@@ -19,6 +19,9 @@ const emit = defineEmits<{
     (e: 'update:viewPort', value: ViewPort): void
 }>()
 
+const minWindowLengthSeconds = 1
+const maxWindowLengthSeconds = 60
+
 const viewPortStartSample = computed({
     get: () => props.viewPort.startSeconds,
     set: (v) => {
@@ -33,110 +36,134 @@ const windowLength = computed({
     }
 })
 
-const highlightWindowWidth = computed(() => {
-    const range = props.viewPortLargestValueSamples
-    const raw = Math.max(0, Math.min(
-        range - viewPortStartSample.value,
-        windowLength.value
-    ))
-    return (raw / range) * 100
+const circlePosition = computed(() => {
+    const maxStart = Math.max(0, props.viewPortLargestValueSamples - windowLength.value)
+    if (maxStart === 0) return 0
+
+    const boundedStart = Math.max(0, Math.min(maxStart, viewPortStartSample.value))
+    return (boundedStart / maxStart) * 100
 })
-const highlightWindowPosition = computed(() => {
-    const range = props.viewPortLargestValueSamples
-    let pos = ((viewPortStartSample.value) / range) * 100
-    const maxLeft = 100 - highlightWindowWidth.value
-    if (pos > maxLeft) pos = maxLeft
-    if (pos < 0)
-        pos = 0
-    return pos
+
+const maxWindowLengthForDial = computed(() => {
+    const available = Math.floor(props.viewPortLargestValueSamples - viewPortStartSample.value)
+    return Math.max(minWindowLengthSeconds, Math.min(maxWindowLengthSeconds, available))
+})
+
+const windowLengthDialStyle = computed<Record<string, string>>(() => {
+    const maxLength = maxWindowLengthForDial.value
+    if (maxLength <= minWindowLengthSeconds) {
+        return { '--dial-fill': '100%' }
+    }
+
+    const boundedLength = Math.max(minWindowLengthSeconds, Math.min(maxLength, windowLength.value))
+    const fill = ((boundedLength - minWindowLengthSeconds) / (maxLength - minWindowLengthSeconds)) * 100
+    return { '--dial-fill': `${fill}%` }
 })
 
 const containerRef = ref<HTMLElement | null>(null)
 
-
-type Interaction = 'resize-left' | 'resize-right' | 'drag'
-
-function handleDrag(delta: number, currentPosition: number, currentWindowLength: number) {
-    const newVal = Math.min(
-        props.viewPortLargestValueSamples - currentWindowLength,
-        Math.max(0, Math.round(currentPosition + delta))
-    );
-    if (newVal != viewPortStartSample.value) {
-        viewPortStartSample.value = newVal;
+function updateWindowLength(nextLength: number) {
+    const maxLength = maxWindowLengthForDial.value
+    const bounded = Math.max(minWindowLengthSeconds, Math.min(maxLength, Math.round(nextLength)))
+    if (bounded !== windowLength.value) {
+        windowLength.value = bounded
     }
 }
 
-function handleResizeLeft(delta: number, currentPosition: number, currentWindowLength: number) {
-    let newStart = currentPosition + delta;
-    newStart = Math.max(0, newStart);
-    const rightEdge = currentPosition + currentWindowLength;
-    let newLength = Math.round(rightEdge - newStart);
-    const maxLength = props.viewPortLargestValueSamples - newStart;
-    newLength = Math.max(1, Math.min(maxLength, newLength));
-    newStart = rightEdge - newLength;
-
-    if (
-        newStart !== viewPortStartSample.value ||
-        newLength !== windowLength.value
-    ) {
-        viewPortStartSample.value = newStart;
-        windowLength.value = newLength;
-    }
+function getDialPercentFromPointer(event: PointerEvent, dialElement: HTMLElement) {
+    const dialRect = dialElement.getBoundingClientRect()
+    const centerX = dialRect.left + dialRect.width / 2
+    const centerY = dialRect.top + dialRect.height / 2
+    const deltaX = event.clientX - centerX
+    const deltaY = event.clientY - centerY
+    const angle = (Math.atan2(deltaY, deltaX) * 180) / Math.PI
+    const normalizedAngle = (angle + 450) % 360
+    return (normalizedAngle / 360) * 100
 }
 
-function handleResizeRight(delta: number, currentPosition: number, currentWindowLength: number) {
-    let newLength = Math.round(currentWindowLength + delta);
-    const maxLength = props.viewPortLargestValueSamples - currentPosition;
-    newLength = Math.max(1, Math.min(maxLength, newLength));
-    if (newLength !== windowLength.value) {
-        windowLength.value = newLength;
+function applyWindowLengthDialPointer(event: PointerEvent, dialElement: HTMLElement) {
+    const maxLength = maxWindowLengthForDial.value
+    if (maxLength <= minWindowLengthSeconds) {
+        updateWindowLength(minWindowLengthSeconds)
+        return
     }
+
+    const pointerPercent = getDialPercentFromPointer(event, dialElement)
+    const nextLength = minWindowLengthSeconds
+        + ((maxLength - minWindowLengthSeconds) * Math.max(0, Math.min(100, pointerPercent))) / 100
+    updateWindowLength(nextLength)
 }
 
-function startInteraction(interaction: Interaction, p: PointerEvent) {
-    p.preventDefault();
-    document.body.style.userSelect = "none";
-    const startX = p.clientX;
-    const currentPosition = viewPortStartSample.value;
-    const currentWindowLength = windowLength.value;
+function startWindowLengthDialInteraction(event: PointerEvent) {
+    event.preventDefault()
+    const dialElement = event.currentTarget as HTMLElement
+    applyWindowLengthDialPointer(event, dialElement)
+    document.body.style.userSelect = 'none'
 
-    function onMove(p: PointerEvent) {
-        p.preventDefault()
-        const dx = p.clientX - startX;
-        const delta = pxToSamples(dx);
-        if (interaction === 'resize-right') {
-            handleResizeRight(delta, currentPosition, currentWindowLength)
-        } else if (interaction === 'resize-left') {
-            handleResizeLeft(delta, currentPosition, currentWindowLength)
-        } else {
-            handleDrag(delta, currentPosition, currentWindowLength)
-        }
+    function onMove(moveEvent: PointerEvent) {
+        moveEvent.preventDefault()
+        applyWindowLengthDialPointer(moveEvent, dialElement)
     }
 
     function onUp() {
-        document.body.style.userSelect = "";
-        window.removeEventListener("pointermove", onMove);
-        window.removeEventListener("pointerup", onUp);
+        document.body.style.userSelect = ''
+        window.removeEventListener('pointermove', onMove)
+        window.removeEventListener('pointerup', onUp)
+        window.removeEventListener('pointercancel', onUp)
     }
 
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
 }
 
-function pxToSamples(px: number) {
+function nudgeWindowLength(direction: -1 | 1) {
+    updateWindowLength(windowLength.value + direction)
+}
+
+function setCirclePositionFromPointer(pointerX: number) {
     const el = containerRef.value
-    if (!el) return 0
+    if (!el) return
 
-    const width = el.clientWidth
-    const range = props.viewPortLargestValueSamples
+    const rect = el.getBoundingClientRect()
+    if (rect.width === 0) return
 
-    if (width === 0 || range === 0) return 0
-    return (px / width) * range
+    const ratio = Math.max(0, Math.min(1, (pointerX - rect.left) / rect.width))
+    const maxStart = Math.max(0, props.viewPortLargestValueSamples - windowLength.value)
+    const nextStart = Math.round(ratio * maxStart)
+
+    if (nextStart !== viewPortStartSample.value) {
+        viewPortStartSample.value = nextStart
+    }
+}
+
+function startSliderInteraction(e: PointerEvent) {
+    (e.currentTarget as HTMLElement | null)?.focus()
+    e.preventDefault()
+    setCirclePositionFromPointer(e.clientX)
+    document.body.style.userSelect = "none"
+
+    function onMove(event: PointerEvent) {
+        event.preventDefault()
+        setCirclePositionFromPointer(event.clientX)
+    }
+
+    function onUp() {
+        document.body.style.userSelect = ""
+        window.removeEventListener("pointermove", onMove)
+        window.removeEventListener("pointerup", onUp)
+        window.removeEventListener("pointercancel", onUp)
+    }
+
+    window.addEventListener("pointermove", onMove)
+    window.addEventListener("pointerup", onUp)
+    window.addEventListener("pointercancel", onUp)
 }
 
 function handleKeyDown(e: KeyboardEvent) {
     const key = e.key
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)) return
+    e.preventDefault()
 
     if (key === 'ArrowLeft') {
         const newVal = Math.max(0, viewPortStartSample.value - 1)
@@ -150,7 +177,7 @@ function handleKeyDown(e: KeyboardEvent) {
     }
 
     if (key === 'ArrowUp') {
-        const maxLength = props.viewPortLargestValueSamples - viewPortStartSample.value
+        const maxLength = maxWindowLengthForDial.value
         const newLen = Math.min(maxLength, windowLength.value + 1)
         if (newLen !== windowLength.value) windowLength.value = newLen
     }
@@ -164,47 +191,59 @@ function handleKeyDown(e: KeyboardEvent) {
 
 </script>
 <template>
-    <div class="border border-slate-700 rounded p-2 flex flex-row bg-black text-slate-200">
+    <div class="border border-slate-700 rounded p-2 flex flex-col gap-2 bg-black text-slate-200">
 
-        <!-- LEFT -->
-        <div class="centered bg-slate-700" :style="{ width: leftSliderPositionPercent + '%', wordBreak: 'break-word' }">
-            <span class="text-xs text-slate-300">
-                {{ props.sampleToString(0) }}
+        <div class="slider-info-row">
+            <span class="text-sm text-slate-300">
+                Current position: {{ props.sampleToString(viewPortStartSample) }}
             </span>
-        </div>
 
-        <!-- SLIDER -->
-        <div class="relative bg-slate-800 " ref="containerRef" tabindex="0"
-            :style="{ width: (100 - leftSliderPositionPercent - rightSliderPositionPercent) + '%' }"
-            @keydown="handleKeyDown">
-
-            <div class="absolute top-0 left-0 h-full bg-blue-500/20 rounded cursor-grab active:cursor-grabbing hover:bg-blue-500/30 centered transition-colors"
-                :style="{ width: highlightWindowWidth + '%', left: highlightWindowPosition + '%' }"
-                @pointerdown="(p) => startInteraction('drag', p)">
-                <span class="pointer-events-none select-none text-xs font-medium text-blue-200">
-                    {{ props.sampleToString(props.viewPort.lengthSeconds) }}
+            <div class="slider-info-row__window-length">
+                <span class="text-sm text-slate-300">
+                    Window length: {{ windowLength }}s
                 </span>
 
-                <!-- LEFT HANDLE -->
-                <div class="absolute left-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
-                    @pointerdown.stop="(p) => startInteraction('resize-left', p)">
-                </div>
-
-                <!-- RIGHT HANDLE -->
-                <div class="absolute right-0 top-0 h-full w-3 hover:w-4 transition-all bg-blue-500 cursor-ew-resize"
-                    @pointerdown.stop="(p) => startInteraction('resize-right', p)">
-                </div>
+                <button class="window-length-dial" type="button" role="slider" :aria-valuemin="minWindowLengthSeconds"
+                    :aria-valuemax="maxWindowLengthForDial" :aria-valuenow="windowLength"
+                    aria-label="Window length in seconds" :style="windowLengthDialStyle"
+                    @pointerdown="startWindowLengthDialInteraction" @keydown.left.prevent="nudgeWindowLength(-1)"
+                    @keydown.down.prevent="nudgeWindowLength(-1)" @keydown.right.prevent="nudgeWindowLength(1)"
+                    @keydown.up.prevent="nudgeWindowLength(1)">
+                    <span class="window-length-dial__inner" aria-hidden="true"></span>
+                </button>
             </div>
         </div>
 
-        <!-- RIGHT -->
-        <div class="centered bg-slate-700"
-            :style="{ width: rightSliderPositionPercent + '%', wordBreak: 'break-word' }">
-            <span class="text-xs text-slate-300">
-                {{ props.sampleToString(props.viewPortLargestValueSamples) }}
-            </span>
-        </div>
+        <div class="flex flex-row">
 
+            <!-- LEFT -->
+            <div class="centered bg-slate-700"
+                :style="{ width: leftSliderPositionPercent + '%', wordBreak: 'break-word' }">
+                <span class="text-sm text-slate-300">
+                    {{ props.sampleToString(0) }}
+                </span>
+            </div>
+
+            <!-- SLIDER -->
+            <div class="relative bg-slate-800 " ref="containerRef" tabindex="0"
+                :style="{ width: (100 - leftSliderPositionPercent - rightSliderPositionPercent) + '%' }"
+                @keydown="handleKeyDown" @pointerdown="startSliderInteraction">
+
+                <div class="absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2 bg-slate-600"></div>
+
+                <div class="slider-circle" :style="{ left: circlePosition + '%' }" aria-hidden="true">
+                </div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="centered bg-slate-700"
+                :style="{ width: rightSliderPositionPercent + '%', wordBreak: 'break-word' }">
+                <span class="text-sm text-slate-300">
+                    {{ props.sampleToString(props.viewPortLargestValueSamples) }}
+                </span>
+            </div>
+
+        </div>
     </div>
 </template>
 <style scoped>
@@ -214,5 +253,94 @@ function handleKeyDown(e: KeyboardEvent) {
         align-items: center;
         justify-content: center;
     }
+.slider-circle {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    transform: translate(-50%, -50%);
+    background: #38bdf8;
+    border: 2px solid #0f172a;
+    pointer-events: none;
+}
+
+.slider-info-row {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    align-self: flex-start;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    background: #020617;
+    padding: 8px 10px;
+}
+
+.slider-info-row__window-length {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.window-length-dial {
+    --dial-fill: 0%;
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    border: 1px solid #475569;
+    border-radius: 50%;
+    overflow: hidden;
+    clip-path: circle(50% at 50% 50%);
+    isolation: isolate;
+    cursor: pointer;
+    user-select: none;
+    touch-action: none;
+    background: #0f172a;
+    transition: border-color 0.2s;
+}
+
+.window-length-dial::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(#38bdf8 var(--dial-fill), rgba(56, 189, 248, 0.2) var(--dial-fill));
+}
+
+.window-length-dial::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: #0f172a;
+}
+
+.window-length-dial:hover {
+    border-color: #7dd3fc;
+}
+
+.window-length-dial:focus-visible {
+    outline: 2px solid #38bdf8;
+    outline-offset: 1px;
+}
+
+.window-length-dial__inner {
+    position: relative;
+    z-index: 1;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #e0f2fe;
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
+}
 }
 </style>

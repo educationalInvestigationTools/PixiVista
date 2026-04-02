@@ -178,7 +178,7 @@ async function updateViewPort(viewPort: ViewPort) {
             }">
             </div>
         </div>
-        <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="15" :rightSliderPositionPercent="5"
+        <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="5" :rightSliderPositionPercent="5"
             :viewPort="viewPortRef" :viewPortLargestValueSamples=signalsLargestDurationSeconds
             @update:viewPort='updateViewPort'>
         </SliderComponent>
