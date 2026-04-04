@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import type { NumberSettingChoice, SettingChoice, SettingChoiceUpdate } from '@/lib/signal-visualizer/presentation/types/settingsChoice.ts';
+import type { AnySettingChoice, AnySettingChoiceUpdate, NumberSettingChoice } from '@/lib/signal-visualizer/presentation/types/settingsChoice.ts';
 
 
 const props = defineProps<{
-    choices: SettingChoice[]
+    choices: AnySettingChoice[]
 }>()
 
 
 const emit = defineEmits<{
-    (e: 'update:choice', update: SettingChoiceUpdate): void
+    (e: 'update:choice', update: AnySettingChoiceUpdate): void
 }>()
 
 function toggleSettingsPanel() {
@@ -176,10 +176,10 @@ onBeforeUnmount(() => {
         <transition name="settings-panel">
             <div v-show="showSettings" id="settings-panel" class="settings__panel">
                 <div v-for="choice in props.choices" :key="choice.id" class="settings__control"
-                    :class="choice.kind === 'number' ? 'settings__control--number' : 'settings__control--boolean'">
+                    :class="typeof choice.value === 'number' ? 'settings__control--number' : 'settings__control--boolean'">
                     <label class="settings__label" :for="getChoiceInputId(choice.id)">{{ choice.label }}</label>
 
-                    <input v-if="choice.kind === 'boolean'" :id="getChoiceInputId(choice.id)" class="settings__checkbox"
+                    <input v-if="typeof choice.value === 'boolean'" :id="getChoiceInputId(choice.id)" class="settings__checkbox"
                         type="checkbox" :checked="choice.value" @change="updateBooleanChoice(choice.id, $event)">
 
                     <div v-else class="settings__number-picker">

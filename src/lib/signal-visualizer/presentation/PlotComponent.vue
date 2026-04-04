@@ -11,7 +11,7 @@ import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsCompon
 import type {
     PerformanceMetrics
 } from "@/lib/signal-visualizer/application/types/performanceMetrics.ts";
-import type { SettingChoice, SettingChoiceUpdate } from "@/lib/signal-visualizer/presentation/types/settingsChoice.ts";
+import type { AnySettingChoice, AnySettingChoiceUpdate } from "@/lib/signal-visualizer/presentation/types/settingsChoice.ts";
 import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
 import { fmtTime } from "../utils/utils";
 import { ViewPort } from "@/lib/signal-visualizer/application/types/viewPort.ts";
@@ -64,23 +64,20 @@ const showMetricsSettingId = 'show-metrics-panel'
 const showAnnotationsSettingId = 'show-annotations-panel'
 const heightPerChannelSettingId = 'height-per-channel'
 
-const settingsChoices = computed<SettingChoice[]>(() => [
+const settingsChoices = computed<AnySettingChoice[]>(() => [
     {
         id: showMetricsSettingId,
         label: 'Metrics',
-        kind: 'boolean',
         value: showMetricsPanel.value,
     },
     {
         id: showAnnotationsSettingId,
         label: 'Annotations',
-        kind: 'boolean',
         value: showAnnotationsPanel.value,
     },
     {
         id: heightPerChannelSettingId,
         label: 'Height / channel',
-        kind: 'number',
         value: heightPerChannel.value,
         min: 60,
         max: 600,
@@ -88,7 +85,7 @@ const settingsChoices = computed<SettingChoice[]>(() => [
     }
 ])
 
-function updateSettingChoice(settingUpdate: SettingChoiceUpdate) {
+function updateSettingChoice(settingUpdate: AnySettingChoiceUpdate) {
     if (settingUpdate.id === showMetricsSettingId && typeof settingUpdate.value === 'boolean') {
         showMetricsPanel.value = settingUpdate.value
     }

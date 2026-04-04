@@ -1,24 +1,18 @@
-export type BaseSettingChoice = {
+export type SettingChoice<T> = {
     id: string
     label: string
+    value: T
 }
 
-export type BooleanSettingChoice = BaseSettingChoice & {
-    kind: 'boolean'
-    value: boolean
-}
-
-export type NumberSettingChoice = BaseSettingChoice & {
-    kind: 'number'
-    value: number
+export type BooleanSettingChoice = SettingChoice<boolean>
+export type NumberSettingChoice = SettingChoice<number> & {
     min: number
     max: number
     step?: number
 }
 
-export type SettingChoice = BooleanSettingChoice | NumberSettingChoice
+export type AnySettingChoice = BooleanSettingChoice | NumberSettingChoice
 
-export type SettingChoiceUpdate = {
-    id: string
-    value: boolean | number
-}
+export type UpdateFor<T> = T extends SettingChoice<infer V> ? { id: string; value: V } : never
+
+export type AnySettingChoiceUpdate = UpdateFor<AnySettingChoice>
