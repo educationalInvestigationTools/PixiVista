@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import type { AnySettingChoice, AnySettingChoiceUpdate, NumberSettingChoice } from '@/lib/signal-visualizer/presentation/types/settingsChoice.ts';
-
+import DialElement from './DialElement.vue';
 
 const props = defineProps<{
     choices: AnySettingChoice[]
 }>()
 
-
 const emit = defineEmits<{
     (e: 'update:choice', update: AnySettingChoiceUpdate): void
 }>()
-
-function toggleSettingsPanel() {
-    showSettings.value = !showSettings.value
-}
 
 function getChoiceInputId(choiceId: string) {
     return `setting-choice-${choiceId}`
@@ -25,115 +20,61 @@ function updateBooleanChoice(choiceId: string, event: Event) {
     emit('update:choice', { id: choiceId, value: target.checked })
 }
 
-function getStepPrecision(step: number) {
-    const stepText = `${step}`
-    const decimalSeparatorIndex = stepText.indexOf('.')
-    if (decimalSeparatorIndex === -1) {
+function clamp(value: number, min: number, max: number) {
+    return Math.min(max, Math.max(min, value))
+}
+
+function getNumberChoicePercent(choice: NumberSettingChoice) {
+    const range = choice.max - choice.min
+    if (range <= 0) {
         return 0
     }
-
-    return stepText.length - decimalSeparatorIndex - 1
+    const percent = ((choice.value - choice.min) / range) * 100
+    return clamp(percent, 0, 100)
 }
 
-function clampNumberChoiceValue(choice: NumberSettingChoice, value: number) {
-    const boundedValue = Math.min(choice.max, Math.max(choice.min, value))
-    const step = choice.step ?? 1
+function getValueFromPercent(choice: NumberSettingChoice, percent: number) {
+    const normalizedPercent = clamp(percent, 0, 100)
+    const range = choice.max - choice.min
 
-    if (step <= 0) {
-        return boundedValue
+    if (range <= 0) {
+        return choice.min
     }
 
-    const steppedValue = choice.min + Math.round((boundedValue - choice.min) / step) * step
-    const precision = getStepPrecision(step)
-    const clampedStepValue = Math.min(choice.max, Math.max(choice.min, steppedValue))
-    return Number(clampedStepValue.toFixed(precision))
+    const rawValue = choice.min + (normalizedPercent / 100) * range
+    if (choice.step && choice.step > 0) {
+        const stepped = choice.min + Math.round((rawValue - choice.min) / choice.step) * choice.step
+        return clamp(stepped, choice.min, choice.max)
+    }
+
+    return clamp(rawValue, choice.min, choice.max)
 }
 
-function valueToPercent(choice: NumberSettingChoice, value: number) {
-    if (choice.max <= choice.min) {
+function getStepPrecision(step?: number) {
+    if (!step || step <= 0) {
+        return 2
+    }
+    const stepString = `${step}`
+    const dotIndex = stepString.indexOf('.')
+    if (dotIndex === -1) {
         return 0
     }
-
-    const ratio = (value - choice.min) / (choice.max - choice.min)
-    return Math.min(100, Math.max(0, ratio * 100))
+    return stepString.length - dotIndex - 1
 }
 
-function percentToValue(choice: NumberSettingChoice, percent: number) {
-    const clampedPercent = Math.min(100, Math.max(0, percent))
-    const rawValue = choice.min + ((choice.max - choice.min) * clampedPercent) / 100
-    return clampNumberChoiceValue(choice, rawValue)
+function formatNumberChoiceValue(choice: NumberSettingChoice, percent: number) {
+    const value = getValueFromPercent(choice, percent)
+    return value.toFixed(getStepPrecision(choice.step))
 }
 
-function emitNumberChoiceValue(choice: NumberSettingChoice, value: number) {
-    emit('update:choice', { id: choice.id, value: clampNumberChoiceValue(choice, value) })
+function updateNumberChoice(choice: NumberSettingChoice, percent: number) {
+    emit('update:choice', {
+        id: choice.id,
+        value: getValueFromPercent(choice, percent)
+    })
 }
 
-type DialInteraction = {
-    choice: NumberSettingChoice
-    dialElement: HTMLElement
-}
-
-const activeDialInteraction = ref<DialInteraction | null>(null)
-
-function getDialPercentFromPointer(event: PointerEvent, dialElement: HTMLElement) {
-    const dialRect = dialElement.getBoundingClientRect()
-    const centerX = dialRect.left + dialRect.width / 2
-    const centerY = dialRect.top + dialRect.height / 2
-    const deltaX = event.clientX - centerX
-    const deltaY = event.clientY - centerY
-    const angle = (Math.atan2(deltaY, deltaX) * 180) / Math.PI
-    const normalizedAngle = (angle + 450) % 360
-    return (normalizedAngle / 360) * 100
-}
-
-function applyDialPointer(event: PointerEvent, interaction: DialInteraction) {
-    const pointerPercent = getDialPercentFromPointer(event, interaction.dialElement)
-    const nextValue = percentToValue(interaction.choice, pointerPercent)
-    emitNumberChoiceValue(interaction.choice, nextValue)
-}
-
-function startDialInteraction(choice: NumberSettingChoice, event: PointerEvent) {
-    event.preventDefault()
-    const dialElement = event.currentTarget as HTMLElement
-    const interaction = { choice, dialElement }
-    activeDialInteraction.value = interaction
-    applyDialPointer(event, interaction)
-}
-
-function handleDialPointerMove(event: PointerEvent) {
-    if (!activeDialInteraction.value) {
-        return
-    }
-
-    applyDialPointer(event, activeDialInteraction.value)
-}
-
-function stopDialInteraction() {
-    activeDialInteraction.value = null
-}
-
-function nudgeNumberChoice(choice: NumberSettingChoice, direction: -1 | 1) {
-    const step = choice.step ?? 1
-    const nextValue = choice.value + step * direction
-    emitNumberChoiceValue(choice, nextValue)
-}
-
-function getCapacityPercent(choice: NumberSettingChoice) {
-    return Math.round(valueToPercent(choice, choice.value))
-}
-
-function getCapacityValue(choice: NumberSettingChoice) {
-    const precision = getStepPrecision(choice.step ?? 1)
-    return choice.value.toFixed(precision)
-}
-
-function getDialStyle(choice: NumberSettingChoice) {
-    return {
-        '--dial-fill': `${valueToPercent(choice, choice.value)}%`
-    }
-}
-
-const showSettings = ref(false)
+const showSettings = ref(true)
 const settingsRootRef = ref<HTMLElement | null>(null)
 
 function handleOutsidePointerDown(event: PointerEvent) {
@@ -149,16 +90,10 @@ function handleOutsidePointerDown(event: PointerEvent) {
 
 onMounted(() => {
     document.addEventListener('pointerdown', handleOutsidePointerDown)
-    window.addEventListener('pointermove', handleDialPointerMove)
-    window.addEventListener('pointerup', stopDialInteraction)
-    window.addEventListener('pointercancel', stopDialInteraction)
 })
 
 onBeforeUnmount(() => {
     document.removeEventListener('pointerdown', handleOutsidePointerDown)
-    window.removeEventListener('pointermove', handleDialPointerMove)
-    window.removeEventListener('pointerup', stopDialInteraction)
-    window.removeEventListener('pointercancel', stopDialInteraction)
 })
 
 </script>
@@ -167,7 +102,8 @@ onBeforeUnmount(() => {
     <div ref="settingsRootRef" class="settings">
         <button class="settings__launcher" type="button" :aria-expanded="showSettings" aria-controls="settings-panel"
             :aria-label="showSettings ? 'Hide settings panel' : 'Show settings panel'"
-            :title="showSettings ? 'Hide settings panel' : 'Show settings panel'" @click="toggleSettingsPanel">
+            :title="showSettings ? 'Hide settings panel' : 'Show settings panel'"
+            @click="(e) => { showSettings = !showSettings }">
             <span class="settings__launcher-icon" aria-hidden="true"></span>
             <span class="settings__launcher-text">Settings</span>
             <span class="settings__launcher-chevron" aria-hidden="true"></span>
@@ -179,24 +115,15 @@ onBeforeUnmount(() => {
                     :class="typeof choice.value === 'number' ? 'settings__control--number' : 'settings__control--boolean'">
                     <label class="settings__label" :for="getChoiceInputId(choice.id)">{{ choice.label }}</label>
 
-                    <input v-if="typeof choice.value === 'boolean'" :id="getChoiceInputId(choice.id)" class="settings__checkbox"
-                        type="checkbox" :checked="choice.value" @change="updateBooleanChoice(choice.id, $event)">
+                    <input v-if="typeof choice.value === 'boolean'" :id="getChoiceInputId(choice.id)"
+                        class="settings__checkbox" type="checkbox" :checked="choice.value"
+                        @change="updateBooleanChoice(choice.id, $event)">
 
-                    <div v-else class="settings__number-picker">
-                        <button :id="getChoiceInputId(choice.id)" class="settings__dial" type="button" role="slider"
-                            :aria-valuemin="choice.min" :aria-valuemax="choice.max" :aria-valuenow="choice.value"
-                            :aria-label="`${choice.label} capacity`" :style="getDialStyle(choice)"
-                            @pointerdown="startDialInteraction(choice, $event)"
-                            @keydown.left.prevent="nudgeNumberChoice(choice, -1)"
-                            @keydown.down.prevent="nudgeNumberChoice(choice, -1)"
-                            @keydown.right.prevent="nudgeNumberChoice(choice, 1)"
-                            @keydown.up.prevent="nudgeNumberChoice(choice, 1)">
-                            <span class="settings__dial-inner" aria-hidden="true"></span>
-                        </button>
-                        <span class="settings__capacity" aria-live="polite">
-                            <span class="settings__capacity-percent">{{ getCapacityPercent(choice) }}%</span>
-                            <span class="settings__capacity-value">{{ getCapacityValue(choice) }}</span>
-                        </span>
+                    <div v-else :id="getChoiceInputId(choice.id)" class="settings__number-value">
+                        <DialElement :currentValuePercent="getNumberChoicePercent(choice as NumberSettingChoice)"
+                            :toStringFromPercent="(percent) => formatNumberChoiceValue(choice as NumberSettingChoice, percent)"
+                            @update:value="(percent) => updateNumberChoice(choice as NumberSettingChoice, percent)">
+                        </DialElement>
                     </div>
                 </div>
             </div>
@@ -288,10 +215,10 @@ onBeforeUnmount(() => {
     width: 100%;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 10px 12px;
-    padding: 12px;
+    gap: 8px 12px;
+        padding: 5px;
     box-sizing: border-box;
-    border-radius: 12px;
+    border-radius: 10px;
     border: 1px solid #334155;
     background: linear-gradient(180deg, #020617 0%, #01040c 100%);
     box-shadow: 0 8px 20px rgba(2, 6, 23, 0.45);
@@ -319,89 +246,17 @@ onBeforeUnmount(() => {
     background: rgba(15, 23, 42, 0.9);
 }
 
-.settings__control--number {
-    border-radius: 999px;
-}
-
-.settings__control--boolean {
-    border-radius: 999px;
+.settings__number-value {
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .settings__checkbox {
-    width: 18px;
-    height: 18px;
+    width: 100%;
+        height: 100%;
     cursor: pointer;
     accent-color: #38bdf8;
-}
-
-.settings__number-picker {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.settings__dial {
-    --dial-fill: 0%;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    border: 1px solid #475569;
-    border-radius: 999px;
-    cursor: pointer;
-    user-select: none;
-    touch-action: none;
-    background:
-        conic-gradient(#38bdf8 var(--dial-fill), rgba(56, 189, 248, 0.2) var(--dial-fill)),
-        radial-gradient(circle at center, transparent 57%, rgba(15, 23, 42, 0.9) 58%);
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.settings__dial:hover {
-    border-color: #7dd3fc;
-}
-
-.settings__dial:focus-visible {
-    outline: 2px solid #38bdf8;
-    outline-offset: 1px;
-}
-
-.settings__dial-inner {
-    width: 16px;
-    height: 16px;
-    border-radius: 999px;
-    border: 1px solid #334155;
-    background: #0f172a;
-}
-
-.settings__capacity {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 6px;
-    white-space: nowrap;
-}
-
-.settings__capacity-percent {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    color: #e2e8f0;
-}
-
-.settings__capacity-value {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.1px;
-    color: #cbd5e1;
-}
-
-.settings__capacity-value::before {
-    content: '\00B7';
-    margin-right: 6px;
-    color: #e2e8f0;
 }
 
 .settings-panel-enter-active,

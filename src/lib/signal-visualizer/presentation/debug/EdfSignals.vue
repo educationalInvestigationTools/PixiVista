@@ -5,7 +5,7 @@ import { loadEdfSignalSourcesFromPath } from "@/lib/signal-visualizer/infrastruc
 import {
     type SignalSource
 } from "@/lib/signal-visualizer/application/types/signalSource.ts";
-import type { IntervalGroup } from "./lib/signal-visualizer/application/types/highlightedInterval";
+import type { IntervalGroup } from "../../application/types/highlightedInterval";
 
 const EDF_FILE_PATH = "/home/alvaro/Documents/Tesis/sleep-edf-database-expanded-1.0.0/sleep-cassette/SC4001E0-PSG.edf"
 

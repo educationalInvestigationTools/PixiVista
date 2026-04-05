@@ -253,94 +253,95 @@ function handleKeyDown(e: KeyboardEvent) {
         align-items: center;
         justify-content: center;
     }
-.slider-circle {
-    position: absolute;
-    top: 50%;
-    width: 14px;
-    height: 14px;
-    border-radius: 999px;
-    transform: translate(-50%, -50%);
-    background: #38bdf8;
-    border: 2px solid #0f172a;
-    pointer-events: none;
-}
 
-.slider-info-row {
-    display: inline-flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 16px;
-    align-self: flex-start;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    background: #020617;
-    padding: 8px 10px;
-}
+    .slider-circle {
+        position: absolute;
+        top: 50%;
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        transform: translate(-50%, -50%);
+        background: #38bdf8;
+        border: 2px solid #0f172a;
+        pointer-events: none;
+    }
 
-.slider-info-row__window-length {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
+    .slider-info-row {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 16px;
+        align-self: flex-start;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        background: #020617;
+        padding: 8px 10px;
+    }
 
-.window-length-dial {
-    --dial-fill: 0%;
-    appearance: none;
-    -webkit-appearance: none;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    min-width: 30px;
-    aspect-ratio: 1 / 1;
-    padding: 0;
-    border: 1px solid #475569;
-    border-radius: 50%;
-    overflow: hidden;
-    clip-path: circle(50% at 50% 50%);
-    isolation: isolate;
-    cursor: pointer;
-    user-select: none;
-    touch-action: none;
-    background: #0f172a;
-    transition: border-color 0.2s;
-}
+    .slider-info-row__window-length {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-.window-length-dial::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(#38bdf8 var(--dial-fill), rgba(56, 189, 248, 0.2) var(--dial-fill));
-}
+    .window-length-dial {
+        --dial-fill: 0%;
+        appearance: none;
+        -webkit-appearance: none;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        aspect-ratio: 1 / 1;
+        padding: 0;
+        border: 1px solid #475569;
+        border-radius: 50%;
+        overflow: hidden;
+        clip-path: circle(50% at 50% 50%);
+        isolation: isolate;
+        cursor: pointer;
+        user-select: none;
+        touch-action: none;
+        background: #0f172a;
+        transition: border-color 0.2s;
+    }
 
-.window-length-dial::after {
-    content: '';
-    position: absolute;
-    inset: 6px;
-    border-radius: 50%;
-    background: #0f172a;
-}
+    .window-length-dial::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: conic-gradient(#38bdf8 var(--dial-fill), rgba(56, 189, 248, 0.2) var(--dial-fill));
+    }
 
-.window-length-dial:hover {
-    border-color: #7dd3fc;
-}
+    .window-length-dial::after {
+        content: '';
+        position: absolute;
+        inset: 6px;
+        border-radius: 50%;
+        background: #0f172a;
+    }
 
-.window-length-dial:focus-visible {
-    outline: 2px solid #38bdf8;
-    outline-offset: 1px;
-}
+    .window-length-dial:hover {
+        border-color: #7dd3fc;
+    }
 
-.window-length-dial__inner {
-    position: relative;
-    z-index: 1;
-    width: 7px;
-    height: 7px;
-    border-radius: 999px;
-    background: #e0f2fe;
-    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
-}
+    .window-length-dial:focus-visible {
+        outline: 2px solid #38bdf8;
+        outline-offset: 1px;
+    }
+
+    .window-length-dial__inner {
+        position: relative;
+        z-index: 1;
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: #e0f2fe;
+        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
+    }
 }
 </style>

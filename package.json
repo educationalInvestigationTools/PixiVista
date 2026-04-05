@@ -15,6 +15,7 @@
     "format": "oxfmt src/"
   },
   "dependencies": {
+    "@chenglou/pretext": "^0.0.4",
     "@epicurrents/edf-reader": "0.2.0-0",
     "@pixi/devtools": "^2.0.1",
     "@tailwindcss/vite": "^4.2.2",
