@@ -15,13 +15,10 @@ function handleDialUpdate(x: number) {
 </script>
 
 <template>
-        <DialElement
-            :currentValuePercent="((currentHeight - heightMin) / (heightMax - heightMin)) * 100" :toStringFromPercent="(x) => {
-                return x.toFixed(2)
-            }" @update:value="handleDialUpdate"></DialElement>
+    <DialElement :currentValuePercent="((currentHeight - heightMin) / (heightMax - heightMin)) * 100"
+        :toStringFromPercent="(x) => {
+            return x.toFixed(2)
+        }" @update:value="handleDialUpdate"></DialElement>
 </template>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>
