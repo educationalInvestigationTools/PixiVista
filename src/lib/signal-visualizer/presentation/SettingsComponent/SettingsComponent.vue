@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { AnySettingChoice, AnySettingChoiceUpdate, NumberSettingChoice } from '@/lib/signal-visualizer/presentation/types/settingsChoice.ts';
-import DialElement from './DialElement.vue';
+import type { AnySettingChoice, AnySettingChoiceUpdate, NumberSettingChoice } from '@/lib/signal-visualizer/presentation/SettingsComponent/settingsChoice';
 import settingsGearIcon from '@/assets/icons/settings-gear.svg';
 import chevronDownIcon from '@/assets/icons/chevron-down.svg';
+
+import DialElement from '../DialElement.vue';
 
 const props = defineProps<{
     choices: AnySettingChoice[]

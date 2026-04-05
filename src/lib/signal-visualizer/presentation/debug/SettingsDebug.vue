@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import { computed, ref } from 'vue';
-import type { AnySettingChoice } from '../types/settingsChoice';
-import SettingsComponent from '../SettingsComponent.vue';
+import type { AnySettingChoice } from '../SettingsComponent/settingsChoice';
+import SettingsComponent from '../SettingsComponent/SettingsComponent.vue';
 
 const showMetricsPanel = ref(true)
 const showAnnotationsPanel = ref(true)
