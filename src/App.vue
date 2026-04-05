@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SettingsDebug from './lib/signal-visualizer/presentation/debug/SettingsDebug.vue';
+import SettingsDebug from './lib/signal-visualizer/presentation/settingsComponent/SettingsDebug.vue';
 
 
 </script>

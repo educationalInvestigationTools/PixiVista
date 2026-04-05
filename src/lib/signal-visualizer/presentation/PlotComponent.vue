@@ -5,13 +5,13 @@ import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts"
 import { ResizeDto } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
 import { type SignalSource } from "@/lib/signal-visualizer/application/types/signalSource.ts";
 import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
-import SettingsComponent from "./SettingsComponent/SettingsComponent.vue";
+import SettingsComponent from "./settingsComponent/SettingsComponent.vue";
 import AnnotationsComponent, { type ObjectAnnotationData, type ObjectVisibility } from "@/lib/signal-visualizer/presentation/AnnotationsComponent.vue";
 import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsComponent.vue"
 import type {
     PerformanceMetrics
 } from "@/lib/signal-visualizer/application/types/performanceMetrics.ts";
-import type { AnySettingChoice, AnySettingChoiceUpdate } from "@/lib/signal-visualizer/presentation/SettingsComponent/settingsChoice";
+import type { AnySettingChoice, AnySettingChoiceUpdate } from "@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice";
 import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
 import { fmtTime } from "../utils/utils";
 import { ViewPort } from "@/lib/signal-visualizer/application/types/viewPort.ts";

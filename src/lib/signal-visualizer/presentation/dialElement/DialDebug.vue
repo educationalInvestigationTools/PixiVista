@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import DialElement from '../DialElement.vue';
+import DialElement from '../dialElement/DialElement.vue';
 
 const heightMin = 60
 const heightMax = 200
@@ -15,7 +15,7 @@ function handleDialUpdate(x: number) {
 </script>
 
 <template>
-        <DialElement class="dial__element"
+        <DialElement
             :currentValuePercent="((currentHeight - heightMin) / (heightMax - heightMin)) * 100" :toStringFromPercent="(x) => {
                 return x.toFixed(2)
             }" @update:value="handleDialUpdate"></DialElement>
