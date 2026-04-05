@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import type { AnySettingChoice, AnySettingChoiceUpdate, NumberSettingChoice } from '@/lib/signal-visualizer/presentation/types/settingsChoice.ts';
 import DialElement from './DialElement.vue';
+import settingsGearIcon from '@/assets/icons/settings-gear.svg';
+import chevronDownIcon from '@/assets/icons/chevron-down.svg';
 
 const props = defineProps<{
     choices: AnySettingChoice[]
@@ -10,10 +12,6 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'update:choice', update: AnySettingChoiceUpdate): void
 }>()
-
-function getChoiceInputId(choiceId: string) {
-    return `setting-choice-${choiceId}`
-}
 
 function updateBooleanChoice(choiceId: string, event: Event) {
     const target = event.target as HTMLInputElement
@@ -50,22 +48,6 @@ function getValueFromPercent(choice: NumberSettingChoice, percent: number) {
     return clamp(rawValue, choice.min, choice.max)
 }
 
-function getStepPrecision(step?: number) {
-    if (!step || step <= 0) {
-        return 2
-    }
-    const stepString = `${step}`
-    const dotIndex = stepString.indexOf('.')
-    if (dotIndex === -1) {
-        return 0
-    }
-    return stepString.length - dotIndex - 1
-}
-
-function formatNumberChoiceValue(choice: NumberSettingChoice, percent: number) {
-    const value = getValueFromPercent(choice, percent)
-    return value.toFixed(getStepPrecision(choice.step))
-}
 
 function updateNumberChoice(choice: NumberSettingChoice, percent: number) {
     emit('update:choice', {
@@ -74,206 +56,123 @@ function updateNumberChoice(choice: NumberSettingChoice, percent: number) {
     })
 }
 
-const showSettings = ref(true)
-const settingsRootRef = ref<HTMLElement | null>(null)
-
-function handleOutsidePointerDown(event: PointerEvent) {
-    if (!showSettings.value) {
-        return
-    }
-
-    const target = event.target as Node | null
-    if (settingsRootRef.value && target && !settingsRootRef.value.contains(target)) {
-        showSettings.value = false
-    }
+function formatNumberChoiceValue(choice: NumberSettingChoice, percent: number) {
+    return choice.toString(getValueFromPercent(choice, percent))
 }
 
-onMounted(() => {
-    document.addEventListener('pointerdown', handleOutsidePointerDown)
-})
-
-onBeforeUnmount(() => {
-    document.removeEventListener('pointerdown', handleOutsidePointerDown)
-})
+const showSettings = ref(true)
 
 </script>
 
 <template>
-    <div ref="settingsRootRef" class="settings">
-        <button class="settings__launcher" type="button" :aria-expanded="showSettings" aria-controls="settings-panel"
-            :aria-label="showSettings ? 'Hide settings panel' : 'Show settings panel'"
+    <div class="settings">
+        <button class="settings__launcher" type="button"
             :title="showSettings ? 'Hide settings panel' : 'Show settings panel'"
             @click="(e) => { showSettings = !showSettings }">
-            <span class="settings__launcher-icon" aria-hidden="true"></span>
-            <span class="settings__launcher-text">Settings</span>
-            <span class="settings__launcher-chevron" aria-hidden="true"></span>
+            <img class="settings__launcher--icon" :src="settingsGearIcon">
+            <span class="settings__launcher--text">Settings</span>
+            <img v-if="!showSettings" class="settings__launcher--chevron" :src="chevronDownIcon">
+            <img v-else class="settings__launcher--chevron" :src="chevronDownIcon">
         </button>
+        <div v-show="showSettings" class="settings__panel">
+            <div v-for="choice in props.choices" :key="choice.id" class="settings__element">
+                <label class="settings__element--label">{{ choice.label }}</label>
 
-        <transition name="settings-panel">
-            <div v-show="showSettings" id="settings-panel" class="settings__panel">
-                <div v-for="choice in props.choices" :key="choice.id" class="settings__control"
-                    :class="typeof choice.value === 'number' ? 'settings__control--number' : 'settings__control--boolean'">
-                    <label class="settings__label" :for="getChoiceInputId(choice.id)">{{ choice.label }}</label>
+                <input v-if="typeof choice.value === 'boolean'" class="settings__checkbox" type="checkbox"
+                    :checked="choice.value" @change="updateBooleanChoice(choice.id, $event)">
 
-                    <input v-if="typeof choice.value === 'boolean'" :id="getChoiceInputId(choice.id)"
-                        class="settings__checkbox" type="checkbox" :checked="choice.value"
-                        @change="updateBooleanChoice(choice.id, $event)">
-
-                    <div v-else :id="getChoiceInputId(choice.id)" class="settings__number-value">
-                        <DialElement :currentValuePercent="getNumberChoicePercent(choice as NumberSettingChoice)"
-                            :toStringFromPercent="(percent) => formatNumberChoiceValue(choice as NumberSettingChoice, percent)"
-                            @update:value="(percent) => updateNumberChoice(choice as NumberSettingChoice, percent)">
-                        </DialElement>
-                    </div>
-                </div>
+                <DialElement v-else-if="typeof choice.value === 'number'" class="settings__dial"
+                    :currentValuePercent="getNumberChoicePercent(choice as NumberSettingChoice)"
+                    :toStringFromPercent="(percent) => formatNumberChoiceValue(choice as NumberSettingChoice, percent)"
+                    @update:value="(percent) => updateNumberChoice(choice as NumberSettingChoice, percent)">
+                </DialElement>
             </div>
-        </transition>
+        </div>
     </div>
 </template>
 
 <style scoped>
 .settings {
-    position: relative;
     display: flex;
     flex-direction: column;
+    margin: 10px;
+        gap: 10px;
+        border-radius: 10px;
+        padding: 10px;
+        background: linear-gradient(180deg, #020617 0%, #000000 100%);
     width: 100%;
-    gap: 10px;
-    margin-bottom: 8px;
 }
 
 .settings__launcher {
-    display: inline-flex;
+    display: flex;
+        flex-direction: row;
     align-items: center;
     gap: 8px;
-    justify-content: center;
-    padding: 7px 12px;
-    border-radius: 999px;
+    padding: 1px 10px;
+        border-radius: 10px;
     border: 1px solid #334155;
-    background: linear-gradient(180deg, #020617 0%, #000000 100%);
     color: #dbeafe;
     cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.45px;
-    font-size: 12px;
+    letter-spacing: 1px;
+        font-size: 14px;
     font-weight: 600;
-    align-self: flex-start;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    align-self: center;
 }
 
-.settings__launcher:hover {
-    background: #061020;
-    border-color: #475569;
-    color: #eff6ff;
+.settings__launcher--icon {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(100%);
+    width: 40px;
+    height: 40px;
 }
 
-.settings__launcher:focus-visible {
-    outline: 2px solid #38bdf8;
-    outline-offset: 2px;
+.settings__launcher--text {
+    font-size: 20px;
 }
 
-.settings__launcher-icon {
-    display: block;
-    width: 14px;
-    height: 14px;
-    background-color: currentColor;
-    -webkit-mask-image: url('../../../assets/icons/settings-gear.svg');
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    -webkit-mask-size: contain;
-    mask-image: url('../../../assets/icons/settings-gear.svg');
-    mask-repeat: no-repeat;
-    mask-position: center;
-    mask-size: contain;
-}
 
-.settings__launcher-text {
-    display: block;
-}
-
-.settings__launcher-chevron {
-    display: block;
-    width: 10px;
-    height: 10px;
-    background-color: currentColor;
-    -webkit-mask-image: url('../../../assets/icons/chevron-down.svg');
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    -webkit-mask-size: contain;
-    mask-image: url('../../../assets/icons/chevron-down.svg');
-    mask-repeat: no-repeat;
-    mask-position: center;
-    mask-size: contain;
-    transition: transform 0.2s;
-}
-
-.settings__launcher[aria-expanded='true'] .settings__launcher-chevron {
-    transform: rotate(180deg);
+.settings__launcher--chevron {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(100%);
+    width: 40px;
+    height: 40px;
 }
 
 .settings__panel {
     display: flex;
     width: 100%;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px 12px;
-        padding: 5px;
-    box-sizing: border-box;
+    padding: 5px;
     border-radius: 10px;
     border: 1px solid #334155;
-    background: linear-gradient(180deg, #020617 0%, #01040c 100%);
-    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.45);
 }
 
-.settings__label {
-    font-size: 12px;
-    white-space: nowrap;
+.settings__element--label {
+    font-size: 16px;
     letter-spacing: 0.2px;
     color: #cbd5e1;
 }
 
-.settings__control {
-    display: inline-flex;
-    flex: 0 0 auto;
-    max-width: 100%;
-    box-sizing: border-box;
+.settings__element {
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
     gap: 10px;
-    height: 42px;
     padding: 0 12px;
-    border-radius: 999px;
+    border-radius: 10px;
     border: 1px solid #334155;
     background: rgba(15, 23, 42, 0.9);
 }
 
-.settings__number-value {
-    height: 100%;
-    display: flex;
-    align-items: center;
-}
-
 .settings__checkbox {
     width: 100%;
-        height: 100%;
+    height: 100%;
     cursor: pointer;
+    border-radius: 3px;
     accent-color: #38bdf8;
 }
 
-.settings-panel-enter-active,
-.settings-panel-leave-active {
-    transition: opacity 0.18s ease, transform 0.18s ease;
-    transform-origin: top left;
-}
-
-.settings-panel-enter-from,
-.settings-panel-leave-to {
-    opacity: 0;
-    transform: translateY(-5px) scale(0.98);
-}
-
-@media (max-width: 700px) {
-    .settings__panel {
-        width: 100%;
-    }
+.settings__dial {
+    height: 50px;
 }
 </style>

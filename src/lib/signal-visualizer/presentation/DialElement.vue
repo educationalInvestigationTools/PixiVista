@@ -111,7 +111,8 @@ onBeforeUnmount(() => {
     flex-direction: row;
     justify-content: flex-start;
     height: 100%;
-    padding: 3px;
+    padding: 4px;
+        gap: 10px;
 }
 
 .dial-button {

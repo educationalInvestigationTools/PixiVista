@@ -10,6 +10,8 @@ const showMetricsSettingId = 'show-metrics-panel'
 const showAnnotationsSettingId = 'show-annotations-panel'
 const heightPerChannelSettingId = 'height-per-channel'
 
+const heightValue = ref(100)
+
 const settingsChoices = computed<AnySettingChoice[]>(() => [
     {
         id: showMetricsSettingId,
@@ -24,15 +26,20 @@ const settingsChoices = computed<AnySettingChoice[]>(() => [
     {
         id: heightPerChannelSettingId,
         label: 'Height / channel',
-        value: 100,
+        value: heightValue.value,
         min: 60,
         max: 600,
         step: 10,
+        toString: (arg0: number) => arg0.toFixed(2) + 'px'
     }])
+
+
 </script>
 
 <template>
-    <SettingsComponent :choices="settingsChoices"></SettingsComponent>
+    <SettingsComponent :choices="settingsChoices"
+        @update:choice="(update) => { if (update.id === heightPerChannelSettingId) { heightValue = update.value as number } }">
+    </SettingsComponent>
 </template>
 
 <style scoped></style>

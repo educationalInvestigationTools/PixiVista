@@ -9,6 +9,7 @@ export type NumberSettingChoice = SettingChoice<number> & {
     min: number
     max: number
     step?: number
+    toString: (arg0 : number) => string
 }
 
 export type AnySettingChoice = BooleanSettingChoice | NumberSettingChoice
