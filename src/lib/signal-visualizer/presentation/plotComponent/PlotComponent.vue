@@ -4,8 +4,8 @@ import { computed, onBeforeUnmount, onMounted, ref, type Ref } from "vue";
 import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts";
 import { ResizeDto } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
 import { type SignalSource } from "@/lib/signal-visualizer/application/types/signalSource.ts";
-import SliderComponent from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
-import SettingsComponent from "./settingsComponent/SettingsComponent.vue";
+import SliderComponent, { type CurrentViewPortSamples } from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
+import SettingsComponent from "../settingsComponent/SettingsComponent.vue";
 import AnnotationsComponent, { type ObjectAnnotationData, type ObjectVisibility } from "@/lib/signal-visualizer/presentation/annotationsComponent/AnnotationsComponent.vue";
 import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsComponent.vue"
 import type {
@@ -13,9 +13,9 @@ import type {
 } from "@/lib/signal-visualizer/application/types/performanceMetrics.ts";
 import type { AnySettingChoice, AnySettingChoiceUpdate } from "@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice";
 import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
-import { fmtTime } from "../utils/utils";
+import { fmtTime } from "../../utils/utils";
 import { ViewPort } from "@/lib/signal-visualizer/application/types/viewPort.ts";
-import type { IntervalGroup } from "../application/types/highlightedInterval";
+import type { IntervalGroup } from "../../application/types/highlightedInterval";
 
 
 const props = defineProps<{
@@ -154,8 +154,12 @@ onBeforeUnmount(async () => {
 })
 
 
-async function updateViewPort(viewPort: ViewPort) {
-    viewPortRef.value = viewPort
+async function updateViewPort(viewPort: CurrentViewPortSamples) {
+
+    viewPortRef.value = new ViewPort(
+        viewPort.currentSamplePosition,
+        Math.min(60, viewPort.lengthSamples)
+    )
     await diContainer?.changeViewPortHandler.handle(viewPortRef.value)
 }
 
@@ -176,8 +180,10 @@ async function updateViewPort(viewPort: ViewPort) {
             </div>
         </div>
         <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="5" :rightSliderPositionPercent="5"
-            :currentViewPort="viewPortRef" :viewPortLargestValueSamples=signalsLargestDurationSeconds
-            @update:viewPort='updateViewPort'>
+            :currentViewPort="{
+                currentSamplePosition: viewPortRef.startSeconds,
+                lengthSamples: viewPortRef.lengthSeconds,
+            }" :viewPortLargestValueSamples=signalsLargestDurationSeconds @update:viewPort='updateViewPort'>
         </SliderComponent>
         <MetricsComponent :metrics="performanceMetrics" v-show="showMetricsPanel"></MetricsComponent>
     </div>

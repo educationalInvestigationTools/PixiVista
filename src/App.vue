@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import SliderDebug from './lib/signal-visualizer/presentation/sliderComponent/SliderDebug.vue';
-
+import PlotDebug from './lib/signal-visualizer/presentation/plotComponent/PlotDebug.vue';
 
 </script>
 
 
 <template>
-    <SliderDebug> </SliderDebug>
+    <PlotDebug></PlotDebug>
 </template>
 
 <style scoped></style>
