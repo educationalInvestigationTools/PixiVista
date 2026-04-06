@@ -35,7 +35,7 @@ watch(
 </script>
 
 <template>
-    <div class="flex flex-col border border-slate-700 rounded p-1 bg-black text-slate-200">
+    <div class="metrics__panel">
         <span> Metrics panel:</span>
         <span> Rendering resolution is {{ Math.round(props.metrics?.sizeData.width!) }} x {{
             Math.round(props.metrics?.sizeData.height!)
@@ -53,4 +53,11 @@ watch(
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.metrics__panel {
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    color: white;
+}
+</style>
