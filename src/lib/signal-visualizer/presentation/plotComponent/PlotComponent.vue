@@ -178,7 +178,8 @@ async function updateViewPort(viewPort: CurrentViewPortSamples) {
             height: heightPerChannel * (visibleChannels + 1) + 'px'
         }">
         </div>
-        <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="5" :rightSliderPositionPercent="95"
+        <SliderComponent :sampleToString="(x) => fmtTime(x, true)" :lengthToString="(x) => fmtTime(x, false)"
+            :leftSliderPositionPercent="5" :rightSliderPositionPercent="95"
             :currentViewPort="{
                 currentSamplePosition: viewPortRef.startSeconds,
                 lengthSamples: viewPortRef.lengthSeconds,

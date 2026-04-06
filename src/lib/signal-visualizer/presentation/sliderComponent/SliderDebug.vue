@@ -11,7 +11,8 @@ const viewportRef: Ref<CurrentViewPortSamples> = ref({
 
 <template>
     <SliderComponent :left-slider-position-percent="10" :right-slider-position-percent="80" :currentViewPort="viewportRef"
-        :view-port-largest-value-samples="1000" :sample-to-string="(x) => x.toFixed(2)"
+:view-port-largest-value-samples="1000" :sample-to-string="(x) => x.toFixed(2)"
+        :length-to-string="(x) => x.toFixed(2)"
         @update:viewPort="(viewport) => viewportRef = viewport"></SliderComponent>
 </template>
 

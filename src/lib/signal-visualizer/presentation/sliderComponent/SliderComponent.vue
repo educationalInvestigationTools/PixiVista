@@ -12,11 +12,12 @@ export type CurrentViewPortSamples = {
 }
 
 const props = defineProps<{
-    leftSliderPositionPercent: number // between 0 and 100
+    leftSliderPositionPercent: number, // between 0 and 100
     rightSliderPositionPercent: number, // between 0 and 100
-    viewPortLargestValueSamples: number
+    viewPortLargestValueSamples: number,
     currentViewPort: CurrentViewPortSamples,
-    sampleToString: ((arg0: number) => string)
+    sampleToString: ((arg0: number) => string),
+    lengthToString: ((arg0: number) => string)
 }>()
 
 const emit = defineEmits<{
@@ -146,11 +147,12 @@ const thumbPercent = (100 - thumbWidth) / 100
 <template>
     <div class="slider">
         <div class="slider__row slider__row--info">
-            <span class="slider__text">
+            <span class="slider__info slider__text">
                 Current position: {{ props.sampleToString(viewPortCurrentSample) }}
             </span>
-            <DialElement class="slider__dial" :current-value-percent="windowLengthPercent"
-                :to-string-from-percent="(x) => 'Window Length is ' + props.sampleToString(fromPercentToSamples(x)) + 's'" @update:value="updateWindowLength"> </DialElement>
+            <DialElement class="slider__info slider__dial" :current-value-percent="windowLengthPercent"
+                :to-string-from-percent="(x) => 'Window Length is ' + props.lengthToString(fromPercentToSamples(x))"
+                @update:value="updateWindowLength"> </DialElement>
         </div>
 
         <div class="slider__row slider__row--segment">
@@ -162,7 +164,7 @@ const thumbPercent = (100 - thumbWidth) / 100
             </div>
             <div class="slider__segment slider__segment--middle" ref="containerRef"
                 :style="{ flex: '0 0 ' + (rightSliderPositionPercent - leftSliderPositionPercent) + '%' }"
-                @keydown="handleKeyDown" @pointerdown="startSliderInteraction">
+                @keydown="handleKeyDown" @pointerdown="startSliderInteraction" tabindex="0">
 
                 <div class="slider__thumb"
                     :style="{ marginLeft: sliderPosition * thumbPercent + '%', width: thumbWidth + '%' }">
@@ -181,6 +183,7 @@ const thumbPercent = (100 - thumbWidth) / 100
 .slider {
     display: flex;
     flex-direction: column;
+    border: 2px solid orange;
 }
 
 .slider__row {
@@ -188,8 +191,8 @@ const thumbPercent = (100 - thumbWidth) / 100
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-        background-color: black;
-            color: white;
+    background-color: black;
+        color: white;
 }
 
 .slider__row--info {
@@ -198,6 +201,16 @@ const thumbPercent = (100 - thumbWidth) / 100
     flex-wrap: wrap;
 }
 
+.slider__segment {
+    box-sizing: border-box;
+    border: 1px solid orange;
+    border-radius: 5px;
+}
+
+.slider__info {
+    border: 1px solid orange;
+    border-radius: 5px;
+}
 
 .slider__row--segment {
     justify-content: center;
@@ -221,5 +234,10 @@ const thumbPercent = (100 - thumbWidth) / 100
     aspect-ratio: 1;
     border-radius: 50%;
     background-color: #0044ffcf;
+}
+
+.slider__text {
+    overflow-wrap: anywhere;
+    text-align: center;
 }
 </style>
