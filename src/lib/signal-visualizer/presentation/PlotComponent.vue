@@ -4,9 +4,9 @@ import { computed, onBeforeUnmount, onMounted, ref, type Ref } from "vue";
 import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts";
 import { ResizeDto } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
 import { type SignalSource } from "@/lib/signal-visualizer/application/types/signalSource.ts";
-import SliderComponent from "@/lib/signal-visualizer/presentation/SliderComponent.vue";
+import SliderComponent from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
 import SettingsComponent from "./settingsComponent/SettingsComponent.vue";
-import AnnotationsComponent, { type ObjectAnnotationData, type ObjectVisibility } from "@/lib/signal-visualizer/presentation/AnnotationsComponent.vue";
+import AnnotationsComponent, { type ObjectAnnotationData, type ObjectVisibility } from "@/lib/signal-visualizer/presentation/annotationsComponent/AnnotationsComponent.vue";
 import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsComponent.vue"
 import type {
     PerformanceMetrics
@@ -176,7 +176,7 @@ async function updateViewPort(viewPort: ViewPort) {
             </div>
         </div>
         <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="5" :rightSliderPositionPercent="5"
-            :viewPort="viewPortRef" :viewPortLargestValueSamples=signalsLargestDurationSeconds
+            :currentViewPort="viewPortRef" :viewPortLargestValueSamples=signalsLargestDurationSeconds
             @update:viewPort='updateViewPort'>
         </SliderComponent>
         <MetricsComponent :metrics="performanceMetrics" v-show="showMetricsPanel"></MetricsComponent>

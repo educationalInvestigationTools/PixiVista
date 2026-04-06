@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import AnnotationsDebug from './lib/signal-visualizer/presentation/annotationsComponent/AnnotationsDebug.vue';
+import SliderDebug from './lib/signal-visualizer/presentation/sliderComponent/SliderDebug.vue';
 
 
 </script>
 
 
 <template>
-    <AnnotationsDebug> </AnnotationsDebug>
+    <SliderDebug> </SliderDebug>
 </template>
 
 <style scoped></style>

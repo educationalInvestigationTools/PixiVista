@@ -110,12 +110,12 @@ onBeforeUnmount(() => {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    height: 100%;
     padding: 4px;
         gap: 10px;
 }
 
 .dial-button {
+    width: 40px;
     aspect-ratio: 1;
     --track: #ffffff;
     --accent: #06b6d4;
