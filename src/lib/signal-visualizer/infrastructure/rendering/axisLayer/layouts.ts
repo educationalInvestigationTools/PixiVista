@@ -39,7 +39,7 @@ export class LabelsAxisLayerLayout extends AxisLayerBaseLayout {
     }
 
     textValue(i: number): string {
-        return (this.minMaxValues.min + i * this.stepSize).toPrecision(2)
+        return (this.minMaxValues.min + i * this.stepSize).toFixed(2)
     }
 
     get fontSize() {

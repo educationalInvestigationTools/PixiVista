@@ -7,7 +7,7 @@ import { type SignalSource } from "@/lib/signal-visualizer/application/types/sig
 import SliderComponent, { type CurrentViewPortSamples } from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
 import SettingsComponent from "../settingsComponent/SettingsComponent.vue";
 import AnnotationsComponent, { type ObjectAnnotationData, type ObjectVisibility } from "@/lib/signal-visualizer/presentation/annotationsComponent/AnnotationsComponent.vue";
-import MetricsComponent from "@/lib/signal-visualizer/presentation/MetricsComponent.vue"
+import MetricsComponent from "../metricsComponent/MetricsComponent.vue";
 import type {
     PerformanceMetrics
 } from "@/lib/signal-visualizer/application/types/performanceMetrics.ts";
