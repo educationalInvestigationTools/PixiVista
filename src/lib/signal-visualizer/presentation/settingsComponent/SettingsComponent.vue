@@ -98,7 +98,7 @@ const showSettings = ref(true)
     flex-direction: column;
     gap: 10px;
     padding: 10px;
-    background: linear-gradient(180deg, #020617 0%, #000000 100%);
+    background-color: black;
     width: 100%;
 }
 
@@ -116,6 +116,7 @@ const showSettings = ref(true)
     font-size: 14px;
     font-weight: 600;
     align-self: center;
+    background-color: black;
 }
 
 .settings__launcher--icon {
@@ -168,10 +169,6 @@ const showSettings = ref(true)
     height: 100%;
     cursor: pointer;
     border-radius: 3px;
-    accent-color: #38bdf8;
 }
 
-.settings__dial {
-    height: 50px;
-}
 </style>

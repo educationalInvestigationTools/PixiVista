@@ -42,11 +42,11 @@ watch(
         }} with a DPR={{ props.metrics?.windowDevicePixelRatio }}</span>
         <div>
             <span> Worst refresh rates per seconds are: </span>
-            <span v-for="(rate, idx) in refreshRateStack" :key="idx" class="inline-block px-0.5"> {{ rate }}</span>
+            <span v-for="(rate, idx) in refreshRateStack" :key="idx" class="metrics__values"> {{ rate }}</span>
         </div>
         <div>
             <span> Worst render times in ms are: </span>
-            <span v-for="(renderTime, idx) in renderTimeStack" :key="idx" class="inline-block px-0.5"> {{
+            <span v-for="(renderTime, idx) in renderTimeStack" :key="idx" class="metrics__values"> {{
                 renderTime
             }}</span>
         </div>
@@ -59,5 +59,9 @@ watch(
     flex-direction: column;
     background-color: black;
     color: white;
+}
+.metrics__values {
+    display: inline-block;
+    margin-right: 5px;
 }
 </style>
