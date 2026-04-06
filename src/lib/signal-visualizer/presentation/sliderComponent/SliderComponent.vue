@@ -184,20 +184,18 @@ const thumbPercent = (100 - thumbWidth) / 100
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+        background-color: black;
+            color: white;
 }
 
 .slider__row--info {
-    background-color: rgb(0, 0, 0);
     gap: 10px;
     padding: 10px;
-    color: white;
     flex-wrap: wrap;
 }
 
 
 .slider__row--segment {
-    background-color: #3410fd;
-    flex-wrap: wrap;
     justify-content: center;
     align-items: stretch;
 }
@@ -207,23 +205,21 @@ const thumbPercent = (100 - thumbWidth) / 100
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(0, 255, 217);
 }
 
 .slider__segment--left {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: orange;
 }
 
 .slider__segment--middle {
-    background-color: antiquewhite;
+    
 }
 
 .slider__thumb {
     aspect-ratio: 1;
     border-radius: 50%;
-    background-color: #51f914;
+    background-color: #0044ffcf;
 }
 </style>

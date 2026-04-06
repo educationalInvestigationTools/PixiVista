@@ -41,7 +41,7 @@ import dashedLinesIcon from '@/assets/icons/dashed-line.svg';
             <span class="annotations__group--header"> {{ groupLabel }} </span>
             <div class="annotations__group--items">
                 <div class="annotation__item" v-for="(object, objectLabel) in objectGroup" :key="objectLabel">
-                    <img class="annotation__item__icon"
+                    <img class="annotation__item__icon" :class="{ 'annotation__item_icon--off': !object.visibility }"
                         :src="object.shape === 'rectangle' ? rectangleIcon : dashedLinesIcon"
                         :style="{ backgroundColor: object.color }">
                     <span class="annotation__item__label"
@@ -78,7 +78,6 @@ import dashedLinesIcon from '@/assets/icons/dashed-line.svg';
     font-size: 16px;
     font-weight: 900;
     color: #888;
-    border-bottom: 1px solid #ffffff;
     width: 100%;
     white-space: normal;
     overflow-wrap: anywhere;
@@ -91,7 +90,7 @@ import dashedLinesIcon from '@/assets/icons/dashed-line.svg';
     flex-wrap: wrap;
     gap: 8px;
     align-items: flex-start;
-    border-right: 1px solid white;
+    border: 0.5px solid white;
 }
 
 .annotation__item {
@@ -105,6 +104,9 @@ import dashedLinesIcon from '@/assets/icons/dashed-line.svg';
     height: 15px;
 }
 
+.annotation__item_icon--off {
+    opacity: 0.35;
+}
 .annotation__item__label {
     cursor: pointer;
     font-size: 14px;

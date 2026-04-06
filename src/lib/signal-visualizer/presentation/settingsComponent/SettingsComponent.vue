@@ -96,26 +96,24 @@ const showSettings = ref(true)
 .settings {
     display: flex;
     flex-direction: column;
-    margin: 10px;
-        gap: 10px;
-        border-radius: 10px;
-        padding: 10px;
-        background: linear-gradient(180deg, #020617 0%, #000000 100%);
+    gap: 10px;
+    padding: 10px;
+    background: linear-gradient(180deg, #020617 0%, #000000 100%);
     width: 100%;
 }
 
 .settings__launcher {
     display: flex;
-        flex-direction: row;
+    flex-direction: row;
     align-items: center;
     gap: 8px;
     padding: 1px 10px;
-        border-radius: 10px;
+    border-radius: 10px;
     border: 1px solid #334155;
     color: #dbeafe;
     cursor: pointer;
     letter-spacing: 1px;
-        font-size: 14px;
+    font-size: 14px;
     font-weight: 600;
     align-self: center;
 }

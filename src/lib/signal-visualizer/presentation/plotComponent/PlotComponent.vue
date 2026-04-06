@@ -82,6 +82,7 @@ const settingsChoices = computed<AnySettingChoice[]>(() => [
         min: 60,
         max: 600,
         step: 10,
+        toString: (x) => x + " px"
     }
 ])
 
@@ -167,19 +168,17 @@ async function updateViewPort(viewPort: CurrentViewPortSamples) {
 
 
 <template>
-    <div class="m-4 border border-slate-700 rounded p-2 bg-black text-slate-200">
+    <div class="plot__container">
         <SettingsComponent :choices="settingsChoices" @update:choice="updateSettingChoice">
         </SettingsComponent>
         <AnnotationsComponent v-show="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
             @toggleObjectVisibility="toggleObjectVisibility">
         </AnnotationsComponent>
-        <div class="border border-slate-700 rounded p-2 bg-black">
-            <div ref="htmlContainerRef" class="bg-black" :style="{
-                height: heightPerChannel * (visibleChannels + 1) + 'px'
-            }">
-            </div>
+        <div ref="htmlContainerRef" class="canvas__container" :style="{
+            height: heightPerChannel * (visibleChannels + 1) + 'px'
+        }">
         </div>
-        <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="5" :rightSliderPositionPercent="5"
+        <SliderComponent :sampleToString="fmtTime" :leftSliderPositionPercent="5" :rightSliderPositionPercent="95"
             :currentViewPort="{
                 currentSamplePosition: viewPortRef.startSeconds,
                 lengthSamples: viewPortRef.lengthSeconds,
@@ -190,4 +189,9 @@ async function updateViewPort(viewPort: CurrentViewPortSamples) {
 
 </template>
 
-<style scoped></style>
+<style scoped>
+.plot__container {
+    display: flex;
+    flex-direction: column;
+}
+</style>
