@@ -55,6 +55,7 @@ watch(
 
 <style scoped>
 .metrics__panel {
+    padding: 10px;
     display: flex;
     flex-direction: column;
     background-color: black;

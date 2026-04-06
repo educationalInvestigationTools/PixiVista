@@ -130,8 +130,12 @@ function handleKeyDown(e: KeyboardEvent) {
     }
 }
 
+function fromPercentToSamples(percent: number) {
+    return percent / 100 * props.viewPortLargestValueSamples
+}
+
 function updateWindowLength(percent: number) {
-    const converted = Math.round(percent / 100 * props.viewPortLargestValueSamples)
+    const converted = fromPercentToSamples(percent)
     windowLengthSamples.value = converted
 }
 
@@ -146,7 +150,7 @@ const thumbPercent = (100 - thumbWidth) / 100
                 Current position: {{ props.sampleToString(viewPortCurrentSample) }}
             </span>
             <DialElement class="slider__dial" :current-value-percent="windowLengthPercent"
-                :to-string-from-percent="(x) => 'Window Length is ' + props.sampleToString(x) + 's'" @update:value="updateWindowLength"> </DialElement>
+                :to-string-from-percent="(x) => 'Window Length is ' + props.sampleToString(fromPercentToSamples(x)) + 's'" @update:value="updateWindowLength"> </DialElement>
         </div>
 
         <div class="slider__row slider__row--segment">
@@ -211,10 +215,6 @@ const thumbPercent = (100 - thumbWidth) / 100
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.slider__segment--middle {
-    
 }
 
 .slider__thumb {
