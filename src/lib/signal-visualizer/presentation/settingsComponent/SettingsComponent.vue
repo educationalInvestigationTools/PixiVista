@@ -94,12 +94,12 @@ const showSettings = ref(true)
 
 <style scoped>
 .settings {
+    box-sizing: border-box;
+        padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 10px;
     background-color: black;
-    width: 100%;
 }
 
 .settings__launcher {
@@ -138,7 +138,6 @@ const showSettings = ref(true)
 
 .settings__panel {
     display: flex;
-    width: 100%;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px 12px;
@@ -170,5 +169,4 @@ const showSettings = ref(true)
     cursor: pointer;
     border-radius: 3px;
 }
-
 </style>
