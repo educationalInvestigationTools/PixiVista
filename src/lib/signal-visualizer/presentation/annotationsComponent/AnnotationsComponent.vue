@@ -82,6 +82,7 @@ import dashedLinesIcon from '@/assets/icons/dashed-line.svg';
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
+    margin-bottom: 5px;
 }
 
 .annotations__group--items {

@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.4",
-    "@epicurrents/edf-reader": "0.2.0-0",
     "@pixi/devtools": "^2.0.1",
     "pinia": "^3.0.4",
     "pixi.js": "^8.17.1",

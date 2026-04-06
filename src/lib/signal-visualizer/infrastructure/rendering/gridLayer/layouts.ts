@@ -42,7 +42,7 @@ export class GridLabelsLayout extends GridBaseLayout {
     }
 
     textLabel(i: number): string {
-        return (this.minMaxValues.max - i * this.stepSize).toPrecision(2)
+        return (this.minMaxValues.max - i * this.stepSize).toFixed(2)
     }
 
     get fontSize(): number {
