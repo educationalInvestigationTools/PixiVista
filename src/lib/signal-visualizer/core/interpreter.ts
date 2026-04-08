@@ -1,4 +1,4 @@
-import { type SignalSource } from '@/lib/signal-visualizer/application/types/signalSource.ts'
+import { type SignalSource, type SignalSourceBuildData } from '@/lib/signal-visualizer/application/types/signalSource.ts'
 
 import type {
     NormalizedSignal,
@@ -8,16 +8,23 @@ import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 import { Envelope } from '@/lib/signal-visualizer/utils/envelope.ts'
 import { largestTriangleThreeBuckets } from '../utils/lttb'
 import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
+import { MockSignalSourceBuilder, type MockSignalSourceConstructor } from '../infrastructure/signals/mockSignalSource'
 
 export class Interpreter {
     private renderer: RenderManager
     private readonly signalsSources: Record<string, SignalSource>
     private viewPort: ViewPort
 
-    constructor(renderer: RenderManager, viewPort: ViewPort, signalsSource: SignalSource[]) {
+    constructor(renderer: RenderManager, viewPort: ViewPort, signalsSourceBuildData: SignalSourceBuildData[]) {
         this.viewPort = viewPort
-        this.signalsSources = signalsSource.reduce<Record<string, SignalSource>>((acc, signal) => {
-            acc[signal.label] = signal
+        /*
+        This code is not solid, does not follow ocp.
+        */
+        this.signalsSources = signalsSourceBuildData.reduce<Record<string, SignalSource>>((acc, buildData) => {
+            if (buildData.signalSourceType === 'MockSignalSource') {
+                const builder = new MockSignalSourceBuilder()
+                acc[buildData.label] = builder.build(buildData as MockSignalSourceConstructor)
+            }
             return acc
         }, {})
         this.renderer = renderer

@@ -1,25 +1,40 @@
 import {
     type SignalSource,
     type OneDimSignalRaw,
+    type SignalSourceBuildData,
+    type SignalSourceBuilder,
 } from '@/lib/signal-visualizer/application/types/signalSource.ts'
 import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
 
-export class TestSignalSource implements SignalSource {
+export type MockSignalSourceConstructor = SignalSourceBuildData & {
+    signalSourceType: 'MockSignalSource'
+    samplingFrequency: number
+    totalSeconds: number
+}
+
+export class MockSignalSourceBuilder implements SignalSourceBuilder<MockSignalSourceConstructor> {
+    build(buildData: MockSignalSourceConstructor): MockSignalSource {
+        return new MockSignalSource(buildData)
+    }
+}
+
+export class MockSignalSource implements SignalSource {
     private readonly samplingFrequency: number
     private readonly totalSamples: number
     private readonly _label: string
     private readonly data: Float32Array
 
-    constructor(label: string, samplingFrequency: number, durationSeconds: number) {
-        this.samplingFrequency = samplingFrequency
-        this.totalSamples = Math.floor(samplingFrequency * durationSeconds)
-        this._label = label
+    constructor(data: MockSignalSourceConstructor) {
+        this.samplingFrequency = data.samplingFrequency
+        this.totalSamples = Math.floor(data.samplingFrequency * data.totalSeconds)
+        this._label = data.label
         this.data = new Float32Array(
             Array.from({ length: this.totalSamples }, () => Math.random()).map(
                 (v, i) => v * Math.sin((i / this.totalSamples) * 360),
             ),
         )
     }
+
 
     get totalSeconds(): number {
         return this.totalSamples / this.samplingFrequency

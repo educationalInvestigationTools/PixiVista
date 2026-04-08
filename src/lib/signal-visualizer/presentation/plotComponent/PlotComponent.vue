@@ -3,7 +3,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, type Ref } from "vue";
 import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts";
 import { ResizeDto } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
-import { type SignalSource } from "@/lib/signal-visualizer/application/types/signalSource.ts";
+import { type SignalSourceBuildData } from "@/lib/signal-visualizer/application/types/signalSource.ts";
 import SliderComponent, { type CurrentViewPortSamples } from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
 import SettingsComponent from "../settingsComponent/SettingsComponent.vue";
 import AnnotationsComponent, { type ObjectAnnotationData, type ObjectVisibility } from "@/lib/signal-visualizer/presentation/annotationsComponent/AnnotationsComponent.vue";
@@ -19,7 +19,7 @@ import type { IntervalGroup } from "../../application/types/highlightedInterval"
 
 
 const props = defineProps<{
-    signalSources: SignalSource[]
+    signalSources: SignalSourceBuildData[]
     annotations: Record<string, IntervalGroup>
 }>()
 

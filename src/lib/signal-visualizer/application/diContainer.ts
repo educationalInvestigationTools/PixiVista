@@ -1,7 +1,7 @@
 import {Interpreter} from '@/lib/signal-visualizer/core/interpreter.ts'
 import {ResizeCommand} from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
 import {DestroyCommand} from '@/lib/signal-visualizer/application/commands/destroyCommand.ts'
-import {type SignalSource} from '@/lib/signal-visualizer/application/types/signalSource.ts'
+import {type SignalSourceBuildData} from '@/lib/signal-visualizer/application/types/signalSource.ts'
 import {
     ChangeViewPortCommand
 } from '@/lib/signal-visualizer/application/commands/changeViewPortCommand.ts'
@@ -25,7 +25,7 @@ export class DiContainer {
     constructor(
         htmlElement: HTMLElement,
         viewPort: ViewPort,
-        signalsSource: SignalSource[],
+        signalsSource: SignalSourceBuildData[],
         eventMediator: EventMediator<PerformanceMetrics>,
     ) {
         const canvas = document.createElement('canvas')
