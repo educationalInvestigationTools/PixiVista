@@ -7,7 +7,7 @@ import type { OneDimNormalizedSignal, NormalizedSignal } from "../types";
 import { DataManager } from "./dataManager";
 
 
-export class DataManagerOnUIThread extends DataManager {
+export class DataManagerNaive extends DataManager {
     private readonly signalSources: Record<string, SignalSource>;
 
     constructor(signalsSourceBuildData: SignalSourceBuildData[]) {

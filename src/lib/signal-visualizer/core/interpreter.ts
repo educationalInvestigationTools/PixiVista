@@ -6,7 +6,7 @@ import type {
 import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
 import { DataManager } from './dataManager/dataManager'
-import { DataManagerOnUIThread } from "./dataManager/dataManagerOnUIThread"
+import { DataManagerWorker } from './dataManager/dataManagerWorker'
 
 export class Interpreter {
     private renderer: RenderManager
@@ -18,7 +18,7 @@ export class Interpreter {
         this.viewPort = viewPort
         this.renderer = renderer
         this.labels = signalsSourceBuildData.map(x => x.label)
-        this.dataManager = new DataManagerOnUIThread(signalsSourceBuildData)
+        this.dataManager = new DataManagerWorker(signalsSourceBuildData)
     }
 
     private get expectedWidth(): number {
