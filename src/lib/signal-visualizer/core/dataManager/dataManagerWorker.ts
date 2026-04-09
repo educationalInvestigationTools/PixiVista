@@ -21,8 +21,7 @@ export class DataManagerWorker extends DataManager {
         this.worker.postMessage({ type: 'init', data: signalsSourceBuildData })
     }
 
-    fetchData(labels: string[], viewPort: ViewPort, expectedWidth: number): Promise<OneDimNormalizedSignal[]> {
-
+    async fetchData(labels: string[], viewPort: ViewPort, expectedWidth: number): Promise<OneDimNormalizedSignal[]> {
         const requestId = crypto.randomUUID();
         const promise = new Promise<OneDimNormalizedSignal[]>(
             (resolve) => {

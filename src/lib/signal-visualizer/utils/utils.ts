@@ -17,3 +17,7 @@ export function fmtTime(seconds: number, extended: boolean): string {
         return `${hh}:${mm}:${ss}`
     }
 }
+
+export function sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
