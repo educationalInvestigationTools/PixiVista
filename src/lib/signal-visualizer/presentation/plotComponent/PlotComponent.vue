@@ -154,14 +154,21 @@ onBeforeUnmount(async () => {
     diContainer?.destroyHandler.handle()
 })
 
+let lastViewPortRefreshed = new ViewPort(viewPortRef.value.startSeconds, viewPortRef.value.lengthSeconds)
+const debouncedRefreshRate = 1000 / 30
+setInterval(async () => {
+    if (lastViewPortRefreshed.startSeconds === viewPortRef.value.startSeconds && lastViewPortRefreshed.lengthSeconds === viewPortRef.value.lengthSeconds) {
+    } else {
+        lastViewPortRefreshed = new ViewPort(viewPortRef.value.startSeconds, viewPortRef.value.lengthSeconds)
+        await diContainer?.changeViewPortHandler.handle(viewPortRef.value)
+    }
+}, debouncedRefreshRate)
 
 async function updateViewPort(viewPort: CurrentViewPortSamples) {
-
     viewPortRef.value = new ViewPort(
         viewPort.currentSamplePosition,
         Math.min(60, viewPort.lengthSamples)
     )
-    await diContainer?.changeViewPortHandler.handle(viewPortRef.value)
 }
 
 </script>
@@ -179,8 +186,7 @@ async function updateViewPort(viewPort: CurrentViewPortSamples) {
         }">
         </div>
         <SliderComponent :sampleToString="(x) => fmtTime(x, true)" :lengthToString="(x) => fmtTime(x, false)"
-            :leftSliderPositionPercent="5" :rightSliderPositionPercent="95"
-            :currentViewPort="{
+            :leftSliderPositionPercent="5" :rightSliderPositionPercent="95" :currentViewPort="{
                 currentSamplePosition: viewPortRef.startSeconds,
                 lengthSamples: viewPortRef.lengthSeconds,
             }" :viewPortLargestValueSamples=signalsLargestDurationSeconds @update:viewPort='updateViewPort'>
