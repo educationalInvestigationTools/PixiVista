@@ -44,7 +44,7 @@ export class MockSignalSource implements SignalSource {
         return this._label
     }
 
-    read(viewport: ViewPort): OneDimSignalRaw {
+    read(viewport: ViewPort): Promise<OneDimSignalRaw> {
         const startSeconds = viewport.startSeconds
         const endSeconds = startSeconds + viewport.lengthSeconds
         const startSample = this.samplingFrequency * startSeconds
@@ -56,9 +56,9 @@ export class MockSignalSource implements SignalSource {
             xValues[i] = startSeconds + i / this.samplingFrequency
             yValues[i] = this.data[startSample + i]!
         }
-        return {
+        return Promise.resolve({
             xValues: xValues,
             yValues: yValues,
-        }
+        })
     }
 }

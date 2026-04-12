@@ -15,7 +15,6 @@
     "format": "oxfmt src/"
   },
   "dependencies": {
-    "@chenglou/pretext": "^0.0.4",
     "@pixi/devtools": "^2.0.1",
     "pinia": "^3.0.4",
     "pixi.js": "^8.17.1",
