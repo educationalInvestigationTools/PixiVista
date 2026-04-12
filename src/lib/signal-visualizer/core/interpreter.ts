@@ -7,6 +7,7 @@ import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 import { DataManager } from './dataManager/dataManager'
 import { DataManagerWorker } from './dataManager/dataManagerWorker'
 import { areEqualViewPort, type ViewPort } from '../application/types/viewPort'
+import { sameSet } from '../utils/utils'
 
 type LastRenderedData = {
     viewPort: ViewPort
@@ -43,7 +44,7 @@ export class Interpreter {
             const visibleChannels = this.renderer.visibleChannels
             const viewPort = this.viewPort
             if (this.lastRenderedData !== null) {
-                if (visibleChannels === this.lastRenderedData.visibleChannels) {
+                if (sameSet<string>(visibleChannels, this.lastRenderedData.visibleChannels)) {
                     if (areEqualViewPort(viewPort, this.viewPort)) {
                         flag = false
                     }
