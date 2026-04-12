@@ -9,13 +9,14 @@ import { DataManagerWorker } from './dataManager/dataManagerWorker'
 import { areEqualViewPort, type ViewPort } from '../application/types/viewPort'
 import { sameSet } from '../utils/utils'
 
-type RenderedData = {
+type RenderModel = {
     viewPort: ViewPort
     visibleChannels: string[]
+    expectedWidth: number
 }
 
-function areEqual(a: RenderedData, b: RenderedData) {
-    return sameSet<string>(a.visibleChannels, b.visibleChannels) && areEqualViewPort(a.viewPort, b.viewPort)
+function areEqual(a: RenderModel, b: RenderModel) {
+    return sameSet<string>(a.visibleChannels, b.visibleChannels) && areEqualViewPort(a.viewPort, b.viewPort) && a.expectedWidth === b.expectedWidth
 }
 
 export class Interpreter {
@@ -23,7 +24,7 @@ export class Interpreter {
     private dataManager: DataManager
     private labels: string[]
     private viewPort: ViewPort
-    private lastRenderedData: RenderedData | null = null
+    private lastRenderedData: RenderModel | null = null
     private readonly debouncedRefreshRate = 1000 / 30
 
     constructor(renderer: RenderManager, viewPort: ViewPort, signalsSourceBuildData: SignalSourceBuildData[]) {
@@ -32,34 +33,22 @@ export class Interpreter {
         this.labels = signalsSourceBuildData.map(x => x.label)
         this.dataManager = new DataManagerWorker(signalsSourceBuildData)
     }
-
-    private get expectedWidth(): number {
-        return Math.floor(this.renderer.sizeData.width * this.renderer.devicePixelRatio)
-    }
-
-    private fetchData(labels: string[]) {
-        return this.dataManager.fetchData(labels, this.viewPort, this.expectedWidth)
-    }
-
     async init() {
         await this.renderer.init(this.labels, this.viewPort)
         setInterval(async () => {
             let flag = true
-            const visibleChannels = this.renderer.visibleChannels
-            const viewPort = this.viewPort
+            const nextRenderData = {
+                viewPort: this.viewPort,
+                visibleChannels: this.renderer.visibleChannels,
+                expectedWidth: Math.floor(this.renderer.sizeData.width * this.renderer.devicePixelRatio)
+            }
             if (this.lastRenderedData !== null) {
-                if (areEqual(this.lastRenderedData, {
-                    viewPort,
-                    visibleChannels
-                })) {
+                if (areEqual(this.lastRenderedData, nextRenderData)) {
                     flag = false
                 }
             }
             if (flag) {
-                this.lastRenderedData = {
-                    viewPort: viewPort,
-                    visibleChannels
-                }
+                this.lastRenderedData = nextRenderData
                 await this.updateChannelsState()
             }
         }, this.debouncedRefreshRate)
@@ -71,10 +60,13 @@ export class Interpreter {
 
 
     async updateChannelsState(): Promise<void> {
-        const viewPort = this.lastRenderedData?.viewPort
-        const activeChannels = this.lastRenderedData?.visibleChannels
-        const updatedData: OneDimNormalizedSignal[] = await this.fetchData(activeChannels!)
-        await this.renderer.updateSignalData(updatedData, viewPort!)
+        if (this.lastRenderedData !== null) {
+            const viewPort = this.lastRenderedData.viewPort
+            const activeChannels = this.lastRenderedData.visibleChannels
+            const expectedWidth = this.lastRenderedData.expectedWidth
+            const updatedData: OneDimNormalizedSignal[] = await this.dataManager.fetchData(activeChannels, viewPort, expectedWidth)
+            await this.renderer.updateSignalData(updatedData, viewPort)
+        }
     }
 
     async changeViewPort(viewPort: ViewPort): Promise<void> {
