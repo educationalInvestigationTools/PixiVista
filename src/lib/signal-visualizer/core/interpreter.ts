@@ -9,9 +9,13 @@ import { DataManagerWorker } from './dataManager/dataManagerWorker'
 import { areEqualViewPort, type ViewPort } from '../application/types/viewPort'
 import { sameSet } from '../utils/utils'
 
-type LastRenderedData = {
+type RenderedData = {
     viewPort: ViewPort
     visibleChannels: string[]
+}
+
+function areEqual(a: RenderedData, b: RenderedData) {
+    return sameSet<string>(a.visibleChannels, b.visibleChannels) && areEqualViewPort(a.viewPort, b.viewPort)
 }
 
 export class Interpreter {
@@ -19,7 +23,7 @@ export class Interpreter {
     private dataManager: DataManager
     private labels: string[]
     private viewPort: ViewPort
-    private lastRenderedData: LastRenderedData | null = null
+    private lastRenderedData: RenderedData | null = null
     private readonly debouncedRefreshRate = 1000 / 30
 
     constructor(renderer: RenderManager, viewPort: ViewPort, signalsSourceBuildData: SignalSourceBuildData[]) {
@@ -44,10 +48,11 @@ export class Interpreter {
             const visibleChannels = this.renderer.visibleChannels
             const viewPort = this.viewPort
             if (this.lastRenderedData !== null) {
-                if (sameSet<string>(visibleChannels, this.lastRenderedData.visibleChannels)) {
-                    if (areEqualViewPort(viewPort, this.viewPort)) {
-                        flag = false
-                    }
+                if (areEqual(this.lastRenderedData, {
+                    viewPort,
+                    visibleChannels
+                })) {
+                    flag = false
                 }
             }
             if (flag) {
@@ -57,8 +62,6 @@ export class Interpreter {
                 }
                 await this.updateChannelsState()
             }
-
-
         }, this.debouncedRefreshRate)
     }
 
