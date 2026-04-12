@@ -21,3 +21,11 @@ export function fmtTime(seconds: number, extended: boolean): string {
 export function sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export function setsAreEqual<T>(a: Set<T>, b: Set<T>): boolean {
+    if (a.size !== b.size) return false;
+    for (const val of a) {
+        if (!b.has(val)) return false;
+    }
+    return true;
+}

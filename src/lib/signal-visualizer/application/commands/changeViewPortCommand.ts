@@ -1,6 +1,7 @@
 import type { Interpreter } from '@/lib/signal-visualizer/core/interpreter.ts'
+import type { ViewPort } from '../types/viewPort'
 
-import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
+
 
 export class ChangeViewPortCommand {
     interpreter: Interpreter

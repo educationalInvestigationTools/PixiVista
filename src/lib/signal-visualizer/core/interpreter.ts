@@ -4,15 +4,22 @@ import type {
     OneDimNormalizedSignal,
 } from '@/lib/signal-visualizer/core/types.ts'
 import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
-import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
 import { DataManager } from './dataManager/dataManager'
 import { DataManagerWorker } from './dataManager/dataManagerWorker'
+import { areEqualViewPort, type ViewPort } from '../application/types/viewPort'
+
+type LastRenderedData = {
+    viewPort: ViewPort
+    visibleChannels: string[]
+}
 
 export class Interpreter {
     private renderer: RenderManager
     private dataManager: DataManager
     private labels: string[]
     private viewPort: ViewPort
+    private lastRenderedData: LastRenderedData | null = null
+    private readonly debouncedRefreshRate = 1000 / 30
 
     constructor(renderer: RenderManager, viewPort: ViewPort, signalsSourceBuildData: SignalSourceBuildData[]) {
         this.viewPort = viewPort
@@ -30,8 +37,28 @@ export class Interpreter {
     }
 
     async init() {
-        const data = await this.fetchData(this.labels)
-        await this.renderer.init(data, this.viewPort)
+        await this.renderer.init(this.labels, this.viewPort)
+        setInterval(async () => {
+            let flag = true
+            const visibleChannels = this.renderer.visibleChannels
+            const viewPort = this.viewPort
+            if (this.lastRenderedData !== null) {
+                if (visibleChannels === this.lastRenderedData.visibleChannels) {
+                    if (areEqualViewPort(viewPort, this.viewPort)) {
+                        flag = false
+                    }
+                }
+            }
+            if (flag) {
+                this.lastRenderedData = {
+                    viewPort: viewPort,
+                    visibleChannels
+                }
+                await this.updateChannelsState()
+            }
+
+
+        }, this.debouncedRefreshRate)
     }
 
     async destroy(): Promise<void> {
@@ -40,19 +67,14 @@ export class Interpreter {
 
 
     async updateChannelsState(): Promise<void> {
-        const viewPort = this.viewPort
-        const activeChannels = this.renderer.visibleChannels
-        const updatedData: OneDimNormalizedSignal[] = await this.fetchData(activeChannels)
-        await this.renderer.updateSignalData(updatedData, viewPort)
+        const viewPort = this.lastRenderedData?.viewPort
+        const activeChannels = this.lastRenderedData?.visibleChannels
+        const updatedData: OneDimNormalizedSignal[] = await this.fetchData(activeChannels!)
+        await this.renderer.updateSignalData(updatedData, viewPort!)
     }
 
     async changeViewPort(viewPort: ViewPort): Promise<void> {
-        if (viewPort.lengthSeconds === this.viewPort.lengthSeconds) {
-            this.viewPort.updateStartSeconds(viewPort.startSeconds)
-        } else {
-            this.viewPort = viewPort
-        }
-        await this.updateChannelsState()
+        this.viewPort = viewPort
     }
 
     async resize(width: number, height: number) {
@@ -66,8 +88,7 @@ export class Interpreter {
         if (!visibility) {
             this.renderer.removeChannel(channelLabel)
         } else {
-            const signals = (await this.fetchData([channelLabel]))
-            this.renderer.addChannel(signals[0]!)
+            this.renderer.addChannel(channelLabel)
         }
     }
 }

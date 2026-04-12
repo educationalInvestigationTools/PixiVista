@@ -13,7 +13,7 @@ import type {
 } from '@/lib/signal-visualizer/application/types/performanceMetrics.ts'
 import type {EventMediator} from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import {RenderManager} from '../core/renderManager'
-import {ViewPort} from '@/lib/signal-visualizer/application/types/viewPort.ts'
+import type { ViewPort } from './types/viewPort'
 
 export class DiContainer {
     private readonly interpreter: Interpreter

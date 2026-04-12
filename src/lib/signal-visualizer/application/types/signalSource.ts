@@ -1,4 +1,4 @@
-import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
+import type { ViewPort } from "./viewPort"
 
 export type OneDimSignalRaw = {
     xValues: Float32Array

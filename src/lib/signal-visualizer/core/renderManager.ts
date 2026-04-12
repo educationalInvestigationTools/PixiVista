@@ -10,7 +10,7 @@ import type {
     PerformanceMetrics
 } from '@/lib/signal-visualizer/application/types/performanceMetrics.ts'
 import type {EventMediator} from '@/lib/signal-visualizer/utils/eventMediator.ts'
-import {ViewPort} from '@/lib/signal-visualizer/application/types/viewPort.ts'
+import type { ViewPort } from '../application/types/viewPort'
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer
@@ -22,7 +22,7 @@ export class RenderManager {
         this.eventMediator = eventMediator
     }
 
-    async init(signals: OneDimNormalizedSignal[], viewPort: ViewPort) {
+    async init(labels : string[], viewPort: ViewPort) {
         await this.pixiRenderer.init()
         const sizeData = this.pixiRenderer.sizeData()
         const gridData = {
@@ -41,8 +41,8 @@ export class RenderManager {
             },
             gridData.verticalDivisions,
         )
-        for (const signal of signals) {
-            this.componentLayer.channelsLayer.addChannel(signal)
+        for (const label of labels) {
+            this.componentLayer.channelsLayer.addChannel(label)
         }
         this.pixiRenderer.app.stage.addChild(this.componentLayer.container)
         this.pixiRenderer.app.ticker.add(() => {
@@ -72,8 +72,8 @@ export class RenderManager {
         this.componentLayer?.updateSize(sizeData)
     }
 
-    addChannel(oneDimSignal: OneDimNormalizedSignal) {
-        this.componentLayer?.channelsLayer.addChannel(oneDimSignal)
+    addChannel(label : string) {
+        this.componentLayer?.channelsLayer.addChannel(label)
     }
 
     removeChannel(label: string) {

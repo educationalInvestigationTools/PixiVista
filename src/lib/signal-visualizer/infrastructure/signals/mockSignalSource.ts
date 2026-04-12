@@ -4,7 +4,7 @@ import {
     type SignalSourceBuildData,
     type SignalSourceBuilder,
 } from '@/lib/signal-visualizer/application/types/signalSource.ts'
-import { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort.ts'
+import type { ViewPort } from '../../application/types/viewPort'
 
 export type MockSignalSourceConstructor = SignalSourceBuildData & {
     signalSourceType: 'MockSignalSource'

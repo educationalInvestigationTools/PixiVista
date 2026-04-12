@@ -14,8 +14,8 @@ import type {
 import type { AnySettingChoice, AnySettingChoiceUpdate } from "@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice";
 import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
 import { fmtTime } from "../../utils/utils";
-import { ViewPort } from "@/lib/signal-visualizer/application/types/viewPort.ts";
 import type { IntervalGroup } from "../../application/types/highlightedInterval";
+import type { ViewPort } from "../../application/types/viewPort";
 
 
 const props = defineProps<{
@@ -54,7 +54,10 @@ const resizeObserverRef = ref<ResizeObserver | null>(null)
 let diContainer: DiContainer | null = null;
 
 const signalsLargestDurationSeconds = Math.max(...props.signalSources.map(signal => signal.totalSeconds))
-const viewPortRef = ref(new ViewPort(0, 10))
+const viewPortRef: Ref<ViewPort> = ref({
+    startSeconds: 0,
+    lengthSeconds : 10
+})
 
 const performanceMetrics = ref<PerformanceMetrics | undefined>(undefined)
 
@@ -154,21 +157,12 @@ onBeforeUnmount(async () => {
     diContainer?.destroyHandler.handle()
 })
 
-let lastViewPortRefreshed = new ViewPort(viewPortRef.value.startSeconds, viewPortRef.value.lengthSeconds)
-const debouncedRefreshRate = 1000 / 30
-setInterval(async () => {
-    if (lastViewPortRefreshed.startSeconds === viewPortRef.value.startSeconds && lastViewPortRefreshed.lengthSeconds === viewPortRef.value.lengthSeconds) {
-    } else {
-        lastViewPortRefreshed = new ViewPort(viewPortRef.value.startSeconds, viewPortRef.value.lengthSeconds)
-        await diContainer?.changeViewPortHandler.handle(viewPortRef.value)
-    }
-}, debouncedRefreshRate)
-
 async function updateViewPort(viewPort: CurrentViewPortSamples) {
-    viewPortRef.value = new ViewPort(
-        viewPort.currentSamplePosition,
-        Math.min(60, viewPort.lengthSamples)
-    )
+    viewPortRef.value = {
+        startSeconds: viewPort.currentSamplePosition,
+        lengthSeconds : Math.min(60, viewPort.lengthSamples)
+    }
+    await diContainer?.changeViewPortHandler.handle(viewPortRef.value)
 }
 
 </script>

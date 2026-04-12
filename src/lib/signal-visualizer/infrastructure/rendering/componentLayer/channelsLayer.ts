@@ -1,14 +1,14 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import { ChannelsLayerLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { OneDimNormalizedSignal, PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import type { PositionData, SizeData } from '@/lib/signal-visualizer/core/types.ts'
 import { ChannelLayer } from '@/lib/signal-visualizer/infrastructure/rendering/channelLayer/channelLayer.ts'
 import { ChannelLayout } from '@/lib/signal-visualizer/infrastructure/rendering/channelLayer/layout.ts'
 
 export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     private channels: Record<string, ChannelLayer> = {}
 
-    protected _draw(): void {}
+    protected _draw(): void { }
 
     get activeChannels(): string[] {
         const result = []
@@ -41,10 +41,9 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
         this._updateChannels()
     }
 
-    addChannel(oneDimensionalSignalData: OneDimNormalizedSignal) {
-        const label = oneDimensionalSignalData.label
+    addChannel(label: string) {
         this.layoutDesign.changeVisibleChannels(this.layoutDesign.visibleChannels + 1)
-        const gridLayer = new ChannelLayer(
+        const channelLayer = new ChannelLayer(
             new ChannelLayout(
                 this.layoutDesign.buildChannelSize(),
                 this.layoutDesign.buildChannelPos(0),
@@ -54,10 +53,20 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
                 horizontalDivisions: 4,
                 verticalDivisions: 10,
             },
-            oneDimensionalSignalData,
+            {
+                label: label,
+                xSignal: {
+                    values: new Float32Array(0),
+                    minMaxValues: { min: 0, max: 0 }
+                },
+                ySignal: {
+                    values: new Float32Array(0),
+                    minMaxValues: { min: 0, max: 0 }
+                }
+            },
         )
-        this.channels[label] = gridLayer
-        this.container.addChild(gridLayer.container)
+        this.channels[label] = channelLayer
+        this.container.addChild(channelLayer.container)
         this._updateChannels()
         this._needsRendering = true
     }

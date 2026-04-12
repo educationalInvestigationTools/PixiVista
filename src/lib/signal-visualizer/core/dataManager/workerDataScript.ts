@@ -1,5 +1,4 @@
 import type { SignalSourceBuildData } from "../../application/types/signalSource";
-import { ViewPort } from "../../application/types/viewPort";
 import { DataManagerNaive } from "./dataManagerNaive";
 import type { FetchDataRequest } from "./fetchDataRequest";
 import type { ReceivedRequest } from "./receivedRequest";
@@ -15,7 +14,10 @@ self.onmessage = async (event: MessageEvent) => {
 
     else {
         const { requestId, labels, viewPort, expectedWidth } = data as FetchDataRequest
-        const signalsData = await dataManager!.fetchData(labels, new ViewPort(viewPort.startSeconds, viewPort.lengthSeconds), expectedWidth)
+        const signalsData = await dataManager!.fetchData(labels, {
+            startSeconds: viewPort.startSeconds,
+            lengthSeconds: viewPort.lengthSeconds
+        }, expectedWidth)
         const response: ReceivedRequest = {
             requestId,
             signalsData

@@ -1,13 +1,8 @@
-export class ViewPort {
+export type ViewPort = {
     startSeconds: number
-    readonly lengthSeconds: number
+    lengthSeconds: number
+}
 
-    constructor(startSeconds: number, lengthSeconds: number) {
-        this.startSeconds = startSeconds
-        this.lengthSeconds = lengthSeconds
-    }
-
-    updateStartSeconds(startSeconds: number) {
-        this.startSeconds = startSeconds
-    }
+export function areEqualViewPort(a: ViewPort, b: ViewPort) {
+    return a.lengthSeconds === b.lengthSeconds && b.startSeconds === a.startSeconds
 }
