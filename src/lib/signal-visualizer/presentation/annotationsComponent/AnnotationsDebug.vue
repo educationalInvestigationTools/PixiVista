@@ -40,22 +40,24 @@ const objectAnnotation4: ObjectAnnotationData = {
 
 
 
-const objectAnnotations: Ref<Record<string, Record<string, ObjectAnnotationData>>> = ref({})
+const objectAnnotations: Ref<Map<string, Map<string, ObjectAnnotationData>>> = ref(new Map())
 
-objectAnnotations.value[group1] = {}
-objectAnnotations.value[group2] = {}
-objectAnnotations.value[group3] = {}
+objectAnnotations.value.set(group1, new Map())
+objectAnnotations.value.set(group2, new Map())
+objectAnnotations.value.set(group3, new Map())
 
-objectAnnotations.value[group1][objectAnnotation1.label] = objectAnnotation1
-objectAnnotations.value[group1][objectAnnotation2.label] = objectAnnotation2
-objectAnnotations.value[group1][objectAnnotation3.label] = objectAnnotation3
-objectAnnotations.value[group2][objectAnnotation4.label] = objectAnnotation4
+objectAnnotations.value.get(group1)?.set(objectAnnotation1.label, objectAnnotation1)
+objectAnnotations.value.get(group1)?.set(objectAnnotation2.label, objectAnnotation2)
+objectAnnotations.value.get(group1)?.set(objectAnnotation3.label, objectAnnotation3)
+objectAnnotations.value.get(group2)?.set(objectAnnotation4.label, objectAnnotation4)
 
 
 </script>
 
 <template>
-    <AnnotationsComponent :objectsAnnotations="objectAnnotations" @toggleObjectVisibility="(objVisibility) => objectAnnotations[objVisibility.groupLabel]![objVisibility.label]!.visibility = objVisibility.visibility"></AnnotationsComponent>
+    <AnnotationsComponent :objectsAnnotations="objectAnnotations"
+        @toggleObjectVisibility="(objVisibility) => objectAnnotations.get(objVisibility.groupLabel)!.get(objVisibility.label)!.visibility = objVisibility.visibility">
+    </AnnotationsComponent>
 </template>
 
 <style scoped></style>
