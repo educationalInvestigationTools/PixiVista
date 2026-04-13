@@ -1,28 +1,21 @@
 <script setup lang="ts">
 import PlotComponent from './PlotComponent.vue'
-import { type MockSignalSourceConstructor } from '../../infrastructure/signals/mockSignalSource.ts'
+import { MockSignalSerializer, MockSignalSourceConstructor } from '../../infrastructure/signals/mockSignalSource.ts'
 import type { IntervalGroup } from '../../application/types/highlightedInterval.ts'
+import { SignalSourceBuildData, SignalSourceManager } from '../../application/types/signalSource.ts'
 
-const signalSources: MockSignalSourceConstructor[] = [
-    {
-        signalSourceType: 'MockSignalSource',
-        totalSeconds: 180,
-        label: 'Fpz-Cz',
-        samplingFrequency: 128
-    },
-    {
-        signalSourceType: 'MockSignalSource',
-        totalSeconds: 180,
-        label: 'Pz-Oz',
-        samplingFrequency: 128
-    },
-    {
-        signalSourceType: 'MockSignalSource',
-        totalSeconds: 180,
-        label: 'EOG',
-        samplingFrequency: 64
-    },
+
+const signalSourcesBuildData: SignalSourceBuildData[] = [
+    new MockSignalSourceConstructor(128, 180, 'Fpz-Cz'),
+    new MockSignalSourceConstructor(128, 180, 'Pz-Oz'),
+    new MockSignalSourceConstructor(64, 180, 'EOG')
 ]
+
+const signalSourceSerializer = new MockSignalSerializer()
+
+const manager = new SignalSourceManager()
+manager.addSerializer(signalSourceSerializer)
+signalSourcesBuildData.map(x => manager.addSignalBuildData(signalSourceSerializer.serializerId, x))
 
 const annotations: Record<string, IntervalGroup> = {
     'Sleep Stages': {
@@ -76,8 +69,8 @@ const annotations: Record<string, IntervalGroup> = {
 }
 
 const mockPlotProps = {
-    signalSources,
-    annotations,
+    signalSourcesManager: manager,
+    annotations: annotations,
 }
 </script>
 

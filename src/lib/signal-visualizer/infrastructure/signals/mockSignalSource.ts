@@ -1,18 +1,38 @@
 import {
+    SignalSourceBuildData,
     type SignalSource,
     type OneDimSignalRaw,
-    type SignalSourceBuildData,
-    type SignalSourceBuilder,
+    type SignalSourceFactory,
+    type SignalSourceBuildDataSerializer,
+    type SerializedOutput,
 } from '@/lib/signal-visualizer/application/types/signalSource.ts'
 import type { ViewPort } from '../../application/types/viewPort'
 
-export type MockSignalSourceConstructor = SignalSourceBuildData & {
-    signalSourceType: 'MockSignalSource'
+export class MockSignalSourceConstructor extends SignalSourceBuildData {
     samplingFrequency: number
-    totalSeconds: number
+    constructor(samplingFrequency: number,
+        totalSeconds: number, label: string) {
+        super(totalSeconds, label)
+        this.samplingFrequency = samplingFrequency
+    }
 }
 
-export class MockSignalSourceBuilder implements SignalSourceBuilder<MockSignalSourceConstructor> {
+export class MockSignalSerializer implements SignalSourceBuildDataSerializer<MockSignalSourceConstructor> {
+    readonly serializerId: string
+
+    constructor() {
+        this.serializerId = "MockSignalSerializer"
+    }
+
+    serialize(value : MockSignalSourceConstructor): SerializedOutput {
+        return JSON.stringify(value)
+    }
+    deserialize(serializedValue: SerializedOutput): MockSignalSourceConstructor {
+        return JSON.parse(serializedValue)
+    }
+}
+
+export class MockSignalSourceFactory implements SignalSourceFactory<MockSignalSourceConstructor, MockSignalSource> {
     build(buildData: MockSignalSourceConstructor): MockSignalSource {
         return new MockSignalSource(buildData)
     }
@@ -34,7 +54,6 @@ export class MockSignalSource implements SignalSource {
             ),
         )
     }
-
 
     get totalSeconds(): number {
         return this.totalSamples / this.samplingFrequency

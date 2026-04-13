@@ -1,10 +1,9 @@
-import { type SignalSourceBuildData } from '@/lib/signal-visualizer/application/types/signalSource.ts'
+import { SignalSourceManager } from '@/lib/signal-visualizer/application/types/signalSource.ts'
 
 import type {
     OneDimNormalizedSignal,
 } from '@/lib/signal-visualizer/core/types.ts'
 import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
-import { DataManager } from './dataManager/dataManager'
 import { DataManagerWorker } from './dataManager/dataManagerWorker'
 import { areEqualViewPort, type ViewPort } from '../application/types/viewPort'
 import { sameSet } from '../utils/utils'
@@ -21,17 +20,17 @@ function areEqual(a: RenderModel, b: RenderModel) {
 
 export class Interpreter {
     private renderer: RenderManager
-    private dataManager: DataManager
+    private dataManager: DataManagerWorker
     private labels: string[]
     private viewPort: ViewPort
     private lastRenderedData: RenderModel | null = null
     private readonly debouncedRefreshRate = 1000 / 30
 
-    constructor(renderer: RenderManager, viewPort: ViewPort, signalsSourceBuildData: SignalSourceBuildData[]) {
+    constructor(renderer: RenderManager, viewPort: ViewPort, signalsSourceManager: SignalSourceManager) {
         this.viewPort = viewPort
         this.renderer = renderer
-        this.labels = signalsSourceBuildData.map(x => x.label)
-        this.dataManager = new DataManagerWorker(signalsSourceBuildData)
+        this.labels = signalsSourceManager.allSignalsBuildData.map(x => x.label)
+        this.dataManager = new DataManagerWorker(signalsSourceManager)
     }
     async init() {
         await this.renderer.init(this.labels, this.viewPort)

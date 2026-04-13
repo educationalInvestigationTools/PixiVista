@@ -1,24 +1,17 @@
-import type { SignalSource, SignalSourceBuildData } from "../../application/types/signalSource";
+import type { SignalSource, SignalSourceManager } from "../../application/types/signalSource";
 import type { ViewPort } from "../../application/types/viewPort";
-import { MockSignalSourceBuilder, type MockSignalSourceConstructor } from "../../infrastructure/signals/mockSignalSource";
 import { Envelope } from "../../utils/envelope";
 import { largestTriangleThreeBuckets } from "../../utils/lttb";
 import type { OneDimNormalizedSignal, NormalizedSignal } from "../types";
-import { DataManager } from "./dataManager";
 
+export class DataManagerNaive {
+    private readonly signalSources: Map<string, SignalSource> = new Map()
 
-export class DataManagerNaive extends DataManager {
-    private readonly signalSources: Record<string, SignalSource>;
-
-    constructor(signalsSourceBuildData: SignalSourceBuildData[]) {
-        super(signalsSourceBuildData);
-        this.signalSources = signalsSourceBuildData.reduce<Record<string, SignalSource>>((acc, buildData) => {
-            if (buildData.signalSourceType === 'MockSignalSource') {
-                const builder = new MockSignalSourceBuilder();
-                acc[buildData.label] = builder.build(buildData as MockSignalSourceConstructor);
-            }
-            return acc;
-        }, {});
+    constructor(signalSourceManager: SignalSourceManager) {
+        const signalSources = signalSourceManager.createSignalSources()
+        for (const signalSource of signalSources) {
+            this.signalSources.set(signalSource.label, signalSource)
+        }
     }
 
     async fetchData(labels: string[], viewPort: ViewPort, expectedWidth: number): Promise<OneDimNormalizedSignal[]> {
@@ -27,7 +20,7 @@ export class DataManagerNaive extends DataManager {
     }
 
     private async fetchSingleData(label: string, viewPort: ViewPort, expectedWidth: number): Promise<OneDimNormalizedSignal> {
-        const signalSource = this.signalSources[label]!;
+        const signalSource = this.signalSources.get(label)!;
         const data = await signalSource.read(viewPort);
         const dataToUse = largestTriangleThreeBuckets(data, expectedWidth);
         const xEnvelope = new Envelope(dataToUse.xValues, {

@@ -3,7 +3,6 @@
 import { computed, onBeforeUnmount, onMounted, ref, type Ref } from "vue";
 import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts";
 import { ResizeDto } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
-import { type SignalSourceBuildData } from "@/lib/signal-visualizer/application/types/signalSource.ts";
 import SliderComponent, { type CurrentViewPortSamples } from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
 import SettingsComponent from "../settingsComponent/SettingsComponent.vue";
 import AnnotationsComponent, { type ObjectAnnotationData, type ObjectVisibility } from "@/lib/signal-visualizer/presentation/annotationsComponent/AnnotationsComponent.vue";
@@ -16,30 +15,22 @@ import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
 import { fmtTime } from "../../utils/utils";
 import type { IntervalGroup } from "../../application/types/highlightedInterval";
 import type { ViewPort } from "../../application/types/viewPort";
+import type { SignalSourceManager } from "../../application/types/signalSource";
 
 
 const props = defineProps<{
-    signalSources: SignalSourceBuildData[]
+    signalSourcesManager: SignalSourceManager
     annotations: Record<string, IntervalGroup>
 }>()
 
 const objectsAnnotationsData: Ref<Record<string, Record<string, ObjectAnnotationData>>> = ref({})
 
-async function toggleObjectVisibility(objectVisibility: ObjectVisibility) {
-    const groupLabel = objectVisibility.groupLabel
-    const label = objectVisibility.label
-    const visibility = objectVisibility.visibility
-    objectsAnnotationsData.value[groupLabel]![label]!.visibility = visibility
-    if (groupLabel === 'Channels') {
-        await diContainer?.changeChannelVisibilityHandler.handle(label, visibility)
-    }
-}
 
 const heightPerChannel = ref(200)
 
 const visibleChannels = computed(() => {
     let visible = 0
-    const channels = objectsAnnotationsData.value['Channels']!
+    const channels = objectsAnnotationsData.value[channelsGroup]!
     for (const label in channels) {
         if (channels[label]!.visibility) {
             visible++
@@ -53,19 +44,19 @@ const htmlContainerRef = ref<HTMLDivElement | null>(null);
 const resizeObserverRef = ref<ResizeObserver | null>(null)
 let diContainer: DiContainer | null = null;
 
-const signalsLargestDurationSeconds = Math.max(...props.signalSources.map(signal => signal.totalSeconds))
+const signalsLargestDurationSeconds = Math.max(...props.signalSourcesManager.allSignalsBuildData.map(signal => signal.totalSeconds))
 const viewPortRef: Ref<ViewPort> = ref({
     startSeconds: 0,
-    lengthSeconds : 10
+    lengthSeconds: 10
 })
 
 const performanceMetrics = ref<PerformanceMetrics | undefined>(undefined)
-
 const showMetricsPanel = ref(true)
 const showAnnotationsPanel = ref(true)
 const showMetricsSettingId = 'show-metrics-panel'
 const showAnnotationsSettingId = 'show-annotations-panel'
 const heightPerChannelSettingId = 'height-per-channel'
+const channelsGroup = "Channels"
 
 const settingsChoices = computed<AnySettingChoice[]>(() => [
     {
@@ -89,6 +80,16 @@ const settingsChoices = computed<AnySettingChoice[]>(() => [
     }
 ])
 
+async function toggleObjectVisibility(objectVisibility: ObjectVisibility) {
+    const groupLabel = objectVisibility.groupLabel
+    const label = objectVisibility.label
+    const visibility = objectVisibility.visibility
+    objectsAnnotationsData.value[groupLabel]![label]!.visibility = visibility
+    if (groupLabel === channelsGroup) {
+        await diContainer?.changeChannelVisibilityHandler.handle(label, visibility)
+    }
+}
+
 function updateSettingChoice(settingUpdate: AnySettingChoiceUpdate) {
     if (settingUpdate.id === showMetricsSettingId && typeof settingUpdate.value === 'boolean') {
         showMetricsPanel.value = settingUpdate.value
@@ -108,12 +109,13 @@ onMounted(async () => {
     if (!htmlContainerRef.value) {
         return;
     }
-    objectsAnnotationsData.value['Channels'] = {}
-    for (let i = 0; i < props.signalSources.length; i++) {
-        const signal = props.signalSources[i]!
-        objectsAnnotationsData.value['Channels'][signal.label] = {
+    objectsAnnotationsData.value[channelsGroup] = {}
+    const allSignalsBuildData = props.signalSourcesManager.allSignalsBuildData
+    for (let i = 0; i < allSignalsBuildData.length; i++) {
+        const signal = allSignalsBuildData[i]!
+        objectsAnnotationsData.value[channelsGroup][signal.label] = {
             label: signal.label,
-            group: 'Channels',
+            group: channelsGroup,
             visibility: true,
             shape: 'rectangle',
             color: 'red'
@@ -137,7 +139,7 @@ onMounted(async () => {
 
     const viewPort = viewPortRef.value
     const eventMediator = new EventMediator((metrics: PerformanceMetrics) => performanceMetrics.value = metrics)
-    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSources, eventMediator);
+    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSourcesManager, eventMediator);
     await diContainer.init()
 
 
@@ -160,7 +162,7 @@ onBeforeUnmount(async () => {
 async function updateViewPort(viewPort: CurrentViewPortSamples) {
     viewPortRef.value = {
         startSeconds: viewPort.currentSamplePosition,
-        lengthSeconds : Math.min(60, viewPort.lengthSamples)
+        lengthSeconds: Math.min(60, viewPort.lengthSamples)
     }
     await diContainer?.changeViewPortHandler.handle(viewPortRef.value)
 }
