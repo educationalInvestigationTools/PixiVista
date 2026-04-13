@@ -17,55 +17,56 @@ const manager = new SignalSourceManager()
 manager.addSerializer(signalSourceSerializer)
 signalSourcesBuildData.map(x => manager.addSignalBuildData(signalSourceSerializer.serializerId, x))
 
-const annotations: Map<string, IntervalGroup> = new Map()
-annotations.set('Sleep Stages', {
-    label: 'Sleep Stages',
-    priority: 1,
-    intervals: [
-        {
-            startSeconds: 5,
-            endSeconds: 28,
-            label: 'N1',
-            signalsAssociated: ['Fpz-Cz', 'Pz-Oz'],
-            drawingColor: '#f59e0b',
-            drawingStyle: 'background-rectangle',
-            hoverInfo: {
-                stage: 'N1',
-                confidence: '0.78',
+const annotations: Record<string, IntervalGroup> = {
+    'Sleep Stages': {
+        label: 'Sleep Stages',
+        priority: 1,
+        intervals: [
+            {
+                startSeconds: 5,
+                endSeconds: 28,
+                label: 'N1',
+                signalsAssociated: ['Fpz-Cz', 'Pz-Oz'],
+                drawingColor: '#f59e0b',
+                drawingStyle: 'background-rectangle',
+                hoverInfo: {
+                    stage: 'N1',
+                    confidence: '0.78',
+                },
             },
-        },
-        {
-            startSeconds: 35,
-            endSeconds: 72,
-            label: 'N2',
-            signalsAssociated: ['Fpz-Cz', 'Pz-Oz', 'EOG'],
-            drawingColor: '#3b82f6',
-            drawingStyle: 'background-rectangle',
-            hoverInfo: {
-                stage: 'N2',
-                confidence: '0.91',
+            {
+                startSeconds: 35,
+                endSeconds: 72,
+                label: 'N2',
+                signalsAssociated: ['Fpz-Cz', 'Pz-Oz', 'EOG'],
+                drawingColor: '#3b82f6',
+                drawingStyle: 'background-rectangle',
+                hoverInfo: {
+                    stage: 'N2',
+                    confidence: '0.91',
+                },
             },
-        },
-    ],
-})
-annotations.set("Artifacts", {
-    label: 'Artifacts',
-    priority: 2,
-    intervals: [
-        {
-            startSeconds: 82,
-            endSeconds: 89,
-            label: 'Blink',
-            signalsAssociated: ['EOG'],
-            drawingColor: '#ef4444',
-            drawingStyle: 'borders',
-            hoverInfo: {
-                type: 'Eye blink',
-                severity: 'medium',
+        ],
+    },
+    Artifacts: {
+        label: 'Artifacts',
+        priority: 2,
+        intervals: [
+            {
+                startSeconds: 82,
+                endSeconds: 89,
+                label: 'Blink',
+                signalsAssociated: ['EOG'],
+                drawingColor: '#ef4444',
+                drawingStyle: 'borders',
+                hoverInfo: {
+                    type: 'Eye blink',
+                    severity: 'medium',
+                },
             },
-        },
-    ],
-},)
+        ],
+    },
+}
 
 const mockPlotProps = {
     signalSourcesManager: manager,

@@ -20,19 +20,19 @@ import type { SignalSourceManager } from "../../application/types/signalSource";
 
 const props = defineProps<{
     signalSourcesManager: SignalSourceManager
-    annotations: Map<string, IntervalGroup>
+    annotations: Record<string, IntervalGroup>
 }>()
 
-const objectsAnnotationsData: Ref<Map<string, Map<string, ObjectAnnotationData>>> = ref(new Map())
+const objectsAnnotationsData: Ref<Record<string, Record<string, ObjectAnnotationData>>> = ref({})
 
 
 const heightPerChannel = ref(200)
 
 const visibleChannels = computed(() => {
     let visible = 0
-    const channels = objectsAnnotationsData.value.get(channelsGroup)!
-    for (const [, objectAnnotation] of channels) {
-        if (objectAnnotation!.visibility) {
+    const channels = objectsAnnotationsData.value[channelsGroup]!
+    for (const label in channels) {
+        if (channels[label]!.visibility) {
             visible++
         }
     }
@@ -84,7 +84,7 @@ async function toggleObjectVisibility(objectVisibility: ObjectVisibility) {
     const groupLabel = objectVisibility.groupLabel
     const label = objectVisibility.label
     const visibility = objectVisibility.visibility
-    objectsAnnotationsData.value.get(groupLabel)!.get(label)!.visibility = visibility
+    objectsAnnotationsData.value[groupLabel]![label]!.visibility = visibility
     if (groupLabel === channelsGroup) {
         await diContainer?.changeChannelVisibilityHandler.handle(label, visibility)
     }
@@ -109,31 +109,31 @@ onMounted(async () => {
     if (!htmlContainerRef.value) {
         return;
     }
-    objectsAnnotationsData.value.set(channelsGroup, new Map())
+    objectsAnnotationsData.value[channelsGroup] = {}
     const allSignalsBuildData = props.signalSourcesManager.allSignalsBuildData
     for (let i = 0; i < allSignalsBuildData.length; i++) {
         const signal = allSignalsBuildData[i]!
-        objectsAnnotationsData.value.get(channelsGroup)!.set(signal.label, {
+        objectsAnnotationsData.value[channelsGroup][signal.label] = {
             label: signal.label,
             group: channelsGroup,
             visibility: true,
             shape: 'rectangle',
             color: 'red'
-        })
+        }
     }
 
     for (const groupLabel in props.annotations) {
-        const intervalGroup = props.annotations.get(groupLabel)!
-        objectsAnnotationsData.value.set(groupLabel, new Map())
+        const intervalGroup = props.annotations[groupLabel]!
+        objectsAnnotationsData.value[groupLabel] = {}
         for (let i = 0; i < intervalGroup.intervals.length; i++) {
             const interval = intervalGroup.intervals[i]!
-            objectsAnnotationsData.value.get(groupLabel)!.set(interval.label, {
+            objectsAnnotationsData.value[groupLabel]![interval.label]! = {
                 label: interval.label,
                 group: groupLabel,
                 visibility: true,
                 shape: 'dashed-lines',
                 color: 'blue',
-            })
+            }
         }
     }
 

@@ -6,7 +6,7 @@ import { ChannelLayer } from '@/lib/signal-visualizer/infrastructure/rendering/c
 import { ChannelLayout } from '@/lib/signal-visualizer/infrastructure/rendering/channelLayer/layout.ts'
 
 export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
-    private channels: Map<string, ChannelLayer> = new Map()
+    private channels: Record<string, ChannelLayer> = {}
 
     protected _draw(): void { }
 
@@ -21,14 +21,14 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     get Children(): RenderLayer<LayoutDesign>[] {
         const children = []
         for (const labelChild in this.channels) {
-            const childValue = this.channels.get(labelChild)!
+            const childValue = this.channels[labelChild]!
             children.push(childValue)
         }
         return children
     }
 
     getByLabel(label: string): ChannelLayer | undefined {
-        return this.channels.get(label)
+        return this.channels[label]
     }
 
     _updatePosition(positionData: PositionData): void {
@@ -65,22 +65,22 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
                 }
             },
         )
-        this.channels.set(label, channelLayer)
+        this.channels[label] = channelLayer
         this.container.addChild(channelLayer.container)
         this._updateChannels()
         this._needsRendering = true
     }
 
     removeChannel(label: string) {
-        const child = this.channels.get(label)
+        const child = this.channels[label]
         if (child != undefined) {
             this.layoutDesign.changeVisibleChannels(this.layoutDesign.visibleChannels - 1)
             this.container.removeChild(child.container)
-            const updatedChannels: Map<string, ChannelLayer> = new Map()
+            const updatedChannels: Record<string, ChannelLayer> = {}
             for (const labelChild in this.channels) {
-                const childValue = this.channels.get(labelChild)!
+                const childValue = this.channels[labelChild]!
                 if (labelChild != label) {
-                    updatedChannels.set(labelChild, childValue)
+                    updatedChannels[labelChild] = childValue
                 }
             }
             this.channels = updatedChannels
@@ -92,7 +92,7 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     private _updateChannels() {
         let index = 0
         for (const label in this.channels) {
-            const child = this.channels.get(label)!
+            const child = this.channels[label]!
             const sizeData = this.layoutDesign.buildChannelSize()
             child.updateSize(sizeData)
             const posData = this.layoutDesign.buildChannelPos(index)

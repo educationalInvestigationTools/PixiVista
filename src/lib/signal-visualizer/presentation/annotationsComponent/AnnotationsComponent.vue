@@ -15,7 +15,7 @@ export type ObjectVisibility = {
 }
 
 const props = defineProps<{
-    objectsAnnotations: Map<string, Map<string, ObjectAnnotationData>> // {group : { objectLabel : object } }
+    objectsAnnotations: Record<string, Record<string, ObjectAnnotationData>> // {group : { objectLabel : object } }
 }>()
 
 const emit = defineEmits<{
@@ -26,7 +26,7 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     emit("toggleObjectVisibility", {
         groupLabel: groupLabel,
         label: objectLabel,
-        visibility: !(props.objectsAnnotations.get(groupLabel)!.get(objectLabel)!.visibility)
+        visibility: !(props.objectsAnnotations[groupLabel]![objectLabel]!.visibility)
     })
 }
 
@@ -37,10 +37,10 @@ import dashedLinesIcon from '@/assets/icons/dashed-line.svg';
 
 <template>
     <div class="annotations__menu">
-        <div class="annotations__group" v-for="[groupLabel, objectGroup] of props.objectsAnnotations" :key="groupLabel">
+        <div class="annotations__group" v-for="(objectGroup, groupLabel) in props.objectsAnnotations" :key="groupLabel">
             <span class="annotations__group--header"> {{ groupLabel }} </span>
             <div class="annotations__group--items">
-                <div class="annotation__item" v-for="[objectLabel, object] of objectGroup" :key="objectLabel">
+                <div class="annotation__item" v-for="(object, objectLabel) in objectGroup" :key="objectLabel">
                     <img class="annotation__item__icon" :class="{ 'annotation__item_icon--off': !object.visibility }"
                         :src="object.shape === 'rectangle' ? rectangleIcon : dashedLinesIcon"
                         :style="{ backgroundColor: object.color }">
@@ -108,7 +108,6 @@ import dashedLinesIcon from '@/assets/icons/dashed-line.svg';
 .annotation__item_icon--off {
     opacity: 0.35;
 }
-
 .annotation__item__label {
     cursor: pointer;
     font-size: 14px;
