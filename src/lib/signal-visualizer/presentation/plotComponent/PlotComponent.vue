@@ -19,6 +19,7 @@ import type { SignalSourceManager } from "../../application/types/signalSource";
 
 
 const props = defineProps<{
+    workerCallback: () => Worker,
     signalSourcesManager: SignalSourceManager
     annotations: Record<string, IntervalGroup>
 }>()
@@ -139,7 +140,7 @@ onMounted(async () => {
 
     const viewPort = viewPortRef.value
     const eventMediator = new EventMediator((metrics: PerformanceMetrics) => performanceMetrics.value = metrics)
-    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSourcesManager, eventMediator);
+    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSourcesManager, eventMediator, props.workerCallback);
     await diContainer.init()
 
 

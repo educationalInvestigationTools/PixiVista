@@ -69,6 +69,10 @@ const annotations: Record<string, IntervalGroup> = {
 }
 
 const mockPlotProps = {
+    workerCallback: () => new Worker(
+        new URL('./workerScript.ts', import.meta.url),
+        { type: 'module' }
+    ),
     signalSourcesManager: manager,
     annotations: annotations,
 }

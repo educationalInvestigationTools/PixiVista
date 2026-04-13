@@ -4,17 +4,12 @@ import type { OneDimNormalizedSignal } from "../types";
 import type { FetchDataRequest } from "./fetchDataRequest";
 import type { ReceivedRequest } from "./receivedRequest";
 
-
-
-export class DataManagerWorker{
+export class DataManagerWorker {
     private worker: Worker;
     private pendingRequests: Map<string, (value: OneDimNormalizedSignal[]) => void> = new Map();
 
-    constructor(signalSourcesManager : SignalSourceManager) {
-        this.worker = new Worker(
-            new URL('./workerDataScript.ts', import.meta.url),
-            { type: 'module' }
-        );
+    constructor( workerCallback : () => Worker, signalSourcesManager: SignalSourceManager) {
+        this.worker = workerCallback()
         this.worker.onmessage = this.handleWorkerMessage.bind(this);
         this.worker.postMessage({ type: 'init', data: signalSourcesManager.serialize() })
     }

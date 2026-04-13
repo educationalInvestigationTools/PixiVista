@@ -26,11 +26,11 @@ export class Interpreter {
     private lastRenderedData: RenderModel | null = null
     private readonly debouncedRefreshRate = 1000 / 30
 
-    constructor(renderer: RenderManager, viewPort: ViewPort, signalsSourceManager: SignalSourceManager) {
+    constructor(renderer: RenderManager, viewPort: ViewPort, signalsSourceManager: SignalSourceManager, workerCallback: () => Worker) {
         this.viewPort = viewPort
         this.renderer = renderer
         this.labels = signalsSourceManager.allSignalsBuildData.map(x => x.label)
-        this.dataManager = new DataManagerWorker(signalsSourceManager)
+        this.dataManager = new DataManagerWorker(workerCallback, signalsSourceManager)
     }
     async init() {
         await this.renderer.init(this.labels, this.viewPort)
