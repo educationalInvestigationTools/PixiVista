@@ -74,7 +74,7 @@ export class SignalSourceManager {
         return result
     }
 
-    serialize(): string {
+    serialize(): SerializedOutput {
         const result: Map<string, SerializedOutput[]> = new Map()
         for (const [serializerId, serializer] of this.serializers) {
             const signalsBuildData = this.signalsBuildData.get(serializerId)
@@ -85,7 +85,7 @@ export class SignalSourceManager {
         return JSON.stringify(Object.fromEntries(result))
     }
 
-    deSerialize(value: string) {
+    deSerialize(value: SerializedOutput) {
         const result: Map<string, SerializedOutput[]> = new Map(Object.entries(JSON.parse(value)))
         for (const [serializerId, serializer] of this.serializers) {
             const serializedSignals = result.get(serializerId)
