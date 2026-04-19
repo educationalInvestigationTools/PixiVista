@@ -1,39 +1,34 @@
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/core/types.ts'
-import {
-    RenderManager,
-} from '@/lib/signal-visualizer/core/renderManager.ts'
+import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 import type { DataManager } from './dataManager/dataManager'
-import {RenderDependencies } from './renderDependencies'
+import { RenderDependencies } from './renderDependencies'
+import { Observer } from './observer'
 
-export class RendererObserver {
+
+
+export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {
     private renderManager: RenderManager
     private dataManager: DataManager
-    private lastRenderedData: RenderDependencies | null = null
-    private readonly debouncedRefreshRate = 1000 / 30
 
     constructor(renderManager: RenderManager, dataManager: DataManager) {
+        super(
+            RenderDependencies.equal,
+            RenderDependencies.clone,
+            () => renderManager.CurrentRenderDependencies,
+        )
         this.renderManager = renderManager
         this.dataManager = dataManager
     }
     async init() {
-        setInterval(async () => {
-            let flag = true
-            const nextRenderData = this.renderManager.CurrentRenderDependencies
-            if (this.lastRenderedData !== null) {
-                if (RenderDependencies.equal(this.lastRenderedData, nextRenderData)) {
-                    flag = false
-                }
-            }
-            if (flag) {
-                const cloned = RenderDependencies.clone(nextRenderData)
-                await this.updateChannelsState(cloned)
-                this.lastRenderedData = cloned
-            }
-        }, this.debouncedRefreshRate)
+        await super.init()
     }
 
     async destroy(): Promise<void> {
         this.renderManager.destroy()
+    }
+
+    async update(currentObserved: RenderDependencies): Promise<void> {
+        await this.updateChannelsState(currentObserved)
     }
 
     async updateChannelsState(dataToRender: RenderDependencies): Promise<void> {
