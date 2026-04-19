@@ -19,47 +19,55 @@ import {
 import { RenderManager } from '../core/renderManager'
 import type { ViewPort } from './types/viewPort'
 import { EventMediator } from '../utils/eventMediator'
+import { DataManagerWorker } from '../core/dataManager/dataManagerWorker'
 
 export class DiContainer {
-    private readonly interpreter: Interpreter
-    readonly eventMediator : EventMediator
+    private interpreter?: Interpreter
+    private readonly canvas: HTMLCanvasElement
+    readonly eventMediator: EventMediator
 
-    constructor(
-        htmlElement: HTMLElement,
+    constructor(htmlElement: HTMLElement) {
+        this.canvas = document.createElement('canvas')
+        this.canvas.style.height = '100%'
+        this.canvas.style.width = '100%'
+        this.canvas.style.display = 'block'
+        htmlElement.appendChild(this.canvas)
+        this.eventMediator = new EventMediator()
+    }
+    async init(
         viewPort: ViewPort,
         signalsSourceGroup: SignalSourceManager,
         workerCallback: () => Worker,
     ) {
-        const canvas = document.createElement('canvas')
-        canvas.style.height = '100%'
-        canvas.style.width = '100%'
-        canvas.style.display = 'block'
-        htmlElement.appendChild(canvas)
-        this.eventMediator = new EventMediator()
-        const renderer = new RenderManager(canvas, this.eventMediator)
-        this.interpreter = new Interpreter(renderer, viewPort, signalsSourceGroup, workerCallback)
+        const renderer = new RenderManager(this.canvas, this.eventMediator)
+        await renderer.init(
+            signalsSourceGroup.allSignalsBuildData.map((x) => x.label),
+            viewPort,
+        )
+        const dataManagerWorker = new DataManagerWorker(workerCallback, signalsSourceGroup)
+        this.interpreter = new Interpreter(renderer, dataManagerWorker)
+        await this.interpreter.init()
 
         this.eventMediator.addHandler<ChangeChannelVisibilityCommand>(
             ChangeChannelVisibilityCommandEventLabel,
-            async (command) => this.interpreter.changeChannelVisibility(command),
+            async (command) => renderer.changeChannelVisibility(command),
         )
 
         this.eventMediator.addHandler<ChangeViewPortCommand>(
             ChangeViewPortCommandEventLabel,
-            async (command) => this.interpreter.changeViewPort(command),
+            async (command) => renderer.changeViewPort(command),
         )
 
-        this.eventMediator.addHandler<DestroyCommand>(
-            DestroyCommandEventLabel,
-            async () => this.interpreter.destroy(),
+        this.eventMediator.addHandler<DestroyCommand>(DestroyCommandEventLabel, async () =>
+            this.destroy(),
         )
 
-        this.eventMediator.addHandler<ResizeCommand>(
-            ResizeCommandEventLabel,
-            async (command) => this.interpreter.resize(command),
+        this.eventMediator.addHandler<ResizeCommand>(ResizeCommandEventLabel, async (command) =>
+            renderer.resize(command),
         )
     }
-    async init() {
-        await this.interpreter.init()
+
+    async destroy() {
+        await this.interpreter?.destroy()
     }
 }

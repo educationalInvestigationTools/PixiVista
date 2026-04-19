@@ -142,9 +142,9 @@ onMounted(async () => {
     }
 
     const viewPort = viewPortRef.value
-    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSourcesManager, props.workerCallback);
+    diContainer = new DiContainer(htmlContainerRef.value);
+    await diContainer.init(viewPort, props.signalSourcesManager, props.workerCallback)
     diContainer.eventMediator.addHandler<GetPerformanceMetrics>(GetPerformanceMetricsEventLabel, (metrics: GetPerformanceMetrics) => { performanceMetrics.value = metrics.performanceMetrics; return Promise.resolve() })
-    await diContainer.init()
 
 
     resizeObserverRef.value = new ResizeObserver(async () => {

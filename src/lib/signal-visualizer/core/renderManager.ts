@@ -4,13 +4,43 @@ import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/renderin
 import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
 import type { PerformanceMetrics } from '@/lib/signal-visualizer/application/types/performanceMetrics.ts'
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
-import type { ViewPort } from '../application/types/viewPort'
+import { areEqualViewPort, type ViewPort } from '../application/types/viewPort'
 import { GetPerformanceMetrics } from '../application/querys/getPerformanceMetrics'
+import { sameSet } from '../utils/utils'
+import type { ChangeViewPortCommand } from '../application/commands/changeViewPortCommand'
+import type { ResizeCommand } from '../application/commands/resizeCommand'
+import type { ChangeChannelVisibilityCommand } from '../application/commands/changeChannelVisibilityCommand'
+
+export type ReactiveRenderModel = {
+    viewPort: ViewPort
+    visibleChannels: string[]
+    expectedWidth: number
+}
+
+export function areEqual(a: ReactiveRenderModel, b: ReactiveRenderModel) {
+    return (
+        sameSet<string>(a.visibleChannels, b.visibleChannels) &&
+        areEqualViewPort(a.viewPort, b.viewPort) &&
+        a.expectedWidth === b.expectedWidth
+    )
+}
+
+export function clone(a: ReactiveRenderModel): ReactiveRenderModel {
+    return {
+        viewPort: {
+            startSeconds: a.viewPort.startSeconds,
+            lengthSeconds: a.viewPort.lengthSeconds,
+        },
+        visibleChannels: a.visibleChannels,
+        expectedWidth: a.expectedWidth,
+    }
+}
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer
     private componentLayer?: ComponentLayer
     private eventMediator: EventMediator
+    private viewPort?: ViewPort
 
     constructor(canvas: HTMLCanvasElement, eventMediator: EventMediator) {
         this.pixiRenderer = new PixiRenderer(canvas)
@@ -60,6 +90,15 @@ export class RenderManager {
             }
             this.eventMediator.publish(new GetPerformanceMetrics(performanceMetrics))
         })
+        this.viewPort = viewPort
+    }
+
+    get CurrentRenderModel(): ReactiveRenderModel {
+        return {
+            viewPort: this.viewPort!,
+            visibleChannels: this.visibleChannels,
+            expectedWidth: Math.floor(this.sizeData.width * this.devicePixelRatio),
+        }
     }
 
     async setSizes(sizeData: SizeData) {
@@ -75,23 +114,19 @@ export class RenderManager {
         this.componentLayer?.channelsLayer.removeChannel(label)
     }
 
-    get visibleChannels(): string[] {
+    private get visibleChannels(): string[] {
         return this.componentLayer?.channelsLayer.activeChannels!
     }
 
-    get sizeData(): SizeData {
+    private get sizeData(): SizeData {
         return this.pixiRenderer.sizeData()
     }
 
-    get devicePixelRatio(): number {
+    private get devicePixelRatio(): number {
         return window.devicePixelRatio
     }
 
-    getChannelSizeData(): SizeData {
-        return this.componentLayer?.channelsLayer.layoutDesign.buildChannelSize() ?? this.sizeData
-    }
-
-    async updateSignalData(signals: OneDimNormalizedSignal[], viewPort: ViewPort) {
+    async render(signals: OneDimNormalizedSignal[]) {
         for (const signal of signals) {
             const channelLayer = this.componentLayer?.channelsLayer.getByLabel(signal.label)
             if (channelLayer !== undefined) {
@@ -99,9 +134,28 @@ export class RenderManager {
             }
         }
         this.componentLayer?.axisLayer.updateMinMaxValues({
-            min: viewPort.startSeconds,
-            max: viewPort.startSeconds + viewPort.lengthSeconds,
+            min: this.viewPort!.startSeconds,
+            max: this.viewPort!.startSeconds + this.viewPort!.lengthSeconds,
         })
+    }
+
+    async changeViewPort(command: ChangeViewPortCommand): Promise<void> {
+        this.viewPort = command.viewPort
+    }
+
+    async resize(command: ResizeCommand) {
+        await this.setSizes({
+            width: command.width,
+            height: command.height,
+        })
+    }
+
+    async changeChannelVisibility(command: ChangeChannelVisibilityCommand) {
+        if (!command.visibility) {
+            this.removeChannel(command.channelLabel)
+        } else {
+            this.addChannel(command.channelLabel)
+        }
     }
 
     destroy(): void {
