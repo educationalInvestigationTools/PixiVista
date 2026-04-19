@@ -3,8 +3,9 @@ import type { ViewPort } from "../../application/types/viewPort";
 import { Envelope } from "../../utils/envelope";
 import { largestTriangleThreeBuckets } from "../../utils/lttb";
 import type { OneDimNormalizedSignal, NormalizedSignal } from "../types";
+import type { DataManager } from "./dataManager";
 
-export class DataManagerNaive {
+export class DataManagerNaive implements DataManager {
     private readonly signalSources: Map<string, SignalSource> = new Map()
 
     constructor(signalSourceManager: SignalSourceManager) {

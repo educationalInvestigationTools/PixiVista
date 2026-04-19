@@ -1,10 +1,11 @@
 import type { SignalSourceManager } from "../../application/types/signalSource";
 import type { ViewPort } from "../../application/types/viewPort";
 import type { OneDimNormalizedSignal } from "../types";
+import type { DataManager } from "./dataManager";
 import type { FetchDataRequest } from "./fetchDataRequest";
 import type { ReceivedRequest } from "./receivedRequest";
 
-export class DataManagerWorker {
+export class DataManagerWorker implements DataManager {
     private worker: Worker;
     private pendingRequests: Map<string, (value: OneDimNormalizedSignal[]) => void> = new Map();
 

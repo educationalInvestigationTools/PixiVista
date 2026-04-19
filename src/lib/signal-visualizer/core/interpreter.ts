@@ -5,15 +5,15 @@ import {
     RenderManager,
     type ReactiveRenderModel,
 } from '@/lib/signal-visualizer/core/renderManager.ts'
-import { DataManagerWorker } from './dataManager/dataManagerWorker'
+import type { DataManager } from './dataManager/dataManager'
 
 export class Interpreter {
     private renderManager: RenderManager
-    private dataManager: DataManagerWorker
+    private dataManager: DataManager
     private lastRenderedData: ReactiveRenderModel | null = null
     private readonly debouncedRefreshRate = 1000 / 30
 
-    constructor(renderManager: RenderManager, dataManager: DataManagerWorker) {
+    constructor(renderManager: RenderManager, dataManager: DataManager) {
         this.renderManager = renderManager
         this.dataManager = dataManager
     }
