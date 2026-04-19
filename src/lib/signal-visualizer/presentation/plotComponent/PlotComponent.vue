@@ -95,16 +95,16 @@ async function toggleObjectVisibility(objectVisibility: ObjectVisibility) {
 }
 
 function updateSettingChoice(settingUpdate: AnySettingChoiceUpdate) {
-    if (settingUpdate.id === showMetricsSettingId && typeof settingUpdate.value === 'boolean') {
-        showMetricsPanel.value = settingUpdate.value
+    if (settingUpdate.id === showMetricsSettingId) {
+        showMetricsPanel.value = settingUpdate.value as boolean
     }
 
-    if (settingUpdate.id === showAnnotationsSettingId && typeof settingUpdate.value === 'boolean') {
-        showAnnotationsPanel.value = settingUpdate.value
+    if (settingUpdate.id === showAnnotationsSettingId) {
+        showAnnotationsPanel.value = settingUpdate.value as boolean
     }
 
-    if (settingUpdate.id === heightPerChannelSettingId && typeof settingUpdate.value === 'number') {
-        heightPerChannel.value = settingUpdate.value
+    if (settingUpdate.id === heightPerChannelSettingId) {
+        heightPerChannel.value = settingUpdate.value as number
     }
 }
 
@@ -136,7 +136,7 @@ onMounted(async () => {
                 group: groupLabel,
                 visibility: true,
                 shape: 'dashed-lines',
-                color: 'blue',
+                color: interval.drawingColor,
             }
         }
     }

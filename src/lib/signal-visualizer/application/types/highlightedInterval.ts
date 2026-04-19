@@ -1,4 +1,4 @@
-type DrawingStyle = 'borders' | 'background-rectangle' | 'color-signal'
+export type DrawingStyle = 'borders' | 'background-rectangle' | 'color-signal'
 
 export type HighlightedInterval = {
     startSeconds: number
