@@ -40,7 +40,7 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
         this.viewPort = viewPort
     }
 
-    constructor(componentLayout: ComponentLayout, viewPort: ViewPort, divisions: number) {
+    constructor(componentLayout: ComponentLayout, viewPort: ViewPort, divisions: number, labels : string[]) {
         super(componentLayout)
         this.viewPort = viewPort
         this.axisLayer = new AxisLayer(
@@ -61,6 +61,9 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
                 componentLayout.buildChannelsPos(),
             ),
         )
+        for (const label of labels) {
+            this.channelsLayer.addChannel(label)
+        }
         this.container.addChild(this.channelsLayer.container)
     }
 

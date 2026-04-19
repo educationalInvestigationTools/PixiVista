@@ -36,10 +36,8 @@ export class RenderManager {
             }),
             viewPort,
             gridData.verticalDivisions,
+            labels
         )
-        for (const label of labels) {
-            this.componentLayer.channelsLayer.addChannel(label)
-        }
         this.pixiRenderer.app.stage.addChild(this.componentLayer.container)
         this.pixiRenderer.app.ticker.add(() => {
             this.pixiRenderer.app.renderer.resolution = window.devicePixelRatio
@@ -63,7 +61,7 @@ export class RenderManager {
         })
     }
 
-    get CurrentRenderModel(): RenderDependencies {
+    get CurrentRenderDependencies(): RenderDependencies {
         const sizeData = this.pixiRenderer.sizeData()
         const devicePixelRatio = window.devicePixelRatio
         const visibleChannels = this.componentLayer?.channelsLayer.activeChannels!

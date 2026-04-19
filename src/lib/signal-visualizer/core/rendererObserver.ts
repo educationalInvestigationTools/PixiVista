@@ -18,7 +18,7 @@ export class RendererObserver {
     async init() {
         setInterval(async () => {
             let flag = true
-            const nextRenderData = this.renderManager.CurrentRenderModel
+            const nextRenderData = this.renderManager.CurrentRenderDependencies
             if (this.lastRenderedData !== null) {
                 if (RenderDependencies.equal(this.lastRenderedData, nextRenderData)) {
                     flag = false

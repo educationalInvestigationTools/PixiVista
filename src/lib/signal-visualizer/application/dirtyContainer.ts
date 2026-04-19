@@ -22,7 +22,7 @@ import { EventMediator } from '../utils/eventMediator'
 import { DataManagerWorker } from '../core/dataManager/dataManagerWorker'
 
 export class DirtyContainer {
-    private interpreter?: RendererObserver
+    private observer?: RendererObserver
     private readonly canvas: HTMLCanvasElement
     readonly eventMediator: EventMediator
 
@@ -45,8 +45,8 @@ export class DirtyContainer {
             viewPort,
         )
         const dataManagerWorker = new DataManagerWorker(workerCallback, signalsSourceGroup)
-        this.interpreter = new RendererObserver(renderer, dataManagerWorker)
-        await this.interpreter.init()
+        this.observer = new RendererObserver(renderer, dataManagerWorker)
+        await this.observer.init()
 
         this.eventMediator.addHandler<ChangeChannelVisibilityCommand>(
             ChangeChannelVisibilityCommandEventLabel,
@@ -68,6 +68,6 @@ export class DirtyContainer {
     }
 
     async destroy() {
-        await this.interpreter?.destroy()
+        await this.observer?.destroy()
     }
 }
