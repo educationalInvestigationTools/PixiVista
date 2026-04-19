@@ -15,6 +15,7 @@ export class RenderManager {
     private pixiRenderer: PixiRenderer
     private componentLayer?: ComponentLayer
     private eventMediator: EventMediator
+    private viewPort?: ViewPort
 
     constructor(canvas: HTMLCanvasElement, eventMediator: EventMediator) {
         this.pixiRenderer = new PixiRenderer(canvas)
@@ -23,10 +24,16 @@ export class RenderManager {
 
     async init(labels: string[], viewPort: ViewPort) {
         await this.pixiRenderer.init()
+        this.viewPort = viewPort
         const sizeData = this.pixiRenderer.sizeData()
         const gridData = {
             verticalDivisions: 10,
             horizontalDivisions: 5,
+        }
+
+        const minMaxValues = {
+            min: this.viewPort!.startSeconds,
+            max: this.viewPort!.startSeconds + this.viewPort!.lengthSeconds,
         }
 
         this.componentLayer = new ComponentLayer(
@@ -34,9 +41,9 @@ export class RenderManager {
                 x: 0,
                 y: 0,
             }),
-            viewPort,
+            minMaxValues,
             gridData.verticalDivisions,
-            labels
+            labels,
         )
         this.pixiRenderer.app.stage.addChild(this.componentLayer.container)
         this.pixiRenderer.app.ticker.add(() => {
@@ -67,7 +74,7 @@ export class RenderManager {
         const visibleChannels = this.componentLayer?.channelsLayer.activeChannels!
         const expectedWidth = Math.floor(sizeData.width * devicePixelRatio)
         return {
-            viewPort: this.componentLayer!.viewPort,
+            viewPort: this.viewPort!,
             visibleChannels: visibleChannels,
             expectedWidth,
         }
@@ -81,12 +88,16 @@ export class RenderManager {
         this.componentLayer?.channelsLayer.removeChannel(label)
     }
 
-    async render(signals: OneDimNormalizedSignal[]) {
-        this.componentLayer!.updateSignalsData(signals)
+    async updateSignalData(signals: OneDimNormalizedSignal[]) {
+        const minMaxValues = {
+            min: this.viewPort!.startSeconds,
+            max: this.viewPort!.startSeconds + this.viewPort!.lengthSeconds,
+        }
+        this.componentLayer!.updateSignalsData(signals, minMaxValues)
     }
 
     async changeViewPort(command: ChangeViewPortCommand): Promise<void> {
-        this.componentLayer!.updateViewPort(command.viewPort)
+        this.viewPort = command.viewPort
     }
 
     async resize(command: ResizeCommand) {

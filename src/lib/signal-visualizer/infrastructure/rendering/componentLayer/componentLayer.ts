@@ -8,51 +8,38 @@ import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layout
 import { AxisLayerLayout } from '@/lib/signal-visualizer/infrastructure/rendering/axisLayer/layouts.ts'
 import { ChannelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/channelsLayer.ts'
 import type {
+    MinMaxValues,
     OneDimNormalizedSignal,
     PositionData,
     SizeData,
 } from '@/lib/signal-visualizer/core/types.ts'
-import type { ViewPort } from '@/lib/signal-visualizer/application/types/viewPort'
 
 export class ComponentLayer extends RenderLayer<ComponentLayout> {
     readonly axisLayer: AxisLayer
     readonly channelsLayer: ChannelsLayer
-    viewPort: ViewPort
-
     get Children(): RenderLayer<LayoutDesign>[] {
         return [this.axisLayer, this.channelsLayer]
     }
 
-    updateSignalsData(signals: OneDimNormalizedSignal[]) {
+    updateSignalsData(signals: OneDimNormalizedSignal[], minMaxValues : MinMaxValues) {
         for (const signal of signals) {
             const channelLayer = this.channelsLayer.getByLabel(signal.label)
             if (channelLayer !== undefined) {
                 channelLayer.updateData(signal)
             }
         }
-        this.axisLayer.updateMinMaxValues({
-            min: this.viewPort!.startSeconds,
-            max: this.viewPort!.startSeconds + this.viewPort!.lengthSeconds,
-        })
+        this.axisLayer.updateMinMaxValues(minMaxValues)
     }
 
-    updateViewPort(viewPort: ViewPort) {
-        this.viewPort = viewPort
-    }
-
-    constructor(componentLayout: ComponentLayout, viewPort: ViewPort, divisions: number, labels : string[]) {
+    constructor(componentLayout: ComponentLayout, minMaxValues : MinMaxValues, divisions: number, labels : string[]) {
         super(componentLayout)
-        this.viewPort = viewPort
         this.axisLayer = new AxisLayer(
             new AxisLayerLayout(
                 this.layoutDesign.buildXAxisSize(),
                 this.layoutDesign.buildXAxisPos(),
                 divisions,
             ),
-            {
-                min: viewPort.startSeconds,
-                max: viewPort.startSeconds + viewPort.lengthSeconds,
-            },
+            minMaxValues,
         )
         this.container.addChild(this.axisLayer.container)
         this.channelsLayer = new ChannelsLayer(

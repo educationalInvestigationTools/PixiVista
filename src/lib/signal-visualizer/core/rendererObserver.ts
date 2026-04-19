@@ -45,6 +45,6 @@ export class RendererObserver {
             viewPort,
             expectedWidth,
         )
-        await this.renderManager.render(updatedData)
+        await this.renderManager.updateSignalData(updatedData)
     }
 }
