@@ -1,4 +1,4 @@
-import { areEqualViewPort, type ViewPort } from "../application/types/viewPort"
+import { ViewPort } from "../application/types/viewPort"
 import { sameSet } from "../utils/utils"
 
 export class RenderDependencies {
@@ -15,7 +15,7 @@ export class RenderDependencies {
     static equal(a: RenderDependencies, b: RenderDependencies) {
         return (
             sameSet<string>(a.visibleChannels, b.visibleChannels) &&
-            areEqualViewPort(a.viewPort, b.viewPort) &&
+            ViewPort.equal(a.viewPort, b.viewPort) &&
             a.expectedWidth === b.expectedWidth
         )
     }
