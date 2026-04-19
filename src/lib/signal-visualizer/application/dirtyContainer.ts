@@ -21,7 +21,7 @@ import type { ViewPort } from './types/viewPort'
 import { EventMediator } from '../utils/eventMediator'
 import { DataManagerWorker } from '../core/dataManager/dataManagerWorker'
 
-export class DiContainer {
+export class DirtyContainer {
     private interpreter?: RendererObserver
     private readonly canvas: HTMLCanvasElement
     readonly eventMediator: EventMediator

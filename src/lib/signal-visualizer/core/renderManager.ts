@@ -15,7 +15,6 @@ export class RenderManager {
     private pixiRenderer: PixiRenderer
     private componentLayer?: ComponentLayer
     private eventMediator: EventMediator
-    private viewPort?: ViewPort
 
     constructor(canvas: HTMLCanvasElement, eventMediator: EventMediator) {
         this.pixiRenderer = new PixiRenderer(canvas)
@@ -35,10 +34,7 @@ export class RenderManager {
                 x: 0,
                 y: 0,
             }),
-            {
-                min: viewPort.startSeconds,
-                max: viewPort.startSeconds + viewPort.lengthSeconds,
-            },
+            viewPort,
             gridData.verticalDivisions,
         )
         for (const label of labels) {
@@ -65,7 +61,6 @@ export class RenderManager {
             }
             this.eventMediator.publish(new GetPerformanceMetrics(performanceMetrics))
         })
-        this.viewPort = viewPort
     }
 
     get CurrentRenderModel(): RenderDependencies {
@@ -74,7 +69,7 @@ export class RenderManager {
         const visibleChannels = this.componentLayer?.channelsLayer.activeChannels!
         const expectedWidth = Math.floor(sizeData.width * devicePixelRatio)
         return {
-            viewPort: this.viewPort!,
+            viewPort: this.componentLayer!.viewPort,
             visibleChannels: visibleChannels,
             expectedWidth,
         }
@@ -89,20 +84,11 @@ export class RenderManager {
     }
 
     async render(signals: OneDimNormalizedSignal[]) {
-        for (const signal of signals) {
-            const channelLayer = this.componentLayer?.channelsLayer.getByLabel(signal.label)
-            if (channelLayer !== undefined) {
-                channelLayer.updateData(signal)
-            }
-        }
-        this.componentLayer?.axisLayer.updateMinMaxValues({
-            min: this.viewPort!.startSeconds,
-            max: this.viewPort!.startSeconds + this.viewPort!.lengthSeconds,
-        })
+        this.componentLayer!.updateSignalsData(signals)
     }
 
     async changeViewPort(command: ChangeViewPortCommand): Promise<void> {
-        this.viewPort = command.viewPort
+        this.componentLayer!.updateViewPort(command.viewPort)
     }
 
     async resize(command: ResizeCommand) {

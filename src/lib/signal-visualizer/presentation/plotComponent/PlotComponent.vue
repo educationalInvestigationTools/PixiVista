@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { computed, onBeforeUnmount, onMounted, ref, type Ref } from "vue";
-import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts";
+import { DirtyContainer } from "@/lib/signal-visualizer/application/dirtyContainer";
 import { ResizeCommand } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
 import SliderComponent, { type CurrentViewPortSamples } from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
 import SettingsComponent from "../settingsComponent/SettingsComponent.vue";
@@ -46,7 +46,7 @@ const visibleChannels = computed(() => {
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
 const resizeObserverRef = ref<ResizeObserver | null>(null)
-let diContainer: DiContainer | null = null;
+let diContainer: DirtyContainer | null = null;
 
 const signalsLargestDurationSeconds = Math.max(...props.signalSourcesManager.allSignalsBuildData.map(signal => signal.totalSeconds))
 const viewPortRef: Ref<ViewPort> = ref({
@@ -142,7 +142,7 @@ onMounted(async () => {
     }
 
     const viewPort = viewPortRef.value
-    diContainer = new DiContainer(htmlContainerRef.value);
+    diContainer = new DirtyContainer(htmlContainerRef.value);
     await diContainer.init(viewPort, props.signalSourcesManager, props.workerCallback)
     diContainer.eventMediator.addHandler<GetPerformanceMetrics>(GetPerformanceMetricsEventLabel, (metrics: GetPerformanceMetrics) => { performanceMetrics.value = metrics.performanceMetrics; return Promise.resolve() })
 
