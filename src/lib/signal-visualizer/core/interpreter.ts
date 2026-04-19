@@ -7,6 +7,9 @@ import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
 import { DataManagerWorker } from './dataManager/dataManagerWorker'
 import { areEqualViewPort, type ViewPort } from '../application/types/viewPort'
 import { sameSet } from '../utils/utils'
+import type { ChangeChannelVisibilityCommand } from '../application/commands/changeChannelVisibilityCommand'
+import type { ChangeViewPortCommand } from '../application/commands/changeViewPortCommand'
+import type { ResizeCommand } from '../application/commands/resizeCommand'
 
 type RenderModel = {
     viewPort: ViewPort
@@ -68,22 +71,22 @@ export class Interpreter {
         }
     }
 
-    async changeViewPort(viewPort: ViewPort): Promise<void> {
-        this.viewPort = viewPort
+    async changeViewPort(command: ChangeViewPortCommand): Promise<void> {
+        this.viewPort = command.viewPort
     }
 
-    async resize(width: number, height: number) {
+    async resize(command : ResizeCommand) {
         await this.renderer.setSizes({
-            width: width,
-            height: height,
+            width: command.width,
+            height: command.height,
         })
     }
 
-    async changeChannelVisibility(channelLabel: string, visibility: boolean) {
-        if (!visibility) {
-            this.renderer.removeChannel(channelLabel)
+    async changeChannelVisibility( command : ChangeChannelVisibilityCommand ) {
+        if (!command.visibility) {
+            this.renderer.removeChannel(command.channelLabel)
         } else {
-            this.renderer.addChannel(channelLabel)
+            this.renderer.addChannel(command.channelLabel)
         }
     }
 }

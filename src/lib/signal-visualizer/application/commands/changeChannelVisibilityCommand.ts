@@ -1,13 +1,13 @@
-import type { Interpreter } from '@/lib/signal-visualizer/core/interpreter.ts'
+import type { EventToMediate } from '../../utils/eventMediator'
 
-export class ChangeChannelVisibilityCommand {
-    interpreter: Interpreter
+export const ChangeChannelVisibilityCommandEventLabel = "ChangeChannelVisibilityCommand"
 
-    async handle(channelLabel: string, visibility: boolean): Promise<void> {
-        await this.interpreter.changeChannelVisibility(channelLabel, visibility)
-    }
-
-    constructor(interpreter: Interpreter) {
-        this.interpreter = interpreter
+export class ChangeChannelVisibilityCommand implements EventToMediate {
+    eventLabel: string = ChangeChannelVisibilityCommandEventLabel
+    channelLabel: string
+    visibility: boolean
+    constructor(channelLabel: string, visibility: boolean) {
+        this.channelLabel = channelLabel
+        this.visibility = visibility
     }
 }

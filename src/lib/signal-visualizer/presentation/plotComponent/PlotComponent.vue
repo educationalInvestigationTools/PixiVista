@@ -2,7 +2,7 @@
 
 import { computed, onBeforeUnmount, onMounted, ref, type Ref } from "vue";
 import { DiContainer } from "@/lib/signal-visualizer/application/diContainer.ts";
-import { ResizeDto } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
+import { ResizeCommand } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
 import SliderComponent, { type CurrentViewPortSamples } from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
 import SettingsComponent from "../settingsComponent/SettingsComponent.vue";
 import AnnotationsComponent, { type ObjectAnnotationData, type ObjectVisibility } from "@/lib/signal-visualizer/presentation/annotationsComponent/AnnotationsComponent.vue";
@@ -11,11 +11,14 @@ import type {
     PerformanceMetrics
 } from "@/lib/signal-visualizer/application/types/performanceMetrics.ts";
 import type { AnySettingChoice, AnySettingChoiceUpdate } from "@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice";
-import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator.ts";
 import { fmtTime } from "../../utils/utils";
 import type { IntervalGroup } from "../../application/types/highlightedInterval";
 import type { ViewPort } from "../../application/types/viewPort";
 import type { SignalSourceManager } from "../../application/types/signalSource";
+import { ChangeChannelVisibilityCommand } from "../../application/commands/changeChannelVisibilityCommand";
+import { GetPerformanceMetrics, GetPerformanceMetricsEventLabel } from "../../application/querys/getPerformanceMetrics";
+import { DestroyCommand } from "../../application/commands/destroyCommand";
+import { ChangeViewPortCommand } from "../../application/commands/changeViewPortCommand";
 
 
 const props = defineProps<{
@@ -87,7 +90,7 @@ async function toggleObjectVisibility(objectVisibility: ObjectVisibility) {
     const visibility = objectVisibility.visibility
     objectsAnnotationsData.value[groupLabel]![label]!.visibility = visibility
     if (groupLabel === channelsGroup) {
-        await diContainer?.changeChannelVisibilityHandler.handle(label, visibility)
+        await diContainer?.eventMediator.publish(new ChangeChannelVisibilityCommand(label, visibility))
     }
 }
 
@@ -139,8 +142,8 @@ onMounted(async () => {
     }
 
     const viewPort = viewPortRef.value
-    const eventMediator = new EventMediator((metrics: PerformanceMetrics) => performanceMetrics.value = metrics)
-    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSourcesManager, eventMediator, props.workerCallback);
+    diContainer = new DiContainer(htmlContainerRef.value, viewPort, props.signalSourcesManager, props.workerCallback);
+    diContainer.eventMediator.addHandler<GetPerformanceMetrics>(GetPerformanceMetricsEventLabel, (metrics: GetPerformanceMetrics) => { performanceMetrics.value = metrics.performanceMetrics; return Promise.resolve() })
     await diContainer.init()
 
 
@@ -148,7 +151,7 @@ onMounted(async () => {
         if (htmlContainerRef.value) {
             const width = htmlContainerRef.value.clientWidth;
             const height = htmlContainerRef.value.clientHeight;
-            await diContainer?.resizeHandler.handle(new ResizeDto(width, height));
+            await diContainer?.eventMediator.publish(new ResizeCommand(width, height));
         }
     })
     resizeObserverRef.value.observe(htmlContainerRef.value);
@@ -157,7 +160,7 @@ onMounted(async () => {
 onBeforeUnmount(() => resizeObserverRef.value!.disconnect())
 
 onBeforeUnmount(async () => {
-    diContainer?.destroyHandler.handle()
+    await diContainer?.eventMediator.publish(new DestroyCommand())
 })
 
 async function updateViewPort(viewPort: CurrentViewPortSamples) {
@@ -165,7 +168,7 @@ async function updateViewPort(viewPort: CurrentViewPortSamples) {
         startSeconds: viewPort.currentSamplePosition,
         lengthSeconds: Math.min(60, viewPort.lengthSamples)
     }
-    await diContainer?.changeViewPortHandler.handle(viewPortRef.value)
+    await diContainer?.eventMediator.publish(new ChangeViewPortCommand(viewPortRef.value))
 }
 
 </script>

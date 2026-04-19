@@ -1,13 +1,8 @@
-import type { Interpreter } from '@/lib/signal-visualizer/core/interpreter.ts'
+import type { EventToMediate } from '../../utils/eventMediator'
 
-export class DestroyCommand {
-    interpreter: Interpreter
+export const DestroyCommandEventLabel = "DestroyCommandEventLabel"
 
-    async handle(): Promise<void> {
-        await this.interpreter.destroy()
-    }
-
-    constructor(interpreter: Interpreter) {
-        this.interpreter = interpreter
-    }
+export class DestroyCommand implements EventToMediate {
+    eventLabel: string = DestroyCommandEventLabel
+    constructor() { }
 }

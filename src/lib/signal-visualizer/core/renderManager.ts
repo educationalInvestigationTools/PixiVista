@@ -1,28 +1,23 @@
-import {
-    ComponentLayer
-} from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
-import type {OneDimNormalizedSignal, SizeData} from '@/lib/signal-visualizer/core/types.ts'
-import {
-    ComponentLayout
-} from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
-import {PixiRenderer} from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
-import type {
-    PerformanceMetrics
-} from '@/lib/signal-visualizer/application/types/performanceMetrics.ts'
-import type {EventMediator} from '@/lib/signal-visualizer/utils/eventMediator.ts'
+import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
+import type { OneDimNormalizedSignal, SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
+import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
+import type { PerformanceMetrics } from '@/lib/signal-visualizer/application/types/performanceMetrics.ts'
+import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import type { ViewPort } from '../application/types/viewPort'
+import { GetPerformanceMetrics } from '../application/querys/getPerformanceMetrics'
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer
     private componentLayer?: ComponentLayer
-    private eventMediator: EventMediator<PerformanceMetrics>
+    private eventMediator: EventMediator
 
-    constructor(canvas: HTMLCanvasElement, eventMediator: EventMediator<PerformanceMetrics>) {
+    constructor(canvas: HTMLCanvasElement, eventMediator: EventMediator) {
         this.pixiRenderer = new PixiRenderer(canvas)
         this.eventMediator = eventMediator
     }
 
-    async init(labels : string[], viewPort: ViewPort) {
+    async init(labels: string[], viewPort: ViewPort) {
         await this.pixiRenderer.init()
         const sizeData = this.pixiRenderer.sizeData()
         const gridData = {
@@ -63,7 +58,7 @@ export class RenderManager {
                 windowDevicePixelRatio: Math.round(windowDevicePixelRatio * 100) / 100,
                 refreshRate: this.pixiRenderer.app.ticker.FPS,
             }
-            this.eventMediator.callback(performanceMetrics)
+            this.eventMediator.publish(new GetPerformanceMetrics(performanceMetrics))
         })
     }
 
@@ -72,7 +67,7 @@ export class RenderManager {
         this.componentLayer?.updateSize(sizeData)
     }
 
-    addChannel(label : string) {
+    addChannel(label: string) {
         this.componentLayer?.channelsLayer.addChannel(label)
     }
 
