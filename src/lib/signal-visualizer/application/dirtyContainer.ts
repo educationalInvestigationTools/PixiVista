@@ -1,4 +1,4 @@
-import { UpdateChannelsStateObserver } from '@/lib/signal-visualizer/core/rendererObserver'
+import { UpdateChannelsStateObserver } from '@/lib/signal-visualizer/core/updateChannelsStateObserver'
 import {
     ResizeCommand,
     ResizeCommandEventLabel,
@@ -22,7 +22,7 @@ import { EventMediator } from '../utils/eventMediator'
 import { DataManagerWorker } from '../core/dataManager/dataManagerWorker'
 
 export class DirtyContainer {
-    private observer?: UpdateChannelsStateObserver
+    private updateChannelsStateObserver?: UpdateChannelsStateObserver
     private readonly canvas: HTMLCanvasElement
     readonly eventMediator: EventMediator
 
@@ -45,8 +45,8 @@ export class DirtyContainer {
             viewPort,
         )
         const dataManagerWorker = new DataManagerWorker(workerCallback, signalsSourceGroup)
-        this.observer = new UpdateChannelsStateObserver(renderer, dataManagerWorker)
-        await this.observer.init()
+        this.updateChannelsStateObserver = new UpdateChannelsStateObserver(renderer, dataManagerWorker)
+        await this.updateChannelsStateObserver.init()
 
         this.eventMediator.addHandler<ChangeChannelVisibilityCommand>(
             ChangeChannelVisibilityCommandEventLabel,
@@ -68,6 +68,6 @@ export class DirtyContainer {
     }
 
     async destroy() {
-        await this.observer?.destroy()
+        await this.updateChannelsStateObserver?.destroy()
     }
 }
