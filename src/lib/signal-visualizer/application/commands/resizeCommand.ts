@@ -1,14 +1,16 @@
+import type { SizeData } from '../../core/types'
 import type { EventToMediate } from '../../utils/eventMediator'
 
-export const ResizeCommandEventLabel = "ResizeCommandEventLabel"
+export const ResizeCommandEventLabel = 'ResizeCommandEventLabel'
 
 export class ResizeCommand implements EventToMediate {
     eventLabel: string = ResizeCommandEventLabel
-    width: number
-    height: number
+    sizeData: SizeData
 
     constructor(width: number, height: number) {
-        this.width = width
-        this.height = height
+        this.sizeData = {
+            width,
+            height,
+        }
     }
 }

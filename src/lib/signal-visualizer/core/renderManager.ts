@@ -1,40 +1,15 @@
 import { ComponentLayer } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/componentLayer.ts'
-import type { OneDimNormalizedSignal, SizeData } from '@/lib/signal-visualizer/core/types.ts'
+import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/core/types.ts'
 import { ComponentLayout } from '@/lib/signal-visualizer/infrastructure/rendering/componentLayer/layout.ts'
 import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
 import type { PerformanceMetrics } from '@/lib/signal-visualizer/application/types/performanceMetrics.ts'
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
-import { areEqualViewPort, type ViewPort } from '../application/types/viewPort'
 import { GetPerformanceMetrics } from '../application/querys/getPerformanceMetrics'
-import { sameSet } from '../utils/utils'
 import type { ChangeViewPortCommand } from '../application/commands/changeViewPortCommand'
 import type { ResizeCommand } from '../application/commands/resizeCommand'
 import type { ChangeChannelVisibilityCommand } from '../application/commands/changeChannelVisibilityCommand'
-
-export type ReactiveRenderModel = {
-    viewPort: ViewPort
-    visibleChannels: string[]
-    expectedWidth: number
-}
-
-export function areEqual(a: ReactiveRenderModel, b: ReactiveRenderModel) {
-    return (
-        sameSet<string>(a.visibleChannels, b.visibleChannels) &&
-        areEqualViewPort(a.viewPort, b.viewPort) &&
-        a.expectedWidth === b.expectedWidth
-    )
-}
-
-export function clone(a: ReactiveRenderModel): ReactiveRenderModel {
-    return {
-        viewPort: {
-            startSeconds: a.viewPort.startSeconds,
-            lengthSeconds: a.viewPort.lengthSeconds,
-        },
-        visibleChannels: a.visibleChannels,
-        expectedWidth: a.expectedWidth,
-    }
-}
+import type { ViewPort } from '../application/types/viewPort'
+import type { RenderDependencies } from './renderDependencies'
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer
@@ -93,17 +68,16 @@ export class RenderManager {
         this.viewPort = viewPort
     }
 
-    get CurrentRenderModel(): ReactiveRenderModel {
+    get CurrentRenderModel(): RenderDependencies {
+        const sizeData = this.pixiRenderer.sizeData()
+        const devicePixelRatio = window.devicePixelRatio
+        const visibleChannels = this.componentLayer?.channelsLayer.activeChannels!
+        const expectedWidth = Math.floor(sizeData.width * devicePixelRatio)
         return {
             viewPort: this.viewPort!,
-            visibleChannels: this.visibleChannels,
-            expectedWidth: Math.floor(this.sizeData.width * this.devicePixelRatio),
+            visibleChannels: visibleChannels,
+            expectedWidth,
         }
-    }
-
-    async setSizes(sizeData: SizeData) {
-        await this.pixiRenderer.resize(sizeData)
-        this.componentLayer?.updateSize(sizeData)
     }
 
     addChannel(label: string) {
@@ -112,18 +86,6 @@ export class RenderManager {
 
     removeChannel(label: string) {
         this.componentLayer?.channelsLayer.removeChannel(label)
-    }
-
-    private get visibleChannels(): string[] {
-        return this.componentLayer?.channelsLayer.activeChannels!
-    }
-
-    private get sizeData(): SizeData {
-        return this.pixiRenderer.sizeData()
-    }
-
-    private get devicePixelRatio(): number {
-        return window.devicePixelRatio
     }
 
     async render(signals: OneDimNormalizedSignal[]) {
@@ -144,10 +106,8 @@ export class RenderManager {
     }
 
     async resize(command: ResizeCommand) {
-        await this.setSizes({
-            width: command.width,
-            height: command.height,
-        })
+        await this.pixiRenderer.resize(command.sizeData)
+        this.componentLayer?.updateSize(command.sizeData)
     }
 
     async changeChannelVisibility(command: ChangeChannelVisibilityCommand) {

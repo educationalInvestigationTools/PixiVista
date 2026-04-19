@@ -1,16 +1,14 @@
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/core/types.ts'
 import {
-    areEqual,
-    clone,
     RenderManager,
-    type ReactiveRenderModel,
 } from '@/lib/signal-visualizer/core/renderManager.ts'
 import type { DataManager } from './dataManager/dataManager'
+import {RenderDependencies } from './renderDependencies'
 
-export class Interpreter {
+export class RendererObserver {
     private renderManager: RenderManager
     private dataManager: DataManager
-    private lastRenderedData: ReactiveRenderModel | null = null
+    private lastRenderedData: RenderDependencies | null = null
     private readonly debouncedRefreshRate = 1000 / 30
 
     constructor(renderManager: RenderManager, dataManager: DataManager) {
@@ -22,12 +20,12 @@ export class Interpreter {
             let flag = true
             const nextRenderData = this.renderManager.CurrentRenderModel
             if (this.lastRenderedData !== null) {
-                if (areEqual(this.lastRenderedData, nextRenderData)) {
+                if (RenderDependencies.equal(this.lastRenderedData, nextRenderData)) {
                     flag = false
                 }
             }
             if (flag) {
-                const cloned = clone(nextRenderData)
+                const cloned = RenderDependencies.clone(nextRenderData)
                 await this.updateChannelsState(cloned)
                 this.lastRenderedData = cloned
             }
@@ -38,7 +36,7 @@ export class Interpreter {
         this.renderManager.destroy()
     }
 
-    async updateChannelsState(dataToRender: ReactiveRenderModel): Promise<void> {
+    async updateChannelsState(dataToRender: RenderDependencies): Promise<void> {
         const viewPort = dataToRender.viewPort
         const activeChannels = dataToRender.visibleChannels
         const expectedWidth = dataToRender.expectedWidth
