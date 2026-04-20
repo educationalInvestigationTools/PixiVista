@@ -1,5 +1,5 @@
 import { RenderLayerDomainApi } from '@/lib/signal-visualizer/core/rendering/layerApi.ts'
-import { ComponentLayer } from './componentLayer.ts'
+import { ComponentLayer } from '../infrastructure/rendering/componentLayer/componentLayer.ts'
 import {
     ChangeChannelVisibilityCommandEventLabel,
     type ChangeChannelVisibilityCommand,
@@ -14,7 +14,7 @@ import {
     ResizeCommandEventLabel,
     type ResizeCommand,
 } from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
-import { ComponentLayout } from './layout.ts'
+import { ComponentLayout } from '../infrastructure/rendering/componentLayer/layout.ts'
 import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'

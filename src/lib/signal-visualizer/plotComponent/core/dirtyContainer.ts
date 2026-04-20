@@ -1,10 +1,10 @@
 import { UpdateChannelsStateObserver } from '@/lib/signal-visualizer/plotComponent/core/updateChannelsStateObserver.ts'
 import { SignalSourceManager } from '@/lib/signal-visualizer/plotComponent/application/interfaces/signalSource.ts'
 import { RenderManager } from '../../core/rendering/renderManager.ts'
-import type { ViewPort } from './types/viewPort.ts'
+import type { ViewPort } from '../application/types/viewPort.ts'
 import { EventMediator } from '../../utils/eventMediator.ts'
 import { DataManagerWorker } from '@/lib/signal-visualizer/plotComponent/core/dataManager/dataManagerWorker.ts'
-import { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/componentLayerApi.ts'
+import { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/core/componentLayerApi.ts'
 
 export class DirtyContainer {
     private updateChannelsStateObserver?: UpdateChannelsStateObserver
