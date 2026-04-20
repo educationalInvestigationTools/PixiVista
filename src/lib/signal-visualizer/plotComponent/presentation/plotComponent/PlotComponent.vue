@@ -13,7 +13,7 @@ import AnnotationsComponent, {
     type ObjectAnnotationData,
     type ObjectVisibility
 } from "@/lib/signal-visualizer/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue";
-import MetricsComponent from "../metricsComponent/MetricsComponent.vue";
+import MetricsComponent from "../../../metricsComponent/presentation/MetricsComponent.vue";
 import type {
     PerformanceMetrics
 } from "@/lib/signal-visualizer/core/types/performanceMetrics.ts";
