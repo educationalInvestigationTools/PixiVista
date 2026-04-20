@@ -1,25 +1,10 @@
 import { UpdateChannelsStateObserver } from '@/lib/signal-visualizer/core/updateChannelsStateObserver'
-import {
-    ResizeCommand,
-    ResizeCommandEventLabel,
-} from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
-import {
-    DestroyCommand,
-    DestroyCommandEventLabel,
-} from '@/lib/signal-visualizer/application/commands/destroyCommand.ts'
 import { SignalSourceManager } from '@/lib/signal-visualizer/application/types/signalSource.ts'
-import {
-    ChangeViewPortCommand,
-    ChangeViewPortCommandEventLabel,
-} from '@/lib/signal-visualizer/application/commands/changeViewPortCommand.ts'
-import {
-    ChangeChannelVisibilityCommand,
-    ChangeChannelVisibilityCommandEventLabel,
-} from '@/lib/signal-visualizer/application/commands/changeChannelVisibilityCommand.ts'
-import { RenderManager } from '../core/renderManager'
+import { RenderManager } from '../core/rendering/renderManager'
 import type { ViewPort } from './types/viewPort'
 import { EventMediator } from '../utils/eventMediator'
 import { DataManagerWorker } from '../core/dataManager/dataManagerWorker'
+import { ComponentLayerLogicApi } from '../infrastructure/rendering/componentLayer/componentLayerApi'
 
 export class DirtyContainer {
     private updateChannelsStateObserver?: UpdateChannelsStateObserver
@@ -35,34 +20,24 @@ export class DirtyContainer {
         workerCallback: () => Worker,
     ) {
         const renderer = new RenderManager(htmlElement, this.eventMediator)
-        await renderer.init(
-            signalsSourceGroup.allSignalsBuildData.map((x) => x.label),
+        const sizeData = renderer.sizeData
+        const labels = signalsSourceGroup.allSignalsBuildData.map((x) => x.label)
+        const componentLayerApi = new ComponentLayerLogicApi(
+            sizeData,
+            labels,
             viewPort,
+            this.eventMediator,
         )
+
+        await renderer.init(componentLayerApi.Component)
         const dataManagerWorker = new DataManagerWorker(workerCallback, signalsSourceGroup)
-        this.updateChannelsStateObserver = new UpdateChannelsStateObserver(renderer, dataManagerWorker)
+        this.updateChannelsStateObserver = new UpdateChannelsStateObserver(
+            renderer,
+            dataManagerWorker,
+            componentLayerApi,
+        )
         await this.updateChannelsStateObserver.init()
-
-        this.eventMediator.addHandler<ChangeChannelVisibilityCommand>(
-            ChangeChannelVisibilityCommandEventLabel,
-            async (command) => renderer.changeChannelVisibility(command),
-        )
-
-        this.eventMediator.addHandler<ChangeViewPortCommand>(
-            ChangeViewPortCommandEventLabel,
-            async (command) => renderer.changeViewPort(command),
-        )
-
-        this.eventMediator.addHandler<DestroyCommand>(DestroyCommandEventLabel, async () =>
-            this.destroy(),
-        )
-
-        this.eventMediator.addHandler<ResizeCommand>(ResizeCommandEventLabel, async (command) =>
-            renderer.resize(command),
-        )
     }
 
-    async destroy() {
-        await this.updateChannelsStateObserver?.destroy()
-    }
+    async destroy() {}
 }

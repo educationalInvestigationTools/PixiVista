@@ -1,31 +1,39 @@
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/core/types.ts'
-import { RenderManager } from '@/lib/signal-visualizer/core/renderManager.ts'
+import { RenderManager } from '@/lib/signal-visualizer/core/rendering/renderManager'
 import type { DataManager } from './dataManager/dataManager'
 import { RenderDependencies } from './renderDependencies'
 import { Observer } from './observer'
-
-
+import type { ComponentLayerLogicApi } from '../infrastructure/rendering/componentLayer/componentLayerApi'
 
 export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {
-    private renderManager: RenderManager
-    private dataManager: DataManager
+    private readonly renderManager: RenderManager
+    private readonly dataManager: DataManager
+    private readonly componentApi: ComponentLayerLogicApi
 
-    constructor(renderManager: RenderManager, dataManager: DataManager) {
+    constructor(
+        renderManager: RenderManager,
+        dataManager: DataManager,
+        componentApi: ComponentLayerLogicApi,
+    ) {
         super(
             RenderDependencies.equal,
             RenderDependencies.clone,
-            () => renderManager.CurrentRenderDependencies,
+            () =>
+                new RenderDependencies(
+                    componentApi.ViewPort,
+                    componentApi.VisibleChannels,
+                    renderManager.expectedWidth,
+                ),
         )
         this.renderManager = renderManager
         this.dataManager = dataManager
+        this.componentApi = componentApi
     }
     async init() {
         await super.init()
     }
 
-    async destroy(): Promise<void> {
-        this.renderManager.destroy()
-    }
+    async destroy(): Promise<void> {}
 
     async update(currentObserved: RenderDependencies): Promise<void> {
         await this.updateChannelsState(currentObserved)
@@ -40,6 +48,6 @@ export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {
             viewPort,
             expectedWidth,
         )
-        await this.renderManager.updateSignalData(updatedData)
+        await this.componentApi.updateSignalData(updatedData)
     }
 }
