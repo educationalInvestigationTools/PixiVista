@@ -17,7 +17,12 @@ export class RenderManager {
     private eventMediator: EventMediator
     private viewPort?: ViewPort
 
-    constructor(canvas: HTMLCanvasElement, eventMediator: EventMediator) {
+    constructor(htmlElement: HTMLElement, eventMediator: EventMediator) {
+        const canvas = document.createElement('canvas')
+        canvas.style.height = '100%'
+        canvas.style.width = '100%'
+        canvas.style.display = 'block'
+        htmlElement.appendChild(canvas)
         this.pixiRenderer = new PixiRenderer(canvas)
         this.eventMediator = eventMediator
     }

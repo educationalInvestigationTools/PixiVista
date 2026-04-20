@@ -23,23 +23,18 @@ import { DataManagerWorker } from '../core/dataManager/dataManagerWorker'
 
 export class DirtyContainer {
     private updateChannelsStateObserver?: UpdateChannelsStateObserver
-    private readonly canvas: HTMLCanvasElement
     readonly eventMediator: EventMediator
 
-    constructor(htmlElement: HTMLElement) {
-        this.canvas = document.createElement('canvas')
-        this.canvas.style.height = '100%'
-        this.canvas.style.width = '100%'
-        this.canvas.style.display = 'block'
-        htmlElement.appendChild(this.canvas)
+    constructor() {
         this.eventMediator = new EventMediator()
     }
     async init(
+        htmlElement: HTMLElement,
         viewPort: ViewPort,
         signalsSourceGroup: SignalSourceManager,
         workerCallback: () => Worker,
     ) {
-        const renderer = new RenderManager(this.canvas, this.eventMediator)
+        const renderer = new RenderManager(htmlElement, this.eventMediator)
         await renderer.init(
             signalsSourceGroup.allSignalsBuildData.map((x) => x.label),
             viewPort,
