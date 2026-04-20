@@ -21,7 +21,6 @@ export class RenderManager {
         const canvas = document.createElement('canvas')
         canvas.style.height = '100%'
         canvas.style.width = '100%'
-        canvas.style.display = 'block'
         htmlElement.appendChild(canvas)
         this.pixiRenderer = new PixiRenderer(canvas)
         this.eventMediator = eventMediator
