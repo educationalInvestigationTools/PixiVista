@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, onBeforeUnmount} from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import MetricsComponent from './MetricsComponent.vue'
 import type {
     PerformanceMetrics
@@ -9,33 +9,51 @@ const metrics = ref<PerformanceMetrics | undefined>({
     renderTime: 5,
     refreshRate: 60,
     windowDevicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
-    sizeData: {width: 800, height: 400},
+    sizeData: { width: 800, height: 400 },
 })
 
-let intervalId: number | undefined
+let timeoutId: number | undefined
+const startTimestamp = Date.now()
+
+function nextDelayMs() {
+    return 50 + Math.round(Math.random() * 350)
+}
+
+function emitSample() {
+    const elapsedSeconds = (Date.now() - startTimestamp) / 1000
+    const smoothWave = Math.sin(elapsedSeconds * 3.2)
+    const burstWave = Math.max(0, Math.sin(elapsedSeconds * 8.8))
+    const randomNoise = Math.random() * 3
+
+    const refreshRate = Math.max(20, Math.min(144, 58 + smoothWave * 24 + randomNoise * 2))
+    const renderTime = Math.max(1.5, 5 + burstWave * 14 + Math.random() * 2.5)
+
+    metrics.value = {
+        renderTime: Number(renderTime.toFixed(2)),
+        refreshRate: Number(refreshRate.toFixed(2)),
+        windowDevicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
+        sizeData: {
+            width: 680 + Math.round(Math.sin(elapsedSeconds) * 30),
+            height: 280,
+        },
+    }
+
+    timeoutId = window.setTimeout(emitSample, nextDelayMs())
+}
 
 onMounted(() => {
-    // simulate metric fluctuations so the component shows changing data
-    intervalId = window.setInterval(() => {
-        metrics.value = {
-            renderTime: +(2 + Math.random() * 16).toFixed(2),
-            refreshRate: Math.round(30 + Math.random() * 90),
-            windowDevicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
-            sizeData: {
-                width: 640 + Math.round(Math.random() * 320),
-                height: 240 + Math.round(Math.random() * 240),
-            },
-        }
-    }, 1200)
+    timeoutId = window.setTimeout(emitSample, nextDelayMs())
 })
 
 onBeforeUnmount(() => {
-    if (intervalId) window.clearInterval(intervalId)
+    if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId)
+    }
 })
 </script>
 
 <template>
-    <MetricsComponent :metrics="metrics"/>
+    <MetricsComponent :metrics="metrics" :rolling-window-ms="1000" />
 </template>
 
 <style scoped></style>
