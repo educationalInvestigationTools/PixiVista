@@ -1,5 +1,5 @@
-import type { SizeData } from '../../core/types'
-import type { EventToMediate } from '../../utils/eventMediator'
+import type { EventToMediate } from '../../utils/eventMediator.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
 export const ResizeCommandEventLabel = 'ResizeCommandEventLabel'
 

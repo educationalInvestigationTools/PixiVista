@@ -1,14 +1,17 @@
 import { PixiRenderer } from '@/lib/signal-visualizer/core/rendering/pixiRenderer.ts'
-import type { PerformanceMetrics } from '@/lib/signal-visualizer/application/types/performanceMetrics.ts'
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import { GetPerformanceMetrics } from '../../application/querys/getPerformanceMetrics'
-import { ResizeCommandEventLabel, type ResizeCommand } from '../../application/commands/resizeCommand'
+import {
+    ResizeCommandEventLabel,
+    type ResizeCommand,
+} from '../../application/commands/resizeCommand'
 import {
     DestroyCommandEventLabel,
     type DestroyCommand,
 } from '../../application/commands/destroyCommand'
 import type { LayoutDesign } from './layoutDesign'
 import type { RenderLayer } from './renderLayer'
+import type { PerformanceMetrics } from '@/lib/signal-visualizer/core/types/performanceMetrics.ts'
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer

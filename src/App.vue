@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import PlotDebug from './lib/signal-visualizer/presentation/plotComponent/PlotDebug.vue';
+import PlotDebug
+    from '@/lib/signal-visualizer/plotComponent/presentation/plotComponent/PlotDebug.vue';
 
 
 </script>

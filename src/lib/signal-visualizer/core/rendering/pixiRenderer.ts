@@ -1,12 +1,13 @@
 import { Application } from 'pixi.js'
-import type { SizeData } from '../types'
+
+import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
 export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
     app: Application
 
-    private _resizeId: number | null = null;
-    private _pendingSize: SizeData | null = null;
+    private _resizeId: number | null = null
+    private _pendingSize: SizeData | null = null
 
     constructor(canvas: HTMLCanvasElement) {
         this._canvas = canvas
@@ -30,24 +31,24 @@ export class PixiRenderer {
     }
 
     async resize(sizeData: SizeData) {
-        this._pendingSize = sizeData;
+        this._pendingSize = sizeData
 
         if (this._resizeId !== null) {
-            cancelAnimationFrame(this._resizeId);
+            cancelAnimationFrame(this._resizeId)
         }
 
         this._resizeId = requestAnimationFrame(() => {
-            const { width, height } = this._pendingSize!;
-            this.app.renderer.resize(width, height);
+            const { width, height } = this._pendingSize!
+            this.app.renderer.resize(width, height)
             this.app.render()
-            this._resizeId = null;
-        });
+            this._resizeId = null
+        })
     }
 
     sizeData(): SizeData {
         return {
             width: this._canvas.clientWidth,
-            height: this._canvas.clientHeight
+            height: this._canvas.clientHeight,
         }
     }
 

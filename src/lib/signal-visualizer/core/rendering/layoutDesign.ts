@@ -1,4 +1,5 @@
-import type {PositionData, SizeData} from "@/lib/signal-visualizer/core/types.ts";
+import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
 export class LayoutDesign {
     private _sizeData: SizeData

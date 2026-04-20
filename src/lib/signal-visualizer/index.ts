@@ -1,16 +1,22 @@
-export { buildWorkerRunTime } from './core/dataManager/workerRunTime'
+export { buildWorkerRunTime } from '@/lib/signal-visualizer/plotComponent/core/dataManager/workerRunTime'
 
-export { SignalSourceBuildData, SignalSourceManager } from './application/types/signalSource'
+export {
+    SignalSourceBuildData,
+    SignalSourceManager,
+} from '@/lib/signal-visualizer/plotComponent/application/interfaces/signalSource.ts'
 export type {
     OneDimSignalRaw,
     SerializedOutput,
     SignalSource,
     SignalSourceBuildDataSerializer,
     SignalSourceFactory,
-} from './application/types/signalSource'
+} from '@/lib/signal-visualizer/plotComponent/application/interfaces/signalSource.ts'
 
-export type { ViewPort } from './application/types/viewPort'
+export type { ViewPort } from '@/lib/signal-visualizer/plotComponent/application/types/viewPort'
 
-export type { HighlightedInterval, IntervalGroup } from './application/types/highlightedInterval'
+export type {
+    HighlightedInterval,
+    IntervalGroup,
+} from '@/lib/signal-visualizer/plotComponent/application/types/highlightedInterval'
 
-export { default as PlotComponent } from './presentation/plotComponent/PlotComponent.vue'
+export { default as PlotComponent } from '@/lib/signal-visualizer/plotComponent/presentation/plotComponent/PlotComponent.vue'

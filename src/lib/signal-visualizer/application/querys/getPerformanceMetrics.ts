@@ -1,7 +1,7 @@
-import type { EventToMediate } from "../../utils/eventMediator";
-import type { PerformanceMetrics } from "../types/performanceMetrics";
+import type { EventToMediate } from '../../utils/eventMediator.ts'
+import type { PerformanceMetrics } from '../../core/types/performanceMetrics.ts'
 
-export const GetPerformanceMetricsEventLabel = "GetPerformanceMetricsEventLabel"
+export const GetPerformanceMetricsEventLabel = 'GetPerformanceMetricsEventLabel'
 
 export class GetPerformanceMetrics implements EventToMediate {
     eventLabel: string = GetPerformanceMetricsEventLabel
