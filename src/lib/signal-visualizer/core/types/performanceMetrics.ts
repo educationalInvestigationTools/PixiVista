@@ -5,4 +5,5 @@ export type PerformanceMetrics = {
     sizeData: SizeData
     windowDevicePixelRatio: number
     refreshRate: number
+    date : Date
 }

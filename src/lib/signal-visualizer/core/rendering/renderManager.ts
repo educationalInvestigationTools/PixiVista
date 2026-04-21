@@ -54,6 +54,7 @@ export class RenderManager {
                 },
                 windowDevicePixelRatio: Math.round(windowDevicePixelRatio * 100) / 100,
                 refreshRate: this.pixiRenderer.app.ticker.FPS,
+                date : new Date()
             }
             this.eventMediator.publish(new GetPerformanceMetrics(performanceMetrics))
         })

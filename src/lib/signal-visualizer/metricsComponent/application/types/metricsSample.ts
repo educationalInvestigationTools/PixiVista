@@ -7,11 +7,10 @@ export type MetricsSample = {
 }
 
 export function buildMetricsSample(
-    performanceMetrics: PerformanceMetrics,
-    timestampMs: number,
+    performanceMetrics: PerformanceMetrics
 ): MetricsSample {
     return {
-        timestampMs,
+        timestampMs : performanceMetrics.date.getTime(),
         renderTimeMs: performanceMetrics.renderTime,
         refreshRateFps: performanceMetrics.refreshRate,
     }

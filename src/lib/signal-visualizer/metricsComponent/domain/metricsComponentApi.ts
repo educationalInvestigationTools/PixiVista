@@ -42,7 +42,7 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
     }
 
     private async appendPerformanceMetrics(command: AppendPerformanceMetricsCommand) {
-        const sample = buildMetricsSample(command.performanceMetrics, command.timestampMs)
+        const sample = buildMetricsSample(command.performanceMetrics)
         this.state.pushSample(sample)
         this.component.updateCharts(this.state.buildSnapshots())
     }

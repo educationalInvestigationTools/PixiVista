@@ -10,6 +10,7 @@ const metrics = ref<PerformanceMetrics | undefined>({
     refreshRate: 60,
     windowDevicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
     sizeData: { width: 800, height: 400 },
+    date : new Date()
 })
 
 let timeoutId: number | undefined
@@ -36,6 +37,7 @@ function emitSample() {
             width: 680 + Math.round(Math.sin(elapsedSeconds) * 30),
             height: 280,
         },
+        date : new Date()
     }
 
     timeoutId = window.setTimeout(emitSample, nextDelayMs())

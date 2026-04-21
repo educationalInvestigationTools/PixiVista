@@ -6,15 +6,8 @@ export const AppendPerformanceMetricsCommandEventLabel = 'AppendPerformanceMetri
 export class AppendPerformanceMetricsCommand implements EventToMediate {
     readonly eventLabel: string = AppendPerformanceMetricsCommandEventLabel
     readonly performanceMetrics: PerformanceMetrics
-    readonly timestampMs: number
 
-    constructor(performanceMetrics: PerformanceMetrics, timestampMs?: number) {
+    constructor(performanceMetrics: PerformanceMetrics) {
         this.performanceMetrics = performanceMetrics
-        this.timestampMs =
-            timestampMs !== undefined
-                ? timestampMs
-                : typeof performance !== 'undefined'
-                  ? performance.now()
-                  : Date.now()
     }
 }
