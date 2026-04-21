@@ -4,36 +4,88 @@ import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layout
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
+import { GridLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
+import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/layouts.ts'
+import {
+    LineMonitorLayer,
+    LineMonitorLayout,
+} from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
 import { Text } from 'pixi.js'
-import { clamp } from '@/lib/signal-visualizer/utils/utils'
 
 const GRID_VERTICAL_DIVISIONS = 6
 const GRID_HORIZONTAL_DIVISIONS = 4
 
 export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private snapshot: MetricsChartSnapshot
+    private readonly gridLayer: GridLayer
+    private readonly lineMonitorLayer: LineMonitorLayer
     private labels: Text[] = []
 
     constructor(layoutData: MetricsChartLayout, snapshot: MetricsChartSnapshot) {
         super(layoutData)
         this.snapshot = snapshot
+
+        this.gridLayer = new GridLayer(
+            new GridLayout(this.buildPlotSizeData(), this.buildPlotPositionData(), {
+                horizontalDivisions: GRID_HORIZONTAL_DIVISIONS,
+                verticalDivisions: GRID_VERTICAL_DIVISIONS,
+            }),
+            {
+                min: snapshot.minValue,
+                max: snapshot.maxValue,
+            },
+        )
+
+        this.lineMonitorLayer = new LineMonitorLayer(
+            new LineMonitorLayout(this.buildPlotSizeData(), this.buildPlotPositionData()),
+            snapshot,
+        )
+
+        this.container.addChild(this.gridLayer.container)
+        this.container.addChild(this.lineMonitorLayer.container)
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {
-        return []
+        return [this.gridLayer, this.lineMonitorLayer]
     }
 
     updateSnapshot(snapshot: MetricsChartSnapshot) {
         this.snapshot = snapshot
+        this.gridLayer.updateMinMaxValues({
+            min: snapshot.minValue,
+            max: snapshot.maxValue,
+        })
+        this.lineMonitorLayer.updateSnapshot(snapshot)
         this._needsRendering = true
     }
 
     _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
+        this.gridLayer.updatePosition(this.buildPlotPositionData())
+        this.lineMonitorLayer.updatePosition(this.buildPlotPositionData())
     }
 
     _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
+        this.gridLayer.updateSize(this.buildPlotSizeData())
+        this.gridLayer.updatePosition(this.buildPlotPositionData())
+
+        this.lineMonitorLayer.updateSize(this.buildPlotSizeData())
+        this.lineMonitorLayer.updatePosition(this.buildPlotPositionData())
+    }
+
+    private buildPlotSizeData(): SizeData {
+        return {
+            width: this.layoutDesign.plotWidth,
+            height: this.layoutDesign.plotHeight,
+        }
+    }
+
+    private buildPlotPositionData(): PositionData {
+        return {
+            x: this.layoutDesign.plotX,
+            y: this.layoutDesign.plotY,
+        }
     }
 
     private clearLabels() {
@@ -67,14 +119,6 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.labels.push(label)
     }
 
-    private mapYValue(value: number) {
-        const minValue = this.snapshot.minValue
-        const maxValue = this.snapshot.maxValue
-        const range = Math.max(maxValue - minValue, 0.001)
-        const normalized = clamp((value - minValue) / range, 0, 1)
-        return this.layoutDesign.plotBottom - normalized * this.layoutDesign.plotHeight
-    }
-
     protected _draw(): void {
         this.clearLabels()
 
@@ -92,68 +136,6 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             .rect(plotX, plotY, plotWidth, plotHeight)
             .fill({ color: '#0d131a', alpha: 1 })
             .stroke({ color: '#1f2937', width: 1, alpha: 1 })
-
-        for (let i = 0; i <= GRID_VERTICAL_DIVISIONS; i++) {
-            const ratio = i / GRID_VERTICAL_DIVISIONS
-            const x = plotX + ratio * plotWidth
-            this.graphics.moveTo(x, plotY).lineTo(x, this.layoutDesign.plotBottom).stroke({
-                color: this.snapshot.gridColor,
-                width: 1,
-                alpha: 0.14,
-            })
-        }
-
-        for (let i = 0; i <= GRID_HORIZONTAL_DIVISIONS; i++) {
-            const ratio = i / GRID_HORIZONTAL_DIVISIONS
-            const y = plotY + ratio * plotHeight
-            this.graphics.moveTo(plotX, y).lineTo(this.layoutDesign.plotRight, y).stroke({
-                color: this.snapshot.gridColor,
-                width: 1,
-                alpha: 0.18,
-            })
-        }
-
-        const mappedPoints = this.snapshot.points.map((point) => ({
-            x: plotX + point.x * plotWidth,
-            y: this.mapYValue(point.value),
-        }))
-
-        if (mappedPoints.length > 0) {
-            const firstPoint = mappedPoints[0]!
-            const lastPoint = mappedPoints[mappedPoints.length - 1]!
-
-            this.graphics.moveTo(firstPoint.x, this.layoutDesign.plotBottom)
-            for (const point of mappedPoints) {
-                this.graphics.lineTo(point.x, point.y)
-            }
-            this.graphics.lineTo(lastPoint.x, this.layoutDesign.plotBottom)
-            this.graphics.lineTo(firstPoint.x, this.layoutDesign.plotBottom)
-            this.graphics.fill({ color: this.snapshot.fillColor, alpha: 0.45 })
-
-            if (mappedPoints.length === 1) {
-                this.graphics.circle(firstPoint.x, firstPoint.y, 2.5).fill({
-                    color: this.snapshot.lineColor,
-                    alpha: 1,
-                })
-            } else {
-                this.graphics.moveTo(firstPoint.x, firstPoint.y)
-                for (let i = 1; i < mappedPoints.length; i++) {
-                    const point = mappedPoints[i]!
-                    this.graphics.lineTo(point.x, point.y)
-                }
-                this.graphics.stroke({
-                    color: this.snapshot.lineColor,
-                    width: 2,
-                    alpha: 1,
-                    cap: 'round',
-                    join: 'round',
-                })
-                this.graphics.circle(lastPoint.x, lastPoint.y, 2.5).fill({
-                    color: this.snapshot.lineColor,
-                    alpha: 1,
-                })
-            }
-        }
 
         const titleFontSize = Math.max(11, Math.floor(this.layoutDesign.height * 0.1))
         const valueFontSize = Math.max(11, Math.floor(this.layoutDesign.height * 0.12))
