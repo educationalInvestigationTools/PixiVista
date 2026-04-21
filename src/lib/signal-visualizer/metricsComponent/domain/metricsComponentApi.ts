@@ -3,7 +3,7 @@ import { MetricsComponentLayer } from '@/lib/signal-visualizer/metricsComponent/
 import { MetricsComponentLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/layout.ts'
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import { MetricsState } from '@/lib/signal-visualizer/metricsComponent/core/metricsState.ts'
+import { MetricsState } from '@/lib/signal-visualizer/metricsComponent/domain/metricsState.ts'
 import {
     AppendPerformanceMetricsCommandEventLabel,
     type AppendPerformanceMetricsCommand,

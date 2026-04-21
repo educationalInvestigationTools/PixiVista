@@ -1,4 +1,4 @@
-export { buildWorkerRunTime } from '@/lib/signal-visualizer/plotComponent/core/dataManager/workerRunTime'
+export { buildWorkerRunTime } from '@/lib/signal-visualizer/plotComponent/domain/dataManager/workerRunTime'
 
 export {
     SignalSourceBuildData,

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted, ref, type Ref} from "vue";
-import {DirtyContainer} from "@/lib/signal-visualizer/plotComponent/core/dirtyContainer.ts";
+import {DirtyContainer} from "@/lib/signal-visualizer/plotComponent/domain/dirtyContainer.ts";
 import {
     ResizeCommand
 } from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";

@@ -1,8 +1,8 @@
 import { RenderManager } from '@/lib/signal-visualizer/core/rendering/renderManager.ts'
-import type { DataManager } from '@/lib/signal-visualizer/plotComponent/core/dataManager/dataManager.ts'
+import type { DataManager } from '@/lib/signal-visualizer/plotComponent/domain/dataManager/dataManager.ts'
 import { RenderDependencies } from './renderDependencies.ts'
 import { Observer } from '../../core/observer.ts'
-import type { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/core/componentLayerApi.ts'
+import type { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/domain/componentLayerApi.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
 
 export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {

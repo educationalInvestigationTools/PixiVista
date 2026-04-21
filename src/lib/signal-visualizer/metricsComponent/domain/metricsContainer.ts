@@ -1,6 +1,6 @@
 import { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import { RenderManager } from '@/lib/signal-visualizer/core/rendering/renderManager.ts'
-import { MetricsComponentApi } from '@/lib/signal-visualizer/metricsComponent/core/metricsComponentApi.ts'
+import { MetricsComponentApi } from '@/lib/signal-visualizer/metricsComponent/domain/metricsComponentApi.ts'
 import { DEFAULT_ROLLING_WINDOW_MS } from '@/lib/signal-visualizer/metricsComponent/application/types/rollingWindowConfig.ts'
 
 export class MetricsContainer {

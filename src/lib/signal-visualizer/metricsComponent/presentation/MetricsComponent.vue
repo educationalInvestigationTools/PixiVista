@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import type { PerformanceMetrics } from '@/lib/signal-visualizer/core/types/performanceMetrics.ts'
-import { MetricsContainer } from '@/lib/signal-visualizer/metricsComponent/core/metricsContainer.ts'
-import { ResizeCommand } from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
-import { DestroyCommand } from '@/lib/signal-visualizer/application/commands/destroyCommand.ts'
+import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
+import type {PerformanceMetrics} from '@/lib/signal-visualizer/core/types/performanceMetrics.ts'
+import {MetricsContainer} from '@/lib/signal-visualizer/metricsComponent/domain/metricsContainer.ts'
+import {ResizeCommand} from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
+import {DestroyCommand} from '@/lib/signal-visualizer/application/commands/destroyCommand.ts'
 import {
     AppendPerformanceMetricsCommand,
 } from '@/lib/signal-visualizer/metricsComponent/application/commands/appendPerformanceMetricsCommand.ts'

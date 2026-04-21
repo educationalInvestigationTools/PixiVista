@@ -1,5 +1,5 @@
 import { SignalSourceManager } from '@/lib/signal-visualizer/plotComponent/application/interfaces/signalSource.ts'
-import { buildWorkerRunTime } from '@/lib/signal-visualizer/plotComponent/core/dataManager/workerRunTime.ts'
+import { buildWorkerRunTime } from '@/lib/signal-visualizer/plotComponent/domain/dataManager/workerRunTime.ts'
 import {
     MockSignalSerializer,
     MockSignalSourceFactory,
