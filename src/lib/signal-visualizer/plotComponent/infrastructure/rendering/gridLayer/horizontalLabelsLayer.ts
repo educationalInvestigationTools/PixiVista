@@ -4,6 +4,7 @@ import { Text } from 'pixi.js'
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
+import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 
 export class HorizontalLabelsLayer extends RenderLayer<HorizontalGridLabelsLayout> {
     private horizontalLabels: Text[] = []
@@ -62,9 +63,8 @@ export class HorizontalLabelsLayer extends RenderLayer<HorizontalGridLabelsLayou
         this.layoutDesign.updateSizeData(sizeData)
     }
 
-    updateRange(minValue: number, maxValue: number) {
-        this.layoutDesign.minValue = minValue
-        this.layoutDesign.maxValue = maxValue
+    updateMinMaxValues(minMaxValues: MinMaxValues) {
+        this.layoutDesign.minMaxValues = minMaxValues
         this._needsRendering = true
     }
 }

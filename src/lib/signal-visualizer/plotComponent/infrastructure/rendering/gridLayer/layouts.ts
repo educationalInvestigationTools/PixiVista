@@ -7,13 +7,18 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
 export type VerticalLabelsSide = 'left' | 'right'
 export type HorizontalLabelsSide = 'up' | 'down'
-export type HorizontalLabelFormatter = (value: number) => string
+export type GridLabelFormatter = (value: number) => string
+
+export type VerticalLabelsBuildData = {
+    minMaxValues: MinMaxValues
+    side: VerticalLabelsSide
+    formatter: GridLabelFormatter
+}
 
 export type HorizontalLabelsBuildData = {
-    minValue: number
-    maxValue: number
+    minMaxValues: MinMaxValues
     side: HorizontalLabelsSide
-    formatter: HorizontalLabelFormatter
+    formatter: GridLabelFormatter
 }
 
 export class GridBaseLayout extends LayoutDesign {
@@ -36,25 +41,30 @@ export class GridBaseLayout extends LayoutDesign {
 export class GridLabelsLayout extends GridBaseLayout {
     minMaxValues: MinMaxValues
     private readonly side: VerticalLabelsSide
+    private readonly formatter: GridLabelFormatter
 
     constructor(
         sizeData: SizeData,
         posData: PositionData,
         gridData: GridData,
-        minMaxValues: MinMaxValues,
-        side: VerticalLabelsSide,
+        buildData: VerticalLabelsBuildData,
     ) {
         super(sizeData, posData, gridData)
-        this.minMaxValues = minMaxValues
-        this.side = side
+        this.minMaxValues = buildData.minMaxValues
+        this.side = buildData.side
+        this.formatter = buildData.formatter
     }
 
     get stepSize() {
         return (this.minMaxValues.max - this.minMaxValues.min) / this.horizontalDivisions
     }
 
+    valueAt(i: number): number {
+        return this.minMaxValues.max - i * this.stepSize
+    }
+
     textLabel(i: number): string {
-        return (this.minMaxValues.max - i * this.stepSize).toFixed(2)
+        return this.formatter(this.valueAt(i))
     }
 
     get fontSize(): number {
@@ -120,10 +130,9 @@ export class GridLabelsLayout extends GridBaseLayout {
 }
 
 export class HorizontalGridLabelsLayout extends GridBaseLayout {
-    minValue: number
-    maxValue: number
+    minMaxValues: MinMaxValues
     private readonly side: HorizontalLabelsSide
-    private readonly formatter: HorizontalLabelFormatter
+    private readonly formatter: GridLabelFormatter
 
     constructor(
         sizeData: SizeData,
@@ -132,18 +141,17 @@ export class HorizontalGridLabelsLayout extends GridBaseLayout {
         buildData: HorizontalLabelsBuildData,
     ) {
         super(sizeData, posData, gridData)
-        this.minValue = buildData.minValue
-        this.maxValue = buildData.maxValue
+        this.minMaxValues = buildData.minMaxValues
         this.side = buildData.side
         this.formatter = buildData.formatter
     }
 
     get stepSize() {
-        return (this.maxValue - this.minValue) / this.verticalDivisions
+        return (this.minMaxValues.max - this.minMaxValues.min) / this.verticalDivisions
     }
 
     valueAt(i: number): number {
-        return this.maxValue - i * this.stepSize
+        return this.minMaxValues.max - i * this.stepSize
     }
 
     textLabel(i: number): string {

@@ -1,7 +1,7 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import {
+    type GridLabelFormatter,
     HorizontalGridLabelsLayout,
-    type HorizontalLabelFormatter,
     type HorizontalLabelsSide,
     GridLabelsLayout,
     GridLayout,
@@ -14,30 +14,24 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
-export type VerticalLabelsConfig =
+type LabelsDirectionConfig<TSide> =
     | {
           include: false
       }
     | {
           include: true
-          side: VerticalLabelsSide
-      }
-
-export type HorizontalLabelsConfig =
-    | {
-          include: false
-      }
-    | {
-          include: true
-          side: HorizontalLabelsSide
-          minValue: number
-          maxValue: number
-          formatter: HorizontalLabelFormatter
+          side: TSide
+          formatter: GridLabelFormatter
       }
 
 export type GridLabelsConfig = {
-    vertical: VerticalLabelsConfig
-    horizontal: HorizontalLabelsConfig
+    vertical: LabelsDirectionConfig<VerticalLabelsSide>
+    horizontal: LabelsDirectionConfig<HorizontalLabelsSide>
+}
+
+export type GridLabelsMinMaxValues = {
+    vertical: MinMaxValues
+    horizontal: MinMaxValues
 }
 
 export class GridLayer extends RenderLayer<GridLayout> {
@@ -65,7 +59,11 @@ export class GridLayer extends RenderLayer<GridLayout> {
         this.horizontalLabelsLayer?.updateSize(sizeData)
     }
 
-    constructor(gridLayout: GridLayout, minMaxValues: MinMaxValues, labelsConfig: GridLabelsConfig) {
+    constructor(
+        gridLayout: GridLayout,
+        minMaxValues: GridLabelsMinMaxValues,
+        labelsConfig: GridLabelsConfig,
+    ) {
         super(gridLayout)
 
         if (labelsConfig.vertical.include) {
@@ -77,8 +75,11 @@ export class GridLayer extends RenderLayer<GridLayout> {
                         horizontalDivisions: gridLayout.horizontalDivisions,
                         verticalDivisions: gridLayout.verticalDivisions,
                     },
-                    minMaxValues,
-                    labelsConfig.vertical.side,
+                    {
+                        minMaxValues: minMaxValues.vertical,
+                        side: labelsConfig.vertical.side,
+                        formatter: labelsConfig.vertical.formatter,
+                    },
                 ),
             )
             this.container.addChild(this.verticalLabelsLayer.container)
@@ -94,8 +95,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
                         verticalDivisions: gridLayout.verticalDivisions,
                     },
                     {
-                        minValue: labelsConfig.horizontal.minValue,
-                        maxValue: labelsConfig.horizontal.maxValue,
+                        minMaxValues: minMaxValues.horizontal,
                         side: labelsConfig.horizontal.side,
                         formatter: labelsConfig.horizontal.formatter,
                     },
@@ -105,12 +105,13 @@ export class GridLayer extends RenderLayer<GridLayout> {
         }
     }
 
-    updateMinMaxValues(minMaxValues: MinMaxValues) {
-        this.verticalLabelsLayer?.updateMinMaxValues(minMaxValues)
-    }
-
-    updateHorizontalRange(minValue: number, maxValue: number) {
-        this.horizontalLabelsLayer?.updateRange(minValue, maxValue)
+    updateMinMaxValues(minMaxValues: Partial<GridLabelsMinMaxValues>) {
+        if (minMaxValues.vertical !== undefined) {
+            this.verticalLabelsLayer?.updateMinMaxValues(minMaxValues.vertical)
+        }
+        if (minMaxValues.horizontal !== undefined) {
+            this.horizontalLabelsLayer?.updateMinMaxValues(minMaxValues.horizontal)
+        }
     }
 
     protected _draw() {

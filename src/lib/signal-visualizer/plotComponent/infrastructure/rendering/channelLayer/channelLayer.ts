@@ -33,11 +33,15 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
                 },
                 gridData,
             ),
-            oneDimensionalSignalData.ySignal.minMaxValues,
+            {
+                vertical: oneDimensionalSignalData.ySignal.minMaxValues,
+                horizontal: oneDimensionalSignalData.xSignal.minMaxValues,
+            },
             {
                 vertical: {
                     include: true,
                     side: 'left',
+                    formatter: (value) => value.toFixed(2),
                 },
                 horizontal: {
                     include: false,
@@ -79,7 +83,9 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
 
     updateData(signalData: OneDimNormalizedSignal) {
         this._needsRendering = true
-        this.gridLayer.updateMinMaxValues(signalData.ySignal.minMaxValues)
+        this.gridLayer.updateMinMaxValues({
+            vertical: signalData.ySignal.minMaxValues,
+        })
         this.oneDimensionalSignalLayer.updateData(signalData)
     }
 

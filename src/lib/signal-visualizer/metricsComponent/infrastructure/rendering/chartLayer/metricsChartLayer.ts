@@ -39,19 +39,24 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
                 verticalDivisions: GRID_VERTICAL_DIVISIONS,
             }),
             {
-                min: snapshot.minValue,
-                max: snapshot.maxValue,
+                vertical: {
+                    min: snapshot.minValue,
+                    max: snapshot.maxValue,
+                },
+                horizontal: {
+                    min: 0,
+                    max: METRICS_WINDOW_SECONDS,
+                },
             },
             {
                 vertical: {
                     include: true,
                     side: 'left',
+                    formatter: (value) => value.toFixed(2),
                 },
                 horizontal: {
                     include: true,
                     side: 'down',
-                    minValue: 0,
-                    maxValue: METRICS_WINDOW_SECONDS,
                     formatter: formatSecondsAsMinuteSeconds,
                 },
             },
@@ -73,8 +78,10 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     updateSnapshot(snapshot: MetricsChartSnapshot) {
         this.snapshot = snapshot
         this.gridLayer.updateMinMaxValues({
-            min: snapshot.minValue,
-            max: snapshot.maxValue,
+            vertical: {
+                min: snapshot.minValue,
+                max: snapshot.maxValue,
+            },
         })
         this.lineMonitorLayer.updateSnapshot(snapshot)
         this._needsRendering = true
