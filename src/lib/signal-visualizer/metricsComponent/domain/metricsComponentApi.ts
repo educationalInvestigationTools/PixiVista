@@ -5,14 +5,13 @@ import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { MetricsState } from '@/lib/signal-visualizer/metricsComponent/domain/metricsState.ts'
 import {
-    AppendPerformanceMetricsCommandEventLabel,
-    type AppendPerformanceMetricsCommand,
-} from '@/lib/signal-visualizer/metricsComponent/application/commands/appendPerformanceMetricsCommand.ts'
+    AddPerformanceMetricsCommandEventLabel,
+    type AddPerformanceMetricsCommand,
+} from '@/lib/signal-visualizer/metricsComponent/application/commands/addPerformanceMetricsCommand'
 import {
     ResizeCommandEventLabel,
     type ResizeCommand,
 } from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
-import { buildMetricsSample } from '@/lib/signal-visualizer/metricsComponent/application/types/metricsSample.ts'
 
 export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLayer> {
     private readonly state: MetricsState
@@ -31,9 +30,9 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
     }
 
     registerEvents(): void {
-        this.eventMediator.addHandler<AppendPerformanceMetricsCommand>(
-            AppendPerformanceMetricsCommandEventLabel,
-            async (command) => this.appendPerformanceMetrics(command),
+        this.eventMediator.addHandler<AddPerformanceMetricsCommand>(
+            AddPerformanceMetricsCommandEventLabel,
+            async (command) => this.addPerformanceMetrics(command),
         )
 
         this.eventMediator.addHandler<ResizeCommand>(ResizeCommandEventLabel, async (command) =>
@@ -41,8 +40,12 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
         )
     }
 
-    private async appendPerformanceMetrics(command: AppendPerformanceMetricsCommand) {
-        const sample = buildMetricsSample(command.performanceMetrics)
+    private async addPerformanceMetrics(command: AddPerformanceMetricsCommand) {
+        const sample = {
+            timestampMs: command.performanceMetrics.observedAt.getTime(),
+            renderTimeMs: command.performanceMetrics.renderTimeMs,
+            refreshRateFps: command.performanceMetrics.refreshRateFps
+        }
         this.state.pushSample(sample)
         this.component.updateCharts(this.state.buildSnapshots())
     }

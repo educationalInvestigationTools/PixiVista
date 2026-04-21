@@ -47,14 +47,14 @@ export class RenderManager {
             const timeEnd = performance.now()
             const windowDevicePixelRatio = this.pixiRenderer.app.renderer.resolution
             const performanceMetrics: PerformanceMetrics = {
-                renderTime: timeEnd - timeStart,
+                renderTimeMs: timeEnd - timeStart,
                 sizeData: {
                     width: sizeData.width,
                     height: sizeData.height,
                 },
                 windowDevicePixelRatio: Math.round(windowDevicePixelRatio * 100) / 100,
-                refreshRate: this.pixiRenderer.app.ticker.FPS,
-                date : new Date()
+                refreshRateFps: this.pixiRenderer.app.ticker.FPS,
+                observedAt : new Date()
             }
             this.eventMediator.publish(new GetPerformanceMetrics(performanceMetrics))
         })

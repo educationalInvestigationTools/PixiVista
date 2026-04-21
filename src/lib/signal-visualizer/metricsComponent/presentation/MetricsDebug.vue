@@ -6,11 +6,11 @@ import type {
 } from '@/lib/signal-visualizer/core/types/performanceMetrics.ts'
 
 const metrics = ref<PerformanceMetrics | undefined>({
-    renderTime: 5,
-    refreshRate: 60,
+    renderTimeMs: 5,
+    refreshRateFps: 60,
     windowDevicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
     sizeData: { width: 800, height: 400 },
-    date : new Date()
+    observedAt : new Date()
 })
 
 let timeoutId: number | undefined
@@ -30,14 +30,14 @@ function emitSample() {
     const renderTime = Math.max(1.5, 5 + burstWave * 14 + Math.random() * 2.5)
 
     metrics.value = {
-        renderTime: Number(renderTime.toFixed(2)),
-        refreshRate: Number(refreshRate.toFixed(2)),
+        renderTimeMs: Number(renderTime.toFixed(2)),
+        refreshRateFps: Number(refreshRate.toFixed(2)),
         windowDevicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
         sizeData: {
             width: 680 + Math.round(Math.sin(elapsedSeconds) * 30),
             height: 280,
         },
-        date : new Date()
+        observedAt : new Date()
     }
 
     timeoutId = window.setTimeout(emitSample, nextDelayMs())

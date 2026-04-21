@@ -1,9 +1,9 @@
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
 export type PerformanceMetrics = {
-    renderTime: number
+    renderTimeMs: number
     sizeData: SizeData
     windowDevicePixelRatio: number
-    refreshRate: number
-    date : Date
+    refreshRateFps: number
+    observedAt : Date
 }

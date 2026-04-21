@@ -2,7 +2,6 @@ import type {
     MetricsChartSnapshot,
     MetricsChartsSnapshot,
 } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
-import type { MetricsSample } from '@/lib/signal-visualizer/metricsComponent/application/types/metricsSample.ts'
 import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/chartValuePoint'
 import { clamp } from '../../utils/utils'
 
@@ -15,6 +14,12 @@ type MetricSeriesBuildData = {
     fillColor: string
     gridColor: string
     getValue: (sample: MetricsSample) => number
+}
+
+export type MetricsSample = {
+    timestampMs: number
+    renderTimeMs: number
+    refreshRateFps: number
 }
 
 export class MetricsState {

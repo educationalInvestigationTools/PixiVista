@@ -5,8 +5,8 @@ import {MetricsContainer} from '@/lib/signal-visualizer/metricsComponent/domain/
 import {ResizeCommand} from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
 import {DestroyCommand} from '@/lib/signal-visualizer/application/commands/destroyCommand.ts'
 import {
-    AppendPerformanceMetricsCommand,
-} from '@/lib/signal-visualizer/metricsComponent/application/commands/appendPerformanceMetricsCommand.ts'
+    AddPerformanceMetricsCommand,
+} from '@/lib/signal-visualizer/metricsComponent/application/commands/addPerformanceMetricsCommand'
 
 
 const props = defineProps<{
@@ -39,7 +39,7 @@ onMounted(async () => {
     resizeObserverRef.value.observe(htmlContainerRef.value)
 
     if (props.metrics) {
-        await metricsContainer.eventMediator.publish(new AppendPerformanceMetricsCommand(props.metrics))
+        await metricsContainer.eventMediator.publish(new AddPerformanceMetricsCommand(props.metrics))
         sizeInfo.value = `Resolution ${Math.round(props.metrics.sizeData.width)} x ${Math.round(props.metrics.sizeData.height)}, DPR ${props.metrics.windowDevicePixelRatio.toFixed(2)}`
     }
 })
@@ -52,7 +52,7 @@ watch(
         }
 
         await metricsContainer.eventMediator.publish(
-            new AppendPerformanceMetricsCommand(metricsValue),
+            new AddPerformanceMetricsCommand(metricsValue),
         )
 
         sizeInfo.value = `Resolution ${Math.round(metricsValue.sizeData.width)} x ${Math.round(metricsValue.sizeData.height)}, DPR ${metricsValue.windowDevicePixelRatio.toFixed(2)}`
