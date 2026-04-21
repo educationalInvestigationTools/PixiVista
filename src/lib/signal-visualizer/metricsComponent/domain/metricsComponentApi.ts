@@ -19,16 +19,16 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
     private readonly state: MetricsState
 
     constructor(sizeData: SizeData, eventMediator: EventMediator) {
-        const state = new MetricsState(1000 * 60)
+        const windowMs = 1000 * 60
         const component = new MetricsComponentLayer(
             new MetricsComponentLayout(sizeData, {
                 x: 0,
                 y: 0,
             }),
-            MetricsComponentApi.buildSnapshots([], state.WindowMs),
+            MetricsComponentApi.buildSnapshots([], windowMs),
         )
         super(component, eventMediator)
-        this.state = state
+        this.state = new MetricsState(windowMs)
     }
 
     registerEvents(): void {
@@ -45,7 +45,7 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
             refreshRateFps: command.performanceMetrics.refreshRateFps,
         }
         const currentState = this.state.pushSample(sample)
-        const windowMs = 1000 * 60
+        const windowMs = this.state.WindowMs
         this.component.updateCharts(MetricsComponentApi.buildSnapshots(currentState, windowMs))
     }
 
@@ -94,10 +94,6 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
         windowMs: number,
         getValue: (sample: MetricsSample) => number,
     ): PointsData {
-        const points = samples.map((sample) => ({
-            x: clamp((sample.timestampMs - cutoff) / windowMs, 0, 1),
-            value: Math.max(0, getValue(sample)),
-        }))
 
         if (samples.length === 0) {
             return {
@@ -110,12 +106,16 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
                 currentValue: 0,
             }
         }
+        const latestTimestamp = samples[samples.length - 1]!.timestampMs
+        const cutoff = latestTimestamp - windowMs
+        const points = samples.map((sample) => ({
+            x: clamp((sample.timestampMs - cutoff) / windowMs, 0, 1),
+            value: Math.max(0, getValue(sample)),
+        }))
 
         const peakValue = points.reduce((maxValue, point) => Math.max(maxValue, point.value), 0)
         const maxValue = Math.max(peakValue * 1.1, 1)
         const currentValue = points[points.length - 1]!.value
-        const latestTimestamp = samples[samples.length - 1]!.timestampMs
-        const cutoff = latestTimestamp - windowMs
         return {
             points: points,
             minValue: 0,
