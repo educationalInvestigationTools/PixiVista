@@ -26,7 +26,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.snapshot = snapshot
 
         this.gridLayer = new GridLayer(
-            new GridLayout(this.buildPlotSizeData(), this.buildPlotPositionData(), {
+            new GridLayout(this.layoutDesign.buildPlotSizeData(), this.layoutDesign.buildPlotPositionData(), {
                 horizontalDivisions: GRID_HORIZONTAL_DIVISIONS,
                 verticalDivisions: GRID_VERTICAL_DIVISIONS,
             }),
@@ -37,7 +37,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         )
 
         this.lineMonitorLayer = new LineMonitorLayer(
-            new LineMonitorLayout(this.buildPlotSizeData(), this.buildPlotPositionData()),
+            new LineMonitorLayout(this.layoutDesign.buildPlotSizeData(), this.layoutDesign.buildPlotPositionData()),
             snapshot,
         )
 
@@ -61,32 +61,20 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
     _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
-        this.gridLayer.updatePosition(this.buildPlotPositionData())
-        this.lineMonitorLayer.updatePosition(this.buildPlotPositionData())
+        this.gridLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
+        this.lineMonitorLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
     }
 
     _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
-        this.gridLayer.updateSize(this.buildPlotSizeData())
-        this.gridLayer.updatePosition(this.buildPlotPositionData())
+        this.gridLayer.updateSize(this.layoutDesign.buildPlotSizeData())
+        this.gridLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
 
-        this.lineMonitorLayer.updateSize(this.buildPlotSizeData())
-        this.lineMonitorLayer.updatePosition(this.buildPlotPositionData())
+        this.lineMonitorLayer.updateSize(this.layoutDesign.buildPlotSizeData())
+        this.lineMonitorLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
     }
 
-    private buildPlotSizeData(): SizeData {
-        return {
-            width: this.layoutDesign.plotWidth,
-            height: this.layoutDesign.plotHeight,
-        }
-    }
 
-    private buildPlotPositionData(): PositionData {
-        return {
-            x: this.layoutDesign.plotX,
-            y: this.layoutDesign.plotY,
-        }
-    }
 
     private clearLabels() {
         for (const label of this.labels) {

@@ -47,4 +47,18 @@ export class MetricsChartLayout extends LayoutDesign {
     get plotBottom() {
         return this.plotY + this.plotHeight
     }
+
+    public buildPlotSizeData(): SizeData {
+        return {
+            width: this.plotWidth,
+            height: this.plotHeight,
+        }
+    }
+
+    public buildPlotPositionData(): PositionData {
+        return {
+            x: this.plotX,
+            y: this.plotY,
+        }
+    }
 }
