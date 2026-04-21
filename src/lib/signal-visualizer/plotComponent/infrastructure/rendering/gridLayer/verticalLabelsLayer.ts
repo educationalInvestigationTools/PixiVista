@@ -7,17 +7,17 @@ import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/applica
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
 export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
-    private horizontalLabels: Text[] = []
+    private verticalLabels: Text[] = []
 
     get Children(): RenderLayer<LayoutDesign>[] {
         return []
     }
 
     protected _draw(): void {
-        for (let i = 0; i < this.horizontalLabels.length; i++) {
-            this.container.removeChild(this.horizontalLabels[i]!)
+        for (let i = 0; i < this.verticalLabels.length; i++) {
+            this.container.removeChild(this.verticalLabels[i]!)
         }
-        this.horizontalLabels = []
+        this.verticalLabels = []
 
         let maxLabelWidthAtBaseFont = 0
         let maxLabelHeightAtBaseFont = 0
@@ -51,7 +51,7 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
             text.x = -(this.layoutDesign.labelToGridGap + text.width)
             text.y = this.layoutDesign.textYPosition(i, text.height)
             this.container.addChild(text)
-            this.horizontalLabels.push(text)
+            this.verticalLabels.push(text)
         }
     }
 
