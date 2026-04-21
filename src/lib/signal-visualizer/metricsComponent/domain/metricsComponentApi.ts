@@ -14,8 +14,11 @@ import {
 import type { MetricsChartsSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot.ts'
 import { clamp } from '@/lib/signal-visualizer/utils/utils.ts'
 import type { PointsData } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/pointsData.ts'
+import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/chartValuePoint.ts'
 
 export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLayer> {
+    private static readonly RENDER_POINT_GROUPS = 120
+
     private readonly state: MetricsState
 
     constructor(sizeData: SizeData, eventMediator: EventMediator) {
@@ -113,14 +116,56 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
             value: Math.max(0, getValue(sample)),
         }))
 
-        const peakValue = points.reduce((maxValue, point) => Math.max(maxValue, point.value), 0)
+        const averagedPoints = this.averagePointsByGroups(points, this.RENDER_POINT_GROUPS)
+
+        const peakValue = averagedPoints.reduce((maxValue, point) => Math.max(maxValue, point.value), 0)
         const maxValue = Math.max(peakValue * 1.1, 1)
         const currentValue = points[points.length - 1]!.value
         return {
-            points: points,
+            points: averagedPoints,
             minValue: 0,
             maxValue: maxValue,
             currentValue: currentValue,
         }
+    }
+
+    private static averagePointsByGroups(
+        points: ChartValuePoint[],
+        groupsCount: number,
+    ): ChartValuePoint[] {
+        const safeGroupsCount = Math.max(1, groupsCount)
+        if (points.length <= safeGroupsCount) {
+            return points
+        }
+
+        const buckets = Array.from({ length: safeGroupsCount }, () => ({
+            xSum: 0,
+            valueSum: 0,
+            count: 0,
+        }))
+
+        for (const point of points) {
+            const bucketIndex = Math.min(
+                safeGroupsCount - 1,
+                Math.floor(clamp(point.x, 0, 1) * safeGroupsCount),
+            )
+            const bucket = buckets[bucketIndex]!
+            bucket.xSum += point.x
+            bucket.valueSum += point.value
+            bucket.count += 1
+        }
+
+        const averagedPoints: ChartValuePoint[] = []
+        for (const bucket of buckets) {
+            if (bucket.count === 0) {
+                continue
+            }
+            averagedPoints.push({
+                x: bucket.xSum / bucket.count,
+                value: bucket.valueSum / bucket.count,
+            })
+        }
+
+        return averagedPoints.length > 0 ? averagedPoints : [points[points.length - 1]!]
     }
 }
