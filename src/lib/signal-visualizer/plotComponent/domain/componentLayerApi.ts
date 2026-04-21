@@ -10,10 +10,7 @@ import {
     ChangeViewPortCommandEventLabel,
     type ChangeViewPortCommand,
 } from '@/lib/signal-visualizer/plotComponent/application/commands/changeViewPortCommand.ts'
-import {
-    ResizeCommandEventLabel,
-    type ResizeCommand,
-} from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
+
 import { ComponentLayout } from '../infrastructure/rendering/componentLayer/layout.ts'
 import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
@@ -97,10 +94,6 @@ export class ComponentLayerLogicApi extends RenderLayerDomainApi<ComponentLayer>
         this.eventMediator.addHandler<ChangeViewPortCommand>(
             ChangeViewPortCommandEventLabel,
             async (command) => this.changeViewPort(command),
-        )
-
-        this.eventMediator.addHandler<ResizeCommand>(ResizeCommandEventLabel, async (command) =>
-            this.component.updateSize(command.sizeData),
         )
     }
 }

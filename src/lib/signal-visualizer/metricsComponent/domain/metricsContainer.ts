@@ -2,11 +2,7 @@ import { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import { RenderManager } from '@/lib/signal-visualizer/core/rendering/renderManager.ts'
 import { MetricsComponentApi } from '@/lib/signal-visualizer/metricsComponent/domain/metricsComponentApi.ts'
 export class MetricsContainer {
-    readonly eventMediator: EventMediator
-
-    constructor() {
-        this.eventMediator = new EventMediator()
-    }
+    readonly eventMediator: EventMediator = new EventMediator()
 
     async init(htmlElement: HTMLElement) {
         const renderManager = new RenderManager(htmlElement, this.eventMediator)

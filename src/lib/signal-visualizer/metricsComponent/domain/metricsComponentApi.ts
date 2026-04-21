@@ -8,10 +8,6 @@ import {
     AddPerformanceMetricsCommandEventLabel,
     type AddPerformanceMetricsCommand,
 } from '@/lib/signal-visualizer/metricsComponent/application/commands/addPerformanceMetricsCommand'
-import {
-    ResizeCommandEventLabel,
-    type ResizeCommand,
-} from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
 
 export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLayer> {
     private readonly state: MetricsState
@@ -33,10 +29,6 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
         this.eventMediator.addHandler<AddPerformanceMetricsCommand>(
             AddPerformanceMetricsCommandEventLabel,
             async (command) => this.addPerformanceMetrics(command),
-        )
-
-        this.eventMediator.addHandler<ResizeCommand>(ResizeCommandEventLabel, async (command) =>
-            this.component.updateSize(command.sizeData),
         )
     }
 

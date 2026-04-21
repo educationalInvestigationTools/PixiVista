@@ -32,7 +32,7 @@ export class MetricsState {
 
     pushSample(sample: MetricsSample) {
         this.samples.push(sample)
-        this.trimSamples(sample.timestampMs)
+        this.trimSamples()
     }
 
     buildSnapshots(): MetricsChartsSnapshot {
@@ -58,14 +58,11 @@ export class MetricsState {
         }
     }
 
-    private trimSamples(referenceTimestampMs?: number) {
+    private trimSamples() {
         if (this.samples.length === 0) {
             return
         }
-        const latestTimestamp =
-            referenceTimestampMs !== undefined
-                ? referenceTimestampMs
-                : this.samples[this.samples.length - 1]!.timestampMs
+        const latestTimestamp = this.samples[this.samples.length - 1]!.timestampMs
         const cutoff = latestTimestamp - this.windowMs
         while (this.samples.length > 0 && this.samples[0]!.timestampMs < cutoff) {
             this.samples.shift()
@@ -117,4 +114,3 @@ export class MetricsState {
         return points
     }
 }
-

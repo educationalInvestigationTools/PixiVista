@@ -4,7 +4,7 @@ import type { EventToMediate } from '@/lib/signal-visualizer/utils/eventMediator
 export const AddPerformanceMetricsCommandEventLabel = 'AddPerformanceMetricsCommandEventLabel'
 
 export class AddPerformanceMetricsCommand implements EventToMediate {
-    readonly eventLabel: string = AddPerformanceMetricsCommandEventLabel
+    eventLabel: string = AddPerformanceMetricsCommandEventLabel
     readonly performanceMetrics: PerformanceMetrics
 
     constructor(performanceMetrics: PerformanceMetrics) {
