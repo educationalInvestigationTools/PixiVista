@@ -5,6 +5,7 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 import { Text } from 'pixi.js'
+import { clamp } from '@/lib/signal-visualizer/utils/utils'
 
 const GRID_VERTICAL_DIVISIONS = 6
 const GRID_HORIZONTAL_DIVISIONS = 4
@@ -174,12 +175,4 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     }
 }
 
-function clamp(value: number, minValue: number, maxValue: number) {
-    if (value < minValue) {
-        return minValue
-    }
-    if (value > maxValue) {
-        return maxValue
-    }
-    return value
-}
+
