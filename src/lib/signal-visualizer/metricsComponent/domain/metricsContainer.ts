@@ -1,8 +1,6 @@
 import { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import { RenderManager } from '@/lib/signal-visualizer/core/rendering/renderManager.ts'
 import { MetricsComponentApi } from '@/lib/signal-visualizer/metricsComponent/domain/metricsComponentApi.ts'
-import { DEFAULT_ROLLING_WINDOW_MS } from '@/lib/signal-visualizer/metricsComponent/application/types/rollingWindowConfig.ts'
-
 export class MetricsContainer {
     readonly eventMediator: EventMediator
 
@@ -10,12 +8,11 @@ export class MetricsContainer {
         this.eventMediator = new EventMediator()
     }
 
-    async init(htmlElement: HTMLElement, rollingWindowMs: number = DEFAULT_ROLLING_WINDOW_MS) {
+    async init(htmlElement: HTMLElement) {
         const renderManager = new RenderManager(htmlElement, this.eventMediator)
         const componentApi = new MetricsComponentApi(
             renderManager.sizeData,
-            this.eventMediator,
-            rollingWindowMs,
+            this.eventMediator
         )
 
         await renderManager.init(componentApi.Component)

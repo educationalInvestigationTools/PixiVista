@@ -7,16 +7,10 @@ import {DestroyCommand} from '@/lib/signal-visualizer/application/commands/destr
 import {
     AppendPerformanceMetricsCommand,
 } from '@/lib/signal-visualizer/metricsComponent/application/commands/appendPerformanceMetricsCommand.ts'
-import {
-    DEFAULT_ROLLING_WINDOW_MS,
-} from '@/lib/signal-visualizer/metricsComponent/application/types/rollingWindowConfig.ts'
-import {
-    ChangeRollingWindowMsCommand,
-} from '@/lib/signal-visualizer/metricsComponent/application/commands/changeRollingWindowMsCommand.ts'
+
 
 const props = defineProps<{
     metrics?: PerformanceMetrics
-    rollingWindowMs?: number
 }>()
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null)
@@ -33,7 +27,6 @@ onMounted(async () => {
     metricsContainer = new MetricsContainer()
     await metricsContainer.init(
         htmlContainerRef.value,
-        props.rollingWindowMs ?? DEFAULT_ROLLING_WINDOW_MS,
     )
 
     resizeObserverRef.value = new ResizeObserver(async () => {
@@ -66,17 +59,6 @@ watch(
     },
 )
 
-watch(
-    () => props.rollingWindowMs,
-    async (rollingWindowMs) => {
-        if (!metricsContainer || rollingWindowMs === undefined) {
-            return
-        }
-        await metricsContainer.eventMediator.publish(
-            new ChangeRollingWindowMsCommand(rollingWindowMs),
-        )
-    },
-)
 
 onBeforeUnmount(() => {
     resizeObserverRef.value?.disconnect()

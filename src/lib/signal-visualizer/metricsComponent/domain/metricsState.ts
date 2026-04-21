@@ -3,10 +3,8 @@ import type {
     MetricsChartsSnapshot,
 } from '@/lib/signal-visualizer/metricsComponent/application/types/metricsChartSnapshot.ts'
 import type { MetricsSample } from '@/lib/signal-visualizer/metricsComponent/application/types/metricsSample.ts'
-import { DEFAULT_ROLLING_WINDOW_MS } from '@/lib/signal-visualizer/metricsComponent/application/types/rollingWindowConfig.ts'
 import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/application/types/chartValuePoint.ts'
 
-const MIN_ROLLING_WINDOW_MS = 100
 
 type MetricSeriesBuildData = {
     title: string
@@ -22,13 +20,8 @@ export class MetricsState {
     private samples: MetricsSample[] = []
     private windowMs: number
 
-    constructor(windowMs: number = DEFAULT_ROLLING_WINDOW_MS) {
-        this.windowMs = Math.max(windowMs, MIN_ROLLING_WINDOW_MS)
-    }
-
-    setWindowMs(windowMs: number) {
-        this.windowMs = Math.max(windowMs, MIN_ROLLING_WINDOW_MS)
-        this.trimSamples()
+    constructor(windowMs: number) {
+        this.windowMs = windowMs
     }
 
     pushSample(sample: MetricsSample) {
