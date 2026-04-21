@@ -180,7 +180,7 @@ export class HorizontalGridLabelsLayout extends GridBaseLayout {
     }
 
     get maxLabelHeightAvailable(): number {
-        return Math.max(this.height / 8, this.minFontSize)
+        return this.fontSize
     }
 
     fittedFontSize(maxLabelWidthAtBaseFont: number, maxLabelHeightAtBaseFont: number): number {

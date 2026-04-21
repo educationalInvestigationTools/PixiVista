@@ -16,7 +16,7 @@ export class MetricsChartLayout extends LayoutDesign {
     }
 
     get panelPaddingBottom() {
-        return Math.max(10, this.height * 0.08)
+        return Math.max(18, this.height * 0.14)
     }
 
     get titleHeight() {
