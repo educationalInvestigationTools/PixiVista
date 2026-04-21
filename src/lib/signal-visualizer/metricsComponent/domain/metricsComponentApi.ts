@@ -3,11 +3,17 @@ import { MetricsComponentLayer } from '@/lib/signal-visualizer/metricsComponent/
 import { MetricsComponentLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/layout.ts'
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import { MetricsState } from '@/lib/signal-visualizer/metricsComponent/domain/metricsState.ts'
 import {
-    AddPerformanceMetricsCommandEventLabel,
+    type MetricsSample,
+    MetricsState,
+} from '@/lib/signal-visualizer/metricsComponent/domain/metricsState.ts'
+import {
     type AddPerformanceMetricsCommand,
+    AddPerformanceMetricsCommandEventLabel,
 } from '@/lib/signal-visualizer/metricsComponent/application/commands/addPerformanceMetricsCommand'
+import type { MetricsChartsSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot.ts'
+import { clamp } from '@/lib/signal-visualizer/utils/utils.ts'
+import type { PointsData } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/pointsData.ts'
 
 export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLayer> {
     private readonly state: MetricsState
@@ -19,7 +25,7 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
                 x: 0,
                 y: 0,
             }),
-            state.buildSnapshots(),
+            MetricsComponentApi.buildSnapshots([], state.WindowMs),
         )
         super(component, eventMediator)
         this.state = state
@@ -36,9 +42,85 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
         const sample = {
             timestampMs: command.performanceMetrics.observedAt.getTime(),
             renderTimeMs: command.performanceMetrics.renderTimeMs,
-            refreshRateFps: command.performanceMetrics.refreshRateFps
+            refreshRateFps: command.performanceMetrics.refreshRateFps,
         }
-        this.state.pushSample(sample)
-        this.component.updateCharts(this.state.buildSnapshots())
+        const currentState = this.state.pushSample(sample)
+        const windowMs = 1000 * 60
+        this.component.updateCharts(MetricsComponentApi.buildSnapshots(currentState, windowMs))
+    }
+
+    private static buildSnapshots(
+        samples: MetricsSample[],
+        windowMs: number,
+    ): MetricsChartsSnapshot {
+        const refreshRatePointsData = this.buildWindowPoints(
+            samples,
+            windowMs,
+            (sample) => sample.refreshRateFps,
+        )
+        const renderTimePointsData = this.buildWindowPoints(
+            samples,
+            windowMs,
+            (sample) => sample.renderTimeMs,
+        )
+        return {
+            refreshRateChart: {
+                title: 'Refresh Rate',
+                unit: 'FPS',
+                points: refreshRatePointsData.points,
+                minValue: refreshRatePointsData.minValue,
+                maxValue: refreshRatePointsData.maxValue,
+                currentValue: refreshRatePointsData.currentValue,
+                lineColor: '#34d399',
+                fillColor: '#14532d',
+                gridColor: '#34d399',
+            },
+            renderTimeChart: {
+                title: 'Render Time',
+                unit: 'ms',
+                points: renderTimePointsData.points,
+                minValue: renderTimePointsData.minValue,
+                maxValue: renderTimePointsData.maxValue,
+                currentValue: renderTimePointsData.currentValue,
+                lineColor: '#f59e0b',
+                fillColor: '#78350f',
+                gridColor: '#f59e0b',
+            },
+        }
+    }
+
+    private static buildWindowPoints(
+        samples: MetricsSample[],
+        windowMs: number,
+        getValue: (sample: MetricsSample) => number,
+    ): PointsData {
+        const points = samples.map((sample) => ({
+            x: clamp((sample.timestampMs - cutoff) / windowMs, 0, 1),
+            value: Math.max(0, getValue(sample)),
+        }))
+
+        if (samples.length === 0) {
+            return {
+                points: [
+                    { x: 0, value: 0 },
+                    { x: 1, value: 0 },
+                ],
+                minValue: 0,
+                maxValue: 0,
+                currentValue: 0,
+            }
+        }
+
+        const peakValue = points.reduce((maxValue, point) => Math.max(maxValue, point.value), 0)
+        const maxValue = Math.max(peakValue * 1.1, 1)
+        const currentValue = points[points.length - 1]!.value
+        const latestTimestamp = samples[samples.length - 1]!.timestampMs
+        const cutoff = latestTimestamp - windowMs
+        return {
+            points: points,
+            minValue: 0,
+            maxValue: maxValue,
+            currentValue: currentValue,
+        }
     }
 }

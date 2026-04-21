@@ -6,11 +6,7 @@ export class MetricsContainer {
 
     async init(htmlElement: HTMLElement) {
         const renderManager = new RenderManager(htmlElement, this.eventMediator)
-        const componentApi = new MetricsComponentApi(
-            renderManager.sizeData,
-            this.eventMediator
-        )
-
+        const componentApi = new MetricsComponentApi(renderManager.sizeData, this.eventMediator)
         await renderManager.init(componentApi.Component)
     }
 }
