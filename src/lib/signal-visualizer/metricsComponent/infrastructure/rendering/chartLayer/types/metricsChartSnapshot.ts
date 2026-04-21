@@ -1,4 +1,4 @@
-import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/application/types/chartValuePoint.ts'
+import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/chartValuePoint'
 
 export type MetricsChartSnapshot = {
     title: string

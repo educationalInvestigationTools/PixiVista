@@ -1,9 +1,10 @@
 import type {
     MetricsChartSnapshot,
     MetricsChartsSnapshot,
-} from '@/lib/signal-visualizer/metricsComponent/application/types/metricsChartSnapshot.ts'
+} from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 import type { MetricsSample } from '@/lib/signal-visualizer/metricsComponent/application/types/metricsSample.ts'
-import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/application/types/chartValuePoint.ts'
+import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/chartValuePoint'
+import { clamp } from '../../utils/utils'
 
 
 type MetricSeriesBuildData = {
@@ -112,12 +113,3 @@ export class MetricsState {
     }
 }
 
-function clamp(value: number, minValue: number, maxValue: number) {
-    if (value < minValue) {
-        return minValue
-    }
-    if (value > maxValue) {
-        return maxValue
-    }
-    return value
-}

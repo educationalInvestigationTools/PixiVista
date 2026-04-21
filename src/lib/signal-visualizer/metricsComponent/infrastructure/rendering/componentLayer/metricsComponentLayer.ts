@@ -5,7 +5,7 @@ import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/inf
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { MetricsChartsSnapshot } from '@/lib/signal-visualizer/metricsComponent/application/types/metricsChartSnapshot.ts'
+import type { MetricsChartsSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 
 export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
     private readonly refreshRateChartLayer: MetricsChartLayer

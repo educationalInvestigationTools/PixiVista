@@ -37,3 +37,13 @@ export function sameSet<T>(one: Array<T>, two: Array<T>) {
     }
     return true
 }
+
+export function clamp(value: number, minValue: number, maxValue: number) {
+    if (value < minValue) {
+        return minValue
+    }
+    if (value > maxValue) {
+        return maxValue
+    }
+    return value
+}
