@@ -14,6 +14,14 @@ import { Text } from 'pixi.js'
 
 const GRID_VERTICAL_DIVISIONS = 6
 const GRID_HORIZONTAL_DIVISIONS = 4
+const METRICS_WINDOW_SECONDS = 60
+
+function formatSecondsAsMinuteSeconds(value: number): string {
+    const safeValue = Math.max(0, Math.round(value))
+    const minutes = Math.floor(safeValue / 60)
+    const seconds = safeValue % 60
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+}
 
 export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private snapshot: MetricsChartSnapshot
@@ -33,6 +41,19 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             {
                 min: snapshot.minValue,
                 max: snapshot.maxValue,
+            },
+            {
+                vertical: {
+                    include: true,
+                    side: 'left',
+                },
+                horizontal: {
+                    include: true,
+                    side: 'down',
+                    minValue: 0,
+                    maxValue: METRICS_WINDOW_SECONDS,
+                    formatter: formatSecondsAsMinuteSeconds,
+                },
             },
         )
 
@@ -73,8 +94,6 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.lineMonitorLayer.updateSize(this.layoutDesign.buildPlotSizeData())
         this.lineMonitorLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
     }
-
-
 
     private clearLabels() {
         for (const label of this.labels) {
@@ -127,22 +146,10 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
         const titleFontSize = Math.max(11, Math.floor(this.layoutDesign.height * 0.1))
         const valueFontSize = Math.max(11, Math.floor(this.layoutDesign.height * 0.12))
-        const metadataFontSize = Math.max(10, Math.floor(this.layoutDesign.height * 0.09))
 
         const currentValueText = `${this.snapshot.currentValue.toFixed(2)} ${this.snapshot.unit}`
-        const rangeText = `${this.snapshot.minValue.toFixed(0)} to ${this.snapshot.maxValue.toFixed(0)} ${this.snapshot.unit}`
 
         this.addLabel(this.snapshot.title, plotX, 2, 'left', '#d1d5db', titleFontSize)
         this.addLabel(currentValueText, this.layoutDesign.plotRight, 2, 'right', '#f3f4f6', valueFontSize)
-        this.addLabel(
-            rangeText,
-            this.layoutDesign.plotRight,
-            this.layoutDesign.plotBottom + 2,
-            'right',
-            '#9ca3af',
-            metadataFontSize,
-        )
     }
 }
-
-

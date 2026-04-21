@@ -1,27 +1,26 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
-import { GridLabelsLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/layouts.ts'
+import { HorizontalGridLabelsLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/layouts.ts'
 import { Text } from 'pixi.js'
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
-import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
-export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
-    private verticalLabels: Text[] = []
+export class HorizontalLabelsLayer extends RenderLayer<HorizontalGridLabelsLayout> {
+    private horizontalLabels: Text[] = []
 
     get Children(): RenderLayer<LayoutDesign>[] {
         return []
     }
 
     protected _draw(): void {
-        for (let i = 0; i < this.verticalLabels.length; i++) {
-            this.container.removeChild(this.verticalLabels[i]!)
+        for (let i = 0; i < this.horizontalLabels.length; i++) {
+            this.container.removeChild(this.horizontalLabels[i]!)
         }
-        this.verticalLabels = []
+        this.horizontalLabels = []
 
         let maxLabelWidthAtBaseFont = 0
         let maxLabelHeightAtBaseFont = 0
-        for (let i = 0; i <= this.layoutDesign.horizontalDivisions; i++) {
+        for (let i = 0; i <= this.layoutDesign.verticalDivisions; i++) {
             const measureText = new Text({
                 text: this.layoutDesign.textLabel(i),
                 style: {
@@ -39,7 +38,7 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
             maxLabelWidthAtBaseFont,
             maxLabelHeightAtBaseFont,
         )
-        for (let i = 0; i <= this.layoutDesign.horizontalDivisions; i++) {
+        for (let i = 0; i <= this.layoutDesign.verticalDivisions; i++) {
             const text = new Text({
                 text: this.layoutDesign.textLabel(i),
                 style: {
@@ -48,10 +47,10 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
                     fill: '#d1d5db',
                 },
             })
-            text.x = this.layoutDesign.textXPosition(text.width)
-            text.y = this.layoutDesign.textYPosition(i, text.height)
+            text.x = this.layoutDesign.textXPosition(i, text.width)
+            text.y = this.layoutDesign.textYPosition(text.height)
             this.container.addChild(text)
-            this.verticalLabels.push(text)
+            this.horizontalLabels.push(text)
         }
     }
 
@@ -63,8 +62,9 @@ export class VerticalLabelsLayer extends RenderLayer<GridLabelsLayout> {
         this.layoutDesign.updateSizeData(sizeData)
     }
 
-    updateMinMaxValues(minMaxValues: MinMaxValues) {
-        this.layoutDesign.minMaxValues = minMaxValues
+    updateRange(minValue: number, maxValue: number) {
+        this.layoutDesign.minValue = minValue
+        this.layoutDesign.maxValue = maxValue
         this._needsRendering = true
     }
 }

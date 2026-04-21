@@ -34,6 +34,15 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
                 gridData,
             ),
             oneDimensionalSignalData.ySignal.minMaxValues,
+            {
+                vertical: {
+                    include: true,
+                    side: 'left',
+                },
+                horizontal: {
+                    include: false,
+                },
+            },
         )
         this.container.addChild(this.gridLayer.container)
 
