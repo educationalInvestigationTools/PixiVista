@@ -59,9 +59,8 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
                 {
                     x: 0,
                     y: 0,
-                },
-                oneDimensionalSignalData,
-            ),
+                }),
+            oneDimensionalSignalData,
         )
         this.container.addChild(this.oneDimensionalSignalLayer.container)
     }

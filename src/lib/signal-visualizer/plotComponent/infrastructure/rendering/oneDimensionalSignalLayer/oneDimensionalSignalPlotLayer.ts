@@ -6,6 +6,13 @@ import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotCompone
 import { OneDimensionalSignalLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalLayout.ts'
 
 export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalLayout> {
+    signalData: OneDimNormalizedSignal
+
+    constructor(layoutData : OneDimensionalSignalLayout, signalData: OneDimNormalizedSignal) {
+        super(layoutData)
+        this.signalData = signalData
+    }
+
     get Children(): RenderLayer<LayoutDesign>[] {
         return []
     }
@@ -19,8 +26,8 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
     }
 
     protected _draw(): void {
-        const xValues = this.layoutDesign.signalData.xSignal
-        const yValues = this.layoutDesign.signalData.ySignal
+        const xValues = this.signalData.xSignal
+        const yValues = this.signalData.ySignal
         const n = yValues.values.length
         for (let i = 0; i < n; i++) {
             if (i > 0) {
@@ -37,7 +44,7 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
     }
 
     updateData(signalData: OneDimNormalizedSignal) {
-        this.layoutDesign.signalData = signalData
+        this.signalData = signalData
         this._needsRendering = true
     }
 
