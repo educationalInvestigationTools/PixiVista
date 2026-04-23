@@ -1,6 +1,5 @@
 import { RenderLayerDomainApi } from '@/lib/signal-visualizer/core/rendering/layerApi.ts'
 import { MetricsComponentLayer } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayer.ts'
-import { MetricsComponentLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/layout.ts'
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import {
@@ -15,6 +14,9 @@ import type { MetricsChartsSnapshot } from '@/lib/signal-visualizer/metricsCompo
 import { clamp } from '@/lib/signal-visualizer/utils/utils.ts'
 import type { PointsData } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/pointsData.ts'
 import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/chartValuePoint.ts'
+import {
+    MetricsComponentLayout
+} from "@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayout.ts";
 
 export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLayer> {
     private static readonly RENDER_POINT_GROUPS = 120

@@ -1,6 +1,6 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
+import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 
 export class MetricsComponentLayout extends LayoutDesign {
     constructor(sizeData: SizeData, positionData: PositionData) {

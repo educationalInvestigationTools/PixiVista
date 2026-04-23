@@ -1,6 +1,6 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
+import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 
 export class MetricsChartLayout extends LayoutDesign {
     private static readonly HEADER_GAP = 6
@@ -102,9 +102,9 @@ export class MetricsChartLayout extends LayoutDesign {
     private buildValueLabelWidth(valueTextLength: number): number {
         const normalizedLength = Math.max(1, valueTextLength)
         const estimatedTextWidth =
-            normalizedLength
-            * this.estimatedValueFontSize
-            * MetricsChartLayout.VALUE_LABEL_CHAR_WIDTH_FACTOR
+            normalizedLength *
+            this.estimatedValueFontSize *
+            MetricsChartLayout.VALUE_LABEL_CHAR_WIDTH_FACTOR
         const paddedEstimatedWidth = estimatedTextWidth + this.headerGap * 2
 
         const maxWidth = Math.max(

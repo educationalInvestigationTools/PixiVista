@@ -1,5 +1,4 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
-import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/layout.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
@@ -12,6 +11,7 @@ import {
     LineMonitorLayout,
 } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
+import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
 
 const GRID_VERTICAL_DIVISIONS = 6
 const GRID_HORIZONTAL_DIVISIONS = 4
@@ -162,10 +162,14 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private relayoutHeaderLabels() {
         const currentValueTextLength = this.currentValueText.length
 
-        this.titleLabelLayer.updateSize(this.layoutDesign.buildTitleLabelSizeData(currentValueTextLength))
+        this.titleLabelLayer.updateSize(
+            this.layoutDesign.buildTitleLabelSizeData(currentValueTextLength),
+        )
         this.titleLabelLayer.updatePosition(this.layoutDesign.buildTitleLabelPositionData())
 
-        this.valueLabelLayer.updateSize(this.layoutDesign.buildValueLabelSizeData(currentValueTextLength))
+        this.valueLabelLayer.updateSize(
+            this.layoutDesign.buildValueLabelSizeData(currentValueTextLength),
+        )
         this.valueLabelLayer.updatePosition(
             this.layoutDesign.buildValueLabelPositionData(currentValueTextLength),
         )
