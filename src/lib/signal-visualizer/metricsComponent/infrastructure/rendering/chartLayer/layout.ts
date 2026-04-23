@@ -3,6 +3,9 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
 export class MetricsChartLayout extends LayoutDesign {
+    private static readonly HEADER_GAP = 6
+    private static readonly HEADER_TOP = 2
+
     constructor(sizeData: SizeData, positionData: PositionData) {
         super(sizeData, positionData)
     }
@@ -46,6 +49,50 @@ export class MetricsChartLayout extends LayoutDesign {
 
     get plotBottom() {
         return this.plotY + this.plotHeight
+    }
+
+    get headerHeight() {
+        return Math.max(this.plotY - MetricsChartLayout.HEADER_TOP, 1)
+    }
+
+    get headerGap() {
+        return Math.max(MetricsChartLayout.HEADER_GAP, this.plotWidth * 0.02)
+    }
+
+    get valueLabelWidth() {
+        return Math.max((this.plotWidth - this.headerGap) * 0.4, 1)
+    }
+
+    get titleLabelWidth() {
+        return Math.max(this.plotWidth - this.valueLabelWidth - this.headerGap, 1)
+    }
+
+    public buildTitleLabelSizeData(): SizeData {
+        return {
+            width: this.titleLabelWidth,
+            height: this.headerHeight,
+        }
+    }
+
+    public buildTitleLabelPositionData(): PositionData {
+        return {
+            x: this.plotX,
+            y: MetricsChartLayout.HEADER_TOP,
+        }
+    }
+
+    public buildValueLabelSizeData(): SizeData {
+        return {
+            width: this.valueLabelWidth,
+            height: this.headerHeight,
+        }
+    }
+
+    public buildValueLabelPositionData(): PositionData {
+        return {
+            x: this.plotX + this.titleLabelWidth + this.headerGap,
+            y: MetricsChartLayout.HEADER_TOP,
+        }
     }
 
     public buildPlotSizeData(): SizeData {

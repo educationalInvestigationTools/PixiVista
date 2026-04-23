@@ -5,11 +5,12 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 import { GridLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
+import { LabelLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
+import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
 import {
     LineMonitorLayer,
     LineMonitorLayout,
 } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
-import { Text } from 'pixi.js'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 
 const GRID_VERTICAL_DIVISIONS = 6
@@ -27,7 +28,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private snapshot: MetricsChartSnapshot
     private readonly gridLayer: GridLayer
     private readonly lineMonitorLayer: LineMonitorLayer
-    private labels: Text[] = []
+    private readonly titleLabelLayer: LabelLayer
+    private readonly valueLabelLayer: LabelLayer
 
     constructor(layoutData: MetricsChartLayout, snapshot: MetricsChartSnapshot) {
         super(layoutData)
@@ -74,12 +76,34 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             snapshot,
         )
 
+        this.titleLabelLayer = new LabelLayer(
+            new LabelLayout(
+                this.layoutDesign.buildTitleLabelSizeData(),
+                this.layoutDesign.buildTitleLabelPositionData(),
+            ),
+            {
+                text: snapshot.title,
+            },
+        )
+
+        this.valueLabelLayer = new LabelLayer(
+            new LabelLayout(
+                this.layoutDesign.buildValueLabelSizeData(),
+                this.layoutDesign.buildValueLabelPositionData(),
+            ),
+            {
+                text: this.currentValueText,
+            },
+        )
+
         this.container.addChild(this.gridLayer.container)
         this.container.addChild(this.lineMonitorLayer.container)
+        this.container.addChild(this.titleLabelLayer.container)
+        this.container.addChild(this.valueLabelLayer.container)
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {
-        return [this.gridLayer, this.lineMonitorLayer]
+        return [this.gridLayer, this.lineMonitorLayer, this.titleLabelLayer, this.valueLabelLayer]
     }
 
     updateSnapshot(snapshot: MetricsChartSnapshot) {
@@ -91,6 +115,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             },
         })
         this.lineMonitorLayer.updateSnapshot(snapshot)
+        this.updateLabelDescriptions()
         this._needsRendering = true
     }
 
@@ -98,6 +123,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.layoutDesign.updatePosData(positionData)
         this.gridLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
         this.lineMonitorLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
+        this.titleLabelLayer.updatePosition(this.layoutDesign.buildTitleLabelPositionData())
+        this.valueLabelLayer.updatePosition(this.layoutDesign.buildValueLabelPositionData())
     }
 
     _updateSize(sizeData: SizeData): void {
@@ -107,42 +134,14 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
         this.lineMonitorLayer.updateSize(this.layoutDesign.buildPlotSizeData())
         this.lineMonitorLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
-    }
+        this.titleLabelLayer.updateSize(this.layoutDesign.buildTitleLabelSizeData())
+        this.titleLabelLayer.updatePosition(this.layoutDesign.buildTitleLabelPositionData())
 
-    private clearLabels() {
-        for (const label of this.labels) {
-            this.container.removeChild(label)
-            label.destroy()
-        }
-        this.labels = []
-    }
-
-    private addLabel(
-        value: string,
-        x: number,
-        y: number,
-        align: 'left' | 'right',
-        color: string,
-        fontSize: number,
-    ) {
-        const label = new Text({
-            text: value,
-            style: {
-                fill: color,
-                fontFamily: 'JetBrains Mono, Menlo, monospace',
-                fontSize,
-                fontWeight: '600',
-            },
-        })
-        label.x = align === 'left' ? x : x - label.width
-        label.y = y
-        this.container.addChild(label)
-        this.labels.push(label)
+        this.valueLabelLayer.updateSize(this.layoutDesign.buildValueLabelSizeData())
+        this.valueLabelLayer.updatePosition(this.layoutDesign.buildValueLabelPositionData())
     }
 
     protected _draw(): void {
-        this.clearLabels()
-
         this.graphics
             .rect(0, 0, this.layoutDesign.width, this.layoutDesign.height)
             .fill({ color: '#06090d', alpha: 1 })
@@ -157,20 +156,14 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             .rect(plotX, plotY, plotWidth, plotHeight)
             .fill({ color: '#0d131a', alpha: 1 })
             .stroke({ color: '#1f2937', width: 1, alpha: 1 })
+    }
 
-        const titleFontSize = Math.max(11, Math.floor(this.layoutDesign.height * 0.1))
-        const valueFontSize = Math.max(11, Math.floor(this.layoutDesign.height * 0.12))
+    private updateLabelDescriptions() {
+        this.titleLabelLayer.updateLabelDescription({ text: this.snapshot.title })
+        this.valueLabelLayer.updateLabelDescription({ text: this.currentValueText })
+    }
 
-        const currentValueText = `${this.snapshot.currentValue.toFixed(2)} ${this.snapshot.unit}`
-
-        this.addLabel(this.snapshot.title, plotX, 2, 'left', '#d1d5db', titleFontSize)
-        this.addLabel(
-            currentValueText,
-            this.layoutDesign.plotRight,
-            2,
-            'right',
-            '#f3f4f6',
-            valueFontSize,
-        )
+    private get currentValueText(): string {
+        return `${this.snapshot.currentValue.toFixed(2)} ${this.snapshot.unit}`
     }
 }
