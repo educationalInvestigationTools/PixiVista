@@ -78,7 +78,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
         this.titleLabelLayer = new LabelLayer(
             new LabelLayout(
-                this.layoutDesign.buildTitleLabelSizeData(),
+                this.layoutDesign.buildTitleLabelSizeData(this.currentValueText.length),
                 this.layoutDesign.buildTitleLabelPositionData(),
             ),
             {
@@ -88,8 +88,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
         this.valueLabelLayer = new LabelLayer(
             new LabelLayout(
-                this.layoutDesign.buildValueLabelSizeData(),
-                this.layoutDesign.buildValueLabelPositionData(),
+                this.layoutDesign.buildValueLabelSizeData(this.currentValueText.length),
+                this.layoutDesign.buildValueLabelPositionData(this.currentValueText.length),
             ),
             {
                 text: this.currentValueText,
@@ -116,6 +116,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         })
         this.lineMonitorLayer.updateSnapshot(snapshot)
         this.updateLabelDescriptions()
+        this.relayoutHeaderLabels()
         this._needsRendering = true
     }
 
@@ -123,8 +124,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.layoutDesign.updatePosData(positionData)
         this.gridLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
         this.lineMonitorLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
-        this.titleLabelLayer.updatePosition(this.layoutDesign.buildTitleLabelPositionData())
-        this.valueLabelLayer.updatePosition(this.layoutDesign.buildValueLabelPositionData())
+        this.relayoutHeaderLabels()
     }
 
     _updateSize(sizeData: SizeData): void {
@@ -134,11 +134,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
         this.lineMonitorLayer.updateSize(this.layoutDesign.buildPlotSizeData())
         this.lineMonitorLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
-        this.titleLabelLayer.updateSize(this.layoutDesign.buildTitleLabelSizeData())
-        this.titleLabelLayer.updatePosition(this.layoutDesign.buildTitleLabelPositionData())
-
-        this.valueLabelLayer.updateSize(this.layoutDesign.buildValueLabelSizeData())
-        this.valueLabelLayer.updatePosition(this.layoutDesign.buildValueLabelPositionData())
+        this.relayoutHeaderLabels()
     }
 
     protected _draw(): void {
@@ -161,6 +157,18 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private updateLabelDescriptions() {
         this.titleLabelLayer.updateLabelDescription({ text: this.snapshot.title })
         this.valueLabelLayer.updateLabelDescription({ text: this.currentValueText })
+    }
+
+    private relayoutHeaderLabels() {
+        const currentValueTextLength = this.currentValueText.length
+
+        this.titleLabelLayer.updateSize(this.layoutDesign.buildTitleLabelSizeData(currentValueTextLength))
+        this.titleLabelLayer.updatePosition(this.layoutDesign.buildTitleLabelPositionData())
+
+        this.valueLabelLayer.updateSize(this.layoutDesign.buildValueLabelSizeData(currentValueTextLength))
+        this.valueLabelLayer.updatePosition(
+            this.layoutDesign.buildValueLabelPositionData(currentValueTextLength),
+        )
     }
 
     private get currentValueText(): string {

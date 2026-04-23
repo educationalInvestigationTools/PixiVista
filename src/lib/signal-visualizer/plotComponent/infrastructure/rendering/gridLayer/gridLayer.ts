@@ -144,13 +144,19 @@ export class GridLayer extends RenderLayer<GridLayout> {
         }
 
         for (let i = 0; i <= this.layoutDesign.horizontalDivisions; i++) {
+            const labelText = this.verticalLabelText(i)
+            const labelSize = this.layoutDesign.buildVerticalLabelSize(labelText.length)
             const labelLayer = new LabelLayer(
                 new LabelLayout(
-                    this.layoutDesign.buildVerticalLabelSize(),
-                    this.layoutDesign.buildVerticalLabelPosition(i, this.verticalLabels.side),
+                    labelSize,
+                    this.layoutDesign.buildVerticalLabelPosition(
+                        i,
+                        this.verticalLabels.side,
+                        labelSize.width,
+                    ),
                 ),
                 {
-                    text: this.verticalLabelText(i),
+                    text: labelText,
                 },
             )
             this.verticalLabels.layers.push(labelLayer)
@@ -182,9 +188,15 @@ export class GridLayer extends RenderLayer<GridLayout> {
         if (this.verticalLabels !== undefined) {
             for (let i = 0; i < this.verticalLabels.layers.length; i++) {
                 const labelLayer = this.verticalLabels.layers[i]!
-                labelLayer.updateSize(this.layoutDesign.buildVerticalLabelSize())
+                const labelText = this.verticalLabelText(i)
+                const labelSize = this.layoutDesign.buildVerticalLabelSize(labelText.length)
+                labelLayer.updateSize(labelSize)
                 labelLayer.updatePosition(
-                    this.layoutDesign.buildVerticalLabelPosition(i, this.verticalLabels.side),
+                    this.layoutDesign.buildVerticalLabelPosition(
+                        i,
+                        this.verticalLabels.side,
+                        labelSize.width,
+                    ),
                 )
             }
         }
@@ -211,6 +223,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
             }
             this.verticalLabels.layers[i]!.updateLabelDescription(description)
         }
+        this.updateLabelsLayout()
     }
 
     private updateHorizontalLabelDescriptions() {

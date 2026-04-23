@@ -10,13 +10,27 @@ import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructur
 export class GridLayout extends GridBaseLayout {
     private static readonly EDGE_MARGIN = 2
     private static readonly MIN_VERTICAL_LABEL_WIDTH = 2
+    private static readonly DEFAULT_VERTICAL_LABEL_TEXT_LENGTH = 8
+    private static readonly VERTICAL_LABEL_CHAR_WIDTH_FACTOR = 0.62
+    private static readonly VERTICAL_LABEL_HORIZONTAL_PADDING = 4
 
-    buildVerticalLabelSize(): SizeData {
+    buildVerticalLabelSize(
+        textLength: number = GridLayout.DEFAULT_VERTICAL_LABEL_TEXT_LENGTH,
+    ): SizeData {
         const verticalLabelWidthAvailable = Math.max(
             this.width / 18,
             GridLayout.MIN_VERTICAL_LABEL_WIDTH,
         )
-        const width = Math.max(verticalLabelWidthAvailable - this.labelToGridGap, 1)
+        const availableWidth = Math.max(verticalLabelWidthAvailable - this.labelToGridGap, 1)
+        const estimatedTextWidth =
+            Math.max(1, textLength)
+            * LabelLayout.BASE_FONT_SIZE
+            * GridLayout.VERTICAL_LABEL_CHAR_WIDTH_FACTOR
+        const estimatedLabelWidth = estimatedTextWidth + GridLayout.VERTICAL_LABEL_HORIZONTAL_PADDING
+        const width = Math.max(
+            GridLayout.MIN_VERTICAL_LABEL_WIDTH,
+            Math.min(availableWidth, estimatedLabelWidth),
+        )
 
         const labelCount = Math.max(this.horizontalDivisions + 1, 1)
         const height = Math.max((this.height - GridLayout.EDGE_MARGIN * 2) / labelCount, 1)
@@ -27,14 +41,14 @@ export class GridLayout extends GridBaseLayout {
         }
     }
 
-    buildVerticalLabelPosition(i: number, side: VerticalLabelsSide): PositionData {
-        const sizeData = this.buildVerticalLabelSize()
+    buildVerticalLabelPosition(i: number, side: VerticalLabelsSide, labelWidth: number): PositionData {
         const x =
             side === 'left'
-                ? -(this.labelToGridGap + sizeData.width)
+                ? -(this.labelToGridGap + labelWidth)
                 : this.width + this.labelToGridGap
 
-        const halfLabelHeight = sizeData.height / 2
+        const labelHeight = this.buildVerticalLabelSize().height
+        const halfLabelHeight = labelHeight / 2
         const margin = halfLabelHeight + GridLayout.EDGE_MARGIN
         const usableHeight = Math.max(this.height - margin * 2, 0)
 

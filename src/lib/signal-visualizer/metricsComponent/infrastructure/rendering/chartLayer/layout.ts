@@ -5,6 +5,10 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 export class MetricsChartLayout extends LayoutDesign {
     private static readonly HEADER_GAP = 6
     private static readonly HEADER_TOP = 2
+    private static readonly DEFAULT_VALUE_TEXT_LENGTH = 12
+    private static readonly VALUE_LABEL_MIN_WIDTH = 56
+    private static readonly VALUE_LABEL_MAX_WIDTH_RATIO = 0.35
+    private static readonly VALUE_LABEL_CHAR_WIDTH_FACTOR = 0.62
 
     constructor(sizeData: SizeData, positionData: PositionData) {
         super(sizeData, positionData)
@@ -59,17 +63,12 @@ export class MetricsChartLayout extends LayoutDesign {
         return Math.max(MetricsChartLayout.HEADER_GAP, this.plotWidth * 0.02)
     }
 
-    get valueLabelWidth() {
-        return Math.max((this.plotWidth - this.headerGap) * 0.4, 1)
-    }
-
-    get titleLabelWidth() {
-        return Math.max(this.plotWidth - this.valueLabelWidth - this.headerGap, 1)
-    }
-
-    public buildTitleLabelSizeData(): SizeData {
+    public buildTitleLabelSizeData(
+        valueTextLength: number = MetricsChartLayout.DEFAULT_VALUE_TEXT_LENGTH,
+    ): SizeData {
+        const valueLabelWidth = this.buildValueLabelWidth(valueTextLength)
         return {
-            width: this.titleLabelWidth,
+            width: Math.max(this.plotWidth - valueLabelWidth - this.headerGap, 1),
             height: this.headerHeight,
         }
     }
@@ -81,18 +80,45 @@ export class MetricsChartLayout extends LayoutDesign {
         }
     }
 
-    public buildValueLabelSizeData(): SizeData {
+    public buildValueLabelSizeData(
+        valueTextLength: number = MetricsChartLayout.DEFAULT_VALUE_TEXT_LENGTH,
+    ): SizeData {
         return {
-            width: this.valueLabelWidth,
+            width: this.buildValueLabelWidth(valueTextLength),
             height: this.headerHeight,
         }
     }
 
-    public buildValueLabelPositionData(): PositionData {
+    public buildValueLabelPositionData(
+        valueTextLength: number = MetricsChartLayout.DEFAULT_VALUE_TEXT_LENGTH,
+    ): PositionData {
+        const valueLabelWidth = this.buildValueLabelWidth(valueTextLength)
         return {
-            x: this.plotX + this.titleLabelWidth + this.headerGap,
+            x: this.plotRight - valueLabelWidth,
             y: MetricsChartLayout.HEADER_TOP,
         }
+    }
+
+    private buildValueLabelWidth(valueTextLength: number): number {
+        const normalizedLength = Math.max(1, valueTextLength)
+        const estimatedTextWidth =
+            normalizedLength
+            * this.estimatedValueFontSize
+            * MetricsChartLayout.VALUE_LABEL_CHAR_WIDTH_FACTOR
+        const paddedEstimatedWidth = estimatedTextWidth + this.headerGap * 2
+
+        const maxWidth = Math.max(
+            this.plotWidth * MetricsChartLayout.VALUE_LABEL_MAX_WIDTH_RATIO,
+            MetricsChartLayout.VALUE_LABEL_MIN_WIDTH,
+        )
+        return Math.max(
+            MetricsChartLayout.VALUE_LABEL_MIN_WIDTH,
+            Math.min(maxWidth, paddedEstimatedWidth),
+        )
+    }
+
+    private get estimatedValueFontSize(): number {
+        return Math.max(11, Math.floor(this.height * 0.12))
     }
 
     public buildPlotSizeData(): SizeData {
