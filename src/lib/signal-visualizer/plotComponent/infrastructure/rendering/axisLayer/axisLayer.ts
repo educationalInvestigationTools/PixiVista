@@ -1,13 +1,11 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
-import {
-    AxisLayerLayout,
-    LabelsAxisLayerLayout,
-} from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/axisLayer/layouts.ts'
 import { LabelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/axisLayer/labelsLayer.ts'
 import type { LayoutDesign } from '../../../../core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
+import { LabelsAxisLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/axisLayer/labelsAxisLayerLayout.ts'
+import { AxisLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/axisLayer/axisLayerLayout.ts'
 
 export class AxisLayer extends RenderLayer<AxisLayerLayout> {
     get Children(): RenderLayer<LayoutDesign>[] {

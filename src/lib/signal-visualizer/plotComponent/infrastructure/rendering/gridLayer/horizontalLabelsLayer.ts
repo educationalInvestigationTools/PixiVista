@@ -1,10 +1,10 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
-import { HorizontalGridLabelsLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/layouts.ts'
 import { Text } from 'pixi.js'
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
+import { HorizontalGridLabelsLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/horizontalGridLabelsLayout.ts'
 
 export class HorizontalLabelsLayer extends RenderLayer<HorizontalGridLabelsLayout> {
     private horizontalLabels: Text[] = []

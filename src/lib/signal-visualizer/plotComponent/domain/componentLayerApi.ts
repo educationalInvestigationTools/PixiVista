@@ -11,10 +11,10 @@ import {
     type ChangeViewPortCommand,
 } from '@/lib/signal-visualizer/plotComponent/application/commands/changeViewPortCommand.ts'
 
-import { ComponentLayout } from '../infrastructure/rendering/componentLayer/layout.ts'
 import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
+import { ComponentLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/componentLayout.ts'
 
 export class ComponentLayerLogicApi extends RenderLayerDomainApi<ComponentLayer> {
     private viewPort: ViewPort

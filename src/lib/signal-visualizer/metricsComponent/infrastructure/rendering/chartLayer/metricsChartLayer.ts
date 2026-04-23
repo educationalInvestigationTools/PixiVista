@@ -5,12 +5,12 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 import { GridLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
-import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/layouts.ts'
 import {
     LineMonitorLayer,
     LineMonitorLayout,
 } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
 import { Text } from 'pixi.js'
+import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 
 const GRID_VERTICAL_DIVISIONS = 6
 const GRID_HORIZONTAL_DIVISIONS = 4
@@ -34,10 +34,14 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.snapshot = snapshot
 
         this.gridLayer = new GridLayer(
-            new GridLayout(this.layoutDesign.buildPlotSizeData(), this.layoutDesign.buildPlotPositionData(), {
-                horizontalDivisions: GRID_HORIZONTAL_DIVISIONS,
-                verticalDivisions: GRID_VERTICAL_DIVISIONS,
-            }),
+            new GridLayout(
+                this.layoutDesign.buildPlotSizeData(),
+                this.layoutDesign.buildPlotPositionData(),
+                {
+                    horizontalDivisions: GRID_HORIZONTAL_DIVISIONS,
+                    verticalDivisions: GRID_VERTICAL_DIVISIONS,
+                },
+            ),
             {
                 vertical: {
                     min: snapshot.minValue,
@@ -63,7 +67,10 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         )
 
         this.lineMonitorLayer = new LineMonitorLayer(
-            new LineMonitorLayout(this.layoutDesign.buildPlotSizeData(), this.layoutDesign.buildPlotPositionData()),
+            new LineMonitorLayout(
+                this.layoutDesign.buildPlotSizeData(),
+                this.layoutDesign.buildPlotPositionData(),
+            ),
             snapshot,
         )
 
@@ -157,6 +164,13 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         const currentValueText = `${this.snapshot.currentValue.toFixed(2)} ${this.snapshot.unit}`
 
         this.addLabel(this.snapshot.title, plotX, 2, 'left', '#d1d5db', titleFontSize)
-        this.addLabel(currentValueText, this.layoutDesign.plotRight, 2, 'right', '#f3f4f6', valueFontSize)
+        this.addLabel(
+            currentValueText,
+            this.layoutDesign.plotRight,
+            2,
+            'right',
+            '#f3f4f6',
+            valueFontSize,
+        )
     }
 }

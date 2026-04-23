@@ -1,16 +1,14 @@
-import {
-    ChannelsLayerLayout,
-    type ComponentLayout,
-} from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/layout.ts'
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import { AxisLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/axisLayer/axisLayer.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import { AxisLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/axisLayer/layouts.ts'
 import { ChannelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/channelsLayer.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
+import { AxisLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/axisLayer/axisLayerLayout.ts'
+import { ChannelsLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/channelsLayerLayout.ts'
+import { ComponentLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/componentLayout.ts'
 
 export class ComponentLayer extends RenderLayer<ComponentLayout> {
     readonly axisLayer: AxisLayer

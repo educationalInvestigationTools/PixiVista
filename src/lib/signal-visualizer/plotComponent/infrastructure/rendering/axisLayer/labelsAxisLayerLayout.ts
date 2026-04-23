@@ -1,25 +1,7 @@
-import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
+import { AxisLayerBaseLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/axisLayer/axisLayerBaseLayout.ts'
 import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-
-export class AxisLayerBaseLayout extends LayoutDesign {
-    divisions: number
-
-    constructor(sizeData: SizeData, positionData: PositionData, divisions: number) {
-        super(sizeData, positionData)
-        this.divisions = divisions
-    }
-
-    get yCoordinate() {
-        return this.height * 0.2
-    }
-
-    xDivision(i: number) {
-        return (i / this.divisions) * this.width
-    }
-}
+import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 
 export class LabelsAxisLayerLayout extends AxisLayerBaseLayout {
     static readonly LABEL_FONT_SIZE = 14
@@ -66,19 +48,5 @@ export class LabelsAxisLayerLayout extends AxisLayerBaseLayout {
             (this.fontSize * this.maxLabelHeightAvailable) / maxLabelHeightAtBaseFont,
         )
         return Math.max(this.minFontSize, scaledSize)
-    }
-}
-
-export class AxisLayerLayout extends AxisLayerBaseLayout {
-    get circleRadius(): number {
-        return this.height * 0.05
-    }
-
-    get labelsLayerSize(): SizeData {
-        return { width: this.width, height: this.height }
-    }
-
-    get labelsLayerPosition(): PositionData {
-        return { x: 0, y: 0 }
     }
 }
