@@ -1,5 +1,6 @@
 import type { Point2D } from "../../core/types/Point2d"
 import { clamp } from "../../utils/utils"
+import type { MetricsPoints } from "../infrastructure/rendering/componentLayer/metricsComponentLayer"
 import type { PointsData } from "./types/pointsData"
 
 export type MetricsSample = {
@@ -9,7 +10,7 @@ export type MetricsSample = {
 }
 
 export class MetricsState {
-    private static readonly RENDER_POINT_GROUPS = 120
+    private readonly RENDER_POINT_GROUPS = 120
     private samples: MetricsSample[] = []
     private readonly windowMs: number
 
@@ -20,7 +21,6 @@ export class MetricsState {
     pushSample(sample: MetricsSample) {
         this.samples.push(sample)
         this.trimSamples()
-        return this.samples
     }
 
     private trimSamples() {
@@ -38,26 +38,32 @@ export class MetricsState {
         return this.windowMs
     }
 
-    static buildSnapshots(
-        samples: MetricsSample[],
-        windowMs: number,
-    ): [PointsData, PointsData] {
+    get TimeStampMs() {
+        return this.samples.length === 0 ? Date.now() : this.samples[this.samples.length - 1]!.timestampMs
+    }
+
+    get CurrentState() {
+        return this.buildSnapshots()
+    }
+
+    private buildSnapshots(
+    ): MetricsPoints {
+        const samples = this.samples
         const refreshRatePointsData = this.buildWindowPoints(
             samples,
-            windowMs,
             (sample) => sample.refreshRateFps,
         )
         const renderTimePointsData = this.buildWindowPoints(
             samples,
-            windowMs,
             (sample) => sample.renderTimeMs,
         )
-        return [refreshRatePointsData, renderTimePointsData]
+        return {
+            refreshRatePointsData, renderTimePointsData
+        }
     }
 
-    static buildWindowPoints(
+    private buildWindowPoints(
         samples: MetricsSample[],
-        windowMs: number,
         getValue: (sample: MetricsSample) => number,
     ): PointsData {
 
@@ -73,9 +79,9 @@ export class MetricsState {
             }
         }
         const latestTimestamp = samples[samples.length - 1]!.timestampMs
-        const cutoff = latestTimestamp - windowMs
+        const cutoff = latestTimestamp - this.windowMs
         const points = samples.map((sample) => ({
-            x: clamp((sample.timestampMs - cutoff) / windowMs, 0, 1),
+            x: clamp((sample.timestampMs - cutoff) / this.windowMs, 0, 1),
             y: Math.max(0, getValue(sample)),
         }))
 
@@ -92,7 +98,7 @@ export class MetricsState {
         }
     }
 
-    static averagePointsByGroups(
+    private averagePointsByGroups(
         points: Point2D[],
         groupsCount: number,
     ): Point2D[] {

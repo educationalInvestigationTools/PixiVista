@@ -10,11 +10,16 @@ import {
 import type { PointsData } from '../../../domain/types/pointsData'
 import type { MetricsChartStyle } from '../chartLayer/types/metricsChartSnapshot'
 
+export type MetricsPoints = {
+    refreshRatePointsData: PointsData
+    renderTimePointsData: PointsData
+}
+
 export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
     private readonly refreshRateChartLayer: MetricsChartLayer
     private readonly renderTimeChartLayer: MetricsChartLayer
 
-    constructor(layoutData: MetricsComponentLayout, refreshRateStyle : MetricsChartStyle, refreshRatePointsData : PointsData, renderTimeStyles : MetricsChartStyle, renderTimePointsData : PointsData) {
+    constructor(layoutData: MetricsComponentLayout, refreshRateStyle: MetricsChartStyle, renderTimeStyles: MetricsChartStyle) {
         super(layoutData)
 
         this.refreshRateChartLayer = new MetricsChartLayer(
@@ -23,7 +28,6 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
                 this.layoutDesign.buildRefreshRateChartPosition(),
             ),
             refreshRateStyle,
-            refreshRatePointsData
         )
 
         this.renderTimeChartLayer = new MetricsChartLayer(
@@ -32,7 +36,6 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
                 this.layoutDesign.buildRenderTimeChartPosition(),
             ),
             renderTimeStyles,
-            renderTimePointsData
         )
 
         this.container.addChild(this.refreshRateChartLayer.container)
@@ -43,9 +46,9 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
         return [this.refreshRateChartLayer, this.renderTimeChartLayer]
     }
 
-    updateCharts(refreshRatePointsData : PointsData, renderTimePointsData : PointsData) {
-        this.refreshRateChartLayer.updatePointsData(refreshRatePointsData)
-        this.renderTimeChartLayer.updatePointsData(renderTimePointsData)
+    updateCharts(metricsPoints: MetricsPoints) {
+        this.refreshRateChartLayer.updatePointsData(metricsPoints.refreshRatePointsData)
+        this.renderTimeChartLayer.updatePointsData(metricsPoints.renderTimePointsData)
     }
 
     protected _draw(): void {

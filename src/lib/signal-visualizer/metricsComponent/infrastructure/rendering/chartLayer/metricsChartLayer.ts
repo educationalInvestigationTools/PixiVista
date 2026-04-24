@@ -27,16 +27,21 @@ function formatSecondsAsMinuteSeconds(value: number): string {
 
 export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private style: MetricsChartStyle
-    private pointsData : PointsData
+    private pointsData: PointsData
     private readonly gridLayer: GridLayer
     private readonly lineMonitorLayer: LineMonitorLayer
     private readonly titleLabelLayer: LabelLayer
     private readonly valueLabelLayer: LabelLayer
 
-    constructor(layoutData: MetricsChartLayout, style: MetricsChartStyle, pointsData: PointsData) {
+    constructor(layoutData: MetricsChartLayout, style: MetricsChartStyle) {
         super(layoutData)
         this.style = style
-        this.pointsData = pointsData
+        this.pointsData = {
+            points: [],
+            minValue: 0,
+            maxValue: 0,
+            currentValue: 0,
+        }
         this.gridLayer = new GridLayer(
             new GridLayout(
                 this.layoutDesign.buildPlotSizeData(),
@@ -48,8 +53,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             ),
             {
                 vertical: {
-                    min: pointsData.minValue,
-                    max: pointsData.maxValue,
+                    min: this.pointsData.minValue,
+                    max: this.pointsData.maxValue,
                 },
                 horizontal: {
                     min: 0,
@@ -76,7 +81,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
                 this.layoutDesign.buildPlotPositionData(),
             ),
             style,
-            pointsData
+            this.pointsData
         )
 
         this.titleLabelLayer = new LabelLayer(
@@ -109,7 +114,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         return [this.gridLayer, this.lineMonitorLayer, this.titleLabelLayer, this.valueLabelLayer]
     }
 
-    updatePointsData(pointsData : PointsData) {
+    updatePointsData(pointsData: PointsData) {
         this.pointsData = pointsData
         this.gridLayer.updateMinMaxValues({
             vertical: {
