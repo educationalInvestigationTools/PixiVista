@@ -1,6 +1,6 @@
 export abstract class Observer<T> {
     private lastObservedValue: T | null = null
-    private readonly debouncedRefreshRate = 1000 / 30
+    protected readonly debouncedRefreshRate
     private readonly areEqual: (arg0: T, arg1: T) => boolean
     private readonly clone: (arg0: T) => T
     private readonly currentValueObserver: () => T
@@ -9,10 +9,12 @@ export abstract class Observer<T> {
         areEqual: (arg0: T, arg1: T) => boolean,
         clone: (arg0: T) => T,
         currentValue: () => T,
+        callsPerSecond : number = 30
     ) {
         this.areEqual = areEqual
         this.clone = clone
         this.currentValueObserver = currentValue
+        this.debouncedRefreshRate = 1000 / callsPerSecond
     }
 
     async init() {

@@ -7,7 +7,7 @@ export class MetricsObserver extends Observer<MetricsTimeStamp> {
     private readonly state: MetricsState
     private readonly componentApi: MetricsComponentApi
     constructor(state: MetricsState, componentApi: MetricsComponentApi) {
-        super(areEqual, clone, () => { return { timeStampMs: state.TimeStampMs } })
+        super(areEqual, clone, () => { return { timeStampMs: state.TimeStampMs } }, 10)
         this.componentApi = componentApi
         this.state = state
     }

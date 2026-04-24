@@ -1,4 +1,3 @@
-import type { Point2D } from "../../core/types/Point2d"
 import { clamp } from "../../utils/utils"
 import type { MetricsPoints } from "../infrastructure/rendering/componentLayer/metricsComponentLayer"
 import type { PointsData } from "./types/pointsData"
@@ -10,7 +9,6 @@ export type MetricsSample = {
 }
 
 export class MetricsState {
-    private readonly RENDER_POINT_GROUPS = 120
     private samples: MetricsSample[] = []
     private readonly windowMs: number
 
@@ -32,10 +30,6 @@ export class MetricsState {
         while (this.samples.length > 0 && this.samples[0]!.timestampMs < cutoff) {
             this.samples.shift()
         }
-    }
-
-    get WindowMs() {
-        return this.windowMs
     }
 
     get TimeStampMs() {
@@ -82,59 +76,17 @@ export class MetricsState {
         const cutoff = latestTimestamp - this.windowMs
         const points = samples.map((sample) => ({
             x: clamp((sample.timestampMs - cutoff) / this.windowMs, 0, 1),
-            y: Math.max(0, getValue(sample)),
+            y: getValue(sample),
         }))
 
-        const averagedPoints = this.averagePointsByGroups(points, this.RENDER_POINT_GROUPS)
 
-        const peakValue = averagedPoints.reduce((maxValue, point) => Math.max(maxValue, point.y), 0)
-        const maxValue = Math.max(peakValue * 1.1, 1)
+        const maxValue = points.reduce((maxValue, point) => Math.max(maxValue, point.y), 0)
         const currentValue = points[points.length - 1]!.y
         return {
-            points: averagedPoints,
+            points: points,
             minValue: 0,
             maxValue: maxValue,
             currentValue: currentValue,
         }
-    }
-
-    private averagePointsByGroups(
-        points: Point2D[],
-        groupsCount: number,
-    ): Point2D[] {
-        const safeGroupsCount = Math.max(1, groupsCount)
-        if (points.length <= safeGroupsCount) {
-            return points
-        }
-
-        const buckets = Array.from({ length: safeGroupsCount }, () => ({
-            xSum: 0,
-            valueSum: 0,
-            count: 0,
-        }))
-
-        for (const point of points) {
-            const bucketIndex = Math.min(
-                safeGroupsCount - 1,
-                Math.floor(clamp(point.x, 0, 1) * safeGroupsCount),
-            )
-            const bucket = buckets[bucketIndex]!
-            bucket.xSum += point.x
-            bucket.valueSum += point.y
-            bucket.count += 1
-        }
-
-        const averagedPoints: Point2D[] = []
-        for (const bucket of buckets) {
-            if (bucket.count === 0) {
-                continue
-            }
-            averagedPoints.push({
-                x: bucket.xSum / bucket.count,
-                y: bucket.valueSum / bucket.count,
-            })
-        }
-
-        return averagedPoints.length > 0 ? averagedPoints : [points[points.length - 1]!]
     }
 }
