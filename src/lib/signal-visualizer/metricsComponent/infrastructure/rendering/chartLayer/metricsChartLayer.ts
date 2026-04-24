@@ -8,8 +8,8 @@ import { LabelLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure
 import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
 import {
     LineMonitorLayer,
-    LineMonitorLayout,
 } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
+import { LineMonitorLayout } from './lineMonitorLayout'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
 import type { PointsData } from '../../../domain/types/pointsData'

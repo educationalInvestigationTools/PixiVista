@@ -5,8 +5,7 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 import { clamp } from '@/lib/signal-visualizer/utils/utils'
 import type { PointsData } from '../../../domain/types/pointsData'
-
-export class LineMonitorLayout extends LayoutDesign {}
+import type { LineMonitorLayout } from './lineMonitorLayout'
 
 export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
     private style: MetricsChartStyle
