@@ -4,7 +4,7 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 import { clamp } from '@/lib/signal-visualizer/utils/utils'
-import type { PointsData } from './types/pointsData'
+import type { PointsData } from '../../../domain/types/pointsData'
 
 export class LineMonitorLayout extends LayoutDesign {}
 

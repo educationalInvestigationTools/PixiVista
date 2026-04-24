@@ -12,7 +12,7 @@ import {
 } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
-import type { PointsData } from './types/pointsData'
+import type { PointsData } from '../../../domain/types/pointsData'
 
 const GRID_VERTICAL_DIVISIONS = 6
 const GRID_HORIZONTAL_DIVISIONS = 4

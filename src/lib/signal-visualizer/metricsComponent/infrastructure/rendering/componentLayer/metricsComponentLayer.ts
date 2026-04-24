@@ -7,7 +7,7 @@ import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/inf
 import {
     MetricsComponentLayout
 } from "@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayout.ts";
-import type { PointsData } from '../chartLayer/types/pointsData'
+import type { PointsData } from '../../../domain/types/pointsData'
 import type { MetricsChartStyle } from '../chartLayer/types/metricsChartSnapshot'
 
 export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
