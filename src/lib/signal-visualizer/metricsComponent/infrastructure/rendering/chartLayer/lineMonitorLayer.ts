@@ -2,25 +2,28 @@ import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { MetricsChartSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
+import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 import { clamp } from '@/lib/signal-visualizer/utils/utils'
+import type { PointsData } from './types/pointsData'
 
 export class LineMonitorLayout extends LayoutDesign {}
 
 export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
-    private snapshot: MetricsChartSnapshot
+    private style: MetricsChartStyle
+    private pointsData : PointsData
 
-    constructor(layoutData: LineMonitorLayout, snapshot: MetricsChartSnapshot) {
+    constructor(layoutData: LineMonitorLayout, style: MetricsChartStyle, pointsData : PointsData) {
         super(layoutData)
-        this.snapshot = snapshot
+        this.style = style
+        this.pointsData = pointsData
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {
         return []
     }
 
-    updateSnapshot(snapshot: MetricsChartSnapshot) {
-        this.snapshot = snapshot
+    updatePointsData(pointsData : PointsData) {
+        this.pointsData = pointsData
         this._needsRendering = true
     }
 
@@ -33,8 +36,8 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
     }
 
     private mapYValue(value: number) {
-        const minValue = this.snapshot.minValue
-        const maxValue = this.snapshot.maxValue
+        const minValue = this.pointsData.minValue
+        const maxValue = this.pointsData.maxValue
         const range = Math.max(maxValue - minValue, 0.001)
         const normalized = clamp((value - minValue) / range, 0, 1)
         return this.layoutDesign.height - normalized * this.layoutDesign.height
@@ -45,12 +48,12 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
     }
 
     protected _draw(): void {
-        const mappedPoints = this.snapshot.points.map((point) => ({
+        const mappedPoints = this.pointsData.points.map((point) => ({
             x: this.mapXValue(point.x),
-            y: this.mapYValue(point.value),
+            y: this.mapYValue(point.y),
         }))
 
-        if (mappedPoints.length === 0) {
+        if (this.pointsData.points.length === 0) {
             return
         }
 
@@ -64,11 +67,11 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
         }
         this.graphics.lineTo(lastPoint.x, plotBottom)
         this.graphics.lineTo(firstPoint.x, plotBottom)
-        this.graphics.fill({ color: this.snapshot.fillColor, alpha: 0.45 })
+        this.graphics.fill({ color: this.style.fillColor, alpha: 0.45 })
 
         if (mappedPoints.length === 1) {
             this.graphics.circle(firstPoint.x, firstPoint.y, 2.5).fill({
-                color: this.snapshot.lineColor,
+                color: this.style.lineColor,
                 alpha: 1,
             })
             return
@@ -80,14 +83,14 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
             this.graphics.lineTo(point.x, point.y)
         }
         this.graphics.stroke({
-            color: this.snapshot.lineColor,
+            color: this.style.lineColor,
             width: 2,
             alpha: 1,
             cap: 'round',
             join: 'round',
         })
         this.graphics.circle(lastPoint.x, lastPoint.y, 2.5).fill({
-            color: this.snapshot.lineColor,
+            color: this.style.lineColor,
             alpha: 1,
         })
     }

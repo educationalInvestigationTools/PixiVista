@@ -2,7 +2,7 @@ import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { MetricsChartSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
+import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 import { GridLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
 import { LabelLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
 import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
@@ -12,6 +12,7 @@ import {
 } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
+import type { PointsData } from './types/pointsData'
 
 const GRID_VERTICAL_DIVISIONS = 6
 const GRID_HORIZONTAL_DIVISIONS = 4
@@ -25,16 +26,17 @@ function formatSecondsAsMinuteSeconds(value: number): string {
 }
 
 export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
-    private snapshot: MetricsChartSnapshot
+    private style: MetricsChartStyle
+    private pointsData : PointsData
     private readonly gridLayer: GridLayer
     private readonly lineMonitorLayer: LineMonitorLayer
     private readonly titleLabelLayer: LabelLayer
     private readonly valueLabelLayer: LabelLayer
 
-    constructor(layoutData: MetricsChartLayout, snapshot: MetricsChartSnapshot) {
+    constructor(layoutData: MetricsChartLayout, style: MetricsChartStyle, pointsData: PointsData) {
         super(layoutData)
-        this.snapshot = snapshot
-
+        this.style = style
+        this.pointsData = pointsData
         this.gridLayer = new GridLayer(
             new GridLayout(
                 this.layoutDesign.buildPlotSizeData(),
@@ -46,8 +48,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             ),
             {
                 vertical: {
-                    min: snapshot.minValue,
-                    max: snapshot.maxValue,
+                    min: pointsData.minValue,
+                    max: pointsData.maxValue,
                 },
                 horizontal: {
                     min: 0,
@@ -73,7 +75,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
                 this.layoutDesign.buildPlotSizeData(),
                 this.layoutDesign.buildPlotPositionData(),
             ),
-            snapshot,
+            style,
+            pointsData
         )
 
         this.titleLabelLayer = new LabelLayer(
@@ -82,7 +85,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
                 this.layoutDesign.buildTitleLabelPositionData(),
             ),
             {
-                text: snapshot.title,
+                text: style.title,
             },
         )
 
@@ -106,15 +109,15 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         return [this.gridLayer, this.lineMonitorLayer, this.titleLabelLayer, this.valueLabelLayer]
     }
 
-    updateSnapshot(snapshot: MetricsChartSnapshot) {
-        this.snapshot = snapshot
+    updatePointsData(pointsData : PointsData) {
+        this.pointsData = pointsData
         this.gridLayer.updateMinMaxValues({
             vertical: {
-                min: snapshot.minValue,
-                max: snapshot.maxValue,
+                min: pointsData.minValue,
+                max: pointsData.maxValue,
             },
         })
-        this.lineMonitorLayer.updateSnapshot(snapshot)
+        this.lineMonitorLayer.updatePointsData(pointsData)
         this.updateLabelDescriptions()
         this.relayoutHeaderLabels()
         this._needsRendering = true
@@ -155,7 +158,6 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     }
 
     private updateLabelDescriptions() {
-        this.titleLabelLayer.updateLabelDescription({ text: this.snapshot.title })
         this.valueLabelLayer.updateLabelDescription({ text: this.currentValueText })
     }
 
@@ -176,6 +178,6 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     }
 
     private get currentValueText(): string {
-        return `${this.snapshot.currentValue.toFixed(2)} ${this.snapshot.unit}`
+        return `${this.pointsData.currentValue.toFixed(2)} ${this.style.unit}`
     }
 }

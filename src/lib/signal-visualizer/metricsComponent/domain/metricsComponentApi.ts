@@ -10,7 +10,6 @@ import {
     type AddPerformanceMetricsCommand,
     AddPerformanceMetricsCommandEventLabel,
 } from '@/lib/signal-visualizer/metricsComponent/application/commands/addPerformanceMetricsCommand'
-import type { MetricsChartsSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot.ts'
 import { clamp } from '@/lib/signal-visualizer/utils/utils.ts'
 import type { PointsData } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/pointsData.ts'
 import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/chartValuePoint.ts'
@@ -25,12 +24,33 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
 
     constructor(sizeData: SizeData, eventMediator: EventMediator) {
         const windowMs = 1000 * 60
+
+        const refreshRateStyle = {
+            title: 'Refresh Rate',
+            unit: 'FPS',
+            lineColor: '#34d399',
+            fillColor: '#14532d',
+            gridColor: '#34d399',
+        }
+
+        const renderTimeStyle = {
+            title: 'Render Time',
+            unit: 'ms',
+            lineColor: '#f59e0b',
+            fillColor: '#78350f',
+            gridColor: '#f59e0b',
+        }
+
+        const [refreshTimePointsData, renderTimePointsData] = MetricsComponentApi.buildSnapshots([], windowMs)
+
         const component = new MetricsComponentLayer(
             new MetricsComponentLayout(sizeData, {
                 x: 0,
                 y: 0,
-            }),
-            MetricsComponentApi.buildSnapshots([], windowMs),
+            }), refreshRateStyle, refreshTimePointsData, renderTimeStyle,
+
+
+            renderTimePointsData,
         )
         super(component, eventMediator)
         this.state = new MetricsState(windowMs)
@@ -51,13 +71,13 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
         }
         const currentState = this.state.pushSample(sample)
         const windowMs = this.state.WindowMs
-        this.component.updateCharts(MetricsComponentApi.buildSnapshots(currentState, windowMs))
+        this.component.updateCharts(...MetricsComponentApi.buildSnapshots(currentState, windowMs))
     }
 
     private static buildSnapshots(
         samples: MetricsSample[],
         windowMs: number,
-    ): MetricsChartsSnapshot {
+    ): [PointsData, PointsData] {
         const refreshRatePointsData = this.buildWindowPoints(
             samples,
             windowMs,
@@ -68,30 +88,7 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
             windowMs,
             (sample) => sample.renderTimeMs,
         )
-        return {
-            refreshRateChart: {
-                title: 'Refresh Rate',
-                unit: 'FPS',
-                points: refreshRatePointsData.points,
-                minValue: refreshRatePointsData.minValue,
-                maxValue: refreshRatePointsData.maxValue,
-                currentValue: refreshRatePointsData.currentValue,
-                lineColor: '#34d399',
-                fillColor: '#14532d',
-                gridColor: '#34d399',
-            },
-            renderTimeChart: {
-                title: 'Render Time',
-                unit: 'ms',
-                points: renderTimePointsData.points,
-                minValue: renderTimePointsData.minValue,
-                maxValue: renderTimePointsData.maxValue,
-                currentValue: renderTimePointsData.currentValue,
-                lineColor: '#f59e0b',
-                fillColor: '#78350f',
-                gridColor: '#f59e0b',
-            },
-        }
+        return [refreshRatePointsData, renderTimePointsData]
     }
 
     private static buildWindowPoints(
@@ -103,8 +100,8 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
         if (samples.length === 0) {
             return {
                 points: [
-                    { x: 0, value: 0 },
-                    { x: 1, value: 0 },
+                    { x: 0, y: 0 },
+                    { x: 1, y: 0 },
                 ],
                 minValue: 0,
                 maxValue: 0,
@@ -115,14 +112,14 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
         const cutoff = latestTimestamp - windowMs
         const points = samples.map((sample) => ({
             x: clamp((sample.timestampMs - cutoff) / windowMs, 0, 1),
-            value: Math.max(0, getValue(sample)),
+            y: Math.max(0, getValue(sample)),
         }))
 
         const averagedPoints = this.averagePointsByGroups(points, this.RENDER_POINT_GROUPS)
 
-        const peakValue = averagedPoints.reduce((maxValue, point) => Math.max(maxValue, point.value), 0)
+        const peakValue = averagedPoints.reduce((maxValue, point) => Math.max(maxValue, point.y), 0)
         const maxValue = Math.max(peakValue * 1.1, 1)
-        const currentValue = points[points.length - 1]!.value
+        const currentValue = points[points.length - 1]!.y
         return {
             points: averagedPoints,
             minValue: 0,
@@ -153,7 +150,7 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
             )
             const bucket = buckets[bucketIndex]!
             bucket.xSum += point.x
-            bucket.valueSum += point.value
+            bucket.valueSum += point.y
             bucket.count += 1
         }
 
@@ -164,7 +161,7 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
             }
             averagedPoints.push({
                 x: bucket.xSum / bucket.count,
-                value: bucket.valueSum / bucket.count,
+                y: bucket.valueSum / bucket.count,
             })
         }
 

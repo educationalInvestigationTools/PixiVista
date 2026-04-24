@@ -3,17 +3,18 @@ import { MetricsChartLayer } from '@/lib/signal-visualizer/metricsComponent/infr
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { MetricsChartsSnapshot } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
 import {
     MetricsComponentLayout
 } from "@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayout.ts";
+import type { PointsData } from '../chartLayer/types/pointsData'
+import type { MetricsChartStyle } from '../chartLayer/types/metricsChartSnapshot'
 
 export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
     private readonly refreshRateChartLayer: MetricsChartLayer
     private readonly renderTimeChartLayer: MetricsChartLayer
 
-    constructor(layoutData: MetricsComponentLayout, snapshots: MetricsChartsSnapshot) {
+    constructor(layoutData: MetricsComponentLayout, refreshRateStyle : MetricsChartStyle, refreshRatePointsData : PointsData, renderTimeStyles : MetricsChartStyle, renderTimePointsData : PointsData) {
         super(layoutData)
 
         this.refreshRateChartLayer = new MetricsChartLayer(
@@ -21,7 +22,8 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
                 this.layoutDesign.buildRefreshRateChartSize(),
                 this.layoutDesign.buildRefreshRateChartPosition(),
             ),
-            snapshots.refreshRateChart,
+            refreshRateStyle,
+            refreshRatePointsData
         )
 
         this.renderTimeChartLayer = new MetricsChartLayer(
@@ -29,7 +31,8 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
                 this.layoutDesign.buildRenderTimeChartSize(),
                 this.layoutDesign.buildRenderTimeChartPosition(),
             ),
-            snapshots.renderTimeChart,
+            renderTimeStyles,
+            renderTimePointsData
         )
 
         this.container.addChild(this.refreshRateChartLayer.container)
@@ -40,9 +43,9 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
         return [this.refreshRateChartLayer, this.renderTimeChartLayer]
     }
 
-    updateCharts(snapshots: MetricsChartsSnapshot) {
-        this.refreshRateChartLayer.updateSnapshot(snapshots.refreshRateChart)
-        this.renderTimeChartLayer.updateSnapshot(snapshots.renderTimeChart)
+    updateCharts(refreshRatePointsData : PointsData, renderTimePointsData : PointsData) {
+        this.refreshRateChartLayer.updatePointsData(refreshRatePointsData)
+        this.renderTimeChartLayer.updatePointsData(renderTimePointsData)
     }
 
     protected _draw(): void {

@@ -1,18 +1,7 @@
-import type { ChartValuePoint } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/chartValuePoint'
-
-export type MetricsChartSnapshot = {
+export type MetricsChartStyle = {
     title: string
     unit: string
-    points: ChartValuePoint[]
-    minValue: number
-    maxValue: number
-    currentValue: number
     lineColor: string
     fillColor: string
     gridColor: string
-}
-
-export type MetricsChartsSnapshot = {
-    refreshRateChart: MetricsChartSnapshot
-    renderTimeChart: MetricsChartSnapshot
 }
