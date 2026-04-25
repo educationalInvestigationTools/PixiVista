@@ -1,10 +1,9 @@
 import { RenderLayerDomainApi } from '@/lib/signal-visualizer/core/rendering/layerApi.ts'
-import { MetricsComponentLayer, type MetricsPoints } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayer.ts'
+import { MetricsComponentLayer } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayer.ts'
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import {
-    MetricsComponentLayout
-} from "@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayout.ts";
+import { MetricsComponentLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayout.ts'
+import type { MetricsPoints } from '@/lib/signal-visualizer/metricsComponent/domain/types/metricsPoints.ts'
 
 export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLayer> {
     constructor(sizeData: SizeData, eventMediator: EventMediator) {
@@ -28,7 +27,9 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
             new MetricsComponentLayout(sizeData, {
                 x: 0,
                 y: 0,
-            }), refreshRateStyle, renderTimeStyle,
+            }),
+            refreshRateStyle,
+            renderTimeStyle,
         )
         super(component, eventMediator)
     }
@@ -36,6 +37,5 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
     updateCharts(metricsPointsData: MetricsPoints) {
         this.component.updateCharts(metricsPointsData)
     }
-    registerEvents(): void {
-    }
+    registerEvents(): void {}
 }

@@ -4,22 +4,19 @@ import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layout
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
-import {
-    MetricsComponentLayout
-} from "@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayout.ts";
-import type { PointsData } from '../../../domain/types/pointsData'
-import type { MetricsChartStyle } from '../chartLayer/types/metricsChartSnapshot'
-
-export type MetricsPoints = {
-    refreshRatePointsData: PointsData
-    renderTimePointsData: PointsData
-}
+import { MetricsComponentLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayout.ts'
+import type { MetricsChartStyle } from '../chartLayer/types/metricsChartStyle.ts'
+import type { MetricsPoints } from '@/lib/signal-visualizer/metricsComponent/domain/types/metricsPoints.ts'
 
 export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
     private readonly refreshRateChartLayer: MetricsChartLayer
     private readonly renderTimeChartLayer: MetricsChartLayer
 
-    constructor(layoutData: MetricsComponentLayout, refreshRateStyle: MetricsChartStyle, renderTimeStyles: MetricsChartStyle) {
+    constructor(
+        layoutData: MetricsComponentLayout,
+        refreshRateStyle: MetricsChartStyle,
+        renderTimeStyles: MetricsChartStyle,
+    ) {
         super(layoutData)
 
         this.refreshRateChartLayer = new MetricsChartLayer(

@@ -2,16 +2,16 @@ import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartSnapshot'
+import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
 import { clamp } from '@/lib/signal-visualizer/utils/utils'
 import type { PointsData } from '../../../domain/types/pointsData'
 import type { LineMonitorLayout } from './lineMonitorLayout'
 
 export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
     private style: MetricsChartStyle
-    private pointsData : PointsData
+    private pointsData: PointsData
 
-    constructor(layoutData: LineMonitorLayout, style: MetricsChartStyle, pointsData : PointsData) {
+    constructor(layoutData: LineMonitorLayout, style: MetricsChartStyle, pointsData: PointsData) {
         super(layoutData)
         this.style = style
         this.pointsData = pointsData
@@ -21,7 +21,7 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
         return []
     }
 
-    updatePointsData(pointsData : PointsData) {
+    updatePointsData(pointsData: PointsData) {
         this.pointsData = pointsData
         this._needsRendering = true
     }
