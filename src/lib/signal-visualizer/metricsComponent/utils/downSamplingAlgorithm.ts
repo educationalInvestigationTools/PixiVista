@@ -1,4 +1,4 @@
-import type { Point2D } from "../../core/types/Point2d"
+import type { Point2D } from "../../core/types/point2D"
 import type { MinMaxValues } from "../../plotComponent/application/types/minMaxValues"
 
 export function downSamplingAlgorithm(points: Point2D[], outputSamples: number, minMaxValueX: MinMaxValues): Point2D[] {

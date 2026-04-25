@@ -92,7 +92,6 @@ export class MetricsState {
             0,
         )
         const currentValue = downSampledPoints[downSampledPoints.length - 1]!.y
-        console.log(downSampledPoints.length)
         return {
             points: downSampledPoints,
             minValue: 0,
