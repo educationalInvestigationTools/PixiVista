@@ -18,6 +18,13 @@ export function fmtTime(seconds: number, extended: boolean): string {
     }
 }
 
+export function formatSecondsAsMinuteSeconds(value: number): string {
+    const safeValue = Math.max(0, Math.round(value))
+    const minutes = Math.floor(safeValue / 60)
+    const seconds = safeValue % 60
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+}
+
 export function sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

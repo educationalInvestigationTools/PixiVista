@@ -4,4 +4,5 @@ export type MetricsChartStyle = {
     lineColor: string
     fillColor: string
     gridColor: string
+    windowMs : number
 }

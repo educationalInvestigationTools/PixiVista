@@ -6,13 +6,14 @@ import { MetricsComponentLayout } from '@/lib/signal-visualizer/metricsComponent
 import type { MetricsPoints } from '@/lib/signal-visualizer/metricsComponent/domain/types/metricsPoints.ts'
 
 export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLayer> {
-    constructor(sizeData: SizeData, eventMediator: EventMediator) {
+    constructor(sizeData: SizeData, eventMediator: EventMediator, windowMs : number) {
         const refreshRateStyle = {
             title: 'Refresh Rate',
             unit: 'FPS',
             lineColor: '#34d399',
             fillColor: '#14532d',
             gridColor: '#34d399',
+            windowMs
         }
 
         const renderTimeStyle = {
@@ -21,6 +22,7 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
             lineColor: '#f59e0b',
             fillColor: '#78350f',
             gridColor: '#f59e0b',
+            windowMs
         }
 
         const component = new MetricsComponentLayer(

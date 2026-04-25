@@ -9,11 +9,11 @@ export class MetricsContainer {
     private metricsObserver? : MetricsObserver
 
     async init(htmlElement: HTMLElement) {
+        const windowMs = 1000 * 60
         const renderManager = new RenderManager(htmlElement, this.eventMediator)
-        const componentApi = new MetricsComponentApi(renderManager.sizeData, this.eventMediator)
+        const componentApi = new MetricsComponentApi(renderManager.sizeData, this.eventMediator, windowMs)
         await renderManager.init(componentApi.Component)
 
-        const windowMs = 1000 * 60
         const state = new MetricsState(windowMs)
         this.metricsObserver = new MetricsObserver( state, componentApi )
 

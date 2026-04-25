@@ -11,17 +11,7 @@ import { LineMonitorLayout } from './lineMonitorLayout'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
 import type { PointsData } from '../../../domain/types/pointsData'
-
-const GRID_VERTICAL_DIVISIONS = 6
-const GRID_HORIZONTAL_DIVISIONS = 4
-const METRICS_WINDOW_SECONDS = 60
-
-function formatSecondsAsMinuteSeconds(value: number): string {
-    const safeValue = Math.max(0, Math.round(value))
-    const minutes = Math.floor(safeValue / 60)
-    const seconds = safeValue % 60
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-}
+import { formatSecondsAsMinuteSeconds } from '@/lib/signal-visualizer/utils/utils'
 
 export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private style: MetricsChartStyle
@@ -45,8 +35,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
                 this.layoutDesign.buildPlotSizeData(),
                 this.layoutDesign.buildPlotPositionData(),
                 {
-                    horizontalDivisions: GRID_HORIZONTAL_DIVISIONS,
-                    verticalDivisions: GRID_VERTICAL_DIVISIONS,
+                    horizontalDivisions: 6,
+                    verticalDivisions: 4,
                 },
             ),
             {
@@ -56,7 +46,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
                 },
                 horizontal: {
                     min: 0,
-                    max: METRICS_WINDOW_SECONDS,
+                    max: style.windowMs / 1000,
                 },
             },
             {
