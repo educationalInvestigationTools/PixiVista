@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import {computed, onBeforeUnmount, onMounted, ref} from 'vue'
 
 const props = defineProps<{
     currentValuePercent: number
@@ -32,8 +32,7 @@ function getDialPercentFromPointer(event: PointerEvent, dialElement: HTMLElement
 }
 
 function applyDialPointer(event: PointerEvent) {
-    const pointerPercent = getDialPercentFromPointer(event, activeDialElement.value!)
-    valuePercent.value = pointerPercent
+    valuePercent.value = getDialPercentFromPointer(event, activeDialElement.value!)
 }
 
 function startDialInteraction(event: PointerEvent) {
@@ -57,8 +56,7 @@ function stopDialInteraction() {
 
 function nudgeNumberChoice(direction: -1 | 1) {
     const step = 1
-    const nextValue = valuePercent.value + step * direction
-    valuePercent.value = nextValue
+    valuePercent.value = valuePercent.value + step * direction
 }
 
 function getDialStyle() {

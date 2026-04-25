@@ -50,8 +50,8 @@ type HorizontalLabelsState = {
 }
 
 export class GridLayer extends RenderLayer<GridLayout> {
-    private verticalLabels?: VerticalLabelsState
-    private horizontalLabels?: HorizontalLabelsState
+    private readonly verticalLabels?: VerticalLabelsState
+    private readonly horizontalLabels?: HorizontalLabelsState
 
     get Children(): RenderLayer<LayoutDesign>[] {
         const children: RenderLayer<LayoutDesign>[] = []

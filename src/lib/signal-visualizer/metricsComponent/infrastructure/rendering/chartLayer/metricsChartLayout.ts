@@ -50,11 +50,6 @@ export class MetricsChartLayout extends LayoutDesign {
     get plotRight() {
         return this.plotX + this.plotWidth
     }
-
-    get plotBottom() {
-        return this.plotY + this.plotHeight
-    }
-
     get headerHeight() {
         return Math.max(this.plotY - MetricsChartLayout.HEADER_TOP, 1)
     }
