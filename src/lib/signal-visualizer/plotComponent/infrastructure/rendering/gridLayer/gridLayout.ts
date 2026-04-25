@@ -46,13 +46,11 @@ export class GridLayout extends GridBaseLayout {
 
         const labelHeight = this.buildVerticalLabelSize().height
         const halfLabelHeight = labelHeight / 2
-        const margin = halfLabelHeight + GridLayout.EDGE_MARGIN
-        const usableHeight = Math.max(this.height - margin * 2, 0)
 
         const y =
             this.horizontalDivisions <= 0
                 ? this.height / 2 - halfLabelHeight
-                : margin + (i / this.horizontalDivisions) * usableHeight - halfLabelHeight
+                : (i / this.horizontalDivisions) * this.height - halfLabelHeight
 
         return {
             x,
@@ -74,12 +72,10 @@ export class GridLayout extends GridBaseLayout {
         const sizeData = this.buildHorizontalLabelSize()
 
         const halfLabelWidth = sizeData.width / 2
-        const margin = halfLabelWidth + GridLayout.EDGE_MARGIN
-        const usableWidth = Math.max(this.width - margin * 2, 0)
         const x =
             this.verticalDivisions <= 0
                 ? this.width / 2 - halfLabelWidth
-                : margin + (i / this.verticalDivisions) * usableWidth - halfLabelWidth
+                : (i / this.verticalDivisions) * this.width - halfLabelWidth
 
         const y =
             side === 'up'
