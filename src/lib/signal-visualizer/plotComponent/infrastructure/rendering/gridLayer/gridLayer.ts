@@ -1,12 +1,6 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
-import {
-    type GridLabelFormatter,
-    type HorizontalLabelsSide,
-    type VerticalLabelsSide,
-} from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/layouts.ts'
 import type { LayoutDesign } from '../../../../core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
-import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 import {
@@ -14,35 +8,17 @@ import {
     type LabelDescription,
 } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
 import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
+import type { GridLabelFormatter, GridLabelsConfig, GridLabelsMinMaxValues, HorizontalLabelsSide, VerticalLabelsSide } from './types/types.ts'
+import type { MinMaxValues } from '../../../application/types/minMaxValues.ts'
 
-type LabelsDirectionConfig<TSide> =
-    | {
-          include: false
-      }
-    | {
-          include: true
-          side: TSide
-          formatter: GridLabelFormatter
-      }
-
-export type GridLabelsConfig = {
-    vertical: LabelsDirectionConfig<VerticalLabelsSide>
-    horizontal: LabelsDirectionConfig<HorizontalLabelsSide>
-}
-
-export type GridLabelsMinMaxValues = {
-    vertical: MinMaxValues
-    horizontal: MinMaxValues
-}
-
-type VerticalLabelsState = {
+export type VerticalLabelsState = {
     side: VerticalLabelsSide
     formatter: GridLabelFormatter
     minMaxValues: MinMaxValues
     layers: LabelLayer[]
 }
 
-type HorizontalLabelsState = {
+export type HorizontalLabelsState = {
     side: HorizontalLabelsSide
     formatter: GridLabelFormatter
     minMaxValues: MinMaxValues
