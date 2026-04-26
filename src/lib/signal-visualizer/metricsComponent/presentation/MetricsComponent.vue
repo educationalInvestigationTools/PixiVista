@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
-import type {PerformanceMetrics} from '@/lib/signal-visualizer/core/types/performanceMetrics.ts'
-import {MetricsContainer} from '@/lib/signal-visualizer/metricsComponent/domain/metricsContainer.ts'
-import {ResizeCommand} from '@/lib/signal-visualizer/application/commands/resizeCommand.ts'
-import {DestroyCommand} from '@/lib/signal-visualizer/application/commands/destroyCommand.ts'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import type { PerformanceMetrics } from '@/lib/signal-visualizer/core/types/performanceMetrics.ts'
+import { MetricsContainer } from '@/lib/signal-visualizer/metricsComponent/domain/metricsContainer.ts'
+import { DestroyCommand } from '@/lib/signal-visualizer/application/commands/destroyCommand.ts'
 import {
     AddPerformanceMetricsCommand,
 } from '@/lib/signal-visualizer/metricsComponent/application/commands/addPerformanceMetricsCommand'
+import { useResizeObserver } from '../../presentation/utils/useResizeObserver'
 
 
 const props = defineProps<{
@@ -14,7 +14,6 @@ const props = defineProps<{
 }>()
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null)
-const resizeObserverRef = ref<ResizeObserver | null>(null)
 let metricsContainer: MetricsContainer | null = null
 
 const sizeInfo = ref('Waiting for metrics...')
@@ -29,14 +28,7 @@ onMounted(async () => {
         htmlContainerRef.value,
     )
 
-    resizeObserverRef.value = new ResizeObserver(async () => {
-        if (htmlContainerRef.value) {
-            const width = htmlContainerRef.value.clientWidth
-            const height = htmlContainerRef.value.clientHeight
-            await metricsContainer?.eventMediator.publish(new ResizeCommand(width, height))
-        }
-    })
-    resizeObserverRef.value.observe(htmlContainerRef.value)
+    useResizeObserver(htmlContainerRef, metricsContainer.eventMediator)
 
     if (props.metrics) {
         await metricsContainer.eventMediator.publish(new AddPerformanceMetricsCommand(props.metrics))
@@ -60,9 +52,6 @@ watch(
 )
 
 
-onBeforeUnmount(() => {
-    resizeObserverRef.value?.disconnect()
-})
 
 onBeforeUnmount(async () => {
     if (!metricsContainer) {

@@ -2,9 +2,6 @@
 
 import {computed, onBeforeUnmount, onMounted, ref, type Ref} from "vue";
 import {DirtyContainer} from "@/lib/signal-visualizer/plotComponent/domain/dirtyContainer.ts";
-import {
-    ResizeCommand
-} from "@/lib/signal-visualizer/application/commands/resizeCommand.ts";
 import SliderComponent, {
     type CurrentViewPortSamples
 } from "@/lib/signal-visualizer/plotComponent/presentation/sliderComponent/SliderComponent.vue";
@@ -42,6 +39,7 @@ import {
 import {
     ChangeViewPortCommand
 } from "@/lib/signal-visualizer/plotComponent/application/commands/changeViewPortCommand.ts";
+import { useResizeObserver } from "@/lib/signal-visualizer/presentation/utils/useResizeObserver.ts";
 
 
 const props = defineProps<{
@@ -68,7 +66,6 @@ const visibleChannels = computed(() => {
 
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
-const resizeObserverRef = ref<ResizeObserver | null>(null)
 let diContainer: DirtyContainer | null = null;
 
 const signalsLargestDurationSeconds = Math.max(...props.signalSourcesManager.allSignalsBuildData.map(signal => signal.totalSeconds))
@@ -167,23 +164,18 @@ onMounted(async () => {
     const viewPort = viewPortRef.value
     diContainer = new DirtyContainer();
     await diContainer.init(htmlContainerRef.value, viewPort, props.signalSourcesManager, props.workerCallback)
+
+    useResizeObserver(htmlContainerRef, diContainer.eventMediator)
+
     diContainer.eventMediator.addHandler<GetPerformanceMetrics>(GetPerformanceMetricsEventLabel, (metrics: GetPerformanceMetrics) => {
         performanceMetrics.value = metrics.performanceMetrics;
         return Promise.resolve()
     })
 
 
-    resizeObserverRef.value = new ResizeObserver(async () => {
-        if (htmlContainerRef.value) {
-            const width = htmlContainerRef.value.clientWidth;
-            const height = htmlContainerRef.value.clientHeight;
-            await diContainer?.eventMediator.publish(new ResizeCommand(width, height));
-        }
-    })
-    resizeObserverRef.value.observe(htmlContainerRef.value);
+
 })
 
-onBeforeUnmount(() => resizeObserverRef.value!.disconnect())
 
 onBeforeUnmount(async () => {
     await diContainer?.eventMediator.publish(new DestroyCommand())

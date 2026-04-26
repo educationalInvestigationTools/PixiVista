@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, ref} from 'vue';
-import {LabelsContainer} from '../domain/labelsContainer';
-import {ResizeCommand} from '@/lib/signal-visualizer/application/commands/resizeCommand';
-import type {PerformanceMetrics} from '@/lib/signal-visualizer/core/types/performanceMetrics';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { LabelsContainer } from '../domain/labelsContainer';
+import type { PerformanceMetrics } from '@/lib/signal-visualizer/core/types/performanceMetrics';
 import {
     GetPerformanceMetricsEventLabel,
     type GetPerformanceMetrics
 } from '@/lib/signal-visualizer/application/querys/getPerformanceMetrics';
 import MetricsComponent
     from '@/lib/signal-visualizer/metricsComponent/presentation/MetricsComponent.vue';
-import type {PositionData} from '@/lib/signal-visualizer/core/types/positionData';
-import {DestroyCommand} from '@/lib/signal-visualizer/application/commands/destroyCommand';
-import {generateRandomString} from '../utils/utils';
+import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData';
+import { DestroyCommand } from '@/lib/signal-visualizer/application/commands/destroyCommand';
+import { generateRandomString } from '../utils/utils';
 import {
     ChangeCellTextCommand
 } from "@/lib/signal-visualizer/debugComponents/labelsLayer/application/commands/changeCellTextCommand.ts";
 import {
     ChangeAllCellsTextCommand
 } from "@/lib/signal-visualizer/debugComponents/labelsLayer/application/commands/changeAllCellsTextCommand.ts";
+import { useResizeObserver } from '@/lib/signal-visualizer/presentation/utils/useResizeObserver';
 
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null)
-const resizeObserverRef = ref<ResizeObserver | null>(null)
+
 const performanceMetricsRef = ref<PerformanceMetrics | undefined>(undefined)
 let labelsContainer: LabelsContainer | null = null
 
@@ -60,17 +60,7 @@ onMounted(async () => {
     await labelsContainer.init(
         htmlContainerRef.value,
     )
-
-
-    resizeObserverRef.value = new ResizeObserver(async () => {
-        if (htmlContainerRef.value) {
-            const width = htmlContainerRef.value.clientWidth
-            const height = htmlContainerRef.value.clientHeight
-            await labelsContainer?.eventMediator.publish(new ResizeCommand(width, height))
-        }
-    })
-    resizeObserverRef.value.observe(htmlContainerRef.value)
-
+    useResizeObserver(htmlContainerRef, labelsContainer.eventMediator)
     labelsContainer.eventMediator.addHandler<GetPerformanceMetrics>(GetPerformanceMetricsEventLabel, (metrics: GetPerformanceMetrics) => {
         performanceMetricsRef.value = metrics.performanceMetrics;
         return Promise.resolve()
@@ -87,7 +77,6 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-    resizeObserverRef.value?.disconnect()
     htmlContainerRef.value?.removeEventListener('pointerdown', handlePointerDown)
 })
 
@@ -100,8 +89,9 @@ onBeforeUnmount(async () => {
 
 <template>
     <input type="checkbox" :checked="toggleAllText" @change="(event) => {
-    const target = event.target as HTMLInputElement
-    toggleAllText =  target.checked}">
+        const target = event.target as HTMLInputElement
+        toggleAllText = target.checked
+    }">
     <div ref="htmlContainerRef" class="canvas__container"></div>
     <MetricsComponent :metrics="performanceMetricsRef"></MetricsComponent>
 
