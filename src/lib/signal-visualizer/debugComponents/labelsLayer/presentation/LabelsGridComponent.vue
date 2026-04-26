@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { LabelsContainer } from '../domain/labelsContainer';
-import type { PerformanceMetrics } from '@/lib/signal-visualizer/core/types/performanceMetrics';
-import {
-    GetPerformanceMetricsEventLabel,
-    type GetPerformanceMetrics
-} from '@/lib/signal-visualizer/application/querys/getPerformanceMetrics';
 import MetricsComponent
     from '@/lib/signal-visualizer/metricsComponent/presentation/MetricsComponent.vue';
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData';
@@ -18,11 +13,18 @@ import {
     ChangeAllCellsTextCommand
 } from "@/lib/signal-visualizer/debugComponents/labelsLayer/application/commands/changeAllCellsTextCommand.ts";
 import { useResizeObserver } from '@/lib/signal-visualizer/presentation/utils/useResizeObserver';
+import { usePerformanceMetricsBridge } from '@/lib/signal-visualizer/presentation/utils/usePerformanceMetricsBridge';
 
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null)
 
-const performanceMetricsRef = ref<PerformanceMetrics | undefined>(undefined)
+const {
+    performanceMetricsRef,
+    bindPerformanceMetrics,
+} = usePerformanceMetricsBridge()
+const {
+    bindResizeObserver,
+} = useResizeObserver()
 let labelsContainer: LabelsContainer | null = null
 
 const toggleAllText = ref<boolean>(false)
@@ -60,11 +62,9 @@ onMounted(async () => {
     await labelsContainer.init(
         htmlContainerRef.value,
     )
-    useResizeObserver(htmlContainerRef, labelsContainer.eventMediator)
-    labelsContainer.eventMediator.addHandler<GetPerformanceMetrics>(GetPerformanceMetricsEventLabel, (metrics: GetPerformanceMetrics) => {
-        performanceMetricsRef.value = metrics.performanceMetrics;
-        return Promise.resolve()
-    })
+    const eventMediator = labelsContainer.eventMediator
+    bindResizeObserver(htmlContainerRef, eventMediator)
+    bindPerformanceMetrics(eventMediator)
 
     htmlContainerRef.value.addEventListener('pointerdown', handlePointerDown)
 

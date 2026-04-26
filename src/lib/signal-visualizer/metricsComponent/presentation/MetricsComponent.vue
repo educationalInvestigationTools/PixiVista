@@ -15,6 +15,9 @@ const props = defineProps<{
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null)
 let metricsContainer: MetricsContainer | null = null
+const {
+    bindResizeObserver,
+} = useResizeObserver()
 
 const sizeInfo = ref('Waiting for metrics...')
 
@@ -28,7 +31,7 @@ onMounted(async () => {
         htmlContainerRef.value,
     )
 
-    useResizeObserver(htmlContainerRef, metricsContainer.eventMediator)
+    bindResizeObserver(htmlContainerRef, metricsContainer.eventMediator)
 
     if (props.metrics) {
         await metricsContainer.eventMediator.publish(new AddPerformanceMetricsCommand(props.metrics))

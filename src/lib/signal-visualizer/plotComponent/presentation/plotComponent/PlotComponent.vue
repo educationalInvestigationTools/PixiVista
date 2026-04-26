@@ -12,9 +12,6 @@ import AnnotationsComponent, {
 } from "@/lib/signal-visualizer/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue";
 import MetricsComponent from "../../../metricsComponent/presentation/MetricsComponent.vue";
 import type {
-    PerformanceMetrics
-} from "@/lib/signal-visualizer/core/types/performanceMetrics.ts";
-import type {
     AnySettingChoice,
     AnySettingChoiceUpdate
 } from "@/lib/signal-visualizer/plotComponent/presentation/settingsComponent/settingsChoice.ts";
@@ -30,16 +27,13 @@ import {
     ChangeChannelVisibilityCommand
 } from "@/lib/signal-visualizer/plotComponent/application/commands/changeChannelVisibilityCommand.ts";
 import {
-    GetPerformanceMetrics,
-    GetPerformanceMetricsEventLabel
-} from "@/lib/signal-visualizer/application/querys/getPerformanceMetrics.ts";
-import {
     DestroyCommand
 } from "@/lib/signal-visualizer/application/commands/destroyCommand.ts";
 import {
     ChangeViewPortCommand
 } from "@/lib/signal-visualizer/plotComponent/application/commands/changeViewPortCommand.ts";
 import { useResizeObserver } from "@/lib/signal-visualizer/presentation/utils/useResizeObserver.ts";
+import { usePerformanceMetricsBridge } from "@/lib/signal-visualizer/presentation/utils/usePerformanceMetricsBridge";
 
 
 const props = defineProps<{
@@ -74,7 +68,13 @@ const viewPortRef: Ref<ViewPort> = ref({
     lengthSeconds: 10
 })
 
-const performanceMetrics = ref<PerformanceMetrics | undefined>(undefined)
+const {
+    performanceMetricsRef,
+    bindPerformanceMetrics,
+} = usePerformanceMetricsBridge()
+const {
+    bindResizeObserver,
+} = useResizeObserver()
 const showMetricsPanel = ref(true)
 const showAnnotationsPanel = ref(true)
 const showMetricsSettingId = 'show-metrics-panel'
@@ -165,12 +165,8 @@ onMounted(async () => {
     diContainer = new DirtyContainer();
     await diContainer.init(htmlContainerRef.value, viewPort, props.signalSourcesManager, props.workerCallback)
 
-    useResizeObserver(htmlContainerRef, diContainer.eventMediator)
-
-    diContainer.eventMediator.addHandler<GetPerformanceMetrics>(GetPerformanceMetricsEventLabel, (metrics: GetPerformanceMetrics) => {
-        performanceMetrics.value = metrics.performanceMetrics;
-        return Promise.resolve()
-    })
+    bindResizeObserver(htmlContainerRef, diContainer.eventMediator)
+    bindPerformanceMetrics(diContainer.eventMediator)
 
 
 
@@ -213,7 +209,7 @@ async function updateViewPort(viewPort: CurrentViewPortSamples) {
             }" :viewPortLargestValueSamples=signalsLargestDurationSeconds
                          @update:viewPort='updateViewPort'>
         </SliderComponent>
-        <MetricsComponent :metrics="performanceMetrics"
+        <MetricsComponent :metrics="performanceMetricsRef"
                           v-show="showMetricsPanel"></MetricsComponent>
     </div>
 
