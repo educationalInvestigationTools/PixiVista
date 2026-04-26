@@ -1,37 +1,12 @@
-import { LayoutDesign } from "../../../core/rendering/layoutDesign";
-import { RenderLayer } from "../../../core/rendering/renderLayer";
-import type { PositionData } from "../../../core/types/positionData";
-import type { SizeData } from "../../../core/types/sizeData";
-import { LabelLayer } from "../../../plotComponent/infrastructure/rendering/labelsLayer/labelLayer";
-import { LabelLayout } from "../../../plotComponent/infrastructure/rendering/labelsLayer/labelLayout";
-import { generateRandomString } from "../utils/utils";
-
-export class LabelsGridLayout extends LayoutDesign {
-    gridDescription: GridDescription
-    constructor(sizeData: SizeData, posData: PositionData, gridDescription: GridDescription) {
-        super(sizeData, posData)
-        this.gridDescription = gridDescription
-    }
-    buildLabelSize(row: number): SizeData {
-        return {
-            height: this.height / this.gridDescription.columnsPerRow.length,
-            width: this.width / this.gridDescription.columnsPerRow[row]!
-        }
-    }
-
-    buildLabelPosition(row: number, column: number): PositionData {
-        const sizeData = this.buildLabelSize(row)
-        return {
-            x: column * sizeData.width,
-            y: row * sizeData.height
-        }
-    }
-
-}
-
-export type GridDescription = {
-    columnsPerRow: number[]
-}
+import { LayoutDesign } from '../../../../core/rendering/layoutDesign.ts'
+import { RenderLayer } from '../../../../core/rendering/renderLayer.ts'
+import type { PositionData } from '../../../../core/types/positionData.ts'
+import type { SizeData } from '../../../../core/types/sizeData.ts'
+import { LabelLayer } from '../../../../plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
+import { LabelLayout } from '../../../../plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
+import { generateRandomString } from '../../utils/utils.ts'
+import { LabelsGridLayout } from '@/lib/signal-visualizer/debugComponents/labelsLayer/infrastructure/rendering/labelsGridLayout.ts'
+import type { GridDescription } from '@/lib/signal-visualizer/debugComponents/labelsLayer/domain/types/gridDescription.ts'
 
 export class LabelsGrid extends RenderLayer<LabelsGridLayout> {
     labels: LabelLayer[][] = []
@@ -44,8 +19,10 @@ export class LabelsGrid extends RenderLayer<LabelsGridLayout> {
                 const labelLayer = new LabelLayer(
                     new LabelLayout(
                         this.layoutDesign.buildLabelSize(i),
-                        this.layoutDesign.buildLabelPosition(i, j)
-                    ), { text: generateRandomString(1, 100) })
+                        this.layoutDesign.buildLabelPosition(i, j),
+                    ),
+                    { text: generateRandomString(1, 100) },
+                )
                 this.container.addChild(labelLayer.container)
                 this.labels[i]!.push(labelLayer)
             }
@@ -60,33 +37,29 @@ export class LabelsGrid extends RenderLayer<LabelsGridLayout> {
                 const y = labelLayer.layoutDesign.y
                 const width = labelLayer.layoutDesign.width
                 const height = labelLayer.layoutDesign.height
-                this.graphics.rect(x, y, width, height).stroke(
-                    {
-                        width: 2,
-                        color: 'red'
-                    }
-                )
+                this.graphics.rect(x, y, width, height).stroke({
+                    width: 2,
+                    color: 'red',
+                })
             }
         }
     }
 
-    updateLabelText(text: string, positionData: PositionData) {
-        const rows = this.layoutDesign.gridDescription.columnsPerRow.length
-        if (rows === 0 || this.layoutDesign.width <= 0 || this.layoutDesign.height <= 0) {
-            return
-        }
+    get GridDescription() {
+        return this.layoutDesign.gridDescription
+    }
 
+    getRowAndColumn(positionData: PositionData): [number, number] {
+        const rows = this.layoutDesign.gridDescription.columnsPerRow.length
         const rowHeight = this.layoutDesign.height / rows
         const row = Math.max(0, Math.min(rows - 1, Math.floor(positionData.y / rowHeight)))
-
-        const columns = this.layoutDesign.gridDescription.columnsPerRow[row] ?? 0
-        if (columns <= 0) {
-            return
-        }
-
+        const columns = this.layoutDesign.gridDescription.columnsPerRow[row]!
         const columnWidth = this.layoutDesign.width / columns
         const column = Math.max(0, Math.min(columns - 1, Math.floor(positionData.x / columnWidth)))
+        return [row, column]
+    }
 
+    updateLabelText(text: string, row: number, column: number) {
         this.labels[row]?.[column]?.updateLabelDescription({ text })
     }
 
@@ -103,7 +76,6 @@ export class LabelsGrid extends RenderLayer<LabelsGridLayout> {
                 labelLayer.updateSize(this.layoutDesign.buildLabelSize(i))
             }
         }
-
     }
     protected _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)

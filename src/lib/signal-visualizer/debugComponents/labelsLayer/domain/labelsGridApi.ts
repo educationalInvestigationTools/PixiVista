@@ -1,30 +1,41 @@
-import type { PositionData } from "@/lib/signal-visualizer/core/types/positionData";
-import { RenderLayerDomainApi } from "../../../core/rendering/layerApi";
-import type { EventMediator, EventToMediate } from "../../../utils/eventMediator";
-import { LabelsGrid } from "./labelsGrid";
-
-export const ChangeCellTextCommandEventLabel = 'ChangeCellTextCommandEventLabel'
-
-export class ChangeCellTextCommand implements EventToMediate {
-    eventLabel: string = ChangeCellTextCommandEventLabel
-    text: string
-    positionData : PositionData
-
-    constructor(text: string, positionData : PositionData) {
-        this.text = text
-        this.positionData = positionData
-    }
-}
-
+import { RenderLayerDomainApi } from '../../../core/rendering/layerApi'
+import type { EventMediator } from '../../../utils/eventMediator'
+import { LabelsGrid } from '../infrastructure/rendering/labelsGrid.ts'
+import { generateRandomString } from '../utils/utils'
+import {
+    ChangeCellTextCommandEventLabel,
+    type ChangeCellTextCommand,
+} from '../application/commands/changeCellTextCommand'
+import {
+    ChangeAllCellsTextCommandEventLabel,
+    type ChangeAllCellsTextCommand,
+} from '../application/commands/changeAllCellsTextCommand'
 
 export class LabelsGridApi extends RenderLayerDomainApi<LabelsGrid> {
     constructor(component: LabelsGrid, eventMediator: EventMediator) {
         super(component, eventMediator)
     }
+
     registerEvents(): void {
-        this.eventMediator.addHandler<ChangeCellTextCommand>(ChangeCellTextCommandEventLabel, (command) => {
-            this.component.updateLabelText(command.text, command.positionData)
-            return Promise.resolve()
-        })
+        this.eventMediator.addHandler<ChangeCellTextCommand>(
+            ChangeCellTextCommandEventLabel,
+            (command) => {
+                const [row, column] = this.component.getRowAndColumn(command.positionData)
+                this.component.updateLabelText(command.text, row, column)
+                return Promise.resolve()
+            },
+        )
+        this.eventMediator.addHandler<ChangeAllCellsTextCommand>(
+            ChangeAllCellsTextCommandEventLabel,
+            (_command) => {
+                const gridDescription = this.component.GridDescription
+                for (let i = 0; i < gridDescription.columnsPerRow.length; i++) {
+                    for (let j = 0; j < gridDescription.columnsPerRow[i]!; j++) {
+                        this.component.updateLabelText(generateRandomString(1, 100), i, j)
+                    }
+                }
+                return Promise.resolve()
+            },
+        )
     }
 }

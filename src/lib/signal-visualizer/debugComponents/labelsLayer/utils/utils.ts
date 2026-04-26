@@ -2,7 +2,6 @@ export function generateRandomString(lengthMin: number, lengthMax: number): stri
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charCount = chars.length;
 
-    // Random length between min and max (inclusive)
     const length = Math.floor(Math.random() * (lengthMax - lengthMin + 1)) + lengthMin;
 
     let result = '';

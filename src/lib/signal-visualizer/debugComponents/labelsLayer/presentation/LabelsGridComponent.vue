@@ -1,14 +1,23 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { LabelsContainer } from '../domain/labelsContainer';
-import { ResizeCommand } from '@/lib/signal-visualizer/application/commands/resizeCommand';
-import type { PerformanceMetrics } from '@/lib/signal-visualizer/core/types/performanceMetrics';
-import { GetPerformanceMetricsEventLabel, type GetPerformanceMetrics } from '@/lib/signal-visualizer/application/querys/getPerformanceMetrics';
-import MetricsComponent from '@/lib/signal-visualizer/metricsComponent/presentation/MetricsComponent.vue';
-import { ChangeCellTextCommand } from '../domain/labelsGridApi';
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData';
-import { DestroyCommand } from '@/lib/signal-visualizer/application/commands/destroyCommand';
-import { generateRandomString } from '../utils/utils';
+import {onBeforeUnmount, onMounted, ref} from 'vue';
+import {LabelsContainer} from '../domain/labelsContainer';
+import {ResizeCommand} from '@/lib/signal-visualizer/application/commands/resizeCommand';
+import type {PerformanceMetrics} from '@/lib/signal-visualizer/core/types/performanceMetrics';
+import {
+    GetPerformanceMetricsEventLabel,
+    type GetPerformanceMetrics
+} from '@/lib/signal-visualizer/application/querys/getPerformanceMetrics';
+import MetricsComponent
+    from '@/lib/signal-visualizer/metricsComponent/presentation/MetricsComponent.vue';
+import type {PositionData} from '@/lib/signal-visualizer/core/types/positionData';
+import {DestroyCommand} from '@/lib/signal-visualizer/application/commands/destroyCommand';
+import {generateRandomString} from '../utils/utils';
+import {
+    ChangeCellTextCommand
+} from "@/lib/signal-visualizer/debugComponents/labelsLayer/application/commands/changeCellTextCommand.ts";
+import {
+    ChangeAllCellsTextCommand
+} from "@/lib/signal-visualizer/debugComponents/labelsLayer/application/commands/changeAllCellsTextCommand.ts";
 
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null)
@@ -16,10 +25,16 @@ const resizeObserverRef = ref<ResizeObserver | null>(null)
 const performanceMetricsRef = ref<PerformanceMetrics | undefined>(undefined)
 let labelsContainer: LabelsContainer | null = null
 
+const toggleAllText = ref<boolean>(false)
+
 
 function toggleChangeStringOnCell(posData: PositionData) {
-    const randomString = generateRandomString(1, 100)
+    const randomString = generateRandomString(100, 200)
     labelsContainer?.eventMediator.publish(new ChangeCellTextCommand(randomString, posData))
+}
+
+function toggleChangeAllStrings() {
+    labelsContainer?.eventMediator.publish(new ChangeAllCellsTextCommand())
 }
 
 function handlePointerDown(event: PointerEvent) {
@@ -38,7 +53,9 @@ function handlePointerDown(event: PointerEvent) {
 }
 
 onMounted(async () => {
-    if (!htmlContainerRef.value) { return }
+    if (!htmlContainerRef.value) {
+        return
+    }
     labelsContainer = new LabelsContainer()
     await labelsContainer.init(
         htmlContainerRef.value,
@@ -61,6 +78,12 @@ onMounted(async () => {
 
     htmlContainerRef.value.addEventListener('pointerdown', handlePointerDown)
 
+    setInterval(() => {
+        if (toggleAllText.value) {
+            toggleChangeAllStrings()
+        }
+    }, 200)
+
 })
 
 onBeforeUnmount(() => {
@@ -76,16 +99,16 @@ onBeforeUnmount(async () => {
 </script>
 
 <template>
-
-    <div ref="htmlContainerRef" class="canvas__container"> </div>
+    <input type="checkbox" :checked="toggleAllText" @change="(event) => {
+    const target = event.target as HTMLInputElement
+    toggleAllText =  target.checked}">
+    <div ref="htmlContainerRef" class="canvas__container"></div>
     <MetricsComponent :metrics="performanceMetricsRef"></MetricsComponent>
 
 </template>
 
 <style scoped>
-
 .canvas__container {
-    height : 300px;
+    height: 300px;
 }
-
 </style>
