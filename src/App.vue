@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import PlotDebug from './lib/signal-visualizer/plotComponent/presentation/plotComponent/PlotDebug.vue';
+import LabelsGridComponent from './lib/signal-visualizer/debugComponents/labelsLayer/presentation/LabelsGridComponent.vue';
 
 
 </script>
 
 
 <template>
-    <PlotDebug></PlotDebug>
+    <LabelsGridComponent></LabelsGridComponent>
 </template>
 
 <style scoped></style>
