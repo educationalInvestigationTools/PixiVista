@@ -21,7 +21,10 @@ export class LabelsGrid extends RenderLayer<LabelsGridLayout> {
                         this.layoutDesign.buildLabelSize(i),
                         this.layoutDesign.buildLabelPosition(i, j),
                     ),
-                    { text: generateRandomString(1, 100) },
+                    {
+                        text: generateRandomString(1, 100),
+                        textAlignment: 'left',
+                    },
                 )
                 this.container.addChild(labelLayer.container)
                 this.labels[i]!.push(labelLayer)
@@ -60,7 +63,10 @@ export class LabelsGrid extends RenderLayer<LabelsGridLayout> {
     }
 
     updateLabelText(text: string, row: number, column: number) {
-        this.labels[row]?.[column]?.updateLabelDescription({ text })
+        this.labels[row]?.[column]?.updateLabelDescription({
+            text,
+            textAlignment: 'center',
+        })
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {

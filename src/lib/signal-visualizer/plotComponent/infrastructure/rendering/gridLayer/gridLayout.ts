@@ -1,7 +1,6 @@
 import { GridBaseLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridBaseLayout.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
-import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
 import type { HorizontalLabelsSide, VerticalLabelsSide } from './types/types'
 
 export class GridLayout extends GridBaseLayout {
@@ -21,7 +20,7 @@ export class GridLayout extends GridBaseLayout {
         const availableWidth = Math.max(verticalLabelWidthAvailable - this.labelToGridGap, 1)
         const estimatedTextWidth =
             Math.max(1, textLength)
-            * LabelLayout.BASE_FONT_SIZE
+            * 14
             * GridLayout.VERTICAL_LABEL_CHAR_WIDTH_FACTOR
         const estimatedLabelWidth = estimatedTextWidth + GridLayout.VERTICAL_LABEL_HORIZONTAL_PADDING
         const width = Math.max(
@@ -64,7 +63,7 @@ export class GridLayout extends GridBaseLayout {
 
         return {
             width,
-            height: Math.max(LabelLayout.BASE_FONT_SIZE, 1),
+            height: Math.max(14, 1),
         }
     }
 
@@ -89,6 +88,6 @@ export class GridLayout extends GridBaseLayout {
     }
 
     private get labelToGridGap(): number {
-        return Math.max(2, LabelLayout.BASE_FONT_SIZE * 0.25)
+        return Math.max(2, 14 * 0.25)
     }
 }

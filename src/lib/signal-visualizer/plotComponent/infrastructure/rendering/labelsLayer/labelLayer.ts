@@ -6,8 +6,11 @@ import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData";
 
 import { CanvasTextMetrics, Text, TextStyle } from "pixi.js";
 
+export type TextAlignments = 'left' | 'center' | 'right'
+
 export type LabelDescription = {
     text: string
+    textAlignment: TextAlignments
 }
 
 const LABEL_COLOR = '#d1d5db'
@@ -16,7 +19,7 @@ const LABEL_FONT_WEIGHT = 'bold'
 export class LabelLayer extends RenderLayer<LabelLayout> {
     private labelDescription: LabelDescription
     private textGraphics?: Text
-    private textStyleByFontSize = new Map<number, TextStyle>()
+    private textStyleByFontSizeAndAlignment = new Map<string, TextStyle>()
 
     constructor(layoutData: LabelLayout, labelDescription: LabelDescription) {
         super(layoutData)
@@ -30,13 +33,15 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
             return
         }
 
-        const fittedFontSize = this.resolveLargestFittedFontSize(this.labelDescription.text)
+        const { text: labelText, textAlignment } = this.labelDescription
+
+        const fittedFontSize = this.resolveLargestFittedFontSize(labelText, textAlignment)
         if (fittedFontSize === undefined) {
             return
         }
 
-        const text = this.buildText(this.labelDescription.text, fittedFontSize)
-        text.x = this.layoutDesign.centeredX(text.width)
+        const text = this.buildText(labelText, fittedFontSize, textAlignment)
+        text.x = this.resolveTextX(text.width, textAlignment)
         text.y = this.layoutDesign.centeredY(text.height)
 
         this.container.addChild(text)
@@ -70,15 +75,23 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
         this.textGraphics = undefined
     }
 
-    private buildText(textValue: string, fontSize: number): Text {
+    private buildText(
+        textValue: string,
+        fontSize: number,
+        textAlignment: TextAlignments,
+    ): Text {
         return new Text({
             text: textValue,
-            style: this.resolveTextStyle(fontSize),
+            style: this.resolveTextStyle(fontSize, textAlignment),
         })
     }
 
-    private resolveTextStyle(fontSize: number): TextStyle {
-        const cachedStyle = this.textStyleByFontSize.get(fontSize)
+    private resolveTextStyle(
+        fontSize: number,
+        textAlignment: TextAlignments,
+    ): TextStyle {
+        const cacheKey = `${fontSize}-${textAlignment}`
+        const cachedStyle = this.textStyleByFontSizeAndAlignment.get(cacheKey)
         if (cachedStyle !== undefined) {
             return cachedStyle
         }
@@ -87,23 +100,34 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
             fontSize,
             fontWeight: LABEL_FONT_WEIGHT,
             fill: LABEL_COLOR,
+            align: textAlignment,
         })
-        this.textStyleByFontSize.set(fontSize, textStyle)
+        this.textStyleByFontSizeAndAlignment.set(cacheKey, textStyle)
         return textStyle
     }
 
-    private canTextFit(textValue: string, fontSize: number): boolean {
-        const measuredText = CanvasTextMetrics.measureText(textValue, this.resolveTextStyle(fontSize))
+    private canTextFit(
+        textValue: string,
+        fontSize: number,
+        textAlignment: TextAlignments,
+    ): boolean {
+        const measuredText = CanvasTextMetrics.measureText(
+            textValue,
+            this.resolveTextStyle(fontSize, textAlignment),
+        )
         const fits =
             measuredText.width <= this.layoutDesign.width
             && measuredText.height <= this.layoutDesign.height
         return fits
     }
 
-    private resolveLargestFittedFontSize(textValue: string): number | undefined {
+    private resolveLargestFittedFontSize(
+        textValue: string,
+        textAlignment: TextAlignments,
+    ): number | undefined {
         const minFontSize = this.layoutDesign.minFontSize
         const maxFontSize = this.layoutDesign.maxFontSize
-        if (!this.canTextFit(textValue, minFontSize)) {
+        if (!this.canTextFit(textValue, minFontSize, textAlignment)) {
             return undefined
         }
 
@@ -112,7 +136,7 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
 
         while (low < high) {
             const mid = Math.ceil((low + high) / 2)
-            if (this.canTextFit(textValue, mid)) {
+            if (this.canTextFit(textValue, mid, textAlignment)) {
                 low = mid
                 continue
             }
@@ -120,5 +144,20 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
         }
 
         return low
+    }
+
+    private resolveTextX(
+        textWidth: number,
+        textAlignment: TextAlignments,
+    ): number {
+        if (textAlignment === 'left') {
+            return 0
+        }
+
+        if (textAlignment === 'right') {
+            return this.layoutDesign.width - textWidth
+        }
+
+        return this.layoutDesign.centeredX(textWidth)
     }
 }

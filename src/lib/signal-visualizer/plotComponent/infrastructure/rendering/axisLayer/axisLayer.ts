@@ -7,6 +7,7 @@ import { AxisLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastru
 import {
     LabelLayer,
     type LabelDescription,
+    type TextAlignments,
 } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
 import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
 
@@ -44,6 +45,7 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
         for (let i = 0; i < this.labelLayers.length; i++) {
             const labelDescription: LabelDescription = {
                 text: this.labelTextAtDivision(i),
+                textAlignment: this.textAlignmentAtDivision(i),
             }
             this.labelLayers[i]?.updateLabelDescription(labelDescription)
         }
@@ -75,6 +77,7 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
                 ),
                 {
                     text: this.labelTextAtDivision(i),
+                    textAlignment: this.textAlignmentAtDivision(i),
                 },
             )
             this.labelLayers.push(labelLayer)
@@ -89,5 +92,17 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
         const stepSize =
             (this.minMaxValues.max - this.minMaxValues.min) / this.layoutDesign.divisions
         return (this.minMaxValues.min + i * stepSize).toFixed(2)
+    }
+
+    private textAlignmentAtDivision(i: number): TextAlignments {
+        if (i === 0) {
+            return 'left'
+        }
+
+        if (i === this.layoutDesign.divisions) {
+            return 'right'
+        }
+
+        return 'center'
     }
 }

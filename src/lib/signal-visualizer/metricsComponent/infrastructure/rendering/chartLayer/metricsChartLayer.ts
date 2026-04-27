@@ -79,6 +79,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             ),
             {
                 text: style.title,
+                textAlignment: 'left',
             },
         )
 
@@ -89,6 +90,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             ),
             {
                 text: this.currentValueText,
+                textAlignment: 'right',
             },
         )
 
@@ -151,7 +153,10 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     }
 
     private updateLabelDescriptions() {
-        this.valueLabelLayer.updateLabelDescription({ text: this.currentValueText })
+        this.valueLabelLayer.updateLabelDescription({
+            text: this.currentValueText,
+            textAlignment: 'right',
+        })
     }
 
     private relayoutHeaderLabels() {

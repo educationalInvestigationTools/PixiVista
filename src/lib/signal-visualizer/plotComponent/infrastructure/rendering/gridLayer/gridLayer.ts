@@ -11,6 +11,8 @@ import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructur
 import type { GridLabelFormatter, GridLabelsConfig, GridLabelsMinMaxValues, HorizontalLabelsSide, VerticalLabelsSide } from './types/types.ts'
 import type { MinMaxValues } from '../../../application/types/minMaxValues.ts'
 
+import type { TextAlignments } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
+
 export type VerticalLabelsState = {
     side: VerticalLabelsSide
     formatter: GridLabelFormatter
@@ -133,6 +135,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
                 ),
                 {
                     text: labelText,
+                    textAlignment: this.verticalLabelsTextAlignment(),
                 },
             )
             this.verticalLabels.layers.push(labelLayer)
@@ -153,6 +156,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
                 ),
                 {
                     text: this.horizontalLabelText(i),
+                    textAlignment: 'center',
                 },
             )
             this.horizontalLabels.layers.push(labelLayer)
@@ -196,6 +200,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
         for (let i = 0; i < this.verticalLabels.layers.length; i++) {
             const description: LabelDescription = {
                 text: this.verticalLabelText(i),
+                textAlignment: this.verticalLabelsTextAlignment(),
             }
             this.verticalLabels.layers[i]!.updateLabelDescription(description)
         }
@@ -210,9 +215,18 @@ export class GridLayer extends RenderLayer<GridLayout> {
         for (let i = 0; i < this.horizontalLabels.layers.length; i++) {
             const description: LabelDescription = {
                 text: this.horizontalLabelText(i),
+                textAlignment: 'center',
             }
             this.horizontalLabels.layers[i]!.updateLabelDescription(description)
         }
+    }
+
+    private verticalLabelsTextAlignment(): TextAlignments {
+        if (this.verticalLabels === undefined) {
+            return 'center'
+        }
+
+        return this.verticalLabels.side === 'left' ? 'right' : 'left'
     }
 
     private verticalLabelText(i: number): string {
