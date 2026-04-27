@@ -4,29 +4,15 @@ import type { LayoutDesign } from "@/lib/signal-visualizer/core/rendering/layout
 import type { PositionData } from "@/lib/signal-visualizer/core/types/positionData";
 import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData";
 
-import { CanvasTextMetrics, Text, TextStyle } from "pixi.js";
+import type { LabelDescription, TextAlignments } from "./types/types";
+import { MeasureText } from "./utils/textMeasurement";
+import { Text } from "pixi.js";
 
-export type TextAlignments = 'left' | 'center' | 'right'
-
-export function alignmentIndex(i: number, length: number): TextAlignments {
-    if (length === 1) return 'center'
-    if (i === 0) return 'left'
-    if (i === length - 1) return 'right'
-    return 'center'
-}
-
-export type LabelDescription = {
-    text: string
-    textAlignment: TextAlignments
-}
-
-const LABEL_COLOR = '#d1d5db'
-const LABEL_FONT_WEIGHT = 'bold'
 
 export class LabelLayer extends RenderLayer<LabelLayout> {
     private labelDescription: LabelDescription
     private textGraphics?: Text
-    private textStyleByFontSizeAndAlignment = new Map<string, TextStyle>()
+    private measureText = new MeasureText()
 
     constructor(labelDescription: LabelDescription) {
         super(new LabelLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
@@ -42,7 +28,12 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
 
         const { text: labelText, textAlignment } = this.labelDescription
 
-        const fittedFontSize = this.resolveLargestFittedFontSize(labelText, textAlignment)
+        const fittedFontSize = this.measureText.resolveLargestFittedFontSize(
+            labelText,
+            textAlignment,
+            { width: this.layoutDesign.width, height: this.layoutDesign.height },
+            { min: this.layoutDesign.minFontSize, max: this.layoutDesign.maxFontSize }
+        )
         if (fittedFontSize === undefined) {
             return
         }
@@ -89,69 +80,10 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
     ): Text {
         return new Text({
             text: textValue,
-            style: this.resolveTextStyle(fontSize, textAlignment),
+            style: this.measureText.resolveTextStyle(fontSize, textAlignment),
         })
     }
 
-    private resolveTextStyle(
-        fontSize: number,
-        textAlignment: TextAlignments,
-    ): TextStyle {
-        const cacheKey = `${fontSize}-${textAlignment}`
-        const cachedStyle = this.textStyleByFontSizeAndAlignment.get(cacheKey)
-        if (cachedStyle !== undefined) {
-            return cachedStyle
-        }
-
-        const textStyle = new TextStyle({
-            fontSize,
-            fontWeight: LABEL_FONT_WEIGHT,
-            fill: LABEL_COLOR,
-            align: textAlignment,
-        })
-        this.textStyleByFontSizeAndAlignment.set(cacheKey, textStyle)
-        return textStyle
-    }
-
-    private canTextFit(
-        textValue: string,
-        fontSize: number,
-        textAlignment: TextAlignments,
-    ): boolean {
-        const measuredText = CanvasTextMetrics.measureText(
-            textValue,
-            this.resolveTextStyle(fontSize, textAlignment),
-        )
-        const fits =
-            measuredText.width <= this.layoutDesign.width
-            && measuredText.height <= this.layoutDesign.height
-        return fits
-    }
-
-    private resolveLargestFittedFontSize(
-        textValue: string,
-        textAlignment: TextAlignments,
-    ): number | undefined {
-        const minFontSize = this.layoutDesign.minFontSize
-        const maxFontSize = this.layoutDesign.maxFontSize
-        if (!this.canTextFit(textValue, minFontSize, textAlignment)) {
-            return undefined
-        }
-
-        let low = minFontSize
-        let high = Math.max(low, maxFontSize)
-
-        while (low < high) {
-            const mid = Math.ceil((low + high) / 2)
-            if (this.canTextFit(textValue, mid, textAlignment)) {
-                low = mid
-                continue
-            }
-            high = mid - 1
-        }
-
-        return low
-    }
 
     private resolveTextX(
         textWidth: number,

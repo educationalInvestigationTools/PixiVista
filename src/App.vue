@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LineLabelsComponent from './lib/signal-visualizer/debugComponents/lineLabelsLayer/presentation/LineLabelsComponent.vue';
+import GridComponent from './lib/signal-visualizer/debugComponents/gridLayer/presentation/GridComponent.vue';
 
 
 
@@ -7,7 +7,7 @@ import LineLabelsComponent from './lib/signal-visualizer/debugComponents/lineLab
 
 
 <template>
-    <LineLabelsComponent></LineLabelsComponent>
+    <GridComponent></GridComponent>
 </template>
 
 <style scoped></style>

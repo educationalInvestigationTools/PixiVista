@@ -1,5 +1,4 @@
-import type { TextAlignments } from "../../labelsLayer/labelLayer";
-
+import type { TextAlignments } from "../../labelsLayer/types/types";
 
 export type LineLayerDescription = {
     positionsNormalized: number[]; // 0 <= xi <= 1, sorted, sum xi = 1
