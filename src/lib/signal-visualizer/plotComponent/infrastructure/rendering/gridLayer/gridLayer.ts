@@ -7,7 +7,6 @@ import {
     LabelLayer,
     type LabelDescription,
 } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
-import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
 import type { GridLabelFormatter, GridLabelsConfig, GridLabelsMinMaxValues, HorizontalLabelsSide, VerticalLabelsSide } from './types/types.ts'
 import type { MinMaxValues } from '../../../application/types/minMaxValues.ts'
 
@@ -123,16 +122,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
 
         for (let i = 0; i <= this.layoutDesign.horizontalDivisions; i++) {
             const labelText = this.verticalLabelText(i)
-            const labelSize = this.layoutDesign.buildVerticalLabelSize(labelText.length)
             const labelLayer = new LabelLayer(
-                new LabelLayout(
-                    labelSize,
-                    this.layoutDesign.buildVerticalLabelPosition(
-                        i,
-                        this.verticalLabels.side,
-                        labelSize.width,
-                    ),
-                ),
                 {
                     text: labelText,
                     textAlignment: this.verticalLabelsTextAlignment(),
@@ -150,10 +140,6 @@ export class GridLayer extends RenderLayer<GridLayout> {
 
         for (let i = 0; i <= this.layoutDesign.verticalDivisions; i++) {
             const labelLayer = new LabelLayer(
-                new LabelLayout(
-                    this.layoutDesign.buildHorizontalLabelSize(),
-                    this.layoutDesign.buildHorizontalLabelPosition(i, this.horizontalLabels.side),
-                ),
                 {
                     text: this.horizontalLabelText(i),
                     textAlignment: 'center',

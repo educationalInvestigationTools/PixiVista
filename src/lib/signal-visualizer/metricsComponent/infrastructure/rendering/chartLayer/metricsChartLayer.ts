@@ -5,7 +5,6 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
 import { GridLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
 import { LabelLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
-import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
 import { LineMonitorLayer } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
 import { LineMonitorLayout } from './lineMonitorLayout'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
@@ -73,10 +72,6 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         )
 
         this.titleLabelLayer = new LabelLayer(
-            new LabelLayout(
-                this.layoutDesign.buildTitleLabelSizeData(this.currentValueText.length),
-                this.layoutDesign.buildTitleLabelPositionData(),
-            ),
             {
                 text: style.title,
                 textAlignment: 'left',
@@ -84,10 +79,6 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         )
 
         this.valueLabelLayer = new LabelLayer(
-            new LabelLayout(
-                this.layoutDesign.buildValueLabelSizeData(this.currentValueText.length),
-                this.layoutDesign.buildValueLabelPositionData(this.currentValueText.length),
-            ),
             {
                 text: this.currentValueText,
                 textAlignment: 'right',

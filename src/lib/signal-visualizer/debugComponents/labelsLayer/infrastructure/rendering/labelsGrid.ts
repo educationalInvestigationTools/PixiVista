@@ -3,7 +3,6 @@ import { RenderLayer } from '../../../../core/rendering/renderLayer.ts'
 import type { PositionData } from '../../../../core/types/positionData.ts'
 import type { SizeData } from '../../../../core/types/sizeData.ts'
 import { LabelLayer } from '../../../../plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
-import { LabelLayout } from '../../../../plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
 import { generateRandomString } from '../../utils/utils.ts'
 import { LabelsGridLayout } from '@/lib/signal-visualizer/debugComponents/labelsLayer/infrastructure/rendering/labelsGridLayout.ts'
 import type { GridDescription } from '@/lib/signal-visualizer/debugComponents/labelsLayer/domain/types/gridDescription.ts'
@@ -17,10 +16,6 @@ export class LabelsGrid extends RenderLayer<LabelsGridLayout> {
             this.labels.push([])
             for (let j = 0; j < gridDescription.columnsPerRow[i]!; j++) {
                 const labelLayer = new LabelLayer(
-                    new LabelLayout(
-                        this.layoutDesign.buildLabelSize(i),
-                        this.layoutDesign.buildLabelPosition(i, j),
-                    ),
                     {
                         text: generateRandomString(1, 100),
                         textAlignment: 'left',

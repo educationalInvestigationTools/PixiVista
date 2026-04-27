@@ -1,5 +1,5 @@
 import { RenderLayer } from "@/lib/signal-visualizer/core/rendering/renderLayer";
-import type { LabelLayout } from "./labelLayout";
+import { LabelLayout } from "./labelLayout";
 import type { LayoutDesign } from "@/lib/signal-visualizer/core/rendering/layoutDesign";
 import type { PositionData } from "@/lib/signal-visualizer/core/types/positionData";
 import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData";
@@ -7,6 +7,13 @@ import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData";
 import { CanvasTextMetrics, Text, TextStyle } from "pixi.js";
 
 export type TextAlignments = 'left' | 'center' | 'right'
+
+export function alignmentIndex(i: number, length: number): TextAlignments {
+    if (length === 1) return 'center'
+    if (i === 0) return 'left'
+    if (i === length - 1) return 'right'
+    return 'center'
+}
 
 export type LabelDescription = {
     text: string
@@ -21,8 +28,8 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
     private textGraphics?: Text
     private textStyleByFontSizeAndAlignment = new Map<string, TextStyle>()
 
-    constructor(layoutData: LabelLayout, labelDescription: LabelDescription) {
-        super(layoutData)
+    constructor(labelDescription: LabelDescription) {
+        super(new LabelLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
         this.labelDescription = labelDescription
     }
 

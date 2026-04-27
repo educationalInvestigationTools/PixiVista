@@ -9,7 +9,6 @@ import {
     type LabelDescription,
     type TextAlignments,
 } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
-import { LabelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayout.ts'
 
 export class AxisLayer extends RenderLayer<AxisLayerLayout> {
     get Children(): RenderLayer<LayoutDesign>[] {
@@ -71,10 +70,6 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
         const divisions = this.layoutDesign.divisions
         for (let i = 0; i <= divisions; i++) {
             const labelLayer = new LabelLayer(
-                new LabelLayout(
-                    this.layoutDesign.buildDivisionLabelSize(i),
-                    this.layoutDesign.buildDivisionLabelPosition(i),
-                ),
                 {
                     text: this.labelTextAtDivision(i),
                     textAlignment: this.textAlignmentAtDivision(i),
