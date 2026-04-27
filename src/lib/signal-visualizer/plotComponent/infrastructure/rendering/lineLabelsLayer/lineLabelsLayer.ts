@@ -39,12 +39,22 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
         return this.labels
     }
 
+    updateLabelsText(texts: string[]) {
+        texts.map((x, i) => this.labels[i]?.updateText(x))
+        this.updateSharedFont()
+    }
+
     updateLabelText(i: number, text: string) {
-        const n = this.layoutDesign.description.positionsNormalized.length
-        this.labels[i]?.updateLabelDescription({
-            text: text,
-            textAlignment: this.layoutDesign.description.alignmentCallback(i, n)
-        })
+        this.labels[i]?.updateText(text)
+    }
+
+    updateSharedFont() {
+        const fittedFonts = this.labels.map(x => x.FittedFontSize).filter(x => x !== undefined)
+        if (fittedFonts.length > 0) {
+            const minFontSize = Math.min(...fittedFonts)
+            this.labels.map(x => x.CustomFontSize = minFontSize)
+        }
+
     }
 
     protected _updatePosition(positionData: PositionData): void {
@@ -57,5 +67,6 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
             x.updateSize(this.layoutDesign.buildLabelSize(i))
             x.updatePosition(this.layoutDesign.buildLabelPosition(i))
         })
+        this.updateSharedFont()
     }
 }

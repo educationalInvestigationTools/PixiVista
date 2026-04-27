@@ -144,10 +144,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     }
 
     private updateLabelDescriptions() {
-        this.valueLabelLayer.updateLabelDescription({
-            text: this.currentValueText,
-            textAlignment: 'right',
-        })
+        this.valueLabelLayer.updateText(this.currentValueText)
     }
 
     private relayoutHeaderLabels() {

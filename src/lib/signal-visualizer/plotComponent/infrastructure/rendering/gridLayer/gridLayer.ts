@@ -5,12 +5,10 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 import {
     LabelLayer,
-    type LabelDescription,
 } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
 import type { GridLabelFormatter, GridLabelsConfig, GridLabelsMinMaxValues, HorizontalLabelsSide, VerticalLabelsSide } from './types/types.ts'
 import type { MinMaxValues } from '../../../application/types/minMaxValues.ts'
-
-import type { TextAlignments } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
+import type { TextAlignments } from '../labelsLayer/types/types.ts'
 
 export type VerticalLabelsState = {
     side: VerticalLabelsSide
@@ -184,11 +182,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
         }
 
         for (let i = 0; i < this.verticalLabels.layers.length; i++) {
-            const description: LabelDescription = {
-                text: this.verticalLabelText(i),
-                textAlignment: this.verticalLabelsTextAlignment(),
-            }
-            this.verticalLabels.layers[i]!.updateLabelDescription(description)
+            this.verticalLabels.layers[i]!.updateText(this.verticalLabelText(i))
         }
         this.updateLabelsLayout()
     }
@@ -199,11 +193,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
         }
 
         for (let i = 0; i < this.horizontalLabels.layers.length; i++) {
-            const description: LabelDescription = {
-                text: this.horizontalLabelText(i),
-                textAlignment: 'center',
-            }
-            this.horizontalLabels.layers[i]!.updateLabelDescription(description)
+            this.horizontalLabels.layers[i]!.updateText(this.horizontalLabelText(i),)
         }
     }
 

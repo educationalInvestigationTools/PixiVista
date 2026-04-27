@@ -6,9 +6,8 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { AxisLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/axisLayer/axisLayerLayout.ts'
 import {
     LabelLayer,
-    type LabelDescription,
-    type TextAlignments,
 } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
+import type { TextAlignments } from '../labelsLayer/types/types.ts'
 
 export class AxisLayer extends RenderLayer<AxisLayerLayout> {
     get Children(): RenderLayer<LayoutDesign>[] {
@@ -42,11 +41,7 @@ export class AxisLayer extends RenderLayer<AxisLayerLayout> {
     updateMinMaxValues(minMaxValues: MinMaxValues) {
         this.minMaxValues = minMaxValues
         for (let i = 0; i < this.labelLayers.length; i++) {
-            const labelDescription: LabelDescription = {
-                text: this.labelTextAtDivision(i),
-                textAlignment: this.textAlignmentAtDivision(i),
-            }
-            this.labelLayers[i]?.updateLabelDescription(labelDescription)
+            this.labelLayers[i]?.updateText(this.labelTextAtDivision(i))
         }
     }
 

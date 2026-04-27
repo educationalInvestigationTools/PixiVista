@@ -4,7 +4,7 @@ import type { LayoutDesign } from "@/lib/signal-visualizer/core/rendering/layout
 import type { PositionData } from "@/lib/signal-visualizer/core/types/positionData";
 import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData";
 
-import type { LabelDescription, TextAlignments } from "./types/types";
+import type { LabelDescription, TextAlignments} from "./types/types";
 import { MeasureText } from "./utils/textMeasurement";
 import { Text } from "pixi.js";
 
@@ -13,19 +13,15 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
     private labelDescription: LabelDescription
     private textGraphics?: Text
     private measureText = new MeasureText()
+    private _customFontSize?: number
+    private _fittedFontSize?: number
 
     constructor(labelDescription: LabelDescription) {
         super(new LabelLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
         this.labelDescription = labelDescription
     }
 
-    protected _draw(): void {
-        this.removeCurrentText()
-
-        if (this.labelDescription.text.length === 0) {
-            return
-        }
-
+    private setFittedFontSize() {
         const { text: labelText, textAlignment } = this.labelDescription
 
         const fittedFontSize = this.measureText.resolveLargestFittedFontSize(
@@ -34,21 +30,38 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
             { width: this.layoutDesign.width, height: this.layoutDesign.height },
             { min: this.layoutDesign.minFontSize, max: this.layoutDesign.maxFontSize }
         )
-        if (fittedFontSize === undefined) {
+        this._fittedFontSize = fittedFontSize
+    }
+
+    protected _draw(): void {
+        this.removeCurrentText()
+
+        if (this.labelDescription.text.length === 0) {
             return
         }
-
-        const text = this.buildText(labelText, fittedFontSize, textAlignment)
+        const { text: labelText, textAlignment } = this.labelDescription
+        if (this._fittedFontSize === undefined) {
+            return
+        }
+        const fontToUse = this._customFontSize === undefined ? this._fittedFontSize : this._customFontSize
+        const text = this.buildText(labelText, fontToUse, textAlignment)
         text.x = this.resolveTextX(text.width, textAlignment)
         text.y = this.layoutDesign.centeredY(text.height)
 
         this.container.addChild(text)
         this.textGraphics = text
-
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {
         return []
+    }
+
+    set CustomFontSize(fontSize: number | undefined) {
+        this._customFontSize = fontSize
+    }
+
+    get FittedFontSize(): number | undefined {
+        return this._fittedFontSize
     }
 
     protected _updatePosition(positionData: PositionData): void {
@@ -57,10 +70,12 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
 
     protected _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
+        this.setFittedFontSize()
     }
 
-    public updateLabelDescription(labelDescription: LabelDescription) {
-        this.labelDescription = labelDescription
+    public updateText(text : string) {
+        this.labelDescription.text = text
+        this.setFittedFontSize()
         this._needsRendering = true
     }
 

@@ -58,10 +58,7 @@ export class LabelsGrid extends RenderLayer<LabelsGridLayout> {
     }
 
     updateLabelText(text: string, row: number, column: number) {
-        this.labels[row]?.[column]?.updateLabelDescription({
-            text,
-            textAlignment: 'center',
-        })
+        this.labels[row]?.[column]?.updateText(text)
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {
