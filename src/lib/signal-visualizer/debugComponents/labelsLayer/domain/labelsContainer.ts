@@ -9,7 +9,7 @@ export class LabelsContainer {
     async init(htmlElement: HTMLElement) {
         const renderManager = new RenderManager(htmlElement, this.eventMediator)
         const gridDescription: GridDescription = {
-            columnsPerRow: [6, 4, 10],
+            columnsPerRow: [6, 4, 10, 10, 2, 3, 5, 10, 7, 8, 5, 4, 1, 2],
         }
         const component = new LabelsGrid(gridDescription)
 

@@ -99,6 +99,6 @@ onBeforeUnmount(async () => {
 
 <style scoped>
 .canvas__container {
-    height: 300px;
+    height: 600px;
 }
 </style>

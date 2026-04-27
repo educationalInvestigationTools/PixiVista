@@ -4,7 +4,7 @@ import type { LayoutDesign } from "@/lib/signal-visualizer/core/rendering/layout
 import type { PositionData } from "@/lib/signal-visualizer/core/types/positionData";
 import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData";
 
-import { Text } from "pixi.js";
+import { CanvasTextMetrics, Text, TextStyle } from "pixi.js";
 
 export type LabelDescription = {
     text: string
@@ -16,8 +16,9 @@ const LABEL_FONT_WEIGHT = 'bold'
 export class LabelLayer extends RenderLayer<LabelLayout> {
     private labelDescription: LabelDescription
     private textGraphics?: Text
+    private textStyleByFontSize = new Map<number, TextStyle>()
 
-    constructor(layoutData : LabelLayout, labelDescription: LabelDescription) {
+    constructor(layoutData: LabelLayout, labelDescription: LabelDescription) {
         super(layoutData)
         this.labelDescription = labelDescription
     }
@@ -75,52 +76,42 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
     private buildText(textValue: string, fontSize: number): Text {
         return new Text({
             text: textValue,
-            style: {
-                fontSize,
-                fontWeight: LABEL_FONT_WEIGHT,
-                fill: LABEL_COLOR,
-            },
+            style: this.resolveTextStyle(fontSize),
         })
     }
 
+    private resolveTextStyle(fontSize: number): TextStyle {
+        const cachedStyle = this.textStyleByFontSize.get(fontSize)
+        if (cachedStyle !== undefined) {
+            return cachedStyle
+        }
+
+        const textStyle = new TextStyle({
+            fontSize,
+            fontWeight: LABEL_FONT_WEIGHT,
+            fill: LABEL_COLOR,
+        })
+        this.textStyleByFontSize.set(fontSize, textStyle)
+        return textStyle
+    }
+
     private canTextFit(textValue: string, fontSize: number): boolean {
-        const measuredText = this.buildText(textValue, fontSize)
+        const measuredText = CanvasTextMetrics.measureText(textValue, this.resolveTextStyle(fontSize))
         const fits =
-            measuredText.width <= this.layoutDesign.availableWidth
-            && measuredText.height <= this.layoutDesign.availableHeight
-        measuredText.destroy()
+            measuredText.width <= this.layoutDesign.width
+            && measuredText.height <= this.layoutDesign.height
         return fits
     }
 
     private resolveLargestFittedFontSize(textValue: string): number | undefined {
-        const measuredAtBaseFont = this.buildText(textValue, this.layoutDesign.baseFontSize)
-        const estimatedFontSize = this.layoutDesign.fittedFontSize(
-            measuredAtBaseFont.width,
-            measuredAtBaseFont.height,
-        )
-        measuredAtBaseFont.destroy()
-
         const minFontSize = this.layoutDesign.minFontSize
-        const maxFontSize = this.layoutDesign.maxFontSizeCandidate
+        const maxFontSize = this.layoutDesign.maxFontSize
         if (!this.canTextFit(textValue, minFontSize)) {
             return undefined
         }
 
         let low = minFontSize
-        let high = Math.max(minFontSize, estimatedFontSize)
-        high = Math.min(high, maxFontSize)
-
-        while (high < maxFontSize && this.canTextFit(textValue, high)) {
-            const nextHigh = Math.min(maxFontSize, high * 2)
-            if (nextHigh === high) {
-                break
-            }
-            high = nextHigh
-        }
-
-        if (this.canTextFit(textValue, high)) {
-            return high
-        }
+        let high = Math.max(low, maxFontSize)
 
         while (low < high) {
             const mid = Math.ceil((low + high) / 2)

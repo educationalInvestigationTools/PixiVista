@@ -31,7 +31,7 @@ export class LabelsGridApi extends RenderLayerDomainApi<LabelsGrid> {
                 const gridDescription = this.component.GridDescription
                 for (let i = 0; i < gridDescription.columnsPerRow.length; i++) {
                     for (let j = 0; j < gridDescription.columnsPerRow[i]!; j++) {
-                        this.component.updateLabelText(generateRandomString(1, 100), i, j)
+                        this.component.updateLabelText(generateRandomString(10, 20), i, j)
                     }
                 }
                 return Promise.resolve()
