@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import LabelsGridComponent from './lib/signal-visualizer/debugComponents/labelsLayer/presentation/LabelsGridComponent.vue';
+import GridComponent from './lib/signal-visualizer/debugComponents/gridLayer/presentation/GridComponent.vue';
+
 
 
 </script>
 
 
 <template>
-    <LabelsGridComponent></LabelsGridComponent>
+    <GridComponent></GridComponent>
 </template>
 
 <style scoped></style>
