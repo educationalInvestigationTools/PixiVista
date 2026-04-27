@@ -25,9 +25,6 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
 
     protected _draw(): void {
         this.removeCurrentText()
-        if (this.layoutDesign.width <= 0 || this.layoutDesign.height <= 0) {
-            return
-        }
 
         if (this.labelDescription.text.length === 0) {
             return
