@@ -54,8 +54,16 @@ export class MetricsChartLayout extends LayoutDesign {
         return Math.max(this.plotY - MetricsChartLayout.HEADER_TOP, 1)
     }
 
+    get headerTop() {
+        return MetricsChartLayout.HEADER_TOP
+    }
+
     get headerGap() {
         return Math.max(MetricsChartLayout.HEADER_GAP, this.plotWidth * 0.02)
+    }
+
+    getHeaderGapForWidth(availableWidth: number) {
+        return Math.max(MetricsChartLayout.HEADER_GAP, availableWidth * 0.02)
     }
 
     public buildTitleLabelSizeData(
@@ -68,10 +76,29 @@ export class MetricsChartLayout extends LayoutDesign {
         }
     }
 
+    public buildTitleLabelSizeDataForWidth(
+        valueTextLength: number,
+        availableWidth: number,
+    ): SizeData {
+        const gap = this.getHeaderGapForWidth(availableWidth)
+        const valueLabelWidth = this.buildValueLabelWidthForWidth(valueTextLength, availableWidth)
+        return {
+            width: Math.max(availableWidth - valueLabelWidth - gap, 1),
+            height: this.headerHeight,
+        }
+    }
+
     public buildTitleLabelPositionData(): PositionData {
         return {
             x: this.plotX,
-            y: MetricsChartLayout.HEADER_TOP,
+            y: this.headerTop,
+        }
+    }
+
+    public buildTitleLabelPositionDataAt(leftX: number): PositionData {
+        return {
+            x: leftX,
+            y: this.headerTop,
         }
     }
 
@@ -84,26 +111,52 @@ export class MetricsChartLayout extends LayoutDesign {
         }
     }
 
+    public buildValueLabelSizeDataForWidth(
+        valueTextLength: number,
+        availableWidth: number,
+    ): SizeData {
+        return {
+            width: this.buildValueLabelWidthForWidth(valueTextLength, availableWidth),
+            height: this.headerHeight,
+        }
+    }
+
     public buildValueLabelPositionData(
         valueTextLength: number = MetricsChartLayout.DEFAULT_VALUE_TEXT_LENGTH,
     ): PositionData {
         const valueLabelWidth = this.buildValueLabelWidth(valueTextLength)
         return {
             x: this.plotRight - valueLabelWidth,
-            y: MetricsChartLayout.HEADER_TOP,
+            y: this.headerTop,
+        }
+    }
+
+    public buildValueLabelPositionDataAt(
+        leftX: number,
+        availableWidth: number,
+        valueTextLength: number,
+    ): PositionData {
+        const valueLabelWidth = this.buildValueLabelWidthForWidth(valueTextLength, availableWidth)
+        return {
+            x: leftX + availableWidth - valueLabelWidth,
+            y: this.headerTop,
         }
     }
 
     private buildValueLabelWidth(valueTextLength: number): number {
+        return this.buildValueLabelWidthForWidth(valueTextLength, this.plotWidth)
+    }
+
+    private buildValueLabelWidthForWidth(valueTextLength: number, availableWidth: number): number {
         const normalizedLength = Math.max(1, valueTextLength)
         const estimatedTextWidth =
             normalizedLength *
             this.estimatedValueFontSize *
             MetricsChartLayout.VALUE_LABEL_CHAR_WIDTH_FACTOR
-        const paddedEstimatedWidth = estimatedTextWidth + this.headerGap * 2
+        const paddedEstimatedWidth = estimatedTextWidth + this.getHeaderGapForWidth(availableWidth) * 2
 
         const maxWidth = Math.max(
-            this.plotWidth * MetricsChartLayout.VALUE_LABEL_MAX_WIDTH_RATIO,
+            availableWidth * MetricsChartLayout.VALUE_LABEL_MAX_WIDTH_RATIO,
             MetricsChartLayout.VALUE_LABEL_MIN_WIDTH,
         )
         return Math.max(

@@ -4,7 +4,8 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
 import { GridLayer, type GridLayoutDescription, type Side } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
-import { LabelLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
+import { LineLabelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
+import type { LineLayerDescription } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/types/lineLayerDescription.ts'
 import { LineMonitorLayer } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
 import { LineMonitorLayout } from './lineMonitorLayout'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
@@ -16,8 +17,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private pointsData: PointsData
     private readonly gridLayer: GridLayer
     private readonly lineMonitorLayer: LineMonitorLayer
-    private readonly titleLabelLayer: LabelLayer
-    private readonly valueLabelLayer: LabelLayer
+    private readonly headerLabelsLayer: LineLabelsLayer
 
     constructor(layoutData: MetricsChartLayout, style: MetricsChartStyle) {
         super(layoutData)
@@ -41,35 +41,23 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             this.pointsData,
         )
 
-        this.titleLabelLayer = new LabelLayer(
-            {
-                text: style.title,
-                textAlignment: 'left',
-            },
-        )
-
-        this.valueLabelLayer = new LabelLayer(
-            {
-                text: this.currentValueText,
-                textAlignment: 'right',
-            },
-        )
+        this.headerLabelsLayer = new LineLabelsLayer(this.buildHeaderLineDescription())
+        this.updateHeaderLabels()
 
         this.container.addChild(this.gridLayer.container)
         this.container.addChild(this.lineMonitorLayer.container)
-        this.container.addChild(this.titleLabelLayer.container)
-        this.container.addChild(this.valueLabelLayer.container)
+        this.container.addChild(this.headerLabelsLayer.container)
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {
-        return [this.gridLayer, this.lineMonitorLayer, this.titleLabelLayer, this.valueLabelLayer]
+        return [this.gridLayer, this.lineMonitorLayer, this.headerLabelsLayer]
     }
 
     updatePointsData(pointsData: PointsData) {
         this.pointsData = pointsData
         this.updateGridLabels()
         this.lineMonitorLayer.updatePointsData(pointsData)
-        this.updateLabelDescriptions()
+        this.updateHeaderLabels()
         this.relayoutHeaderLabels()
         this._needsRendering = true
     }
@@ -108,8 +96,11 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             .stroke({ color: '#1f2937', width: 1, alpha: 1 })
     }
 
-    private updateLabelDescriptions() {
-        this.valueLabelLayer.updateText(this.currentValueText)
+    private updateHeaderLabels() {
+        this.headerLabelsLayer.updateLabelsText([
+            this.style.title,
+            this.currentValueText,
+        ])
     }
 
     private buildGridPlotMetrics(): { size: SizeData; position: PositionData } {
@@ -137,19 +128,17 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     }
 
     private relayoutHeaderLabels() {
-        const currentValueTextLength = this.currentValueText.length
+        const gridMetrics = this.buildGridPlotMetrics()
+        const headerY = this.layoutDesign.buildTitleLabelPositionData().y
 
-        this.titleLabelLayer.updateSize(
-            this.layoutDesign.buildTitleLabelSizeData(currentValueTextLength),
-        )
-        this.titleLabelLayer.updatePosition(this.layoutDesign.buildTitleLabelPositionData())
-
-        this.valueLabelLayer.updateSize(
-            this.layoutDesign.buildValueLabelSizeData(currentValueTextLength),
-        )
-        this.valueLabelLayer.updatePosition(
-            this.layoutDesign.buildValueLabelPositionData(currentValueTextLength),
-        )
+        this.headerLabelsLayer.updateSize({
+            width: gridMetrics.size.width,
+            height: this.layoutDesign.headerHeight,
+        })
+        this.headerLabelsLayer.updatePosition({
+            x: gridMetrics.position.x,
+            y: headerY,
+        })
     }
 
     private get currentValueText(): string {
@@ -166,5 +155,21 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private horizontalLabelTextAt(normalized: number): string {
         const seconds = (this.style.windowMs / 1000) * (1 - normalized)
         return formatSecondsAsMinuteSeconds(seconds)
+    }
+
+    private buildHeaderLineDescription(): LineLayerDescription {
+        return {
+            positionsNormalized: [0, 1],
+            orientation: 'horizontal',
+            alignmentCallback: (index: number, length: number) => {
+                if (index === 0) {
+                    return 'left'
+                }
+                if (index === length - 1) {
+                    return 'right'
+                }
+                return 'center'
+            },
+        }
     }
 }
