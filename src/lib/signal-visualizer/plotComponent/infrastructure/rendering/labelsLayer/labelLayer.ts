@@ -10,7 +10,7 @@ import { Text } from "pixi.js";
 
 
 export class LabelLayer extends RenderLayer<LabelLayout> {
-    private labelDescription: LabelDescription
+    private readonly labelDescription: LabelDescription
     private textGraphics?: Text
     private measureText = new MeasureText()
     private _customFontSize?: number

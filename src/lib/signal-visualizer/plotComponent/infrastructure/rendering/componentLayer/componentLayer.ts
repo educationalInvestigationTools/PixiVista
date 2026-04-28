@@ -26,8 +26,6 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
 
     constructor(
         componentLayout: ComponentLayout,
-        minMaxValues: MinMaxValues,
-        divisions: number,
         labels: string[],
     ) {
         super(componentLayout)

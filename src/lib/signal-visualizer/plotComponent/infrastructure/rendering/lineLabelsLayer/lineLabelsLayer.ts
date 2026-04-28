@@ -42,11 +42,6 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
         texts.map((x, i) => this.labels[i]?.updateText(x))
         this.updateSharedFont()
     }
-
-    updateLabelText(i: number, text: string) {
-        this.labels[i]?.updateText(text)
-    }
-
     updateSharedFont() {
         const fittedFonts = this.labels.map(x => x.FittedFontSize).filter(x => x !== undefined)
         if (fittedFonts.length > 0) {

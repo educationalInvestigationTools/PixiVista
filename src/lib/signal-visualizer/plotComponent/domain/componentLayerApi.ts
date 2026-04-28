@@ -40,19 +40,11 @@ export class ComponentLayerLogicApi extends RenderLayerDomainApi<ComponentLayer>
         viewPort: ViewPort,
         eventMediator: EventMediator,
     ) {
-        const gridData = {
-            verticalDivisions: 10,
-            horizontalDivisions: 5,
-        }
-
-        const minMaxValues = ComponentLayerLogicApi.transformViewPort(viewPort)
         const componentLayer = new ComponentLayer(
             new ComponentLayout(sizeData, {
                 x: 0,
                 y: 0,
             }),
-            minMaxValues,
-            gridData.verticalDivisions,
             labels,
         )
 
