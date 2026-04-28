@@ -11,6 +11,7 @@ import { LineMonitorLayout } from './lineMonitorLayout'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
 import type { PointsData } from '../../../domain/types/pointsData'
 import { formatSecondsAsMinuteSeconds } from '@/lib/signal-visualizer/utils/utils'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 
 export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private style: MetricsChartStyle
@@ -38,10 +39,22 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.lineMonitorLayer = new LineMonitorLayer(
             new LineMonitorLayout(gridMetrics.size, gridMetrics.position),
             style,
-            this.pointsData,
         )
 
-        this.headerLabelsLayer = new LineLabelsLayer(this.buildHeaderLineDescription())
+        const headerLabelDescription: LineLayerDescription = {
+            positionsNormalized: [0, 1],
+            orientation: 'horizontal',
+            alignmentCallback: (index: number, length: number) => {
+                if (index === 0) {
+                    return 'left'
+                }
+                if (index === length - 1) {
+                    return 'right'
+                }
+                return 'center'
+            },
+        }
+        this.headerLabelsLayer = new LineLabelsLayer(headerLabelDescription)
         this.updateHeaderLabels()
 
         this.container.addChild(this.gridLayer.container)
@@ -56,9 +69,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     updatePointsData(pointsData: PointsData) {
         this.pointsData = pointsData
         this.updateGridLabels()
-        this.lineMonitorLayer.updatePointsData(pointsData)
         this.updateHeaderLabels()
-        this.relayoutHeaderLabels()
+        this.updatePointsLineMonitorLayer()
         this._needsRendering = true
     }
 
@@ -157,19 +169,16 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         return formatSecondsAsMinuteSeconds(seconds)
     }
 
-    private buildHeaderLineDescription(): LineLayerDescription {
-        return {
-            positionsNormalized: [0, 1],
-            orientation: 'horizontal',
-            alignmentCallback: (index: number, length: number) => {
-                if (index === 0) {
-                    return 'left'
-                }
-                if (index === length - 1) {
-                    return 'right'
-                }
-                return 'center'
-            },
+    private updatePointsLineMonitorLayer() {
+        const pointsData = this.pointsData
+        const mappedPoints = this.pointsData.points.map(point => {
+            const normalizedPoint: Point2D = {
+                x: point.x,
+                y: (point.y - pointsData.minValue) / (pointsData.maxValue - pointsData.minValue)
+            }
+            return normalizedPoint
         }
+        )
+        this.lineMonitorLayer.updatePointsData(mappedPoints)
     }
 }

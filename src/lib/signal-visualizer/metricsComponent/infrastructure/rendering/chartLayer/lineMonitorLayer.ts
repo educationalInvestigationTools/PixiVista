@@ -3,26 +3,24 @@ import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesig
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
-import { clamp } from '@/lib/signal-visualizer/utils/utils'
-import type { PointsData } from '../../../domain/types/pointsData'
 import type { LineMonitorLayout } from './lineMonitorLayout'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 
 export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
     private style: MetricsChartStyle
-    private pointsData: PointsData
+    private normalizedPoints: Point2D[] = []
 
-    constructor(layoutData: LineMonitorLayout, style: MetricsChartStyle, pointsData: PointsData) {
+    constructor(layoutData: LineMonitorLayout, style: MetricsChartStyle) {
         super(layoutData)
         this.style = style
-        this.pointsData = pointsData
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {
         return []
     }
 
-    updatePointsData(pointsData: PointsData) {
-        this.pointsData = pointsData
+    updatePointsData(points: Point2D[]) {
+        this.normalizedPoints = points
         this._needsRendering = true
     }
 
@@ -35,24 +33,20 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
     }
 
     private mapYValue(value: number) {
-        const minValue = this.pointsData.minValue
-        const maxValue = this.pointsData.maxValue
-        const range = Math.max(maxValue - minValue, 0.001)
-        const normalized = clamp((value - minValue) / range, 0, 1)
-        return this.layoutDesign.height - normalized * this.layoutDesign.height
+        return this.layoutDesign.height - value * this.layoutDesign.height
     }
 
     private mapXValue(value: number) {
-        return clamp(value, 0, 1) * this.layoutDesign.width
+        return value * this.layoutDesign.width
     }
 
     protected _draw(): void {
-        const mappedPoints = this.pointsData.points.map((point) => ({
+        const mappedPoints = this.normalizedPoints.map((point) => ({
             x: this.mapXValue(point.x),
             y: this.mapYValue(point.y),
         }))
 
-        if (this.pointsData.points.length === 0) {
+        if (this.normalizedPoints.length === 0) {
             return
         }
 
