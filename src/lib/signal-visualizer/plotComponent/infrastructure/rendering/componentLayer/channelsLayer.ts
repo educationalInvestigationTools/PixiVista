@@ -51,10 +51,6 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
                 label,
             ),
             {
-                horizontalDivisions: 4,
-                verticalDivisions: 10,
-            },
-            {
                 label: label,
                 xSignal: {
                     values: new Float32Array(0),

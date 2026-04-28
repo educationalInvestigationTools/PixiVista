@@ -3,101 +3,117 @@ import type { LayoutDesign } from '../../../../core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
-import {
-    LabelLayer,
-} from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
-import type { GridLabelFormatter, GridLabelsConfig, GridLabelsMinMaxValues, HorizontalLabelsSide, VerticalLabelsSide } from './types/types.ts'
-import type { MinMaxValues } from '../../../application/types/minMaxValues.ts'
+import { LineLabelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
+import type { LineLayerDescription } from '../lineLabelsLayer/types/lineLayerDescription.ts'
 import type { TextAlignments } from '../labelsLayer/types/types.ts'
 
-export type VerticalLabelsState = {
-    side: VerticalLabelsSide
-    formatter: GridLabelFormatter
-    minMaxValues: MinMaxValues
-    layers: LabelLayer[]
-}
+export type Side = 'left' | 'right' | 'up' | 'down'
 
-export type HorizontalLabelsState = {
-    side: HorizontalLabelsSide
-    formatter: GridLabelFormatter
-    minMaxValues: MinMaxValues
-    layers: LabelLayer[]
+export type GridLayoutDescription = {
+    sides: Map<Side, (arg0: number) => string>
 }
 
 export class GridLayer extends RenderLayer<GridLayout> {
-    private readonly verticalLabels?: VerticalLabelsState
-    private readonly horizontalLabels?: HorizontalLabelsState
+    private lineLabels: Map<Side, LineLabelsLayer> = new Map()
+
+    constructor(layoutDescription: GridLayoutDescription) {
+        const gridLayout = new GridLayout(layoutDescription)
+        super(gridLayout)
+        this.buildLineLabels()
+    }
+
+    private buildLineLabels() {
+        for (const [_side, child] of this.lineLabels) {
+            this.container.removeChild(child.container)
+        }
+        this.lineLabels = new Map()
+        for (const [side, _] of this.layoutDesign.gridLayoutDescription.sides) {
+            const divisions = (side === 'up' || side == 'down') ? this.layoutDesign.verticalDivisions : this.layoutDesign.horizontalDivisions
+            const positions = []
+            for (let i = 0; i <= divisions; i++) {
+                positions.push(i * (1 / divisions))
+            }
+            const description: LineLayerDescription = {
+                positionsNormalized: positions,
+                orientation: (side === 'up' || side == 'down') ? 'horizontal' : 'vertical',
+                alignmentCallback: this.buildAlignmentCallback(side)
+            }
+            const child = new LineLabelsLayer(description)
+            this.lineLabels.set(side, child)
+            this.container.addChild(child.container)
+            this.updateLabels(side)
+        }
+    }
+
+    private buildAlignmentCallback(side: Side): ((_arg0: number, _length: number) => TextAlignments) {
+        if (side === 'left') {
+            return (_arg0: number, _length: number) => 'right'
+        }
+        else if (side === 'right') {
+            return (_arg0: number, _length: number) => 'right'
+        }
+        else {
+            return (arg0: number, length: number) => {
+                if (arg0 === 0) { return 'left' }
+                else if (arg0 === length - 1) { return 'right' }
+                else { return 'center' }
+            }
+        }
+    }
+
+    get GridSizeData() : SizeData {
+        return this.layoutDesign.buildGridSize()
+    }
+
+    get GridPosData(): PositionData {
+        return this.layoutDesign.buildGridPosition()
+    }
 
     get Children(): RenderLayer<LayoutDesign>[] {
-        const children: RenderLayer<LayoutDesign>[] = []
-        if (this.verticalLabels !== undefined) {
-            children.push(...this.verticalLabels.layers)
-        }
-        if (this.horizontalLabels !== undefined) {
-            children.push(...this.horizontalLabels.layers)
-        }
+        const children = []
+        for (const child of this.lineLabels.values()) children.push(child)
         return children
     }
 
     _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
-        this.updateLabelsLayout()
+        this.syncLabels()
+    }
+
+    private syncLabels() {
+        for (const [side, child] of this.lineLabels) {
+            child.updatePosition(this.layoutDesign.buildLabelsPosition(side))
+            child.updateSize(this.layoutDesign.buildLabelsSize(side))
+        }
+    }
+
+    private updateDivisions() {
+        this.layoutDesign.updateDivisions()
+        this.buildLineLabels()
     }
 
     _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
-        this.updateLabelsLayout()
-    }
-
-    constructor(
-        gridLayout: GridLayout,
-        minMaxValues: GridLabelsMinMaxValues,
-        labelsConfig: GridLabelsConfig,
-    ) {
-        super(gridLayout)
-
-        if (labelsConfig.vertical.include) {
-            this.verticalLabels = {
-                side: labelsConfig.vertical.side,
-                formatter: labelsConfig.vertical.formatter,
-                minMaxValues: minMaxValues.vertical,
-                layers: [],
-            }
-            this.createVerticalLabelLayers()
-        }
-
-        if (labelsConfig.horizontal.include) {
-            this.horizontalLabels = {
-                side: labelsConfig.horizontal.side,
-                formatter: labelsConfig.horizontal.formatter,
-                minMaxValues: minMaxValues.horizontal,
-                layers: [],
-            }
-            this.createHorizontalLabelLayers()
-        }
-    }
-
-    updateMinMaxValues(minMaxValues: Partial<GridLabelsMinMaxValues>) {
-        if (minMaxValues.vertical !== undefined && this.verticalLabels !== undefined) {
-            this.verticalLabels.minMaxValues = minMaxValues.vertical
-            this.updateVerticalLabelDescriptions()
-        }
-        if (minMaxValues.horizontal !== undefined && this.horizontalLabels !== undefined) {
-            this.horizontalLabels.minMaxValues = minMaxValues.horizontal
-            this.updateHorizontalLabelDescriptions()
-        }
+        this.updateDivisions()
+        this.syncLabels()
     }
 
     protected _draw() {
-        const width = this.layoutDesign.width
-        const height = this.layoutDesign.height
+        const gridPosition = this.layoutDesign.buildGridPosition()
+        const gridSize = this.layoutDesign.buildGridSize()
+
+        const x0 = gridPosition.x
+        const y0 = gridPosition.y
+        const width = gridSize.width
+        const height = gridSize.height
         const xDivisions = this.layoutDesign.verticalDivisions
         const yDivisions = this.layoutDesign.horizontalDivisions
-        this.graphics.rect(0, 0, width, height).stroke({ width: 1, color: 'white', alpha: 0.2 })
+        this.graphics.rect(x0, y0, width, height).stroke({ width: 1, color: 'white', alpha: 0.2 })
 
         for (let i = 0; i <= xDivisions; i++) {
-            const xDivision = (i / xDivisions) * width
-            this.graphics.moveTo(xDivision, height).lineTo(xDivision, 0).stroke({
+            const ratio = xDivisions <= 0 ? 0.5 : i / xDivisions
+            const xDivision = x0 + ratio * width
+            this.graphics.moveTo(xDivision, y0 + height).lineTo(xDivision, y0).stroke({
                 color: 'white',
                 width: 1,
                 alpha: 0.15,
@@ -105,135 +121,27 @@ export class GridLayer extends RenderLayer<GridLayout> {
         }
 
         for (let i = 0; i <= yDivisions; i++) {
-            const yDivision = (i / yDivisions) * height
+            const ratio = yDivisions <= 0 ? 0.5 : i / yDivisions
+            const yDivision = y0 + ratio * height
             this.graphics
-                .moveTo(0, yDivision)
-                .lineTo(width, yDivision)
+                .moveTo(x0, yDivision)
+                .lineTo(x0 + width, yDivision)
                 .stroke({ color: 'white', width: 1, alpha: 0.15 })
         }
     }
 
-    private createVerticalLabelLayers() {
-        if (this.verticalLabels === undefined) {
-            return
-        }
-
-        for (let i = 0; i <= this.layoutDesign.horizontalDivisions; i++) {
-            const labelText = this.verticalLabelText(i)
-            const labelLayer = new LabelLayer(
-                {
-                    text: labelText,
-                    textAlignment: this.verticalLabelsTextAlignment(),
-                },
-            )
-            this.verticalLabels.layers.push(labelLayer)
-            this.container.addChild(labelLayer.container)
-        }
-    }
-
-    private createHorizontalLabelLayers() {
-        if (this.horizontalLabels === undefined) {
-            return
-        }
-
-        for (let i = 0; i <= this.layoutDesign.verticalDivisions; i++) {
-            const labelLayer = new LabelLayer(
-                {
-                    text: this.horizontalLabelText(i),
-                    textAlignment: 'center',
-                },
-            )
-            this.horizontalLabels.layers.push(labelLayer)
-            this.container.addChild(labelLayer.container)
-        }
-    }
-
-    private updateLabelsLayout() {
-        if (this.verticalLabels !== undefined) {
-            for (let i = 0; i < this.verticalLabels.layers.length; i++) {
-                const labelLayer = this.verticalLabels.layers[i]!
-                const labelText = this.verticalLabelText(i)
-                const labelSize = this.layoutDesign.buildVerticalLabelSize(labelText.length)
-                labelLayer.updateSize(labelSize)
-                labelLayer.updatePosition(
-                    this.layoutDesign.buildVerticalLabelPosition(
-                        i,
-                        this.verticalLabels.side,
-                        labelSize.width,
-                    ),
-                )
+    updateLabels(side: Side) {
+        const layer = this.lineLabels.get(side)
+        if (layer !== undefined) {
+            const generator = this.layoutDesign.gridLayoutDescription.sides.get(side)
+            if (generator !== undefined) {
+                const divisions = (side === 'up' || side == 'down') ? this.layoutDesign.verticalDivisions : this.layoutDesign.horizontalDivisions
+                const positions = []
+                for (let i = 0; i <= divisions; i++) {
+                    positions.push(i * (1 / divisions))
+                }
+                layer.updateLabelsText(positions.map(x => generator(x)))
             }
         }
-
-        if (this.horizontalLabels !== undefined) {
-            for (let i = 0; i < this.horizontalLabels.layers.length; i++) {
-                const labelLayer = this.horizontalLabels.layers[i]!
-                labelLayer.updateSize(this.layoutDesign.buildHorizontalLabelSize())
-                labelLayer.updatePosition(
-                    this.layoutDesign.buildHorizontalLabelPosition(i, this.horizontalLabels.side),
-                )
-            }
-        }
-    }
-
-    private updateVerticalLabelDescriptions() {
-        if (this.verticalLabels === undefined) {
-            return
-        }
-
-        for (let i = 0; i < this.verticalLabels.layers.length; i++) {
-            this.verticalLabels.layers[i]!.updateText(this.verticalLabelText(i))
-        }
-        this.updateLabelsLayout()
-    }
-
-    private updateHorizontalLabelDescriptions() {
-        if (this.horizontalLabels === undefined) {
-            return
-        }
-
-        for (let i = 0; i < this.horizontalLabels.layers.length; i++) {
-            this.horizontalLabels.layers[i]!.updateText(this.horizontalLabelText(i),)
-        }
-    }
-
-    private verticalLabelsTextAlignment(): TextAlignments {
-        if (this.verticalLabels === undefined) {
-            return 'center'
-        }
-
-        return this.verticalLabels.side === 'left' ? 'right' : 'left'
-    }
-
-    private verticalLabelText(i: number): string {
-        if (this.verticalLabels === undefined) {
-            return ''
-        }
-
-        if (this.layoutDesign.horizontalDivisions <= 0) {
-            return this.verticalLabels.formatter(this.verticalLabels.minMaxValues.max)
-        }
-
-        const stepSize =
-            (this.verticalLabels.minMaxValues.max - this.verticalLabels.minMaxValues.min)
-            / this.layoutDesign.horizontalDivisions
-        const value = this.verticalLabels.minMaxValues.max - i * stepSize
-        return this.verticalLabels.formatter(value)
-    }
-
-    private horizontalLabelText(i: number): string {
-        if (this.horizontalLabels === undefined) {
-            return ''
-        }
-
-        if (this.layoutDesign.verticalDivisions <= 0) {
-            return this.horizontalLabels.formatter(this.horizontalLabels.minMaxValues.max)
-        }
-
-        const stepSize =
-            (this.horizontalLabels.minMaxValues.max - this.horizontalLabels.minMaxValues.min)
-            / this.layoutDesign.verticalDivisions
-        const value = this.horizontalLabels.minMaxValues.max - i * stepSize
-        return this.horizontalLabels.formatter(value)
     }
 }

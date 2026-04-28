@@ -3,11 +3,10 @@ import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layout
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
-import { GridLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
+import { GridLayer, type GridLayoutDescription, type Side } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
 import { LabelLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
 import { LineMonitorLayer } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
 import { LineMonitorLayout } from './lineMonitorLayout'
-import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
 import type { PointsData } from '../../../domain/types/pointsData'
 import { formatSecondsAsMinuteSeconds } from '@/lib/signal-visualizer/utils/utils'
@@ -29,44 +28,15 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             maxValue: 0,
             currentValue: 0,
         }
-        this.gridLayer = new GridLayer(
-            new GridLayout(
-                this.layoutDesign.buildPlotSizeData(),
-                this.layoutDesign.buildPlotPositionData(),
-                {
-                    horizontalDivisions: 6,
-                    verticalDivisions: 4,
-                },
-            ),
-            {
-                vertical: {
-                    min: this.pointsData.minValue,
-                    max: this.pointsData.maxValue,
-                },
-                horizontal: {
-                    min: 0,
-                    max: style.windowMs / 1000,
-                },
-            },
-            {
-                vertical: {
-                    include: true,
-                    side: 'left',
-                    formatter: (value) => value.toFixed(2),
-                },
-                horizontal: {
-                    include: true,
-                    side: 'down',
-                    formatter: formatSecondsAsMinuteSeconds,
-                },
-            },
-        )
+        const sides: Map<Side, (arg0: number) => string> = new Map()
+        sides.set('left', (arg0: number) => this.verticalLabelTextAt(arg0))
+        sides.set('down', (arg0: number) => this.horizontalLabelTextAt(arg0))
+        const description: GridLayoutDescription = { sides }
+        this.gridLayer = new GridLayer(description)
 
+        const gridMetrics = this.buildGridPlotMetrics()
         this.lineMonitorLayer = new LineMonitorLayer(
-            new LineMonitorLayout(
-                this.layoutDesign.buildPlotSizeData(),
-                this.layoutDesign.buildPlotPositionData(),
-            ),
+            new LineMonitorLayout(gridMetrics.size, gridMetrics.position),
             style,
             this.pointsData,
         )
@@ -97,12 +67,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
     updatePointsData(pointsData: PointsData) {
         this.pointsData = pointsData
-        this.gridLayer.updateMinMaxValues({
-            vertical: {
-                min: pointsData.minValue,
-                max: pointsData.maxValue,
-            },
-        })
+        this.updateGridLabels()
         this.lineMonitorLayer.updatePointsData(pointsData)
         this.updateLabelDescriptions()
         this.relayoutHeaderLabels()
@@ -112,7 +77,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     _updatePosition(positionData: PositionData): void {
         this.layoutDesign.updatePosData(positionData)
         this.gridLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
-        this.lineMonitorLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
+        this.relayoutLineMonitor()
         this.relayoutHeaderLabels()
     }
 
@@ -121,8 +86,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.gridLayer.updateSize(this.layoutDesign.buildPlotSizeData())
         this.gridLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
 
-        this.lineMonitorLayer.updateSize(this.layoutDesign.buildPlotSizeData())
-        this.lineMonitorLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
+        this.relayoutLineMonitor()
+        this.updateGridLabels()
         this.relayoutHeaderLabels()
     }
 
@@ -147,6 +112,30 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.valueLabelLayer.updateText(this.currentValueText)
     }
 
+    private buildGridPlotMetrics(): { size: SizeData; position: PositionData } {
+        const plotPosition = this.layoutDesign.buildPlotPositionData()
+        const gridPosition = this.gridLayer.GridPosData
+        const gridSize = this.gridLayer.GridSizeData
+        return {
+            size: gridSize,
+            position: {
+                x: plotPosition.x + gridPosition.x,
+                y: plotPosition.y + gridPosition.y,
+            },
+        }
+    }
+
+    private relayoutLineMonitor() {
+        const gridMetrics = this.buildGridPlotMetrics()
+        this.lineMonitorLayer.updateSize(gridMetrics.size)
+        this.lineMonitorLayer.updatePosition(gridMetrics.position)
+    }
+
+    private updateGridLabels() {
+        this.gridLayer.updateLabels('left')
+        this.gridLayer.updateLabels('down')
+    }
+
     private relayoutHeaderLabels() {
         const currentValueTextLength = this.currentValueText.length
 
@@ -165,5 +154,17 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
     private get currentValueText(): string {
         return `${this.pointsData.currentValue.toFixed(2)} ${this.style.unit}`
+    }
+
+    private verticalLabelTextAt(normalized: number): string {
+        const min = this.pointsData.minValue
+        const max = this.pointsData.maxValue
+        const value = max - normalized * (max - min)
+        return value.toFixed(2)
+    }
+
+    private horizontalLabelTextAt(normalized: number): string {
+        const seconds = (this.style.windowMs / 1000) * normalized
+        return formatSecondsAsMinuteSeconds(seconds)
     }
 }

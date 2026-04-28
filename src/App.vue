@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import LineLabelsComponent from './lib/signal-visualizer/debugComponents/lineLabelsLayer/presentation/LineLabelsComponent.vue';
-
-
-
+import PlotDebug from './lib/signal-visualizer/plotComponent/presentation/plotComponent/PlotDebug.vue';
 </script>
 
 
 <template>
-    <LineLabelsComponent></LineLabelsComponent>
+    <PlotDebug></PlotDebug>
 </template>
 
 <style scoped></style>

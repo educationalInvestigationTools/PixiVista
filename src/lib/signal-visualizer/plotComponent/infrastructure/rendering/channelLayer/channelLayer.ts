@@ -1,53 +1,29 @@
 import { OneDimensionalSignalLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalPlotLayer.ts'
-import { GridLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
+import { GridLayer, type GridLayoutDescription, type Side } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
 
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
-import type { GridData } from '@/lib/signal-visualizer/plotComponent/application/types/gridData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
-import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
 import { OneDimensionalSignalLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalLayout.ts'
 import { ChannelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/channelLayer/channelLayout.ts'
 
 export class ChannelLayer extends RenderLayer<ChannelLayout> {
     private readonly oneDimensionalSignalLayer: OneDimensionalSignalLayer
     private readonly gridLayer: GridLayer
+    private signalData: OneDimNormalizedSignal
 
     constructor(
         channelLayout: ChannelLayout,
-        gridData: GridData,
         oneDimensionalSignalData: OneDimNormalizedSignal,
     ) {
         super(channelLayout)
-        this.gridLayer = new GridLayer(
-            new GridLayout(
-                {
-                    width: channelLayout.width,
-                    height: channelLayout.height,
-                },
-                {
-                    x: 0,
-                    y: 0,
-                },
-                gridData,
-            ),
-            {
-                vertical: oneDimensionalSignalData.ySignal.minMaxValues,
-                horizontal: oneDimensionalSignalData.xSignal.minMaxValues,
-            },
-            {
-                vertical: {
-                    include: true,
-                    side: 'left',
-                    formatter: (value) => value.toFixed(2),
-                },
-                horizontal: {
-                    include: false,
-                },
-            },
-        )
+        this.signalData = oneDimensionalSignalData
+        const sides: Map<Side, (arg0: number) => string> = new Map()
+        sides.set('left', (arg0: number) => this.verticalLabelTextAt(arg0))
+        const description: GridLayoutDescription = { sides }
+        this.gridLayer = new GridLayer(description)
         this.container.addChild(this.gridLayer.container)
 
         this.oneDimensionalSignalLayer = new OneDimensionalSignalLayer(
@@ -81,16 +57,40 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
     }
 
     updateData(signalData: OneDimNormalizedSignal) {
+        this.signalData = signalData
         this._needsRendering = true
-        this.gridLayer.updateMinMaxValues({
-            vertical: signalData.ySignal.minMaxValues,
-        })
+        this.updateGridLabels()
         this.oneDimensionalSignalLayer.updateData(signalData)
     }
 
     _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
-        this.oneDimensionalSignalLayer.updateSize(sizeData)
         this.gridLayer.updateSize(sizeData)
+        this.relayoutSignalLayer()
     }
+
+    private buildGridPlotMetrics(): { size: SizeData; position: PositionData } {
+        return {
+            size: this.gridLayer.GridSizeData,
+            position: this.gridLayer.GridPosData,
+        }
+    }
+
+    private relayoutSignalLayer() {
+        const gridMetrics = this.buildGridPlotMetrics()
+        this.oneDimensionalSignalLayer.updateSize(gridMetrics.size)
+        this.oneDimensionalSignalLayer.updatePosition(gridMetrics.position)
+    }
+
+    private updateGridLabels() {
+        this.gridLayer.updateLabels('left')
+    }
+
+    private verticalLabelTextAt(normalized: number): string {
+        const min = this.signalData.ySignal.minMaxValues.min
+        const max = this.signalData.ySignal.minMaxValues.max
+        const value = max - normalized * (max - min)
+        return value.toFixed(2)
+    }
+
 }

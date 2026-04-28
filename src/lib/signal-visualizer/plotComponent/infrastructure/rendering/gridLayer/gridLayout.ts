@@ -1,93 +1,143 @@
 import { GridBaseLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridBaseLayout.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
-import type { HorizontalLabelsSide, VerticalLabelsSide } from './types/types'
+import type { GridLayoutDescription, Side } from './gridLayer';
+import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData';
+import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData';
 
 export class GridLayout extends GridBaseLayout {
-    private static readonly EDGE_MARGIN = 2
-    private static readonly MIN_VERTICAL_LABEL_WIDTH = 2
-    private static readonly DEFAULT_VERTICAL_LABEL_TEXT_LENGTH = 8
-    private static readonly VERTICAL_LABEL_CHAR_WIDTH_FACTOR = 0.62
-    private static readonly VERTICAL_LABEL_HORIZONTAL_PADDING = 4
+    gridLayoutDescription: GridLayoutDescription
+    constructor(gridLayoutDescription: GridLayoutDescription) {
+        super({ width: 0, height: 0 }, { x: 0, y: 0 }, { verticalDivisions: 1, horizontalDivisions: 1 })
+        this.gridLayoutDescription = gridLayoutDescription
+    }
 
-    buildVerticalLabelSize(
-        textLength: number = GridLayout.DEFAULT_VERTICAL_LABEL_TEXT_LENGTH,
-    ): SizeData {
-        const verticalLabelWidthAvailable = Math.max(
-            this.width / 18,
-            GridLayout.MIN_VERTICAL_LABEL_WIDTH,
-        )
-        const availableWidth = Math.max(verticalLabelWidthAvailable - this.labelToGridGap, 1)
-        const estimatedTextWidth =
-            Math.max(1, textLength)
-            * 14
-            * GridLayout.VERTICAL_LABEL_CHAR_WIDTH_FACTOR
-        const estimatedLabelWidth = estimatedTextWidth + GridLayout.VERTICAL_LABEL_HORIZONTAL_PADDING
-        const width = Math.max(
-            GridLayout.MIN_VERTICAL_LABEL_WIDTH,
-            Math.min(availableWidth, estimatedLabelWidth),
-        )
+    private existSide(side: Side) {
+        return this.gridLayoutDescription.sides.get(side) !== undefined
+    }
 
-        const labelCount = Math.max(this.horizontalDivisions + 1, 1)
-        const height = Math.max((this.height - GridLayout.EDGE_MARGIN * 2) / labelCount, 1)
+    buildLabelsPosition(side: Side): PositionData {
+        if (side === 'left') {
+            const x = 0
+            let y = 0
+            if (this.existSide('up')) {
+                const sizeData = this.buildLabelsSize('up')
+                y = sizeData.height
+            }
+            return { x, y }
+        }
 
-        return {
-            width,
-            height,
+        else if (side === 'right') {
+            const sizeData = this.buildLabelsSize('right')
+            const x = this.width - sizeData.width
+            let y = 0
+            if (this.existSide('up')) {
+                y = this.buildLabelsSize('up').height
+            }
+            return { x, y }
+        }
+
+        else if (side === 'up') {
+            const y = 0
+            let x = 0
+            if (this.existSide('left')) {
+                x = this.buildLabelsSize('left').width
+            }
+            return { x, y }
+        }
+
+        else {
+            const y = this.height - this.buildLabelsSize('down').height
+            let x = 0
+            if (this.existSide('left')) {
+                x = this.buildLabelsSize('left').width
+            }
+            return { x, y }
         }
     }
 
-    buildVerticalLabelPosition(i: number, side: VerticalLabelsSide, labelWidth: number): PositionData {
-        const x =
-            side === 'left'
-                ? -(this.labelToGridGap + labelWidth)
-                : this.width + this.labelToGridGap
+    buildLabelsSize(side: Side): SizeData {
+        const existLeft = this.existSide('left')
+        const existRight = this.existSide('right')
+        const existUp = this.existSide('up')
+        const existDown = this.existSide('down')
 
-        const labelHeight = this.buildVerticalLabelSize().height
-        const halfLabelHeight = labelHeight / 2
-
-        const y =
-            this.horizontalDivisions <= 0
-                ? this.height / 2 - halfLabelHeight
-                : (i / this.horizontalDivisions) * this.height - halfLabelHeight
-
-        return {
-            x,
-            y,
+        if (side === 'left' || side === 'right') {
+            const width = this.width * 0.15
+            let height = this.height
+            if (existUp) {
+                height -= this.height * 0.15
+            }
+            if (existDown) {
+                height -= this.height * 0.15
+            }
+            return { width, height }
+        }
+        else {
+            const height = this.height * 0.15
+            let width = this.width
+            if (existLeft) {
+                width -= this.width * 0.15
+            }
+            if (existRight) {
+                width -= this.width * 0.15
+            }
+            return { width, height }
         }
     }
 
-    buildHorizontalLabelSize(): SizeData {
-        const labelCount = Math.max(this.verticalDivisions + 1, 1)
-        const width = Math.max((this.width - GridLayout.EDGE_MARGIN * 2) / labelCount, 1)
-
-        return {
-            width,
-            height: Math.max(14, 1),
+    buildGridPosition(): PositionData {
+        const existLeft = this.existSide('left')
+        const existUp = this.existSide('up')
+        const sizeLeft = this.buildLabelsSize('left')
+        const sizeUp = this.buildLabelsSize('up')
+        if (!existLeft && !existUp) {
+            return { x: 0, y: 0 }
+        }
+        else if (existLeft && existUp) {
+            return { x: sizeLeft.width, y: sizeUp.height }
+        }
+        else if (existLeft && !existUp) {
+            return { x: sizeLeft.width, y: 0 }
+        }
+        else {
+            return { x: 0, y: sizeUp.height }
         }
     }
 
-    buildHorizontalLabelPosition(i: number, side: HorizontalLabelsSide): PositionData {
-        const sizeData = this.buildHorizontalLabelSize()
+    buildGridSize(): SizeData {
+        let width = this.width
+        let height = this.height
+        const existLeft = this.existSide('left')
+        const existRight = this.existSide('right')
+        const existUp = this.existSide('up')
+        const existDown = this.existSide('down')
 
-        const halfLabelWidth = sizeData.width / 2
-        const x =
-            this.verticalDivisions <= 0
-                ? this.width / 2 - halfLabelWidth
-                : (i / this.verticalDivisions) * this.width - halfLabelWidth
-
-        const y =
-            side === 'up'
-                ? -(this.labelToGridGap + sizeData.height)
-                : this.height + this.labelToGridGap
-
-        return {
-            x,
-            y,
+        if (existLeft) {
+            width -= this.buildLabelsSize('left').width
         }
+
+        if (existRight) {
+            width -= this.buildLabelsSize('right').width
+        }
+
+        if (existUp) {
+            height -= this.buildLabelsSize('up').height
+        }
+
+        if (existDown) {
+            height -= this.buildLabelsSize('down').height
+        }
+
+        return { width, height }
+
     }
 
-    private get labelToGridGap(): number {
-        return Math.max(2, 14 * 0.25)
+    updateDivisions() {
+        const gridSize = this.buildGridSize()
+        const horizontalDivisions = Math.max(1, Math.floor(gridSize.height / 20))
+        const verticalDivisions = Math.max(1, Math.floor(gridSize.width / 40))
+        this.gridData = {
+            horizontalDivisions,
+            verticalDivisions
+        }
     }
 }

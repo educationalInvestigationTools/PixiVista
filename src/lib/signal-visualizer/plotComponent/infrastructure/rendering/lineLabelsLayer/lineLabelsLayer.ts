@@ -3,7 +3,6 @@ import { RenderLayer } from "@/lib/signal-visualizer/core/rendering/renderLayer"
 import type { PositionData } from "@/lib/signal-visualizer/core/types/positionData";
 import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData";
 import { LabelLayer } from "../labelsLayer/labelLayer";
-import { generateRandomString } from "@/lib/signal-visualizer/debugComponents/labelsLayer/utils/utils";
 import { LineLabelsLayout } from "./lineLabelsLayout";
 import { type LineLayerDescription } from "./types/lineLayerDescription";
 
@@ -16,7 +15,7 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
         const n = this.layoutDesign.description.positionsNormalized.length
         this.layoutDesign.description.positionsNormalized.map((x, i) => {
             const labelLayer = new LabelLayer({
-                text: generateRandomString(10, 200),
+                text: "",
                 textAlignment: this.layoutDesign.description.alignmentCallback(i, n)
             })
             this.labels.push(labelLayer)
