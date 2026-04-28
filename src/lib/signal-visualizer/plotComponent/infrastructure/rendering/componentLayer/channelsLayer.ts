@@ -96,5 +96,17 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
             child.updatePosition(posData)
             index += 1
         }
+        this.updateBottomChannelLabels()
+    }
+
+    private updateBottomChannelLabels() {
+        let bottomChannel: ChannelLayer | undefined
+        for (const label in this.channels) {
+            bottomChannel = this.channels[label]
+        }
+        for (const label in this.channels) {
+            const child = this.channels[label]!
+            child.setDownLabelsEnabled(child === bottomChannel)
+        }
     }
 }

@@ -13,6 +13,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
     private readonly oneDimensionalSignalLayer: OneDimensionalSignalLayer
     private readonly gridLayer: GridLayer
     private signalData: OneDimNormalizedSignal
+    private hasDownLabels: boolean = false
 
     constructor(
         channelLayout: ChannelLayout,
@@ -63,6 +64,22 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         this.oneDimensionalSignalLayer.updateData(signalData)
     }
 
+    setDownLabelsEnabled(enabled: boolean) {
+        if (enabled === this.hasDownLabels) {
+            return
+        }
+        this.hasDownLabels = enabled
+        const sides = this.gridLayer.layoutDesign.gridLayoutDescription.sides
+        if (enabled) {
+            sides.set('down', (arg0: number) => this.horizontalLabelTextAt(arg0))
+        } else {
+            sides.delete('down')
+        }
+        this.gridLayer.updateSize({ width: this.layoutDesign.width, height: this.layoutDesign.height })
+        this.relayoutSignalLayer()
+        this.updateGridLabels()
+    }
+
     _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
         this.gridLayer.updateSize(sizeData)
@@ -84,12 +101,22 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
 
     private updateGridLabels() {
         this.gridLayer.updateLabels('left')
+        if (this.hasDownLabels) {
+            this.gridLayer.updateLabels('down')
+        }
     }
 
     private verticalLabelTextAt(normalized: number): string {
         const min = this.signalData.ySignal.minMaxValues.min
         const max = this.signalData.ySignal.minMaxValues.max
         const value = max - normalized * (max - min)
+        return value.toFixed(2)
+    }
+
+    private horizontalLabelTextAt(normalized: number): string {
+        const min = this.signalData.xSignal.minMaxValues.min
+        const max = this.signalData.xSignal.minMaxValues.max
+        const value = min + normalized * (max - min)
         return value.toFixed(2)
     }
 
