@@ -164,7 +164,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     }
 
     private horizontalLabelTextAt(normalized: number): string {
-        const seconds = (this.style.windowMs / 1000) * normalized
+        const seconds = (this.style.windowMs / 1000) * (1 - normalized)
         return formatSecondsAsMinuteSeconds(seconds)
     }
 }

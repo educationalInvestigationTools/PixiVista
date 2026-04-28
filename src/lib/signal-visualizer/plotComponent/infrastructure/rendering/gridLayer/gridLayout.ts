@@ -60,25 +60,28 @@ export class GridLayout extends GridBaseLayout {
         const existUp = this.existSide('up')
         const existDown = this.existSide('down')
 
+        const defaultWidth = Math.min(25, this.width * 0.15)
+        const defaultHeight = Math.min(25, this.height * 0.15)
+
         if (side === 'left' || side === 'right') {
-            const width = this.width * 0.15
+            const width = defaultWidth
             let height = this.height
             if (existUp) {
-                height -= this.height * 0.15
+                height -= defaultHeight
             }
             if (existDown) {
-                height -= this.height * 0.15
+                height -= defaultHeight
             }
             return { width, height }
         }
         else {
-            const height = this.height * 0.15
+            const height = defaultHeight
             let width = this.width
             if (existLeft) {
-                width -= this.width * 0.15
+                width -= defaultWidth
             }
             if (existRight) {
-                width -= this.width * 0.15
+                width -= defaultWidth
             }
             return { width, height }
         }
@@ -133,8 +136,8 @@ export class GridLayout extends GridBaseLayout {
 
     updateDivisions() {
         const gridSize = this.buildGridSize()
-        const horizontalDivisions = Math.max(1, Math.floor(gridSize.height / 20))
-        const verticalDivisions = Math.max(1, Math.floor(gridSize.width / 40))
+        const horizontalDivisions = Math.max(1, Math.floor(gridSize.height / 40))
+        const verticalDivisions = Math.max(1, Math.floor(gridSize.width / 50))
         this.gridData = {
             horizontalDivisions,
             verticalDivisions
