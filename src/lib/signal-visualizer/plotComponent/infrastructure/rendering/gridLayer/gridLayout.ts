@@ -136,8 +136,8 @@ export class GridLayout extends GridBaseLayout {
 
     updateDivisions() {
         const gridSize = this.buildGridSize()
-        const horizontalDivisions = Math.max(1, Math.floor(gridSize.height / 40))
-        const verticalDivisions = Math.max(1, Math.floor(gridSize.width / 50))
+        const horizontalDivisions = Math.max(2, Math.floor(gridSize.height / 40))
+        const verticalDivisions = Math.max(2, Math.floor(gridSize.width / 50))
         this.gridData = {
             horizontalDivisions,
             verticalDivisions
