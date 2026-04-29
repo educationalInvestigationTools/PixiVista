@@ -25,10 +25,6 @@ export function formatSecondsAsMinuteSeconds(value: number): string {
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
-export function sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export function sameSet<T>(one: Array<T>, two: Array<T>) {
     const set1 = new Set(one)
     const set2 = new Set(two)

@@ -41,7 +41,6 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
     }
 
     protected _draw(): void {
-        console.log(this.normalizedPoints.length)
         if (this.normalizedPoints.length === 0) {
             return
         }

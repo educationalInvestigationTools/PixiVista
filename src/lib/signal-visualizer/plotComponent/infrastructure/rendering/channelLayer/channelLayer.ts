@@ -119,5 +119,4 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         const value = min + normalized * (max - min)
         return value.toFixed(2)
     }
-
 }
