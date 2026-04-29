@@ -3,10 +3,8 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 
 export class ChannelLayout extends LayoutDesign {
-    label: string
 
-    constructor(sizeData: SizeData, posData: PositionData, label: string) {
+    constructor(sizeData: SizeData, posData: PositionData) {
         super(sizeData, posData)
-        this.label = label
     }
 }

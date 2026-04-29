@@ -6,7 +6,6 @@ import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layout
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
-import { OneDimensionalSignalLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalLayout.ts'
 import { ChannelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/channelLayer/channelLayout.ts'
 
 export class ChannelLayer extends RenderLayer<ChannelLayout> {
@@ -16,10 +15,9 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
     private hasDownLabels: boolean = false
 
     constructor(
-        channelLayout: ChannelLayout,
         oneDimensionalSignalData: OneDimNormalizedSignal,
     ) {
-        super(channelLayout)
+        super(new ChannelLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
         this.signalData = oneDimensionalSignalData
         const sides: Map<Side, (arg0: number) => string> = new Map()
         sides.set('left', (arg0: number) => this.verticalLabelTextAt(arg0))
@@ -28,15 +26,6 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         this.container.addChild(this.gridLayer.container)
 
         this.oneDimensionalSignalLayer = new OneDimensionalSignalLayer(
-            new OneDimensionalSignalLayout(
-                {
-                    width: channelLayout.width,
-                    height: channelLayout.height,
-                },
-                {
-                    x: 0,
-                    y: 0,
-                }),
             oneDimensionalSignalData,
         )
         this.container.addChild(this.oneDimensionalSignalLayer.container)

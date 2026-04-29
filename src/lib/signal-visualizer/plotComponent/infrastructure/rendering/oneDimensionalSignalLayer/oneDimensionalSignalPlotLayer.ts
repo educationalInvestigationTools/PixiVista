@@ -8,8 +8,8 @@ import { OneDimensionalSignalLayout } from '@/lib/signal-visualizer/plotComponen
 export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalLayout> {
     signalData: OneDimNormalizedSignal
 
-    constructor(layoutData : OneDimensionalSignalLayout, signalData: OneDimNormalizedSignal) {
-        super(layoutData)
+    constructor(signalData: OneDimNormalizedSignal) {
+        super(new OneDimensionalSignalLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
         this.signalData = signalData
     }
 

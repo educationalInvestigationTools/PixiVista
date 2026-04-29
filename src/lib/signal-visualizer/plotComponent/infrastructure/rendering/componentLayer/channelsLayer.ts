@@ -4,7 +4,6 @@ import { ChannelLayer } from '@/lib/signal-visualizer/plotComponent/infrastructu
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { ChannelsLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/channelsLayerLayout.ts'
-import { ChannelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/channelLayer/channelLayout.ts'
 
 export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     private channels: Record<string, ChannelLayer> = {}
@@ -45,11 +44,6 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     addChannel(label: string) {
         this.layoutDesign.changeVisibleChannels(this.layoutDesign.visibleChannels + 1)
         const channelLayer = new ChannelLayer(
-            new ChannelLayout(
-                this.layoutDesign.buildChannelSize(),
-                this.layoutDesign.buildChannelPos(0),
-                label,
-            ),
             {
                 label: label,
                 xSignal: {
