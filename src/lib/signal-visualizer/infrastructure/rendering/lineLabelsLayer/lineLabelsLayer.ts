@@ -1,12 +1,10 @@
-import { LayoutDesign } from "@/lib/signal-visualizer/core/rendering/layoutDesign";
-import { RenderLayer } from "@/lib/signal-visualizer/core/rendering/renderLayer";
-import type { PositionData } from "@/lib/signal-visualizer/core/types/positionData";
-import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData";
-import { LabelLayer } from "../labelsLayer/labelLayer";
-import { LineLabelsLayout } from "./lineLabelsLayout";
-import { type LineLayerDescription } from "./types/lineLayerDescription";
-
-
+import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
+import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
+import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
+import { LabelLayer } from '../labelsLayer/labelLayer.ts'
+import { LineLabelsLayout } from './lineLabelsLayout.ts'
+import { type LineLayerDescription } from './types/lineLayerDescription.ts'
 
 export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
     labels: LabelLayer[] = []
@@ -15,8 +13,8 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
         const n = this.layoutDesign.description.positionsNormalized.length
         this.layoutDesign.description.positionsNormalized.map((x, i) => {
             const labelLayer = new LabelLayer({
-                text: "",
-                textAlignment: this.layoutDesign.description.alignmentCallback(i, n)
+                text: '',
+                textAlignment: this.layoutDesign.description.alignmentCallback(i, n),
             })
             this.labels.push(labelLayer)
             this.container.addChild(labelLayer.container)
@@ -29,10 +27,9 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
             const posData = this.layoutDesign.buildLabelPosition(i)
             this.graphics.rect(posData.x, posData.y, sizeData.width, sizeData.height).stroke({
                 width: 2,
-                color: 'green'
+                color: 'green',
             })
         })
-
     }
     get Children(): RenderLayer<LayoutDesign>[] {
         return this.labels
@@ -43,12 +40,11 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
         this.updateSharedFont()
     }
     updateSharedFont() {
-        const fittedFonts = this.labels.map(x => x.FittedFontSize).filter(x => x !== undefined)
+        const fittedFonts = this.labels.map((x) => x.FittedFontSize).filter((x) => x !== undefined)
         if (fittedFonts.length > 0) {
             const minFontSize = Math.min(...fittedFonts)
-            this.labels.map(x => x.CustomFontSize = minFontSize)
+            this.labels.map((x) => (x.CustomFontSize = minFontSize))
         }
-
     }
 
     protected _updatePosition(positionData: PositionData): void {

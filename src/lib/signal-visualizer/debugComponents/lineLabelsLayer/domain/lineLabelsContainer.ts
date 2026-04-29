@@ -1,8 +1,8 @@
-import { RenderManager } from "@/lib/signal-visualizer/core/rendering/renderManager";
-import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator";
-import { LineLabelsApi } from "./lineLabelsApi";
-import type { LineLayerDescription } from "@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/types/lineLayerDescription";
-import { LineLabelsLayer } from "@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer";
+import { RenderManager } from '@/lib/signal-visualizer/core/rendering/renderManager'
+import { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator'
+import { LineLabelsApi } from './lineLabelsApi'
+import type { LineLayerDescription } from '@/lib/signal-visualizer/infrastructure/rendering/lineLabelsLayer/types/lineLayerDescription'
+import { LineLabelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer'
 
 export class LineLabelsContainer {
     readonly eventMediator: EventMediator = new EventMediator()
@@ -12,7 +12,7 @@ export class LineLabelsContainer {
         const description: LineLayerDescription = {
             positionsNormalized: [0, 0.3, 0.6, 1],
             orientation: 'vertical',
-            alignmentCallback: (arg0: number, arg1: number) => 'center'
+            alignmentCallback: (_arg0: number, _arg1: number) => 'center',
         }
 
         const component = new LineLabelsLayer(description)

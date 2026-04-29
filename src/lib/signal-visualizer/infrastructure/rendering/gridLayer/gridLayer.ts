@@ -1,9 +1,9 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
-import type { LayoutDesign } from '../../../../core/rendering/layoutDesign.ts'
+import type { LayoutDesign } from '../../../core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import { GridLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayout.ts'
-import { LineLabelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
+import { GridLayout } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayout.ts'
+import { LineLabelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
 import type { LineLayerDescription } from '../lineLabelsLayer/types/lineLayerDescription.ts'
 import type { TextAlignments } from '../labelsLayer/types/types.ts'
 
@@ -13,7 +13,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
     private lineLabels: Map<Side, LineLabelsLayer> = new Map()
 
     constructor() {
-        const gridLayout = new GridLayout( {sides : new Map()} )
+        const gridLayout = new GridLayout({ sides: new Map() })
         super(gridLayout)
         this.buildLineLabels()
     }
@@ -24,15 +24,18 @@ export class GridLayer extends RenderLayer<GridLayout> {
         }
         this.lineLabels = new Map()
         for (const [side, _] of this.layoutDesign.gridLayoutDescription.sides) {
-            const divisions = (side === 'up' || side == 'down') ? this.layoutDesign.verticalDivisions : this.layoutDesign.horizontalDivisions
+            const divisions =
+                side === 'up' || side == 'down'
+                    ? this.layoutDesign.verticalDivisions
+                    : this.layoutDesign.horizontalDivisions
             const positions = []
             for (let i = 0; i <= divisions; i++) {
                 positions.push(i * (1 / divisions))
             }
             const description: LineLayerDescription = {
                 positionsNormalized: positions,
-                orientation: (side === 'up' || side == 'down') ? 'horizontal' : 'vertical',
-                alignmentCallback: this.buildAlignmentCallback(side)
+                orientation: side === 'up' || side == 'down' ? 'horizontal' : 'vertical',
+                alignmentCallback: this.buildAlignmentCallback(side),
             }
             const child = new LineLabelsLayer(description)
             this.lineLabels.set(side, child)
@@ -41,7 +44,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
         }
     }
 
-    addLabelSide(side: Side, labelGenerator : (arg0: number) => string) {
+    addLabelSide(side: Side, labelGenerator: (arg0: number) => string) {
         this.layoutDesign.gridLayoutDescription.sides.set(side, labelGenerator)
     }
 
@@ -49,23 +52,25 @@ export class GridLayer extends RenderLayer<GridLayout> {
         this.layoutDesign.gridLayoutDescription.sides.delete(side)
     }
 
-    private buildAlignmentCallback(side: Side): ((_arg0: number, _length: number) => TextAlignments) {
+    private buildAlignmentCallback(side: Side): (_arg0: number, _length: number) => TextAlignments {
         if (side === 'left') {
             return (_arg0: number, _length: number) => 'right'
-        }
-        else if (side === 'right') {
+        } else if (side === 'right') {
             return (_arg0: number, _length: number) => 'right'
-        }
-        else {
+        } else {
             return (arg0: number, length: number) => {
-                if (arg0 === 0) { return 'left' }
-                else if (arg0 === length - 1) { return 'right' }
-                else { return 'center' }
+                if (arg0 === 0) {
+                    return 'left'
+                } else if (arg0 === length - 1) {
+                    return 'right'
+                } else {
+                    return 'center'
+                }
             }
         }
     }
 
-    get GridSizeData() : SizeData {
+    get GridSizeData(): SizeData {
         return this.layoutDesign.buildGridSize()
     }
 
@@ -117,11 +122,14 @@ export class GridLayer extends RenderLayer<GridLayout> {
         for (let i = 0; i <= xDivisions; i++) {
             const ratio = xDivisions <= 0 ? 0.5 : i / xDivisions
             const xDivision = x0 + ratio * width
-            this.graphics.moveTo(xDivision, y0 + height).lineTo(xDivision, y0).stroke({
-                color: 'white',
-                width: 1,
-                alpha: 0.15,
-            })
+            this.graphics
+                .moveTo(xDivision, y0 + height)
+                .lineTo(xDivision, y0)
+                .stroke({
+                    color: 'white',
+                    width: 1,
+                    alpha: 0.15,
+                })
         }
 
         for (let i = 0; i <= yDivisions; i++) {
@@ -139,12 +147,15 @@ export class GridLayer extends RenderLayer<GridLayout> {
         if (layer !== undefined) {
             const generator = this.layoutDesign.gridLayoutDescription.sides.get(side)
             if (generator !== undefined) {
-                const divisions = (side === 'up' || side == 'down') ? this.layoutDesign.verticalDivisions : this.layoutDesign.horizontalDivisions
+                const divisions =
+                    side === 'up' || side == 'down'
+                        ? this.layoutDesign.verticalDivisions
+                        : this.layoutDesign.horizontalDivisions
                 const positions = []
                 for (let i = 0; i <= divisions; i++) {
                     positions.push(i * (1 / divisions))
                 }
-                layer.updateLabelsText(positions.map(x => generator(x)))
+                layer.updateLabelsText(positions.map((x) => generator(x)))
             }
         }
     }

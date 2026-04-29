@@ -1,7 +1,7 @@
-import { GridBaseLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridBaseLayout.ts'
-import type { Side } from './gridLayer';
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData';
-import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData';
+import { GridBaseLayout } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridBaseLayout.ts'
+import type { Side } from './gridLayer.ts'
+import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
 type GridLayoutDescription = {
     sides: Map<Side, (arg0: number) => string>
@@ -27,9 +27,7 @@ export class GridLayout extends GridBaseLayout {
                 y = sizeData.height
             }
             return { x, y }
-        }
-
-        else if (side === 'right') {
+        } else if (side === 'right') {
             const sizeData = this.buildLabelsSize('right')
             const x = this.width - sizeData.width
             let y = 0
@@ -37,18 +35,14 @@ export class GridLayout extends GridBaseLayout {
                 y = this.buildLabelsSize('up').height
             }
             return { x, y }
-        }
-
-        else if (side === 'up') {
+        } else if (side === 'up') {
             const y = 0
             let x = 0
             if (this.existSide('left')) {
                 x = this.buildLabelsSize('left').width
             }
             return { x, y }
-        }
-
-        else {
+        } else {
             const y = this.height - this.buildLabelsSize('down').height
             let x = 0
             if (this.existSide('left')) {
@@ -77,8 +71,7 @@ export class GridLayout extends GridBaseLayout {
                 height -= defaultHeight
             }
             return { width, height }
-        }
-        else {
+        } else {
             const height = defaultHeight
             let width = this.width
             if (existLeft) {
@@ -98,14 +91,11 @@ export class GridLayout extends GridBaseLayout {
         const sizeUp = this.buildLabelsSize('up')
         if (!existLeft && !existUp) {
             return { x: 0, y: 0 }
-        }
-        else if (existLeft && existUp) {
+        } else if (existLeft && existUp) {
             return { x: sizeLeft.width, y: sizeUp.height }
-        }
-        else if (existLeft && !existUp) {
+        } else if (existLeft && !existUp) {
             return { x: sizeLeft.width, y: 0 }
-        }
-        else {
+        } else {
             return { x: 0, y: sizeUp.height }
         }
     }
@@ -135,7 +125,6 @@ export class GridLayout extends GridBaseLayout {
         }
 
         return { width, height }
-
     }
 
     updateDivisions() {
@@ -144,7 +133,7 @@ export class GridLayout extends GridBaseLayout {
         const verticalDivisions = Math.max(2, Math.floor(gridSize.width / 50))
         this.gridData = {
             horizontalDivisions,
-            verticalDivisions
+            verticalDivisions,
         }
     }
 }

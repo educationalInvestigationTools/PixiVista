@@ -1,17 +1,13 @@
-import { CanvasTextMetrics, TextStyle } from "pixi.js"
-import type { TextAlignments } from "../types/types"
-import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData"
-import type { MinMaxValues } from "@/lib/signal-visualizer/plotComponent/application/types/minMaxValues"
+import { CanvasTextMetrics, TextStyle } from 'pixi.js'
+import type { TextAlignments } from '../types/types.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
+import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 
 const LABEL_FONT_WEIGHT = 'bold'
 const LABEL_COLOR = '#d1d5db'
 export class MeasureText {
-
     private textStyleByFontSizeAndAlignment = new Map<string, TextStyle>()
-    resolveTextStyle(
-        fontSize: number,
-        textAlignment: TextAlignments,
-    ): TextStyle {
+    resolveTextStyle(fontSize: number, textAlignment: TextAlignments): TextStyle {
         const cacheKey = `${fontSize}-${textAlignment}`
         const cachedStyle = this.textStyleByFontSizeAndAlignment.get(cacheKey)
         if (cachedStyle !== undefined) {
@@ -32,15 +28,13 @@ export class MeasureText {
         textValue: string,
         fontSize: number,
         textAlignment: TextAlignments,
-        sizeData : SizeData
+        sizeData: SizeData,
     ): boolean {
         const measuredText = CanvasTextMetrics.measureText(
             textValue,
             this.resolveTextStyle(fontSize, textAlignment),
         )
-        const fits =
-            measuredText.width <= sizeData.width
-            && measuredText.height <= sizeData.height
+        const fits = measuredText.width <= sizeData.width && measuredText.height <= sizeData.height
         return fits
     }
 
@@ -48,7 +42,7 @@ export class MeasureText {
         textValue: string,
         textAlignment: TextAlignments,
         sizeData: SizeData,
-        minMaxFontSize : MinMaxValues
+        minMaxFontSize: MinMaxValues,
     ): number | undefined {
         const minFontSize = minMaxFontSize.min
         const maxFontSize = minMaxFontSize.max
@@ -70,5 +64,4 @@ export class MeasureText {
 
         return low
     }
-
 }

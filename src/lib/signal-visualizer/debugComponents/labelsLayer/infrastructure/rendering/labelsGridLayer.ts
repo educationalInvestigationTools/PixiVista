@@ -2,7 +2,7 @@ import { LayoutDesign } from '../../../../core/rendering/layoutDesign.ts'
 import { RenderLayer } from '../../../../core/rendering/renderLayer.ts'
 import type { PositionData } from '../../../../core/types/positionData.ts'
 import type { SizeData } from '../../../../core/types/sizeData.ts'
-import { LabelLayer } from '../../../../plotComponent/infrastructure/rendering/labelsLayer/labelLayer.ts'
+import { LabelLayer } from '@/lib/signal-visualizer/infrastructure/rendering/labelsLayer/labelLayer.ts'
 import { generateRandomString } from '../../utils/utils.ts'
 import { LabelsGridLayout } from '@/lib/signal-visualizer/debugComponents/labelsLayer/infrastructure/rendering/labelsGridLayout.ts'
 import type { GridDescription } from '@/lib/signal-visualizer/debugComponents/labelsLayer/domain/types/gridDescription.ts'
@@ -15,12 +15,10 @@ export class LabelsGridLayer extends RenderLayer<LabelsGridLayout> {
         for (let i = 0; i < gridDescription.columnsPerRow.length; i++) {
             this.labels.push([])
             for (let j = 0; j < gridDescription.columnsPerRow[i]!; j++) {
-                const labelLayer = new LabelLayer(
-                    {
-                        text: generateRandomString(1, 100),
-                        textAlignment: 'left',
-                    },
-                )
+                const labelLayer = new LabelLayer({
+                    text: generateRandomString(1, 100),
+                    textAlignment: 'left',
+                })
                 this.container.addChild(labelLayer.container)
                 this.labels[i]!.push(labelLayer)
             }

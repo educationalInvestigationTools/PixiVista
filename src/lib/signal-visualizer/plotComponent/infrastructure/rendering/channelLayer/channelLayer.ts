@@ -1,5 +1,5 @@
 import { OneDimensionalSignalLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalPlotLayer.ts'
-import { GridLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
+import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayer.ts'
 
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
@@ -15,8 +15,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
     private signalData: OneDimNormalizedSignal
     private hasDownLabels: boolean = false
 
-    constructor(
-        label: string) {
+    constructor(label: string) {
         super(new ChannelLayout())
         this.signalData = {
             label: label,
@@ -58,10 +57,10 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         this.updateGridLabels()
 
         const points: Point2D[] = []
-        for (let i = 0; i < this.signalData.xSignal.values.length; i++){
+        for (let i = 0; i < this.signalData.xSignal.values.length; i++) {
             const point: Point2D = {
                 x: this.signalData.xSignal.values[i]!,
-                y: this.signalData.ySignal.values[i]!
+                y: this.signalData.ySignal.values[i]!,
             }
             points.push(point)
         }
@@ -78,7 +77,10 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         } else {
             this.gridLayer.removeLabelSide('down')
         }
-        this.gridLayer.updateSize({ width: this.layoutDesign.width, height: this.layoutDesign.height })
+        this.gridLayer.updateSize({
+            width: this.layoutDesign.width,
+            height: this.layoutDesign.height,
+        })
         this.relayoutSignalLayer()
         this.updateGridLabels()
     }

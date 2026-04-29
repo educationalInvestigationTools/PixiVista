@@ -3,9 +3,9 @@ import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layout
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
-import { GridLayer} from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
-import { LineLabelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
-import type { LineLayerDescription } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/types/lineLayerDescription.ts'
+import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayer.ts'
+import { LineLabelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
+import type { LineLayerDescription } from '@/lib/signal-visualizer/infrastructure/rendering/lineLabelsLayer/types/lineLayerDescription.ts'
 import { LineMonitorLayer } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/lineMonitorLayer/lineMonitorLayer'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
 import type { PointsData } from '../../../domain/types/pointsData'
@@ -33,9 +33,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.gridLayer.addLabelSide('left', (arg0: number) => this.verticalLabelTextAt(arg0))
         this.gridLayer.addLabelSide('down', (arg0: number) => this.horizontalLabelTextAt(arg0))
 
-        this.lineMonitorLayer = new LineMonitorLayer(
-            style,
-        )
+        this.lineMonitorLayer = new LineMonitorLayer(style)
 
         const headerLabelDescription: LineLayerDescription = {
             positionsNormalized: [0, 1],
@@ -105,10 +103,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     }
 
     private updateHeaderLabels() {
-        this.headerLabelsLayer.updateLabelsText([
-            this.style.title,
-            this.currentValueText,
-        ])
+        this.headerLabelsLayer.updateLabelsText([this.style.title, this.currentValueText])
     }
 
     private buildGridPlotMetrics(): { size: SizeData; position: PositionData } {
@@ -167,14 +162,13 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
     private updatePointsLineMonitorLayer() {
         const pointsData = this.pointsData
-        const mappedPoints = this.pointsData.points.map(point => {
+        const mappedPoints = this.pointsData.points.map((point) => {
             const normalizedPoint: Point2D = {
                 x: point.x,
-                y: (point.y - pointsData.minValue) / (pointsData.maxValue - pointsData.minValue)
+                y: (point.y - pointsData.minValue) / (pointsData.maxValue - pointsData.minValue),
             }
             return normalizedPoint
-        }
-        )
+        })
         this.lineMonitorLayer.updatePointsData(mappedPoints)
     }
 }

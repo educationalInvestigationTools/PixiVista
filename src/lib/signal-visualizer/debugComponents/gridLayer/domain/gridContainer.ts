@@ -1,8 +1,8 @@
-import { RenderManager } from "@/lib/signal-visualizer/core/rendering/renderManager";
-import { GridLayer} from "@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer";
-import { EventMediator } from "@/lib/signal-visualizer/utils/eventMediator";
-import { GridLayerApi } from "./gridLayerApi";
-import { generateRandomString } from "../../labelsLayer/utils/utils";
+import { RenderManager } from '@/lib/signal-visualizer/core/rendering/renderManager'
+import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayer'
+import { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator'
+import { GridLayerApi } from './gridLayerApi'
+import { generateRandomString } from '../../labelsLayer/utils/utils'
 
 export class GridContainer {
     readonly eventMediator: EventMediator = new EventMediator()

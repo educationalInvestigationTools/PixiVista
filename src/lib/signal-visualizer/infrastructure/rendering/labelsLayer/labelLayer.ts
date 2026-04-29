@@ -1,13 +1,12 @@
-import { RenderLayer } from "@/lib/signal-visualizer/core/rendering/renderLayer";
-import { LabelLayout } from "./labelLayout";
-import type { LayoutDesign } from "@/lib/signal-visualizer/core/rendering/layoutDesign";
-import type { PositionData } from "@/lib/signal-visualizer/core/types/positionData";
-import type { SizeData } from "@/lib/signal-visualizer/core/types/sizeData";
+import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
+import { LabelLayout } from './labelLayout.ts'
+import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
+import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
+import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
-import type { LabelDescription, TextAlignments} from "./types/types";
-import { MeasureText } from "./utils/textMeasurement";
-import { Text } from "pixi.js";
-
+import type { LabelDescription, TextAlignments } from './types/types.ts'
+import { MeasureText } from './utils/textMeasurement.ts'
+import { Text } from 'pixi.js'
 
 export class LabelLayer extends RenderLayer<LabelLayout> {
     private readonly labelDescription: LabelDescription
@@ -28,7 +27,7 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
             labelText,
             textAlignment,
             { width: this.layoutDesign.width, height: this.layoutDesign.height },
-            { min: this.layoutDesign.minFontSize, max: this.layoutDesign.maxFontSize }
+            { min: this.layoutDesign.minFontSize, max: this.layoutDesign.maxFontSize },
         )
         this._fittedFontSize = fittedFontSize
     }
@@ -43,7 +42,8 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
         if (this._fittedFontSize === undefined) {
             return
         }
-        const fontToUse = this._customFontSize === undefined ? this._fittedFontSize : this._customFontSize
+        const fontToUse =
+            this._customFontSize === undefined ? this._fittedFontSize : this._customFontSize
         const text = this.buildText(labelText, fontToUse, textAlignment)
         text.x = this.resolveTextX(text.width, textAlignment)
         text.y = this.layoutDesign.centeredY(text.height)
@@ -73,7 +73,7 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
         this.setFittedFontSize()
     }
 
-    public updateText(text : string) {
+    public updateText(text: string) {
         this.labelDescription.text = text
         this.setFittedFontSize()
         this._needsRendering = true
@@ -88,22 +88,14 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
         this.textGraphics = undefined
     }
 
-    private buildText(
-        textValue: string,
-        fontSize: number,
-        textAlignment: TextAlignments,
-    ): Text {
+    private buildText(textValue: string, fontSize: number, textAlignment: TextAlignments): Text {
         return new Text({
             text: textValue,
             style: this.measureText.resolveTextStyle(fontSize, textAlignment),
         })
     }
 
-
-    private resolveTextX(
-        textWidth: number,
-        textAlignment: TextAlignments,
-    ): number {
+    private resolveTextX(textWidth: number, textAlignment: TextAlignments): number {
         if (textAlignment === 'left') {
             return 0
         }
