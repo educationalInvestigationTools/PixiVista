@@ -89,17 +89,9 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         this.relayoutSignalLayer()
     }
 
-    private buildGridPlotMetrics(): { size: SizeData; position: PositionData } {
-        return {
-            size: this.gridLayer.GridSizeData,
-            position: this.gridLayer.GridPosData,
-        }
-    }
-
     private relayoutSignalLayer() {
-        const gridMetrics = this.buildGridPlotMetrics()
-        this.oneDimensionalSignalLayer.updateSize(gridMetrics.size)
-        this.oneDimensionalSignalLayer.updatePosition(gridMetrics.position)
+        this.oneDimensionalSignalLayer.updateSize(this.gridLayer.GridSizeData)
+        this.oneDimensionalSignalLayer.updatePosition(this.gridLayer.GridPosData)
     }
 
     private updateGridLabels() {
