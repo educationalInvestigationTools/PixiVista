@@ -1,12 +1,6 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 
 export class ComponentBaseLayout extends LayoutDesign {
-    constructor(sizeData: SizeData, positionData: PositionData) {
-        super(sizeData, positionData)
-    }
-
     get marginVerticalLeft(): number {
         return this.width * 0.05
     }

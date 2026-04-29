@@ -12,11 +12,10 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
     private readonly renderTimeChartLayer: MetricsChartLayer
 
     constructor(
-        layoutData: MetricsComponentLayout,
         refreshRateStyle: MetricsChartStyle,
         renderTimeStyles: MetricsChartStyle,
     ) {
-        super(layoutData)
+        super( new MetricsComponentLayout())
 
         this.refreshRateChartLayer = new MetricsChartLayer(
             refreshRateStyle,

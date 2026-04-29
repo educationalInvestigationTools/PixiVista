@@ -5,7 +5,7 @@ export class LayoutDesign {
     private _sizeData: SizeData
     private _positionData: PositionData
 
-    constructor(sizeData: SizeData, positionData: PositionData) {
+    constructor(sizeData: SizeData = {width : 0, height : 0}, positionData: PositionData = {x : 0, y : 0}) {
         this._sizeData = sizeData
         this._positionData = positionData
     }

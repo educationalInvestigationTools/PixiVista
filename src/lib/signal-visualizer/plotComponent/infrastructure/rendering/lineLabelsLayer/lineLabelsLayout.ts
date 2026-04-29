@@ -5,8 +5,8 @@ import type { LineLayerDescription } from "./types/lineLayerDescription";
 
 export class LineLabelsLayout extends LayoutDesign {
     description: LineLayerDescription;
-    constructor(sizeData: SizeData, posData: PositionData, description: LineLayerDescription) {
-        super(sizeData, posData);
+    constructor(description: LineLayerDescription) {
+        super();
         this.description = description;
     }
 

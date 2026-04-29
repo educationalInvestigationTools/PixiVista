@@ -10,7 +10,7 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     protected _draw(): void { }
 
     constructor() {
-        super(new ChannelsLayerLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
+        super(new ChannelsLayerLayout())
     }
     get activeChannels(): string[] {
         const result = []

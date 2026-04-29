@@ -11,7 +11,7 @@ export class LabelsGridLayer extends RenderLayer<LabelsGridLayout> {
     labels: LabelLayer[][] = []
 
     constructor(gridDescription: GridDescription) {
-        super(new LabelsGridLayout({ width: 0, height: 0 }, { x: 0, y: 0 }, gridDescription))
+        super(new LabelsGridLayout(gridDescription))
         for (let i = 0; i < gridDescription.columnsPerRow.length; i++) {
             this.labels.push([])
             for (let j = 0; j < gridDescription.columnsPerRow[i]!; j++) {

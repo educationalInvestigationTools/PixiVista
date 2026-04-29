@@ -10,7 +10,7 @@ type GridLayoutDescription = {
 export class GridLayout extends GridBaseLayout {
     gridLayoutDescription: GridLayoutDescription
     constructor(gridLayoutDescription: GridLayoutDescription) {
-        super({ width: 0, height: 0 }, { x: 0, y: 0 }, { verticalDivisions: 1, horizontalDivisions: 1 })
+        super({ verticalDivisions: 1, horizontalDivisions: 1 })
         this.gridLayoutDescription = gridLayoutDescription
     }
 

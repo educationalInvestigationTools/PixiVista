@@ -9,7 +9,7 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
     signalData: OneDimNormalizedSignal
 
     constructor(signalData: OneDimNormalizedSignal) {
-        super(new OneDimensionalSignalLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
+        super(new OneDimensionalSignalLayout())
         this.signalData = signalData
     }
 

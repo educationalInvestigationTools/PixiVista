@@ -17,7 +17,7 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
     private _fittedFontSize?: number
 
     constructor(labelDescription: LabelDescription) {
-        super(new LabelLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
+        super(new LabelLayout())
         this.labelDescription = labelDescription
     }
 

@@ -11,7 +11,7 @@ export class MetricsContainer {
     async init(htmlElement: HTMLElement) {
         const windowMs = 1000 * 60
         const renderManager = new RenderManager(htmlElement, this.eventMediator)
-        const componentApi = new MetricsComponentApi(renderManager.sizeData, this.eventMediator, windowMs)
+        const componentApi = new MetricsComponentApi(this.eventMediator, windowMs)
         await renderManager.init(componentApi.Component)
 
         const state = new MetricsState(windowMs)

@@ -6,8 +6,8 @@ import type { GridDescription } from '@/lib/signal-visualizer/debugComponents/la
 
 export class LabelsGridLayout extends LayoutDesign {
     gridDescription: GridDescription
-    constructor(sizeData: SizeData, posData: PositionData, gridDescription: GridDescription) {
-        super(sizeData, posData)
+    constructor(gridDescription: GridDescription) {
+        super()
         this.gridDescription = gridDescription
     }
     buildLabelSize(row: number): SizeData {

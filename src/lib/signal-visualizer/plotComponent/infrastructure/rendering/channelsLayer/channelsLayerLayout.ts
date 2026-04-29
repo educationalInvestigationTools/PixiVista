@@ -5,10 +5,6 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 export class ChannelsLayerLayout extends ComponentBaseLayout {
     private _visibleChannels: number = 0
 
-    constructor(sizeData: SizeData, positionData: PositionData) {
-        super(sizeData, positionData)
-    }
-
     get channelHeight(): number {
         if (this._visibleChannels === 0) {
             return 0

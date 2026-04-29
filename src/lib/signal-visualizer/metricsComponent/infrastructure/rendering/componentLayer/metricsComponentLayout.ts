@@ -3,9 +3,6 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 
 export class MetricsComponentLayout extends LayoutDesign {
-    constructor(sizeData: SizeData, positionData: PositionData) {
-        super(sizeData, positionData)
-    }
 
     private get padding(): number {
         return Math.max(10, Math.min(this.width, this.height) * 0.04)

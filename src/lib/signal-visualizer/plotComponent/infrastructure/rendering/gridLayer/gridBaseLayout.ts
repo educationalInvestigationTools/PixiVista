@@ -1,8 +1,5 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { GridData } from '@/lib/signal-visualizer/plotComponent/application/types/gridData.ts'
-import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
-
 export class GridBaseLayout extends LayoutDesign {
     protected gridData: GridData
 
@@ -16,8 +13,8 @@ export class GridBaseLayout extends LayoutDesign {
 
 
 
-    constructor(sizeData: SizeData, posData: PositionData, gridData: GridData) {
-        super(sizeData, posData)
+    constructor(gridData: GridData) {
+        super()
         this.gridData = gridData
     }
 }

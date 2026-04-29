@@ -4,9 +4,6 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 
 export class MetricsChartLayout extends LayoutDesign {
     private static readonly HEADER_TOP = 2
-    constructor(sizeData: SizeData, positionData: PositionData) {
-        super(sizeData, positionData)
-    }
 
     get panelPaddingX() {
         return Math.max(8, this.width * 0.025)

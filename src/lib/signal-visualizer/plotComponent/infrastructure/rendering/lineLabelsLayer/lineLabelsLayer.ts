@@ -11,7 +11,7 @@ import { type LineLayerDescription } from "./types/lineLayerDescription";
 export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
     labels: LabelLayer[] = []
     constructor(description: LineLayerDescription) {
-        super(new LineLabelsLayout({ width: 0, height: 0 }, { x: 0, y: 0 }, description))
+        super(new LineLabelsLayout(description))
         const n = this.layoutDesign.description.positionsNormalized.length
         this.layoutDesign.description.positionsNormalized.map((x, i) => {
             const labelLayer = new LabelLayer({

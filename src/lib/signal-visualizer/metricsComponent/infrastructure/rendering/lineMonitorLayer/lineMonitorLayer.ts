@@ -3,15 +3,15 @@ import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesig
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
-import { LineMonitorLayout } from './lineMonitorLayout'
 import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
+import { LineMonitorLayout } from './lineMonitorLayout'
 
 export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
     private style: MetricsChartStyle
     private normalizedPoints: Point2D[] = []
 
     constructor(style: MetricsChartStyle) {
-        super(new LineMonitorLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
+        super(new LineMonitorLayout())
         this.style = style
     }
 
