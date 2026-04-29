@@ -4,7 +4,7 @@ import type {
     AnySettingChoice,
     AnySettingChoiceUpdate,
     NumberSettingChoice
-} from '@/lib/signal-visualizer/plotComponent/presentation/settingsComponent/settingsChoice.ts';
+} from '@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice.ts';
 import settingsGearIcon from '@/assets/icons/settings-gear.svg';
 import chevronDownIcon from '@/assets/icons/chevron-down.svg';
 

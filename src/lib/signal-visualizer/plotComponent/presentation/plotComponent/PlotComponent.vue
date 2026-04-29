@@ -4,8 +4,9 @@ import {computed, onBeforeUnmount, onMounted, ref, type Ref} from "vue";
 import {DirtyContainer} from "@/lib/signal-visualizer/plotComponent/domain/dirtyContainer.ts";
 import SliderComponent, {
     type CurrentViewPortSamples
-} from "@/lib/signal-visualizer/plotComponent/presentation/sliderComponent/SliderComponent.vue";
-import SettingsComponent from "../settingsComponent/SettingsComponent.vue";
+} from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
+import SettingsComponent
+    from "@/lib/signal-visualizer/presentation/settingsComponent/SettingsComponent.vue";
 import AnnotationsComponent, {
     type ObjectAnnotationData,
     type ObjectVisibility
@@ -14,7 +15,7 @@ import MetricsComponent from "../../../metricsComponent/presentation/MetricsComp
 import type {
     AnySettingChoice,
     AnySettingChoiceUpdate
-} from "@/lib/signal-visualizer/plotComponent/presentation/settingsComponent/settingsChoice.ts";
+} from "@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice.ts";
 import {fmtTime} from "../../../utils/utils.ts";
 import type {
     IntervalGroup
@@ -32,8 +33,10 @@ import {
 import {
     ChangeViewPortCommand
 } from "@/lib/signal-visualizer/plotComponent/application/commands/changeViewPortCommand.ts";
-import { useResizeObserver } from "@/lib/signal-visualizer/presentation/utils/useResizeObserver.ts";
-import { usePerformanceMetricsBridge } from "@/lib/signal-visualizer/presentation/utils/usePerformanceMetricsBridge";
+import {useResizeObserver} from "@/lib/signal-visualizer/presentation/utils/useResizeObserver.ts";
+import {
+    usePerformanceMetricsBridge
+} from "@/lib/signal-visualizer/presentation/utils/usePerformanceMetricsBridge";
 
 
 const props = defineProps<{
@@ -167,7 +170,6 @@ onMounted(async () => {
 
     bindResizeObserver(htmlContainerRef, diContainer.eventMediator)
     bindPerformanceMetrics(diContainer.eventMediator)
-
 
 
 })
