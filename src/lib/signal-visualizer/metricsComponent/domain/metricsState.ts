@@ -12,7 +12,7 @@ export class MetricsState {
     private samples: MetricsSample[] = []
     private readonly windowMs: number
     private readonly bucket: MetricsSample[] = []
-    private readonly bucketMaxSize = 10
+    private readonly bucketMaxSize = 5
 
     constructor(windowMs: number) {
         this.windowMs = windowMs

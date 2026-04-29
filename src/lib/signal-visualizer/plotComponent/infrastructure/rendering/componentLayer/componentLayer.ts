@@ -2,7 +2,6 @@ import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import { ChannelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/channelsLayer.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
-import type { MinMaxValues } from '@/lib/signal-visualizer/plotComponent/application/types/minMaxValues.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
 import { ChannelsLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/channelsLayerLayout.ts'
@@ -15,7 +14,7 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
         return [this.channelsLayer]
     }
 
-    updateSignalsData(signals: OneDimNormalizedSignal[], _minMaxValues: MinMaxValues) {
+    updateSignalsData(signals: OneDimNormalizedSignal[]) {
         for (const signal of signals) {
             const channelLayer = this.channelsLayer.getByLabel(signal.label)
             if (channelLayer !== undefined) {

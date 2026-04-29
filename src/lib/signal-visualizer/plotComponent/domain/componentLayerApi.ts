@@ -73,8 +73,7 @@ export class ComponentLayerLogicApi extends RenderLayerDomainApi<ComponentLayer>
     }
 
     async updateSignalData(signals: OneDimNormalizedSignal[]) {
-        const minMaxValues = ComponentLayerLogicApi.transformViewPort(this.viewPort)
-        this.component!.updateSignalsData(signals, minMaxValues)
+        this.component!.updateSignalsData(signals)
     }
 
     registerEvents(): void {
