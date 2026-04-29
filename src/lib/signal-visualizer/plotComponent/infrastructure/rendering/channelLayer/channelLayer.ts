@@ -7,6 +7,7 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
 import { ChannelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/channelLayer/channelLayout.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 
 export class ChannelLayer extends RenderLayer<ChannelLayout> {
     private readonly oneDimensionalSignalLayer: OneDimensionalSignalLayer
@@ -18,7 +19,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         label: string) {
         super(new ChannelLayout())
         this.signalData = {
-            label : label,
+            label: label,
             xSignal: {
                 values: new Float32Array(0),
                 minMaxValues: { min: 0, max: 0 },
@@ -32,9 +33,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         this.gridLayer.addLabelSide('left', (arg0: number) => this.verticalLabelTextAt(arg0))
         this.container.addChild(this.gridLayer.container)
 
-        this.oneDimensionalSignalLayer = new OneDimensionalSignalLayer(
-            this.signalData,
-        )
+        this.oneDimensionalSignalLayer = new OneDimensionalSignalLayer()
         this.container.addChild(this.oneDimensionalSignalLayer.container)
     }
 
@@ -57,7 +56,16 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         this.signalData = signalData
         this._needsRendering = true
         this.updateGridLabels()
-        this.oneDimensionalSignalLayer.updateData(signalData)
+
+        const points: Point2D[] = []
+        for (let i = 0; i < this.signalData.xSignal.values.length; i++){
+            const point: Point2D = {
+                x: this.signalData.xSignal.values[i]!,
+                y: this.signalData.ySignal.values[i]!
+            }
+            points.push(point)
+        }
+        this.oneDimensionalSignalLayer.updateData(points)
     }
 
     setDownLabelsEnabled(enabled: boolean) {

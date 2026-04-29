@@ -2,15 +2,14 @@ import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
 import { OneDimensionalSignalLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalLayout.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 
 export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalLayout> {
-    signalData: OneDimNormalizedSignal
+    normalizedPoints: Point2D[] = []
 
-    constructor(signalData: OneDimNormalizedSignal) {
+    constructor() {
         super(new OneDimensionalSignalLayout())
-        this.signalData = signalData
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {
@@ -26,16 +25,14 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
     }
 
     protected _draw(): void {
-        const xValues = this.signalData.xSignal
-        const yValues = this.signalData.ySignal
-        const n = yValues.values.length
+        const n = this.normalizedPoints.length
         for (let i = 0; i < n; i++) {
             if (i > 0) {
-                const xMappedCord = this.mapXValue(xValues.values[i]!)
-                const yMappedCord = this.mapYValue(yValues.values[i]!)
+                const xMappedCord = this.mapXValue(this.normalizedPoints[i]!.x)
+                const yMappedCord = this.mapYValue(this.normalizedPoints[i]!.y)
 
-                const xMappedCordPrev = this.mapXValue(xValues.values[i - 1]!)
-                const yMappedCordPrev = this.mapYValue(yValues.values[i - 1]!)
+                const xMappedCordPrev = this.mapXValue(this.normalizedPoints[i - 1]!.x)
+                const yMappedCordPrev = this.mapYValue(this.normalizedPoints[i - 1]!.y)
                 this.graphics.moveTo(xMappedCordPrev, yMappedCordPrev)
                 this.graphics.lineTo(xMappedCord, yMappedCord)
             }
@@ -43,8 +40,8 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
         this.graphics.stroke({ color: 'white', width: 1 })
     }
 
-    updateData(signalData: OneDimNormalizedSignal) {
-        this.signalData = signalData
+    updateData(normalizedPoints: Point2D[]) {
+        this.normalizedPoints = normalizedPoints
         this._needsRendering = true
     }
 
