@@ -4,12 +4,15 @@ import { RenderDependencies } from './renderDependencies.ts'
 import { Observer } from '../../core/observer.ts'
 import type { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/domain/componentLayerApi.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
+import type { PlotState } from './plotState.ts'
 
 export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {
     private readonly dataManager: DataManager
+    private readonly plotState : PlotState
     private readonly componentApi: ComponentLayerLogicApi
 
     constructor(
+        plotState : PlotState,
         renderManager: RenderManager,
         dataManager: DataManager,
         componentApi: ComponentLayerLogicApi,
@@ -19,11 +22,12 @@ export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {
             RenderDependencies.clone,
             () =>
                 new RenderDependencies(
-                    componentApi.ViewPort,
+                    plotState.ViewPort,
                     componentApi.VisibleChannels,
                     renderManager.expectedWidth,
                 ),
         )
+        this.plotState = plotState
         this.dataManager = dataManager
         this.componentApi = componentApi
     }

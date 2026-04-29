@@ -5,6 +5,8 @@ import type { ViewPort } from '@/lib/signal-visualizer'
 import { EventMediator } from '../../utils/eventMediator.ts'
 import { DataManagerWorker } from '@/lib/signal-visualizer/plotComponent/domain/dataManager/dataManagerWorker.ts'
 import { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/domain/componentLayerApi.ts'
+import { PlotState } from './plotState.ts'
+import { ChangeViewPortCommandEventLabel, type ChangeViewPortCommand } from '../application/commands/changeViewPortCommand.ts'
 
 export class DirtyContainer {
     private updateChannelsStateObserver?: UpdateChannelsStateObserver
@@ -26,13 +28,15 @@ export class DirtyContainer {
         const componentLayerApi = new ComponentLayerLogicApi(
             sizeData,
             labels,
-            viewPort,
             this.eventMediator,
         )
-
+        const plotState = new PlotState(viewPort)
+        this.eventMediator.addHandler<ChangeViewPortCommand>(ChangeViewPortCommandEventLabel, async (command) => await plotState.changeViewPort(command.viewPort))
         await renderer.init(componentLayerApi.Component)
+
         const dataManagerWorker = new DataManagerWorker(workerCallback, signalsSourceGroup)
         this.updateChannelsStateObserver = new UpdateChannelsStateObserver(
+            plotState,
             renderer,
             dataManagerWorker,
             componentLayerApi,
@@ -40,5 +44,5 @@ export class DirtyContainer {
         await this.updateChannelsStateObserver.init()
     }
 
-    async destroy() {}
+    async destroy() { }
 }
