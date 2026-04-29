@@ -5,32 +5,33 @@ import type { PositionData } from '@/lib/signal-visualizer/core/types/positionDa
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { ChannelsLayerLayout } from './channelsLayerLayout'
 export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
-    private channels: Record<string, ChannelLayer> = {}
+    private channels: Map<string, ChannelLayer> = new Map()
 
     protected _draw(): void { }
 
     constructor() {
         super(new ChannelsLayerLayout())
     }
-    get activeChannels(): string[] {
-        const result = []
-        for (const label in this.channels) {
-            result.push(label)
-        }
-        return result
+
+    get VisibleChannels(): number {
+        return this.channels.size
+    }
+
+    get labelsVisibleChannels(): string[] {
+        return [... this.channels.keys()]
     }
 
     get Children(): RenderLayer<LayoutDesign>[] {
         const children = []
-        for (const labelChild in this.channels) {
-            const childValue = this.channels[labelChild]!
+        for (const [labelChild, _] of this.channels) {
+            const childValue = this.getByLabel(labelChild)!
             children.push(childValue)
         }
         return children
     }
 
     getByLabel(label: string): ChannelLayer | undefined {
-        return this.channels[label]
+        return this.channels.get(label)
     }
 
     _updatePosition(positionData: PositionData): void {
@@ -43,66 +44,34 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
         this._updateChannels()
     }
 
-    addChannel(label: string) {
-        this.layoutDesign.changeVisibleChannels(this.layoutDesign.visibleChannels + 1)
-        const channelLayer = new ChannelLayer(
-            {
-                label: label,
-                xSignal: {
-                    values: new Float32Array(0),
-                    minMaxValues: { min: 0, max: 0 },
-                },
-                ySignal: {
-                    values: new Float32Array(0),
-                    minMaxValues: { min: 0, max: 0 },
-                },
-            },
-        )
-        this.channels[label] = channelLayer
-        this.container.addChild(channelLayer.container)
+    addChannels(labels: string[]) {
+        for (const label of labels) {
+            const channelLayer = new ChannelLayer(label)
+            this.channels.set(label, channelLayer)
+            this.container.addChild(channelLayer.container)
+        }
         this._updateChannels()
         this._needsRendering = true
     }
 
     removeChannel(label: string) {
-        const child = this.channels[label]
-        if (child != undefined) {
-            this.layoutDesign.changeVisibleChannels(this.layoutDesign.visibleChannels - 1)
-            this.container.removeChild(child.container)
-            const updatedChannels: Record<string, ChannelLayer> = {}
-            for (const labelChild in this.channels) {
-                const childValue = this.channels[labelChild]!
-                if (labelChild != label) {
-                    updatedChannels[labelChild] = childValue
-                }
-            }
-            this.channels = updatedChannels
+        const deleted = this.channels.delete(label)
+        if (deleted) {
             this._updateChannels()
             this._needsRendering = true
         }
     }
 
     private _updateChannels() {
-        let index = 0
-        for (const label in this.channels) {
-            const child = this.channels[label]!
-            const sizeData = this.layoutDesign.buildChannelSize()
-            child.updateSize(sizeData)
-            const posData = this.layoutDesign.buildChannelPos(index)
-            child.updatePosition(posData)
-            index += 1
-        }
-        this.updateBottomChannelLabels()
-    }
-
-    private updateBottomChannelLabels() {
-        let bottomChannel: ChannelLayer | undefined
-        for (const label in this.channels) {
-            bottomChannel = this.channels[label]
-        }
-        for (const label in this.channels) {
-            const child = this.channels[label]!
-            child.setDownLabelsEnabled(child === bottomChannel)
-        }
+        const channels = Array.from(this.channels.values())
+        channels.map((channel, i) => {
+            const sizeData = this.layoutDesign.buildChannelSize(this.VisibleChannels)
+            channel.updateSize(sizeData)
+            const posData = this.layoutDesign.buildChannelPos(i, this.VisibleChannels)
+            channel.updatePosition(posData)
+            if (i === channels.length - 1) {
+                channel.setDownLabelsEnabled(true)
+            }
+        })
     }
 }

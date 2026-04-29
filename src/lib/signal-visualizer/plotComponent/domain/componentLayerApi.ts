@@ -6,26 +6,19 @@ import {
 } from '@/lib/signal-visualizer/plotComponent/application/commands/changeChannelVisibilityCommand.ts'
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 
-import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
-import { ComponentLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/componentLayout.ts'
 
 export class ComponentLayerLogicApi extends RenderLayerDomainApi<ComponentLayer> {
 
     get VisibleChannels() {
-        return this.component.channelsLayer.activeChannels!
+        return this.component.channelsLayer.labelsVisibleChannels!
     }
 
     constructor(
-        sizeData: SizeData,
         labels: string[],
         eventMediator: EventMediator,
     ) {
         const componentLayer = new ComponentLayer(
-            new ComponentLayout(sizeData, {
-                x: 0,
-                y: 0,
-            }),
             labels,
         )
 
@@ -33,7 +26,7 @@ export class ComponentLayerLogicApi extends RenderLayerDomainApi<ComponentLayer>
     }
 
     private addChannel(label: string) {
-        this.component.channelsLayer.addChannel(label)
+        this.component.channelsLayer.addChannels([label])
     }
 
     private removeChannel(label: string) {

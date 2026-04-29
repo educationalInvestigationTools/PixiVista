@@ -23,10 +23,8 @@ export class DirtyContainer {
         workerCallback: () => Worker,
     ) {
         const renderer = new RenderManager(htmlElement, this.eventMediator)
-        const sizeData = renderer.sizeData
         const labels = signalsSourceGroup.allSignalsBuildData.map((x) => x.label)
         const componentLayerApi = new ComponentLayerLogicApi(
-            sizeData,
             labels,
             this.eventMediator,
         )

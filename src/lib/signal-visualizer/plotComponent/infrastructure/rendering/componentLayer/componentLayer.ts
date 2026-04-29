@@ -23,14 +23,11 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
     }
 
     constructor(
-        componentLayout: ComponentLayout,
         labels: string[],
     ) {
-        super(componentLayout)
+        super(new ComponentLayout())
         this.channelsLayer = new ChannelsLayer()
-        for (const label of labels) {
-            this.channelsLayer.addChannel(label)
-        }
+        this.channelsLayer.addChannels(labels)
         this.container.addChild(this.channelsLayer.container)
     }
 
