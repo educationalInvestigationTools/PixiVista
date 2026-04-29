@@ -3,7 +3,7 @@ import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layout
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
-import { GridLayer, type GridLayoutDescription, type Side } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
+import { GridLayer} from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
 import { LineLabelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
 import type { LineLayerDescription } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/types/lineLayerDescription.ts'
 import { LineMonitorLayer } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
@@ -28,11 +28,10 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
             maxValue: 0,
             currentValue: 0,
         }
-        const sides: Map<Side, (arg0: number) => string> = new Map()
-        sides.set('left', (arg0: number) => this.verticalLabelTextAt(arg0))
-        sides.set('down', (arg0: number) => this.horizontalLabelTextAt(arg0))
-        const description: GridLayoutDescription = { sides }
-        this.gridLayer = new GridLayer(description)
+
+        this.gridLayer = new GridLayer()
+        this.gridLayer.addLabelSide('left', (arg0: number) => this.verticalLabelTextAt(arg0))
+        this.gridLayer.addLabelSide('down', (arg0: number) => this.horizontalLabelTextAt(arg0))
 
         this.lineMonitorLayer = new LineMonitorLayer(
             style,

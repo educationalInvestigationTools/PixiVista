@@ -1,7 +1,11 @@
 import { GridBaseLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridBaseLayout.ts'
-import type { GridLayoutDescription, Side } from './gridLayer';
+import type { Side } from './gridLayer';
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData';
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData';
+
+type GridLayoutDescription = {
+    sides: Map<Side, (arg0: number) => string>
+}
 
 export class GridLayout extends GridBaseLayout {
     gridLayoutDescription: GridLayoutDescription

@@ -1,5 +1,5 @@
 import { OneDimensionalSignalLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalPlotLayer.ts'
-import { GridLayer, type GridLayoutDescription, type Side } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
+import { GridLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/gridLayer/gridLayer.ts'
 
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
@@ -19,10 +19,8 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
     ) {
         super(new ChannelLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
         this.signalData = oneDimensionalSignalData
-        const sides: Map<Side, (arg0: number) => string> = new Map()
-        sides.set('left', (arg0: number) => this.verticalLabelTextAt(arg0))
-        const description: GridLayoutDescription = { sides }
-        this.gridLayer = new GridLayer(description)
+        this.gridLayer = new GridLayer()
+        this.gridLayer.addLabelSide('left', (arg0: number) => this.verticalLabelTextAt(arg0))
         this.container.addChild(this.gridLayer.container)
 
         this.oneDimensionalSignalLayer = new OneDimensionalSignalLayer(
@@ -58,11 +56,10 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
             return
         }
         this.hasDownLabels = enabled
-        const sides = this.gridLayer.layoutDesign.gridLayoutDescription.sides
         if (enabled) {
-            sides.set('down', (arg0: number) => this.horizontalLabelTextAt(arg0))
+            this.gridLayer.addLabelSide('down', (arg0: number) => this.horizontalLabelTextAt(arg0))
         } else {
-            sides.delete('down')
+            this.gridLayer.removeLabelSide('down')
         }
         this.gridLayer.updateSize({ width: this.layoutDesign.width, height: this.layoutDesign.height })
         this.relayoutSignalLayer()

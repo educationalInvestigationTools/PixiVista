@@ -9,15 +9,11 @@ import type { TextAlignments } from '../labelsLayer/types/types.ts'
 
 export type Side = 'left' | 'right' | 'up' | 'down'
 
-export type GridLayoutDescription = {
-    sides: Map<Side, (arg0: number) => string>
-}
-
 export class GridLayer extends RenderLayer<GridLayout> {
     private lineLabels: Map<Side, LineLabelsLayer> = new Map()
 
-    constructor(layoutDescription: GridLayoutDescription) {
-        const gridLayout = new GridLayout(layoutDescription)
+    constructor() {
+        const gridLayout = new GridLayout( {sides : new Map()} )
         super(gridLayout)
         this.buildLineLabels()
     }
@@ -43,6 +39,14 @@ export class GridLayer extends RenderLayer<GridLayout> {
             this.container.addChild(child.container)
             this.updateLabels(side)
         }
+    }
+
+    addLabelSide(side: Side, labelGenerator : (arg0: number) => string) {
+        this.layoutDesign.gridLayoutDescription.sides.set(side, labelGenerator)
+    }
+
+    removeLabelSide(side: Side) {
+        this.layoutDesign.gridLayoutDescription.sides.delete(side)
     }
 
     private buildAlignmentCallback(side: Side): ((_arg0: number, _length: number) => TextAlignments) {
