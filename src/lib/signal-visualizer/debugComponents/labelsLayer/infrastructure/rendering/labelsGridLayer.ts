@@ -7,7 +7,7 @@ import { generateRandomString } from '../../utils/utils.ts'
 import { LabelsGridLayout } from '@/lib/signal-visualizer/debugComponents/labelsLayer/infrastructure/rendering/labelsGridLayout.ts'
 import type { GridDescription } from '@/lib/signal-visualizer/debugComponents/labelsLayer/domain/types/gridDescription.ts'
 
-export class LabelsGrid extends RenderLayer<LabelsGridLayout> {
+export class LabelsGridLayer extends RenderLayer<LabelsGridLayout> {
     labels: LabelLayer[][] = []
 
     constructor(gridDescription: GridDescription) {

@@ -1,7 +1,7 @@
 import { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 import { RenderManager } from '@/lib/signal-visualizer/core/rendering/renderManager.ts'
 import { LabelsGridApi } from './labelsGridApi'
-import { LabelsGrid } from '../infrastructure/rendering/labelsGrid.ts'
+import { LabelsGridLayer } from '../infrastructure/rendering/labelsGridLayer.ts'
 import type { GridDescription } from '@/lib/signal-visualizer/debugComponents/labelsLayer/domain/types/gridDescription.ts'
 
 export class LabelsContainer {
@@ -11,7 +11,7 @@ export class LabelsContainer {
         const gridDescription: GridDescription = {
             columnsPerRow: [6, 4, 10, 10, 2, 3, 5, 10, 7, 8, 5, 4, 1, 2],
         }
-        const component = new LabelsGrid(gridDescription)
+        const component = new LabelsGridLayer(gridDescription)
 
         const componentApi = new LabelsGridApi(component, this.eventMediator)
         await renderManager.init(componentApi.Component)

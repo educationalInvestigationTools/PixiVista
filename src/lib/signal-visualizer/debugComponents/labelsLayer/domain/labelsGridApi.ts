@@ -1,6 +1,6 @@
 import { RenderLayerDomainApi } from '../../../core/rendering/layerApi'
 import type { EventMediator } from '../../../utils/eventMediator'
-import { LabelsGrid } from '../infrastructure/rendering/labelsGrid.ts'
+import { LabelsGridLayer } from '../infrastructure/rendering/labelsGridLayer.ts'
 import { generateRandomString } from '../utils/utils'
 import {
     ChangeCellTextCommandEventLabel,
@@ -11,8 +11,8 @@ import {
     type ChangeAllCellsTextCommand,
 } from '../application/commands/changeAllCellsTextCommand'
 
-export class LabelsGridApi extends RenderLayerDomainApi<LabelsGrid> {
-    constructor(component: LabelsGrid, eventMediator: EventMediator) {
+export class LabelsGridApi extends RenderLayerDomainApi<LabelsGridLayer> {
+    constructor(component: LabelsGridLayer, eventMediator: EventMediator) {
         super(component, eventMediator)
     }
 

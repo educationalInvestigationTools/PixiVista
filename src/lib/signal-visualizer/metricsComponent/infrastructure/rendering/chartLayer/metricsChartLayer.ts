@@ -7,7 +7,6 @@ import { GridLayer, type GridLayoutDescription, type Side } from '@/lib/signal-v
 import { LineLabelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
 import type { LineLayerDescription } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/lineLabelsLayer/types/lineLayerDescription.ts'
 import { LineMonitorLayer } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/lineMonitorLayer.ts'
-import { LineMonitorLayout } from './lineMonitorLayout'
 import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
 import type { PointsData } from '../../../domain/types/pointsData'
 import { formatSecondsAsMinuteSeconds } from '@/lib/signal-visualizer/utils/utils'
@@ -20,8 +19,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     private readonly lineMonitorLayer: LineMonitorLayer
     private readonly headerLabelsLayer: LineLabelsLayer
 
-    constructor(layoutData: MetricsChartLayout, style: MetricsChartStyle) {
-        super(layoutData)
+    constructor(style: MetricsChartStyle) {
+        super(new MetricsChartLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
         this.style = style
         this.pointsData = {
             points: [],
@@ -35,9 +34,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         const description: GridLayoutDescription = { sides }
         this.gridLayer = new GridLayer(description)
 
-        const gridMetrics = this.buildGridPlotMetrics()
         this.lineMonitorLayer = new LineMonitorLayer(
-            new LineMonitorLayout(gridMetrics.size, gridMetrics.position),
             style,
         )
 

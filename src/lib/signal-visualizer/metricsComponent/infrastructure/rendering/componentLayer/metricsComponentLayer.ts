@@ -3,7 +3,6 @@ import { MetricsChartLayer } from '@/lib/signal-visualizer/metricsComponent/infr
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import { MetricsChartLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout.ts'
 import { MetricsComponentLayout } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/componentLayer/metricsComponentLayout.ts'
 import type { MetricsChartStyle } from '../chartLayer/types/metricsChartStyle.ts'
 import type { MetricsPoints } from '@/lib/signal-visualizer/metricsComponent/domain/types/metricsPoints.ts'
@@ -20,18 +19,10 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
         super(layoutData)
 
         this.refreshRateChartLayer = new MetricsChartLayer(
-            new MetricsChartLayout(
-                this.layoutDesign.buildRefreshRateChartSize(),
-                this.layoutDesign.buildRefreshRateChartPosition(),
-            ),
             refreshRateStyle,
         )
 
         this.renderTimeChartLayer = new MetricsChartLayer(
-            new MetricsChartLayout(
-                this.layoutDesign.buildRenderTimeChartSize(),
-                this.layoutDesign.buildRenderTimeChartPosition(),
-            ),
             renderTimeStyles,
         )
 
