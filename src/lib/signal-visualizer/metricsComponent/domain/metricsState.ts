@@ -1,5 +1,4 @@
 import { clamp } from '../../utils/utils'
-import { downSamplingAlgorithm } from '../utils/downSamplingAlgorithm'
 import type { PointsData } from './types/pointsData'
 import type { MetricsPoints } from '@/lib/signal-visualizer/metricsComponent/domain/types/metricsPoints.ts'
 
@@ -12,15 +11,40 @@ export type MetricsSample = {
 export class MetricsState {
     private samples: MetricsSample[] = []
     private readonly windowMs: number
-    private readonly outputSamples: number
+    private readonly bucket: MetricsSample[] = []
+    private readonly bucketMaxSize = 10
 
-    constructor(windowMs: number, outputSamples = 200) {
+    constructor(windowMs: number) {
         this.windowMs = windowMs
-        this.outputSamples = outputSamples
+    }
+
+    processBucket() {
+        if (this.bucket.length !== this.bucketMaxSize) {
+            return
+        }
+        let index1 = 0
+        let index2 = 0
+        for (let i = 0; i < this.bucketMaxSize; i++) {
+            if (this.bucket[i]!.refreshRateFps < this.bucket[index1]!.refreshRateFps) {
+                index1 = i
+            }
+            if (this.bucket[i]!.renderTimeMs > this.bucket[index2]!.renderTimeMs) {
+                index2 = i
+            }
+        }
+        if (index1 !== index2) {
+            this.samples.push(this.bucket[Math.min(index1, index2)]!, this.bucket[Math.max(index2, index1)]!)
+        } else {
+            this.samples.push(this.bucket[index1]!)
+        }
+        while (this.bucket.length > 0) {
+            this.bucket.pop()
+        }
     }
 
     pushSample(sample: MetricsSample) {
-        this.samples.push(sample)
+        this.bucket.push(sample)
+        this.processBucket()
         this.trimSamples()
     }
 
@@ -83,17 +107,16 @@ export class MetricsState {
             x: clamp((sample.timestampMs - cutoff) / this.windowMs, 0, 1),
             y: getValue(sample),
         }))
-        const downSampledPoints = downSamplingAlgorithm(points, this.outputSamples, {
-            min: 0,
-            max: 1,
-        })
-        const maxValue = downSampledPoints.reduce(
+
+
+        const pointsToUse = points
+        const maxValue = pointsToUse.reduce(
             (maxValue, point) => Math.max(maxValue, point.y),
             0,
         )
-        const currentValue = downSampledPoints[downSampledPoints.length - 1]!.y
+        const currentValue = pointsToUse[pointsToUse.length - 1]!.y
         return {
-            points: downSampledPoints,
+            points: pointsToUse,
             minValue: 0,
             maxValue: maxValue,
             currentValue: currentValue,

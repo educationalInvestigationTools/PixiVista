@@ -41,14 +41,14 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
     }
 
     protected _draw(): void {
+        console.log(this.normalizedPoints.length)
+        if (this.normalizedPoints.length === 0) {
+            return
+        }
         const mappedPoints = this.normalizedPoints.map((point) => ({
             x: this.mapXValue(point.x),
             y: this.mapYValue(point.y),
         }))
-
-        if (this.normalizedPoints.length === 0) {
-            return
-        }
 
         const firstPoint = mappedPoints[0]!
         const lastPoint = mappedPoints[mappedPoints.length - 1]!
