@@ -3,13 +3,15 @@ import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layout
 import { ChannelLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/channelLayer/channelLayer.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import { ChannelsLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/channelsLayerLayout.ts'
-
+import { ChannelsLayerLayout } from './channelsLayerLayout'
 export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     private channels: Record<string, ChannelLayer> = {}
 
-    protected _draw(): void {}
+    protected _draw(): void { }
 
+    constructor() {
+        super(new ChannelsLayerLayout({ width: 0, height: 0 }, { x: 0, y: 0 }))
+    }
     get activeChannels(): string[] {
         const result = []
         for (const label in this.channels) {

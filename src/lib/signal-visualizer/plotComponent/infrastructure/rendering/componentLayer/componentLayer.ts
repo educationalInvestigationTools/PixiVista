@@ -1,11 +1,10 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import { ChannelsLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/channelsLayer.ts'
 import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
-import { ChannelsLayerLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/channelsLayerLayout.ts'
 import { ComponentLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/componentLayout.ts'
+import { ChannelsLayer } from '../channelsLayer/channelsLayer'
 
 export class ComponentLayer extends RenderLayer<ComponentLayout> {
     readonly channelsLayer: ChannelsLayer
@@ -28,12 +27,7 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
         labels: string[],
     ) {
         super(componentLayout)
-        this.channelsLayer = new ChannelsLayer(
-            new ChannelsLayerLayout(
-                componentLayout.buildChannelsSize(),
-                componentLayout.buildChannelsPos(),
-            ),
-        )
+        this.channelsLayer = new ChannelsLayer()
         for (const label of labels) {
             this.channelsLayer.addChannel(label)
         }
