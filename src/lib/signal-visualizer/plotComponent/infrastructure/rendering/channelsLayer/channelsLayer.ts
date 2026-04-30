@@ -55,8 +55,10 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     }
 
     removeChannel(label: string) {
-        const deleted = this.channels.delete(label)
-        if (deleted) {
+        const channelLayer = this.getByLabel(label)
+        if (channelLayer) {
+            this.container.removeChild(channelLayer.container)
+            this.channels.delete(label)
             this._updateChannels()
             this._needsRendering = true
         }
@@ -64,6 +66,7 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
 
     private _updateChannels() {
         const channels = Array.from(this.channels.values())
+        channels.map((channel) => channel.setDownLabelsEnabled(false))
         channels.map((channel, i) => {
             const sizeData = this.layoutDesign.buildChannelSize(this.VisibleChannels)
             channel.updateSize(sizeData)
