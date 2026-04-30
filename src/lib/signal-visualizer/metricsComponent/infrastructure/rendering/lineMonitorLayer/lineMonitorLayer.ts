@@ -1,6 +1,5 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
 import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
@@ -24,7 +23,7 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
         this._needsRendering = true
     }
 
-    _updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
     }
 

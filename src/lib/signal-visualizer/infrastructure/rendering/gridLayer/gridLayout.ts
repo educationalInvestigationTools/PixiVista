@@ -1,7 +1,7 @@
 import { GridBaseLayout } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridBaseLayout.ts'
 import type { Side } from './gridLayer.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D.ts'
 
 type GridLayoutDescription = {
     sides: Map<Side, (arg0: number) => string>
@@ -18,7 +18,7 @@ export class GridLayout extends GridBaseLayout {
         return this.gridLayoutDescription.sides.get(side) !== undefined
     }
 
-    buildLabelsPosition(side: Side): PositionData {
+    buildLabelsPosition(side: Side): Point2D {
         if (side === 'left') {
             const x = 0
             let y = 0
@@ -84,7 +84,7 @@ export class GridLayout extends GridBaseLayout {
         }
     }
 
-    buildGridPosition(): PositionData {
+    buildGridPosition(): Point2D {
         const existLeft = this.existSide('left')
         const existUp = this.existSide('up')
         const sizeLeft = this.buildLabelsSize('left')

@@ -1,12 +1,12 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import { LabelLayout } from './labelLayout.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 
 import type { LabelDescription, TextAlignments } from './types/types.ts'
 import { MeasureText } from './utils/textMeasurement.ts'
 import { Text } from 'pixi.js'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D.ts'
 
 export class LabelLayer extends RenderLayer<LabelLayout> {
     private readonly labelDescription: LabelDescription
@@ -64,7 +64,7 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
         return this._fittedFontSize
     }
 
-    protected _updatePosition(positionData: PositionData): void {
+    protected _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
     }
 

@@ -1,7 +1,7 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { LineLayerDescription } from './types/lineLayerDescription.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D.ts'
 
 export class LineLabelsLayout extends LayoutDesign {
     description: LineLayerDescription
@@ -10,13 +10,13 @@ export class LineLabelsLayout extends LayoutDesign {
         this.description = description
     }
 
-    buildLabelPosition(i: number): PositionData {
+    buildLabelPosition(i: number): Point2D {
         return this.description.orientation === 'horizontal'
             ? this.buildLabelPositionHorizontal(i)
             : this.buildLabelPositionVertical(i)
     }
 
-    buildLabelPositionVertical(i: number): PositionData {
+    buildLabelPositionVertical(i: number): Point2D {
         const n = this.description.positionsNormalized.length
         const positionsNormalized = this.description.positionsNormalized
         const y = 0
@@ -46,7 +46,7 @@ export class LineLabelsLayout extends LayoutDesign {
         }
     }
 
-    buildLabelPositionHorizontal(i: number): PositionData {
+    buildLabelPositionHorizontal(i: number): Point2D {
         const n = this.description.positionsNormalized.length
         const positionsNormalized = this.description.positionsNormalized
         const y = 0

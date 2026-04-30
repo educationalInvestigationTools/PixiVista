@@ -3,7 +3,6 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { LabelsContainer } from '../domain/labelsContainer';
 import MetricsComponent
     from '@/lib/signal-visualizer/metricsComponent/presentation/MetricsComponent.vue';
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData';
 import { DestroyCommand } from '@/lib/signal-visualizer/application/commands/destroyCommand';
 import { generateRandomString } from '../utils/utils';
 import {
@@ -14,6 +13,7 @@ import {
 } from "@/lib/signal-visualizer/debugComponents/labelsLayer/application/commands/changeAllCellsTextCommand.ts";
 import { useResizeObserver } from '@/lib/signal-visualizer/presentation/utils/useResizeObserver';
 import { usePerformanceMetricsBridge } from '@/lib/signal-visualizer/metricsComponent/presentation/utils/usePerformanceMetricsBridge';
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D';
 
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null)
@@ -30,7 +30,7 @@ let labelsContainer: LabelsContainer | null = null
 const toggleAllText = ref<boolean>(false)
 
 
-function toggleChangeStringOnCell(posData: PositionData) {
+function toggleChangeStringOnCell(posData: Point2D) {
     const randomString = generateRandomString(100, 200)
     labelsContainer?.eventMediator.publish(new ChangeCellTextCommand(randomString, posData))
 }
@@ -46,7 +46,7 @@ function handlePointerDown(event: PointerEvent) {
     }
 
     const rect = canvas.getBoundingClientRect()
-    const positionData: PositionData = {
+    const positionData: Point2D = {
         x: event.clientX - rect.left,
         y: event.clientY - rect.top,
     }

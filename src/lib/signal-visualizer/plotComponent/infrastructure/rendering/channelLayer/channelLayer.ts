@@ -3,7 +3,6 @@ import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/grid
 
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
 import { ChannelLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/channelLayer/channelLayout.ts'
@@ -47,7 +46,7 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
         })
     }
 
-    _updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
     }
 

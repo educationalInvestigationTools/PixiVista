@@ -1,6 +1,5 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { MetricsChartStyle } from '@/lib/signal-visualizer/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle.ts'
 import { GridLayer } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayer.ts'
@@ -68,9 +67,9 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this._needsRendering = true
     }
 
-    _updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
-        this.gridLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
+        this.gridLayer.updatePosition(this.layoutDesign.buildPlotPoint2D())
         this.relayoutLineMonitor()
         this.relayoutHeaderLabels()
     }
@@ -78,7 +77,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
         this.gridLayer.updateSize(this.layoutDesign.buildPlotSizeData())
-        this.gridLayer.updatePosition(this.layoutDesign.buildPlotPositionData())
+        this.gridLayer.updatePosition(this.layoutDesign.buildPlotPoint2D())
 
         this.relayoutLineMonitor()
         this.updateGridLabels()
@@ -106,8 +105,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         this.headerLabelsLayer.updateLabelsText([this.style.title, this.currentValueText])
     }
 
-    private buildGridPlotMetrics(): { size: SizeData; position: PositionData } {
-        const plotPosition = this.layoutDesign.buildPlotPositionData()
+    private buildGridPlotMetrics(): { size: SizeData; position: Point2D } {
+        const plotPosition = this.layoutDesign.buildPlotPoint2D()
         const gridPosition = this.gridLayer.GridPosData
         const gridSize = this.gridLayer.GridSizeData
         return {
@@ -132,7 +131,7 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
     private relayoutHeaderLabels() {
         const gridMetrics = this.buildGridPlotMetrics()
-        const headerY = this.layoutDesign.buildTitleLabelPositionData().y
+        const headerY = this.layoutDesign.buildTitleLabelPoint2D().y
 
         this.headerLabelsLayer.updateSize({
             width: gridMetrics.size.width,

@@ -1,6 +1,6 @@
 import { ComponentBaseLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/componentBaseLayout.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 
 export class ChannelsLayerLayout extends ComponentBaseLayout {
 
@@ -30,7 +30,7 @@ export class ChannelsLayerLayout extends ComponentBaseLayout {
         }
     }
 
-    buildChannelPos(i: number, visibleChannels : number): PositionData {
+    buildChannelPos(i: number, visibleChannels : number): Point2D {
         return {
             x: 0,
             y: this.yChannelLow(i, visibleChannels),

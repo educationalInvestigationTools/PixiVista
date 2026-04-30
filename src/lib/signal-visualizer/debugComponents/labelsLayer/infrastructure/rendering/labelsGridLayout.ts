@@ -1,6 +1,6 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 
 import type { GridDescription } from '@/lib/signal-visualizer/debugComponents/labelsLayer/domain/types/gridDescription.ts'
 
@@ -17,7 +17,7 @@ export class LabelsGridLayout extends LayoutDesign {
         }
     }
 
-    buildLabelPosition(row: number, column: number): PositionData {
+    buildLabelPosition(row: number, column: number): Point2D {
         const sizeData = this.buildLabelSize(row)
         return {
             x: column * sizeData.width,

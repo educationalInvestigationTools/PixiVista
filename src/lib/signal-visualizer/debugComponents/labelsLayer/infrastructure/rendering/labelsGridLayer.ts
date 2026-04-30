@@ -1,11 +1,12 @@
 import { LayoutDesign } from '../../../../core/rendering/layoutDesign.ts'
 import { RenderLayer } from '../../../../core/rendering/renderLayer.ts'
-import type { PositionData } from '../../../../core/types/positionData.ts'
+
 import type { SizeData } from '../../../../core/types/sizeData.ts'
 import { LabelLayer } from '@/lib/signal-visualizer/infrastructure/rendering/labelsLayer/labelLayer.ts'
 import { generateRandomString } from '../../utils/utils.ts'
 import { LabelsGridLayout } from '@/lib/signal-visualizer/debugComponents/labelsLayer/infrastructure/rendering/labelsGridLayout.ts'
 import type { GridDescription } from '@/lib/signal-visualizer/debugComponents/labelsLayer/domain/types/gridDescription.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D.ts'
 
 export class LabelsGridLayer extends RenderLayer<LabelsGridLayout> {
     labels: LabelLayer[][] = []
@@ -45,7 +46,7 @@ export class LabelsGridLayer extends RenderLayer<LabelsGridLayout> {
         return this.layoutDesign.gridDescription
     }
 
-    getRowAndColumn(positionData: PositionData): [number, number] {
+    getRowAndColumn(positionData: Point2D): [number, number] {
         const rows = this.layoutDesign.gridDescription.columnsPerRow.length
         const rowHeight = this.layoutDesign.height / rows
         const row = Math.max(0, Math.min(rows - 1, Math.floor(positionData.y / rowHeight)))
@@ -63,7 +64,7 @@ export class LabelsGridLayer extends RenderLayer<LabelsGridLayout> {
         return this.labels.flat()
     }
 
-    protected _updatePosition(positionData: PositionData): void {
+    protected _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
         for (let i = 0; i < this.labels.length; i++) {
             for (let j = 0; j < this.labels[i]!.length; j++) {

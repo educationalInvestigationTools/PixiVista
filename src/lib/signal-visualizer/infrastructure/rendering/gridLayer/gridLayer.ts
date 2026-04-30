@@ -1,11 +1,11 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { LayoutDesign } from '../../../core/rendering/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { GridLayout } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayout.ts'
 import { LineLabelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
 import type { LineLayerDescription } from '../lineLabelsLayer/types/lineLayerDescription.ts'
 import type { TextAlignments } from '../labelsLayer/types/types.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D.ts'
 
 export type Side = 'left' | 'right' | 'up' | 'down'
 
@@ -74,7 +74,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
         return this.layoutDesign.buildGridSize()
     }
 
-    get GridPosData(): PositionData {
+    get GridPosData(): Point2D {
         return this.layoutDesign.buildGridPosition()
     }
 
@@ -84,7 +84,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
         return children
     }
 
-    _updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
         this.syncLabels()
     }

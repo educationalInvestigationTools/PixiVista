@@ -1,10 +1,10 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { LabelLayer } from '../labelsLayer/labelLayer.ts'
 import { LineLabelsLayout } from './lineLabelsLayout.ts'
 import { type LineLayerDescription } from './types/lineLayerDescription.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D.ts'
 
 export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
     labels: LabelLayer[] = []
@@ -47,7 +47,7 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
         }
     }
 
-    protected _updatePosition(positionData: PositionData): void {
+    protected _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
         this.labels.map((x, i) => x.updatePosition(this.layoutDesign.buildLabelPosition(i)))
     }

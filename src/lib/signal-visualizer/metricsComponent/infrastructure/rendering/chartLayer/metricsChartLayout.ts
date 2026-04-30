@@ -1,6 +1,6 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 
 export class MetricsChartLayout extends LayoutDesign {
     private static readonly HEADER_TOP = 2
@@ -46,7 +46,7 @@ export class MetricsChartLayout extends LayoutDesign {
         return MetricsChartLayout.HEADER_TOP
     }
 
-    public buildTitleLabelPositionData(): PositionData {
+    public buildTitleLabelPoint2D(): Point2D {
         return {
             x: this.plotX,
             y: this.headerTop,
@@ -59,7 +59,7 @@ export class MetricsChartLayout extends LayoutDesign {
         }
     }
 
-    public buildPlotPositionData(): PositionData {
+    public buildPlotPoint2D(): Point2D {
         return {
             x: this.plotX,
             y: this.plotY,

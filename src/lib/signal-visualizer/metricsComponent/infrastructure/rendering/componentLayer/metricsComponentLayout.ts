@@ -1,6 +1,6 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 
 export class MetricsComponentLayout extends LayoutDesign {
 
@@ -31,7 +31,7 @@ export class MetricsComponentLayout extends LayoutDesign {
         }
     }
 
-    buildRefreshRateChartPosition(): PositionData {
+    buildRefreshRateChartPosition(): Point2D {
         return {
             x: this.padding,
             y: this.padding,
@@ -45,7 +45,7 @@ export class MetricsComponentLayout extends LayoutDesign {
         }
     }
 
-    buildRenderTimeChartPosition(): PositionData {
+    buildRenderTimeChartPosition(): Point2D {
         return {
             x: this.padding,
             y: this.padding + this.chartHeight + this.chartGap,

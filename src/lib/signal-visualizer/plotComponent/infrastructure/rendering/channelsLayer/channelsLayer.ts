@@ -1,9 +1,9 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import { ChannelLayer } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/channelLayer/channelLayer.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { ChannelsLayerLayout } from './channelsLayerLayout'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
     private channels: Map<string, ChannelLayer> = new Map()
 
@@ -34,7 +34,7 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
         return this.channels.get(label)
     }
 
-    _updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
         this._updateChannels()
     }

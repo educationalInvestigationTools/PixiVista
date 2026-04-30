@@ -1,10 +1,10 @@
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
-import type { PositionData } from '@/lib/signal-visualizer/core/types/positionData.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
 import { ComponentLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/componentLayout.ts'
 import { ChannelsLayer } from '../channelsLayer/channelsLayer'
+import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
 
 export class ComponentLayer extends RenderLayer<ComponentLayout> {
     readonly channelsLayer: ChannelsLayer
@@ -33,7 +33,7 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
 
     protected _draw(): void {}
 
-    _updatePosition(positionData: PositionData): void {
+    _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
         this.channelsLayer.updatePosition(this.layoutDesign.buildChannelsPos())
     }
