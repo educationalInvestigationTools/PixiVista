@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, ref, type Ref} from "vue";
-import {DirtyContainer} from "@/lib/signal-visualizer/plotComponent/domain/dirtyContainer.ts";
+import { computed, onBeforeUnmount, onMounted, ref, type Ref } from "vue";
+import { DirtyContainer } from "@/lib/signal-visualizer/plotComponent/domain/dirtyContainer.ts";
 import SliderComponent, {
     type CurrentViewPortSamples
 } from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
@@ -16,11 +16,11 @@ import type {
     AnySettingChoice,
     AnySettingChoiceUpdate
 } from "@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice.ts";
-import {fmtTime} from "../../../utils/utils.ts";
+import { fmtTime } from "../../../utils/utils.ts";
 import type {
     IntervalGroup
 } from "@/lib/signal-visualizer/plotComponent/application/types/highlightedInterval.ts";
-import type {ViewPort} from "@/lib/signal-visualizer/plotComponent/application/types/viewPort.ts";
+import type { ViewPort } from "@/lib/signal-visualizer/plotComponent/application/types/viewPort.ts";
 import type {
     SignalSourceManager
 } from "@/lib/signal-visualizer/plotComponent/application/interfaces/signalSource.ts";
@@ -33,7 +33,7 @@ import {
 import {
     ChangeViewPortCommand
 } from "@/lib/signal-visualizer/plotComponent/application/commands/changeViewPortCommand.ts";
-import {useResizeObserver} from "@/lib/signal-visualizer/presentation/utils/useResizeObserver.ts";
+import { useResizeObserver } from "@/lib/signal-visualizer/presentation/utils/useResizeObserver.ts";
 import {
     usePerformanceMetricsBridge
 } from "@/lib/signal-visualizer/metricsComponent/presentation/utils/usePerformanceMetricsBridge.ts";
@@ -131,6 +131,13 @@ function updateSettingChoice(settingUpdate: AnySettingChoiceUpdate) {
     }
 }
 
+function handleCanvasWheel(event: WheelEvent) {
+    event.preventDefault()
+    const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9
+    const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
+    updateViewPort(undefined, newLengthSeconds)
+}
+
 
 onMounted(async () => {
     if (!htmlContainerRef.value) {
@@ -171,20 +178,30 @@ onMounted(async () => {
     bindResizeObserver(htmlContainerRef, diContainer.eventMediator)
     bindPerformanceMetrics(diContainer.eventMediator)
 
+    htmlContainerRef.value.addEventListener('wheel', handleCanvasWheel)
 
 })
 
 
 onBeforeUnmount(async () => {
+    // Remove wheel event listener
+    if (htmlContainerRef.value) {
+        htmlContainerRef.value.removeEventListener('wheel', handleCanvasWheel)
+    }
+
     await diContainer?.eventMediator.publish(new DestroyCommand())
 })
 
-async function updateViewPort(viewPort: CurrentViewPortSamples) {
+async function updateViewPort(startSeconds?: number, lengthSeconds?: number) {
     viewPortRef.value = {
-        startSeconds: viewPort.currentSamplePosition,
-        lengthSeconds: Math.min(60, viewPort.lengthSamples)
+        startSeconds: startSeconds === undefined ? viewPortRef.value.startSeconds : startSeconds,
+        lengthSeconds: lengthSeconds === undefined ? viewPortRef.value.lengthSeconds : Math.min(60, lengthSeconds)
     }
     await diContainer?.eventMediator.publish(new ChangeViewPortCommand(viewPortRef.value))
+}
+
+async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
+    await updateViewPort(viewPort.currentSamplePosition, viewPort.lengthSamples)
 }
 
 </script>
@@ -194,25 +211,20 @@ async function updateViewPort(viewPort: CurrentViewPortSamples) {
     <div class="plot__container">
         <SettingsComponent :choices="settingsChoices" @update:choice="updateSettingChoice">
         </SettingsComponent>
-        <AnnotationsComponent v-show="showAnnotationsPanel"
-                              :objectsAnnotations="objectsAnnotationsData"
-                              @toggleObjectVisibility="toggleObjectVisibility">
+        <AnnotationsComponent v-show="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
+            @toggleObjectVisibility="toggleObjectVisibility">
         </AnnotationsComponent>
         <div ref="htmlContainerRef" class="canvas__container" :style="{
             height: heightPerChannel * (visibleChannels + 1) + 'px'
         }">
         </div>
-        <SliderComponent :sampleToString="(x) => fmtTime(x, true)"
-                         :lengthToString="(x) => fmtTime(x, false)"
-                         :leftSliderPositionPercent="5" :rightSliderPositionPercent="95"
-                         :currentViewPort="{
+        <SliderComponent :sampleToString="(x) => fmtTime(x, true)" :lengthToString="(x) => fmtTime(x, false)"
+            :leftSliderPositionPercent="5" :rightSliderPositionPercent="95" :currentViewPort="{
                 currentSamplePosition: viewPortRef.startSeconds,
                 lengthSamples: viewPortRef.lengthSeconds,
-            }" :viewPortLargestValueSamples=signalsLargestDurationSeconds
-                         @update:viewPort='updateViewPort'>
+            }" :viewPortLargestValueSamples=signalsLargestDurationSeconds @update:viewPort='updateViewPortFromSlider'>
         </SliderComponent>
-        <MetricsComponent :metrics="performanceMetricsRef"
-                          v-show="showMetricsPanel"></MetricsComponent>
+        <MetricsComponent :metrics="performanceMetricsRef" v-show="showMetricsPanel"></MetricsComponent>
     </div>
 
 </template>
