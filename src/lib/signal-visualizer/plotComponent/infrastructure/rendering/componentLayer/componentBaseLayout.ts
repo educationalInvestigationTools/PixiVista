@@ -2,11 +2,11 @@ import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesig
 
 export class ComponentBaseLayout extends LayoutDesign {
     get marginVerticalLeft(): number {
-        return this.width * 0.05
+        return this.width * 0.01
     }
 
     get marginVerticalRight(): number {
-        return this.width * 0.05
+        return this.width * 0.01
     }
 
     get xLeft(): number {

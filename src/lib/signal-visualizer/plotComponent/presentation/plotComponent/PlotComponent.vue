@@ -37,7 +37,8 @@ import { useResizeObserver } from "@/lib/signal-visualizer/presentation/utils/us
 import {
     usePerformanceMetricsBridge
 } from "@/lib/signal-visualizer/metricsComponent/presentation/utils/usePerformanceMetricsBridge.ts";
-import { useWheelForZoom } from "../utils/useWheelForZoom.ts";
+import { useWheelForZoom } from "./utils/useWheelForZoom.ts";
+import { useKeysForViewPort } from "./utils/useKeysForViewPort.ts";
 
 
 const props = defineProps<{
@@ -175,6 +176,20 @@ onMounted(async () => {
         const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
         updateViewPort(undefined, newLengthSeconds)
     })
+
+
+    useKeysForViewPort(
+        htmlContainerRef,
+        (down: boolean) => {
+            const currentLengthSeconds = viewPortRef.value.lengthSeconds
+            const nextLengthSeconds = currentLengthSeconds * (down ? 0.9 : 1.1)
+            updateViewPort(undefined, nextLengthSeconds)
+        },
+        (left: boolean) => {
+            const currentSeconds = viewPortRef.value.startSeconds
+            const nextSeconds = currentSeconds + (left ? -1 : 1)
+            updateViewPort(nextSeconds, undefined)
+        })
 })
 
 
@@ -184,7 +199,7 @@ onBeforeUnmount(async () => {
 
 async function updateViewPort(startSeconds?: number, lengthSeconds?: number) {
     viewPortRef.value = {
-        startSeconds: startSeconds === undefined ? viewPortRef.value.startSeconds : startSeconds,
+        startSeconds: startSeconds === undefined ? viewPortRef.value.startSeconds : Math.max(0, startSeconds),
         lengthSeconds: lengthSeconds === undefined ? viewPortRef.value.lengthSeconds : Math.min(60, lengthSeconds)
     }
     await diContainer?.eventMediator.publish(new ChangeViewPortCommand(viewPortRef.value))
@@ -204,7 +219,7 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
         <AnnotationsComponent v-show="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
             @toggleObjectVisibility="toggleObjectVisibility">
         </AnnotationsComponent>
-        <div ref="htmlContainerRef" class="canvas__container" :style="{
+        <div ref="htmlContainerRef" class="canvas__container" tabindex="0" :style="{
             height: heightPerChannel * (visibleChannels + 1) + 'px'
         }">
         </div>
