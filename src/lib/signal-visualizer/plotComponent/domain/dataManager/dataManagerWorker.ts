@@ -1,9 +1,8 @@
 import type { SignalSourceManager } from '@/lib/signal-visualizer/plotComponent/application/interfaces/signalSource.ts'
 import type { ViewPort } from '@/lib/signal-visualizer/plotComponent/application/types/viewPort.ts'
 import type { DataManager } from './dataManager.ts'
-import type { FetchDataRequest } from './fetchDataRequest.ts'
-import type { ReceivedRequest } from './receivedRequest.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
+import type { FetchDataRequest, InitRequest, ReceivedRequest } from '@/lib/signal-visualizer/plotComponent/domain/dataManager/requests.ts'
 
 export class DataManagerWorker implements DataManager {
     private worker: Worker
@@ -12,7 +11,12 @@ export class DataManagerWorker implements DataManager {
     constructor(workerCallback: () => Worker, signalSourcesManager: SignalSourceManager) {
         this.worker = workerCallback()
         this.worker.onmessage = this.handleWorkerMessage.bind(this)
-        this.worker.postMessage({ type: 'init', data: signalSourcesManager.serialize() })
+
+        const initRequest: InitRequest = {
+            type: 'Init',
+            data: signalSourcesManager.serialize()
+        }
+        this.worker.postMessage(initRequest)
     }
 
     async fetchData(
@@ -24,16 +28,17 @@ export class DataManagerWorker implements DataManager {
         const promise = new Promise<OneDimNormalizedSignal[]>((resolve) => {
             this.pendingRequests.set(requestId, resolve)
         })
-        this.worker.postMessage({
-            requestId,
+        const fetchDataRequest: FetchDataRequest = {
+            type : 'FetchDataRequest',
+            requestId : requestId,
             labels: labels,
             viewPort: {
                 startSeconds: viewPort.startSeconds,
                 lengthSeconds: viewPort.lengthSeconds,
             },
             expectedWidth: expectedWidth,
-        } satisfies FetchDataRequest)
-
+        }
+        this.worker.postMessage(fetchDataRequest)
         return promise
     }
 

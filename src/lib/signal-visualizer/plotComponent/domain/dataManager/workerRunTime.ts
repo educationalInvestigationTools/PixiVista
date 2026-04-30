@@ -1,19 +1,18 @@
 import { SignalSourceManager } from '@/lib/signal-visualizer/plotComponent/application/interfaces/signalSource.ts'
 import { DataManagerNaive } from './dataManagerNaive.ts'
-import type { FetchDataRequest } from './fetchDataRequest.ts'
-import type { ReceivedRequest } from './receivedRequest.ts'
+import type { ReceivedRequest, WorkerRequest } from '@/lib/signal-visualizer/plotComponent/domain/dataManager/requests.ts'
 
 export function buildWorkerRunTime(signalManager: SignalSourceManager) {
     let dataManager: DataManagerNaive | null = null
     const manager = signalManager
     self.onmessage = async (event: MessageEvent) => {
-        const data = event.data
-        if (data.type === 'init') {
-            const signalsSourceBuildData = data.data as string
+        const data: WorkerRequest = event.data
+        if (data.type === 'Init') {
+            const signalsSourceBuildData = data.data
             manager.deSerialize(signalsSourceBuildData)
             dataManager = new DataManagerNaive(manager)
-        } else {
-            const { requestId, labels, viewPort, expectedWidth } = data as FetchDataRequest
+        } else if (data.type === 'FetchDataRequest') {
+            const { requestId, labels, viewPort, expectedWidth } = data
             const signalsData = await dataManager!.fetchData(
                 labels,
                 {
@@ -24,6 +23,7 @@ export function buildWorkerRunTime(signalManager: SignalSourceManager) {
             )
 
             const response: ReceivedRequest = {
+                type: 'ReceivedRequest',
                 requestId,
                 signalsData,
             }
