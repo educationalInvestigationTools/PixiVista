@@ -37,6 +37,7 @@ import { useResizeObserver } from "@/lib/signal-visualizer/presentation/utils/us
 import {
     usePerformanceMetricsBridge
 } from "@/lib/signal-visualizer/metricsComponent/presentation/utils/usePerformanceMetricsBridge.ts";
+import { useWheelForZoom } from "../utils/useWheelForZoom.ts";
 
 
 const props = defineProps<{
@@ -131,14 +132,6 @@ function updateSettingChoice(settingUpdate: AnySettingChoiceUpdate) {
     }
 }
 
-function handleCanvasWheel(event: WheelEvent) {
-    event.preventDefault()
-    const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9
-    const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
-    updateViewPort(undefined, newLengthSeconds)
-}
-
-
 onMounted(async () => {
     if (!htmlContainerRef.value) {
         return;
@@ -178,17 +171,14 @@ onMounted(async () => {
     bindResizeObserver(htmlContainerRef, diContainer.eventMediator)
     bindPerformanceMetrics(diContainer.eventMediator)
 
-    htmlContainerRef.value.addEventListener('wheel', handleCanvasWheel)
-
+    useWheelForZoom(htmlContainerRef, (zoomFactor: number) => {
+        const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
+        updateViewPort(undefined, newLengthSeconds)
+    })
 })
 
 
 onBeforeUnmount(async () => {
-    // Remove wheel event listener
-    if (htmlContainerRef.value) {
-        htmlContainerRef.value.removeEventListener('wheel', handleCanvasWheel)
-    }
-
     await diContainer?.eventMediator.publish(new DestroyCommand())
 })
 
