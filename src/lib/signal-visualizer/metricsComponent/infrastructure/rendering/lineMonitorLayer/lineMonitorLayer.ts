@@ -85,4 +85,8 @@ export class LineMonitorLayer extends RenderLayer<LineMonitorLayout> {
             alpha: 1,
         })
     }
+
+    protected _destroy(): void {
+
+    }
 }

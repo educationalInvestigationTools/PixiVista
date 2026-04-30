@@ -41,4 +41,14 @@ export abstract class RenderLayer<LayoutData extends LayoutDesign> {
         this._needsRendering = true
     }
     protected abstract _updateSize(sizeData: SizeData): void
+
+    destroy() {
+        this._destroy()
+        for (const child of this.Children) {
+            child.destroy()
+        }
+        this.graphics.destroy()
+        this.container.destroy()
+    }
+    protected abstract _destroy(): void
 }

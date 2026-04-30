@@ -2,7 +2,7 @@ import { RenderManager } from '@/lib/signal-visualizer/core/rendering/renderMana
 import type { DataManager } from '@/lib/signal-visualizer/plotComponent/domain/dataManager/dataManager.ts'
 import { RenderDependencies } from './renderDependencies.ts'
 import { Observer } from '../../core/observer.ts'
-import type { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/domain/componentLayerApi.ts'
+import type { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/domain/plotComponentLayerApi.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
 import type { PlotState } from './plotState.ts'
 

@@ -2,7 +2,7 @@ import { LayoutDesign } from '../../../../core/rendering/layoutDesign.ts'
 import { RenderLayer } from '../../../../core/rendering/renderLayer.ts'
 
 import type { SizeData } from '../../../../core/types/sizeData.ts'
-import { LabelLayer } from '@/lib/signal-visualizer/infrastructure/rendering/labelsLayer/labelLayer.ts'
+import { LabelLayer } from '@/lib/signal-visualizer/infrastructure/rendering/labelLayer/labelLayer.ts'
 import { generateRandomString } from '../../utils/utils.ts'
 import { LabelsGridLayout } from '@/lib/signal-visualizer/debugComponents/labelsLayer/infrastructure/rendering/labelsGridLayout.ts'
 import type { GridDescription } from '@/lib/signal-visualizer/debugComponents/labelsLayer/domain/types/gridDescription.ts'
@@ -83,5 +83,9 @@ export class LabelsGridLayer extends RenderLayer<LabelsGridLayout> {
                 labelLayer.updatePosition(this.layoutDesign.buildLabelPosition(i, j))
             }
         }
+    }
+
+    protected _destroy(): void {
+        
     }
 }

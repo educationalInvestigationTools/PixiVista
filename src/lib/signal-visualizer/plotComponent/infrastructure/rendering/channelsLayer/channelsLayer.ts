@@ -59,6 +59,7 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
         if (channelLayer) {
             this.container.removeChild(channelLayer.container)
             this.channels.delete(label)
+            channelLayer.destroy()
             this._updateChannels()
             this._needsRendering = true
         }
@@ -76,5 +77,9 @@ export class ChannelsLayer extends RenderLayer<ChannelsLayerLayout> {
                 channel.setDownLabelsEnabled(true)
             }
         })
+    }
+
+    protected _destroy(): void {
+
     }
 }

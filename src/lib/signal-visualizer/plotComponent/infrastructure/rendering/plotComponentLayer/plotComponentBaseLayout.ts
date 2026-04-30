@@ -1,6 +1,6 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 
-export class ComponentBaseLayout extends LayoutDesign {
+export class PlotComponentBaseLayout extends LayoutDesign {
     get marginVerticalLeft(): number {
         return this.width * 0.01
     }

@@ -106,4 +106,9 @@ export class LabelLayer extends RenderLayer<LabelLayout> {
 
         return this.layoutDesign.centeredX(textWidth)
     }
+
+    protected _destroy(): void {
+        this.removeCurrentText()
+        this.textGraphics?.destroy()
+    }
 }

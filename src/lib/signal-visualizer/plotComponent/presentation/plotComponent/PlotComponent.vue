@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import { computed, onBeforeUnmount, onMounted, ref, type Ref } from "vue";
-import { DirtyContainer } from "@/lib/signal-visualizer/plotComponent/domain/dirtyContainer.ts";
 import SliderComponent, {
     type CurrentViewPortSamples
 } from "@/lib/signal-visualizer/presentation/sliderComponent/SliderComponent.vue";
@@ -39,6 +38,7 @@ import {
 } from "@/lib/signal-visualizer/metricsComponent/presentation/utils/usePerformanceMetricsBridge.ts";
 import { useWheelForZoom } from "./utils/useWheelForZoom.ts";
 import { useKeysForViewPort } from "./utils/useKeysForViewPort.ts";
+import { PlotComponentContainer } from "../../domain/plotComponentContainer.ts";
 
 
 const props = defineProps<{
@@ -65,7 +65,7 @@ const visibleChannels = computed(() => {
 
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
-let diContainer: DirtyContainer | null = null;
+let diContainer: PlotComponentContainer | null = null;
 
 const signalsLargestDurationSeconds = Math.max(...props.signalSourcesManager.allSignalsBuildData.map(signal => signal.totalSeconds))
 const viewPortRef: Ref<ViewPort> = ref({
@@ -166,7 +166,7 @@ onMounted(async () => {
     }
 
     const viewPort = viewPortRef.value
-    diContainer = new DirtyContainer();
+    diContainer = new PlotComponentContainer();
     await diContainer.init(htmlContainerRef.value, viewPort, props.signalSourcesManager, props.workerCallback)
 
     bindResizeObserver(htmlContainerRef, diContainer.eventMediator)

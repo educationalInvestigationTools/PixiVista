@@ -51,4 +51,8 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
     _updateSize(sizeData: SizeData): void {
         this.layoutDesign.updateSizeData(sizeData)
     }
+
+    protected _destroy(): void {
+
+    }
 }

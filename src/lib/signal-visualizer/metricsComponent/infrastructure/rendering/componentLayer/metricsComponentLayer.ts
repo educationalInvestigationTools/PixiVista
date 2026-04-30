@@ -15,7 +15,7 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
         refreshRateStyle: MetricsChartStyle,
         renderTimeStyles: MetricsChartStyle,
     ) {
-        super( new MetricsComponentLayout())
+        super(new MetricsComponentLayout())
 
         this.refreshRateChartLayer = new MetricsChartLayer(
             refreshRateStyle,
@@ -59,5 +59,9 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
 
         this.renderTimeChartLayer.updateSize(this.layoutDesign.buildRenderTimeChartSize())
         this.renderTimeChartLayer.updatePosition(this.layoutDesign.buildRenderTimeChartPosition())
+    }
+
+    protected _destroy(): void {
+
     }
 }

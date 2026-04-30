@@ -170,4 +170,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
         })
         this.lineMonitorLayer.updatePointsData(mappedPoints)
     }
+
+    protected _destroy(): void {
+
+    }
 }

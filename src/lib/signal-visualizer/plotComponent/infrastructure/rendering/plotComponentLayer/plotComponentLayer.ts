@@ -2,11 +2,12 @@ import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.
 import type { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
-import { ComponentLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/componentLayout.ts'
+
 import { ChannelsLayer } from '../channelsLayer/channelsLayer'
 import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
+import { PlotComponentLayout } from './plotComponentLayout'
 
-export class ComponentLayer extends RenderLayer<ComponentLayout> {
+export class PlotComponentLayer extends RenderLayer<PlotComponentLayout> {
     readonly channelsLayer: ChannelsLayer
 
     get Children(): RenderLayer<LayoutDesign>[] {
@@ -25,13 +26,13 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
     constructor(
         labels: string[],
     ) {
-        super(new ComponentLayout())
+        super(new PlotComponentLayout())
         this.channelsLayer = new ChannelsLayer()
         this.channelsLayer.addChannels(labels)
         this.container.addChild(this.channelsLayer.container)
     }
 
-    protected _draw(): void {}
+    protected _draw(): void { }
 
     _updatePosition(positionData: Point2D): void {
         this.layoutDesign.updatePosData(positionData)
@@ -42,5 +43,9 @@ export class ComponentLayer extends RenderLayer<ComponentLayout> {
         this.layoutDesign.updateSizeData(sizeData)
         this.channelsLayer.updateSize(this.layoutDesign.buildChannelsSize())
         this.channelsLayer.updatePosition(this.layoutDesign.buildChannelsPos())
+    }
+
+    protected _destroy(): void {
+
     }
 }

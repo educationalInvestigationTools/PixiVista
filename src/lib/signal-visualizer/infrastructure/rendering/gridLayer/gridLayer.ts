@@ -4,7 +4,7 @@ import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import { GridLayout } from '@/lib/signal-visualizer/infrastructure/rendering/gridLayer/gridLayout.ts'
 import { LineLabelsLayer } from '@/lib/signal-visualizer/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer.ts'
 import type { LineLayerDescription } from '../lineLabelsLayer/types/lineLayerDescription.ts'
-import type { TextAlignments } from '../labelsLayer/types/types.ts'
+import type { TextAlignments } from '../labelLayer/types/types.ts'
 import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D.ts'
 
 export type Side = 'left' | 'right' | 'up' | 'down'
@@ -158,5 +158,9 @@ export class GridLayer extends RenderLayer<GridLayout> {
                 layer.updateLabelsText(positions.map((x) => generator(x)))
             }
         }
+    }
+
+    protected _destroy(): void {
+
     }
 }

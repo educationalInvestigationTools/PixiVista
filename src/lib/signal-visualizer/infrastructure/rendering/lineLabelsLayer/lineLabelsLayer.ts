@@ -1,7 +1,7 @@
 import { LayoutDesign } from '@/lib/signal-visualizer/core/rendering/layoutDesign.ts'
 import { RenderLayer } from '@/lib/signal-visualizer/core/rendering/renderLayer.ts'
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
-import { LabelLayer } from '../labelsLayer/labelLayer.ts'
+import { LabelLayer } from '../labelLayer/labelLayer.ts'
 import { LineLabelsLayout } from './lineLabelsLayout.ts'
 import { type LineLayerDescription } from './types/lineLayerDescription.ts'
 import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D.ts'
@@ -58,5 +58,9 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
             x.updatePosition(this.layoutDesign.buildLabelPosition(i))
         })
         this.updateSharedFont()
+    }
+
+    protected _destroy(): void {
+
     }
 }

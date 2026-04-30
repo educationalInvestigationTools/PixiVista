@@ -4,11 +4,11 @@ import { RenderManager } from '../../core/rendering/renderManager.ts'
 import type { ViewPort } from '@/lib/signal-visualizer'
 import { EventMediator } from '../../utils/eventMediator.ts'
 import { DataManagerWorker } from '@/lib/signal-visualizer/plotComponent/domain/dataManager/dataManagerWorker.ts'
-import { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/domain/componentLayerApi.ts'
+import { ComponentLayerLogicApi } from '@/lib/signal-visualizer/plotComponent/domain/plotComponentLayerApi.ts'
 import { PlotState } from './plotState.ts'
 import { ChangeViewPortCommandEventLabel, type ChangeViewPortCommand } from '../application/commands/changeViewPortCommand.ts'
 
-export class DirtyContainer {
+export class PlotComponentContainer {
     private updateChannelsStateObserver?: UpdateChannelsStateObserver
     readonly eventMediator: EventMediator
 

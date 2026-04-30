@@ -1,8 +1,9 @@
-import { ComponentBaseLayout } from '@/lib/signal-visualizer/plotComponent/infrastructure/rendering/componentLayer/componentBaseLayout.ts'
+
 import type { SizeData } from '@/lib/signal-visualizer/core/types/sizeData.ts'
 import type { Point2D } from '@/lib/signal-visualizer/core/types/point2D'
+import { PlotComponentBaseLayout } from './plotComponentBaseLayout'
 
-export class ComponentLayout extends ComponentBaseLayout {
+export class PlotComponentLayout extends PlotComponentBaseLayout {
     buildChannelsSize(): SizeData {
         return {
             width: this.width,

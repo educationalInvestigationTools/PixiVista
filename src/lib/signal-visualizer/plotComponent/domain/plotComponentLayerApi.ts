@@ -1,5 +1,5 @@
 import { RenderLayerDomainApi } from '@/lib/signal-visualizer/core/rendering/layerApi.ts'
-import { ComponentLayer } from '../infrastructure/rendering/componentLayer/componentLayer.ts'
+
 import {
     ChangeChannelVisibilityCommandEventLabel,
     type ChangeChannelVisibilityCommand,
@@ -7,8 +7,9 @@ import {
 import type { EventMediator } from '@/lib/signal-visualizer/utils/eventMediator.ts'
 
 import type { OneDimNormalizedSignal } from '@/lib/signal-visualizer/plotComponent/application/types/oneDimNormalizedSignal.ts'
+import { PlotComponentLayer } from '../infrastructure/rendering/plotComponentLayer/plotComponentLayer'
 
-export class ComponentLayerLogicApi extends RenderLayerDomainApi<ComponentLayer> {
+export class ComponentLayerLogicApi extends RenderLayerDomainApi<PlotComponentLayer> {
 
     get VisibleChannels() {
         return this.component.channelsLayer.labelsVisibleChannels!
@@ -18,7 +19,7 @@ export class ComponentLayerLogicApi extends RenderLayerDomainApi<ComponentLayer>
         labels: string[],
         eventMediator: EventMediator,
     ) {
-        const componentLayer = new ComponentLayer(
+        const componentLayer = new PlotComponentLayer(
             labels,
         )
 
