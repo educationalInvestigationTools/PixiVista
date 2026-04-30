@@ -7,8 +7,8 @@ export class PlotState {
         return this.viewPort
     }
 
-    constructor(viewPort: ViewPort) {
-        this.viewPort = viewPort
+    constructor() {
+        this.viewPort = new ViewPort(0, 10)
     }
 
     async changeViewPort(viewPort : ViewPort): Promise<void> {

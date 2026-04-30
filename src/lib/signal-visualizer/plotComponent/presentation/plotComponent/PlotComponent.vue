@@ -165,10 +165,9 @@ onMounted(async () => {
         }
     }
 
-    const viewPort = viewPortRef.value
     diContainer = new PlotComponentContainer();
-    await diContainer.init(htmlContainerRef.value, viewPort, props.signalSourcesManager, props.workerCallback)
-
+    await diContainer.init(htmlContainerRef.value, props.signalSourcesManager, props.workerCallback)
+    updateViewPort(viewPortRef.value.startSeconds, viewPortRef.value.lengthSeconds)
     bindResizeObserver(htmlContainerRef, diContainer.eventMediator)
     bindPerformanceMetrics(diContainer.eventMediator)
 
