@@ -216,7 +216,7 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
     <div class="plot__container">
         <SettingsComponent :choices="settingsChoices" @update:choice="updateSettingChoice">
         </SettingsComponent>
-        <AnnotationsComponent v-show="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
+        <AnnotationsComponent v-if="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
             @toggleObjectVisibility="toggleObjectVisibility">
         </AnnotationsComponent>
         <div ref="htmlContainerRef" class="canvas__container" tabindex="0" :style="{
@@ -229,7 +229,7 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
                 lengthSamples: viewPortRef.lengthSeconds,
             }" :viewPortLargestValueSamples=signalsLargestDurationSeconds @update:viewPort='updateViewPortFromSlider'>
         </SliderComponent>
-        <MetricsComponent :metrics="performanceMetricsRef" v-show="showMetricsPanel"></MetricsComponent>
+        <MetricsComponent :metrics="performanceMetricsRef" v-if="showMetricsPanel"></MetricsComponent>
     </div>
 
 </template>

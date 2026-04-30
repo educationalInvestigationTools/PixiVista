@@ -1,3 +1,4 @@
+import { DestroyCommand, DestroyCommandEventLabel } from '../../application/commands/destroyCommand'
 import { ResizeCommandEventLabel, type ResizeCommand } from '../../application/commands/resizeCommand'
 import type { EventMediator } from '../../utils/eventMediator'
 import type { LayoutDesign } from './layoutDesign'
@@ -13,6 +14,9 @@ export abstract class RenderLayerDomainApi<T extends RenderLayer<LayoutDesign>> 
         this.eventMediator.addHandler<ResizeCommand>(ResizeCommandEventLabel, async (command) =>
             this.component.updateSize(command.sizeData),
         )
+        this.eventMediator.addHandler<DestroyCommand>(DestroyCommandEventLabel, async (_command) => {
+            this.component.destroy()
+        })
         this.registerEvents()
     }
     abstract registerEvents(): void

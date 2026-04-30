@@ -33,5 +33,7 @@ export class MetricsComponentApi extends RenderLayerDomainApi<MetricsComponentLa
     updateCharts(metricsPointsData: MetricsPoints) {
         this.component.updateCharts(metricsPointsData)
     }
-    registerEvents(): void { }
+    registerEvents(): void {
+
+    }
 }

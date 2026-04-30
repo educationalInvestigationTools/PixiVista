@@ -28,7 +28,6 @@ export class MetricsContainer {
                 state.pushSample(sample)
             },
         )
-
         await this.metricsObserver.init()
     }
 }
