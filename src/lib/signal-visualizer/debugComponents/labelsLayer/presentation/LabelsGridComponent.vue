@@ -13,7 +13,7 @@ import {
     ChangeAllCellsTextCommand
 } from "@/lib/signal-visualizer/debugComponents/labelsLayer/application/commands/changeAllCellsTextCommand.ts";
 import { useResizeObserver } from '@/lib/signal-visualizer/presentation/utils/useResizeObserver';
-import { usePerformanceMetricsBridge } from '@/lib/signal-visualizer/presentation/utils/usePerformanceMetricsBridge';
+import { usePerformanceMetricsBridge } from '@/lib/signal-visualizer/metricsComponent/presentation/utils/usePerformanceMetricsBridge';
 
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null)

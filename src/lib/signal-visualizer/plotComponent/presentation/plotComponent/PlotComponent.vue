@@ -36,7 +36,7 @@ import {
 import {useResizeObserver} from "@/lib/signal-visualizer/presentation/utils/useResizeObserver.ts";
 import {
     usePerformanceMetricsBridge
-} from "@/lib/signal-visualizer/presentation/utils/usePerformanceMetricsBridge";
+} from "@/lib/signal-visualizer/metricsComponent/presentation/utils/usePerformanceMetricsBridge.ts";
 
 
 const props = defineProps<{
