@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/lib/signal-visualizer/index.ts"
+    ".": "./src/lib/index.ts"
   },
   "scripts": {
     "dev": "vite",

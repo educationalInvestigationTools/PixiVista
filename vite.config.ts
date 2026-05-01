@@ -12,7 +12,9 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
+            '@assets/' : fileURLToPath(new URL('./src/assets/', import.meta.url)),
+            '@': fileURLToPath(new URL('./src/lib/', import.meta.url))
+
         },
     },
 })
