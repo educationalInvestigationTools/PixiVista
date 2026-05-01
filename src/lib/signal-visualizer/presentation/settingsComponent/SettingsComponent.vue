@@ -1,26 +1,22 @@
 <script setup lang="ts">
-import {ref} from 'vue';
-import type {
-    AnySettingChoice,
-    AnySettingChoiceUpdate,
-    NumberSettingChoice
-} from '@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice.ts';
+import { ref } from 'vue';
 import settingsGearIcon from '@/assets/icons/settings-gear.svg';
 import chevronDownIcon from '@/assets/icons/chevron-down.svg';
 
 import DialElement from '../dialElement/DialElement.vue';
+import type { AnyChoice, AnyUpdateChoice, NumberSettingChoice } from '@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice';
 
 const props = defineProps<{
-    choices: AnySettingChoice[]
+    choices: AnyChoice[]
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:choice', update: AnySettingChoiceUpdate): void
+    (e: 'update:choice', update: AnyUpdateChoice): void
 }>()
 
 function updateBooleanChoice(choiceId: string, event: Event) {
     const target = event.target as HTMLInputElement
-    emit('update:choice', {id: choiceId, value: target.checked})
+    emit('update:choice', { id: choiceId, value: target.checked })
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -39,18 +35,15 @@ function getNumberChoicePercent(choice: NumberSettingChoice) {
 function getValueFromPercent(choice: NumberSettingChoice, percent: number) {
     const normalizedPercent = clamp(percent, 0, 100)
     const range = choice.max - choice.min
+    const step = (range / 100)
 
     if (range <= 0) {
         return choice.min
     }
 
     const rawValue = choice.min + (normalizedPercent / 100) * range
-    if (choice.step && choice.step > 0) {
-        const stepped = choice.min + Math.round((rawValue - choice.min) / choice.step) * choice.step
-        return clamp(stepped, choice.min, choice.max)
-    }
-
-    return clamp(rawValue, choice.min, choice.max)
+    const stepped = choice.min + Math.round((rawValue - choice.min) / step) * step
+    return clamp(stepped, choice.min, choice.max)
 }
 
 
@@ -62,7 +55,10 @@ function updateNumberChoice(choice: NumberSettingChoice, percent: number) {
 }
 
 function formatNumberChoiceValue(choice: NumberSettingChoice, percent: number) {
-    return choice.toString(getValueFromPercent(choice, percent))
+    const value = getValueFromPercent(choice, percent)
+    if (choice.format !== undefined) {
+        return choice.format(value)
+    } return value.toFixed(2)
 }
 
 const showSettings = ref(true)
@@ -72,8 +68,8 @@ const showSettings = ref(true)
 <template>
     <div class="settings">
         <button class="settings__launcher" type="button"
-                :title="showSettings ? 'Hide settings panel' : 'Show settings panel'"
-                @click="(e) => { showSettings = !showSettings }">
+            :title="showSettings ? 'Hide settings panel' : 'Show settings panel'"
+            @click="(e) => { showSettings = !showSettings }">
             <img class="settings__launcher--icon" :src="settingsGearIcon">
             <span class="settings__launcher--text">Settings</span>
             <img v-if="!showSettings" class="settings__launcher--chevron" :src="chevronDownIcon">
@@ -83,14 +79,13 @@ const showSettings = ref(true)
             <div v-for="choice in props.choices" :key="choice.id" class="settings__element">
                 <label class="settings__element--label">{{ choice.label }}</label>
 
-                <input v-if="typeof choice.value === 'boolean'" class="settings__checkbox"
-                       type="checkbox"
-                       :checked="choice.value" @change="updateBooleanChoice(choice.id, $event)">
+                <input v-if="typeof choice.value === 'boolean'" class="settings__checkbox" type="checkbox"
+                    :checked="choice.value" @change="updateBooleanChoice(choice.id, $event)">
 
                 <DialElement v-else-if="typeof choice.value === 'number'" class="settings__dial"
-                             :currentValuePercent="getNumberChoicePercent(choice as NumberSettingChoice)"
-                             :toStringFromPercent="(percent) => formatNumberChoiceValue(choice as NumberSettingChoice, percent)"
-                             @update:value="(percent) => updateNumberChoice(choice as NumberSettingChoice, percent)">
+                    :currentValuePercent="getNumberChoicePercent(choice as NumberSettingChoice)"
+                    :toStringFromPercent="(percent) => formatNumberChoiceValue(choice as NumberSettingChoice, percent)"
+                    @update:value="(percent) => updateNumberChoice(choice as NumberSettingChoice, percent)">
                 </DialElement>
             </div>
         </div>

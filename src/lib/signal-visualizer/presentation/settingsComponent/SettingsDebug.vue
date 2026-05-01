@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import {computed, ref} from 'vue';
-import type {AnySettingChoice} from './settingsChoice.ts';
 import SettingsComponent from './SettingsComponent.vue';
+import type { AnyChoice } from '@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice';
 
 const showMetricsPanel = ref(true)
 const showAnnotationsPanel = ref(true)
@@ -12,7 +12,7 @@ const heightPerChannelSettingId = 'height-per-channel'
 
 const heightValue = ref(100)
 
-const settingsChoices = computed<AnySettingChoice[]>(() => [
+const settingsChoices = computed<AnyChoice[]>(() => [
     {
         id: showMetricsSettingId,
         label: 'Metrics',
@@ -30,7 +30,7 @@ const settingsChoices = computed<AnySettingChoice[]>(() => [
         min: 60,
         max: 600,
         step: 10,
-        toString: (arg0: number) => arg0.toFixed(2) + 'px'
+        format: (arg0: number) => arg0.toFixed(2) + 'px'
     }])
 
 

@@ -11,10 +11,6 @@ import AnnotationsComponent, {
     type ObjectVisibility
 } from "@/lib/signal-visualizer/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue";
 import MetricsComponent from "../../../metricsComponent/presentation/MetricsComponent.vue";
-import type {
-    AnySettingChoice,
-    AnySettingChoiceUpdate
-} from "@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice.ts";
 import { fmtTime } from "../../../utils/utils.ts";
 import type {
     IntervalGroup
@@ -39,6 +35,7 @@ import {
 import { useWheelForZoom } from "./utils/useWheelForZoom.ts";
 import { useKeysForViewPort } from "./utils/useKeysForViewPort.ts";
 import { PlotComponentContainer } from "../../domain/plotComponentContainer.ts";
+import type { AnyChoice, AnyUpdateChoice } from "@/lib/signal-visualizer/presentation/settingsComponent/settingsChoice.ts";
 
 
 const props = defineProps<{
@@ -87,7 +84,7 @@ const showAnnotationsSettingId = 'show-annotations-panel'
 const heightPerChannelSettingId = 'height-per-channel'
 const channelsGroup = "Channels"
 
-const settingsChoices = computed<AnySettingChoice[]>(() => [
+const settingsChoices = computed<AnyChoice[]>(() => [
     {
         id: showMetricsSettingId,
         label: 'Metrics',
@@ -105,7 +102,7 @@ const settingsChoices = computed<AnySettingChoice[]>(() => [
         min: 60,
         max: 600,
         step: 10,
-        toString: (x) => x + " px"
+        format: (x) => x + " px"
     }
 ])
 
@@ -119,7 +116,7 @@ async function toggleObjectVisibility(objectVisibility: ObjectVisibility) {
     }
 }
 
-function updateSettingChoice(settingUpdate: AnySettingChoiceUpdate) {
+function updateSettingChoice(settingUpdate: AnyUpdateChoice) {
     if (settingUpdate.id === showMetricsSettingId) {
         showMetricsPanel.value = settingUpdate.value as boolean
     }

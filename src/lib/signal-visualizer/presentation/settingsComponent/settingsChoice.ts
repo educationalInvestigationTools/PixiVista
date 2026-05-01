@@ -1,19 +1,22 @@
-export type SettingChoice<T> = {
-    id: string
-    label: string
+export type Choice<T> = {
+    readonly id: string
+    readonly label: string
     value: T
+    format?: (arg0 : T) => string
 }
 
-export type BooleanSettingChoice = SettingChoice<boolean>
-export type NumberSettingChoice = SettingChoice<number> & {
+export type UpdateChoice<T> = {
+    readonly id: string
+    readonly value : T
+}
+
+export type NumberSettingChoice = Choice<number> & {
     min: number
     max: number
-    step?: number
-    toString: (arg0 : number) => string
 }
 
-export type AnySettingChoice = BooleanSettingChoice | NumberSettingChoice
+export type BooleanUpdate = UpdateChoice<boolean>
+export type NumberUpdate = UpdateChoice<number>
 
-export type UpdateFor<T> = T extends SettingChoice<infer V> ? { id: string; value: V } : never
-
-export type AnySettingChoiceUpdate = UpdateFor<AnySettingChoice>
+export type AnyChoice = Choice<boolean> | NumberSettingChoice
+export type AnyUpdateChoice = UpdateChoice<boolean> | UpdateChoice<number>
