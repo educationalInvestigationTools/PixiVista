@@ -145,12 +145,8 @@ onMounted(async () => {
         }
     }
 
-    diContainer = new PlotComponentContainer();
-    await diContainer.init(htmlContainerRef.value, props.signalSourcesManager, props.workerCallback)
-    updateViewPort(viewPortRef.value.startSeconds, viewPortRef.value.lengthSeconds)
-    bindResizeObserver(htmlContainerRef, diContainer.eventMediator)
-    bindPerformanceMetrics(diContainer.eventMediator)
-
+    diContainer = new PlotComponentContainer()
+    /*composables should go before the first await statment, Vue says*/
     useWheelForZoom(htmlContainerRef, (zoomFactor: number) => {
         const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
         updateViewPort(undefined, newLengthSeconds)
@@ -169,6 +165,12 @@ onMounted(async () => {
             const nextSeconds = currentSeconds + (left ? -1 : 1)
             updateViewPort(nextSeconds, undefined)
         })
+
+    await diContainer.init(htmlContainerRef.value, props.signalSourcesManager, props.workerCallback)
+    updateViewPort(viewPortRef.value.startSeconds, viewPortRef.value.lengthSeconds)
+    bindResizeObserver(htmlContainerRef, diContainer.eventMediator)
+    bindPerformanceMetrics(diContainer.eventMediator)
+
 })
 
 
