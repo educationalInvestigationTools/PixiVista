@@ -41,6 +41,10 @@ export class Envelope {
     private normalizeCoords(samples: Float32Array, minMaxValues: MinMaxValues): Float32Array {
         const n = samples.length
         const normalized = new Float32Array(n)
+        if (minMaxValues.max === minMaxValues.min) {
+            normalized.fill(0.5)
+            return normalized
+        }
         for (let i = 0; i < n; i++) {
             const sample = samples[i]!
             normalized[i] = (sample - minMaxValues.min) / (minMaxValues.max - minMaxValues.min)
