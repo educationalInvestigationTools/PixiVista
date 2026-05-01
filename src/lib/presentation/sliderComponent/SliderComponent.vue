@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import DialElement from "../dialElement/DialElement.vue";
-
+import DialElement from "@/presentation/dialElement/DialElement.vue";
 /*
 This is in samples to ensure it's abstract, and does not know about the unit of measure of the client, thus to interact with it, should receive data in terms of samples, and the data it outputs should be mapped from samples to what the client understands. It needs a function that maps the sample values to what the client needs to see on the component.
 */

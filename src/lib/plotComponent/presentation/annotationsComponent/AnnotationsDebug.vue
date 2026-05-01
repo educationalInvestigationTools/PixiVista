@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { ObjectAnnotationData } from '@/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue';
 import AnnotationsComponent from '@/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue';
+import type { ObjectAnnotationData } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
 import { ref, type Ref } from 'vue';
 
 const group1 = "N1"

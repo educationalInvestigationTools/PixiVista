@@ -1,18 +1,9 @@
 <script setup lang="ts">
 
-export type ObjectAnnotationData = {
-    label: string
-    group: string
-    visibility: boolean
-    color: string
-    shape: 'rectangle' | 'dashed-lines'
-}
+import rectangleIcon from '@assets/icons/rectangle.svg'
+import dashedLinesIcon from '@assets/icons/dashed-line.svg';
+import type { ObjectAnnotationData, ObjectVisibility } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
 
-export type ObjectVisibility = {
-    groupLabel: string,
-    label: string,
-    visibility: boolean
-}
 
 const props = defineProps<{
     objectsAnnotations: Record<string, Record<string, ObjectAnnotationData>> // {group : { objectLabel : object } }
@@ -30,8 +21,6 @@ function toggleShow(groupLabel: string, objectLabel: string) {
     })
 }
 
-import rectangleIcon from '@assets/icons/rectangle.svg'
-import dashedLinesIcon from '@assets/icons/dashed-line.svg';
 
 </script>
 
@@ -108,6 +97,7 @@ import dashedLinesIcon from '@assets/icons/dashed-line.svg';
 .annotation__item_icon--off {
     opacity: 0.35;
 }
+
 .annotation__item__label {
     cursor: pointer;
     font-size: 14px;

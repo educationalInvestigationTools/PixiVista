@@ -7,7 +7,6 @@ import type { SignalSourceManager } from '@/plotComponent/application/interfaces
 import type { IntervalGroup } from '@/plotComponent/application/types/highlightedInterval';
 import type { ViewPort } from '@/plotComponent/application/types/viewPort';
 import { PlotComponentContainer } from '@/plotComponent/domain/plotComponentContainer';
-import type { ObjectAnnotationData, ObjectVisibility } from '@/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue';
 import { useKeysForViewPort } from '@/plotComponent/presentation/plotComponent/utils/useKeysForViewPort';
 import { useWheelForZoom } from '@/plotComponent/presentation/plotComponent/utils/useWheelForZoom';
 import type { AnyChoice, AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
@@ -19,6 +18,7 @@ import SliderComponent from '@/presentation/sliderComponent/SliderComponent.vue'
 import SettingsComponent from '@/presentation/settingsComponent/SettingsComponent.vue';
 import AnnotationsComponent from '@/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue';
 import MetricsComponent from '@/metricsComponent/presentation/MetricsComponent.vue';
+import type { ObjectAnnotationData, ObjectVisibility } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
 
 
 const props = defineProps<{
