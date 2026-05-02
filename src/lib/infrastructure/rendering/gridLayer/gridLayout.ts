@@ -1,7 +1,7 @@
 import type { Point2D } from "@/core/types/point2D"
 import type { SizeData } from "@/core/types/sizeData"
 import { GridBaseLayout } from "@/infrastructure/rendering/gridLayer/gridBaseLayout"
-import type { Side } from "@/infrastructure/rendering/gridLayer/gridLayer"
+import type { Side } from "@/infrastructure/rendering/gridLayer/types"
 
 
 type GridLayoutDescription = {

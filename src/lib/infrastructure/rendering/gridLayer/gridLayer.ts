@@ -3,11 +3,11 @@ import { RenderLayer } from "@/core/rendering/renderLayer"
 import type { Point2D } from "@/core/types/point2D"
 import type { SizeData } from "@/core/types/sizeData"
 import { GridLayout } from "@/infrastructure/rendering/gridLayer/gridLayout"
+import { getOrientationGivenSide, type Side } from "@/infrastructure/rendering/gridLayer/types"
 import type { TextAlignments } from "@/infrastructure/rendering/labelLayer/types/types"
 import { LineLabelsLayer } from "@/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer"
 import type { LineLayerDescription } from "@/infrastructure/rendering/lineLabelsLayer/types/lineLayerDescription"
 
-export type Side = 'left' | 'right' | 'up' | 'down'
 
 export class GridLayer extends RenderLayer<GridLayout> {
     private lineLabels: Map<Side, LineLabelsLayer> = new Map()
@@ -24,8 +24,9 @@ export class GridLayer extends RenderLayer<GridLayout> {
         }
         this.lineLabels = new Map()
         for (const [side, _] of this.layoutDesign.gridLayoutDescription.sides) {
+            const orientation = getOrientationGivenSide(side)
             const divisions =
-                side === 'up' || side == 'down'
+                (orientation === 'vertical')
                     ? this.layoutDesign.verticalDivisions
                     : this.layoutDesign.horizontalDivisions
             const positions = []
@@ -34,7 +35,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
             }
             const description: LineLayerDescription = {
                 positionsNormalized: positions,
-                orientation: side === 'up' || side == 'down' ? 'horizontal' : 'vertical',
+                orientation: getOrientationGivenSide(side),
                 alignmentCallback: this.buildAlignmentCallback(side),
             }
             const child = new LineLabelsLayer(description)
@@ -147,8 +148,9 @@ export class GridLayer extends RenderLayer<GridLayout> {
         if (layer !== undefined) {
             const generator = this.layoutDesign.gridLayoutDescription.sides.get(side)
             if (generator !== undefined) {
+                const orientation = getOrientationGivenSide(side)
                 const divisions =
-                    side === 'up' || side == 'down'
+                    (orientation === 'vertical')
                         ? this.layoutDesign.verticalDivisions
                         : this.layoutDesign.horizontalDivisions
                 const positions = []
