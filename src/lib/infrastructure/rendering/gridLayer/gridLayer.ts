@@ -3,7 +3,7 @@ import { RenderLayer } from "@/core/rendering/renderLayer"
 import type { Point2D } from "@/core/types/point2D"
 import type { SizeData } from "@/core/types/sizeData"
 import { GridLayout } from "@/infrastructure/rendering/gridLayer/gridLayout"
-import { getOrientationGivenSide, type Side } from "@/infrastructure/rendering/gridLayer/types"
+import { getOrientationGivenSide, oppositeOrientation, type Side } from "@/infrastructure/rendering/gridLayer/types"
 import type { TextAlignments } from "@/infrastructure/rendering/labelLayer/types/types"
 import { LineLabelsLayer } from "@/infrastructure/rendering/lineLabelsLayer/lineLabelsLayer"
 import type { LineLayerDescription } from "@/infrastructure/rendering/lineLabelsLayer/types/lineLayerDescription"
@@ -35,7 +35,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
             }
             const description: LineLayerDescription = {
                 positionsNormalized: positions,
-                orientation: getOrientationGivenSide(side),
+                orientation: oppositeOrientation(orientation),
                 alignmentCallback: this.buildAlignmentCallback(side),
             }
             const child = new LineLabelsLayer(description)
