@@ -8,6 +8,7 @@ import type { IntervalGroup } from '@/plotComponent/application/types/highlighte
 import type { ViewPort } from '@/plotComponent/application/types/viewPort';
 import { PlotComponentContainer } from '@/plotComponent/domain/plotComponentContainer';
 import { useKeysForViewPort } from '@/plotComponent/presentation/plotComponent/utils/useKeysForViewPort';
+import { usePinchForZoom } from '@/plotComponent/presentation/plotComponent/utils/usePinchForZoom';
 import { useWheelForZoom } from '@/plotComponent/presentation/plotComponent/utils/useWheelForZoom';
 import type { AnyChoice, AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
 
@@ -153,6 +154,11 @@ onMounted(async () => {
         updateViewPort(undefined, newLengthSeconds)
     })
 
+    usePinchForZoom(htmlContainerRef, (zoomFactor: number) => {
+        const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
+        updateViewPort(undefined, newLengthSeconds)
+    })
+
 
     useKeysForViewPort(
         htmlContainerRef,
@@ -220,5 +226,9 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
 .plot__container {
     display: flex;
     flex-direction: column;
+}
+
+.canvas__container {
+    touch-action: none;
 }
 </style>
