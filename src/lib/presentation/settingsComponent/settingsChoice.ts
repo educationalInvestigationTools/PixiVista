@@ -15,8 +15,13 @@ export type NumberSettingChoice = Choice<number> & {
     max: number
 }
 
+export type StringSettingChoice = Choice<string> & {
+    options: string[]
+}
+
 export type BooleanUpdate = UpdateChoice<boolean>
 export type NumberUpdate = UpdateChoice<number>
+export type StringUpdate = UpdateChoice<string>
 
-export type AnyChoice = Choice<boolean> | NumberSettingChoice
-export type AnyUpdateChoice = UpdateChoice<boolean> | UpdateChoice<number>
+export type AnyChoice = Choice<boolean> | NumberSettingChoice | StringSettingChoice
+export type AnyUpdateChoice = UpdateChoice<boolean> | UpdateChoice<number> | UpdateChoice<string>
