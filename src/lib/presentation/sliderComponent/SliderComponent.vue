@@ -1,19 +1,12 @@
 <script setup lang="ts">
-import {computed, ref} from "vue";
-import DialElement from "@/presentation/dialElement/DialElement.vue";
-/*
-This is in samples to ensure it's abstract, and does not know about the unit of measure of the client, thus to interact with it, should receive data in terms of samples, and the data it outputs should be mapped from samples to what the client understands. It needs a function that maps the sample values to what the client needs to see on the component.
-*/
+import HeaderComponent from "@/presentation/sliderComponent/HeaderComponent.vue";
+import type { CurrentViewPortSamples } from "@/presentation/sliderComponent/types";
+import { computed, ref } from "vue";
 
-export type CurrentViewPortSamples = {
-    currentSamplePosition: number,
-    lengthSamples: number,
-}
 
 const props = defineProps<{
-    leftSliderPositionPercent: number, // between 0 and 100
-    rightSliderPositionPercent: number, // between 0 and 100
-    viewPortLargestValueSamples: number,
+    viewPortUpperBound: number,
+    viewPortLowerBound: number,
     currentViewPort: CurrentViewPortSamples,
     sampleToString: ((arg0: number) => string),
     lengthToString: ((arg0: number) => string)
@@ -34,44 +27,27 @@ const viewPortCurrentSample = computed({
     }
 })
 
-const windowLengthSamples = computed({
-    get: () => props.currentViewPort.lengthSamples,
-    set: (v) => {
-        emit('update:viewPort', {
-            currentSamplePosition: viewPortCurrentSample.value,
-            lengthSamples: v
-        })
-    }
-})
+const windowLengthSamples = computed(() => props.currentViewPort.lengthSamples)
 
 const sliderPosition = computed(() => {
-    const maxStart = Math.max(0, props.viewPortLargestValueSamples - windowLengthSamples.value)
+    const maxStart = Math.max(0, props.viewPortUpperBound - windowLengthSamples.value)
     if (maxStart === 0) return 0
 
     const boundedStart = Math.max(0, Math.min(maxStart, viewPortCurrentSample.value))
     return (boundedStart / maxStart) * 100
 })
 
-const maxWindowLengthForDial = computed(() => {
-    const available = Math.floor(props.viewPortLargestValueSamples - viewPortCurrentSample.value)
-    return available
-})
+const currentSliderRef = ref<HTMLElement | null>(null)
 
-const windowLengthPercent = computed(() => { return (props.currentViewPort.lengthSamples / props.viewPortLargestValueSamples) * 100 })
-
-const containerRef = ref<HTMLElement | null>(null)
-
-
-
-function setSliderPositionFromPointer(pointerX: number) {
-    const el = containerRef.value
+function setCurrentPositionFromPointer(pointerX: number) {
+    const el = currentSliderRef.value
     if (!el) return
 
     const rect = el.getBoundingClientRect()
     if (rect.width === 0) return
 
     const ratio = Math.max(0, Math.min(1, (pointerX - rect.left) / rect.width))
-    const maxStart = Math.max(0, props.viewPortLargestValueSamples - windowLengthSamples.value)
+    const maxStart = Math.max(0, props.viewPortUpperBound - windowLengthSamples.value)
     const nextStart = Math.round(ratio * maxStart)
 
     if (nextStart !== viewPortCurrentSample.value) {
@@ -79,15 +55,15 @@ function setSliderPositionFromPointer(pointerX: number) {
     }
 }
 
-function startSliderInteraction(e: PointerEvent) {
+function startPointerDrag(e: PointerEvent, onPointerMove: (pointerX: number) => void) {
     (e.currentTarget as HTMLElement | null)?.focus()
     e.preventDefault()
-    setSliderPositionFromPointer(e.clientX)
+    onPointerMove(e.clientX)
     document.body.style.userSelect = "none"
 
     function onMove(event: PointerEvent) {
         event.preventDefault()
-        setSliderPositionFromPointer(event.clientX)
+        onPointerMove(event.clientX)
     }
 
     function onUp() {
@@ -102,40 +78,8 @@ function startSliderInteraction(e: PointerEvent) {
     window.addEventListener("pointercancel", onUp)
 }
 
-function handleKeyDown(e: KeyboardEvent) {
-    const key = e.key
-    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)) return
-    e.preventDefault()
-
-    if (key === 'ArrowLeft') {
-        const newVal = Math.max(0, viewPortCurrentSample.value - 1)
-        if (newVal !== viewPortCurrentSample.value) viewPortCurrentSample.value = newVal
-    }
-
-    if (key === 'ArrowRight') {
-        const maxStart = props.viewPortLargestValueSamples - windowLengthSamples.value
-        const newVal = Math.min(maxStart, viewPortCurrentSample.value + 1)
-        if (newVal !== viewPortCurrentSample.value) viewPortCurrentSample.value = newVal
-    }
-
-    if (key === 'ArrowUp') {
-        const maxLength = maxWindowLengthForDial.value
-        const newLen = Math.min(maxLength, windowLengthSamples.value + 1)
-        if (newLen !== windowLengthSamples.value) windowLengthSamples.value = newLen
-    }
-
-    if (key === 'ArrowDown') {
-        const newLen = Math.max(1, windowLengthSamples.value - 1)
-        if (newLen !== windowLengthSamples.value) windowLengthSamples.value = newLen
-    }
-}
-
-function fromPercentToSamples(percent: number) {
-    return percent / 100 * props.viewPortLargestValueSamples
-}
-
-function updateWindowLength(percent: number) {
-    windowLengthSamples.value = fromPercentToSamples(percent)
+function startCurrentPositionInteraction(e: PointerEvent) {
+    startPointerDrag(e, setCurrentPositionFromPointer)
 }
 
 const thumbWidth = 5
@@ -144,98 +88,124 @@ const thumbPercent = (100 - thumbWidth) / 100
 </script>
 <template>
     <div class="slider">
-        <div class="slider__row slider__row--info">
-            <span class="slider__info slider__text">
-                Current position: {{ props.sampleToString(viewPortCurrentSample) }}
-            </span>
-            <DialElement class="slider__info slider__dial" :current-value-percent="windowLengthPercent"
-                :to-string-from-percent="(x) => 'Window Length is ' + props.lengthToString(fromPercentToSamples(x))"
-                @update:value="updateWindowLength"> </DialElement>
-        </div>
+        <div class="slider__rows">
+            <div class="slider__row slider__row--info">
+                <HeaderComponent :headerText="'Start:'" :headerValue="props.sampleToString(props.viewPortLowerBound)">
+                </HeaderComponent>
 
-        <div class="slider__row slider__row--segment">
-            <div class="slider__segment slider__segment--left"
-                :style="{ flex: '0 0 ' + leftSliderPositionPercent + '%' }">
-                <span class="slider__text">
-                    {{ props.sampleToString(0) }}
-                </span>
+                <HeaderComponent :headerText="'End:'" :headerValue="props.sampleToString(props.viewPortUpperBound)">
+                </HeaderComponent>
+
+                <HeaderComponent :headerText="'Window Length:'" :headerValue="props.lengthToString(windowLengthSamples)">
+                </HeaderComponent>
+
+                <HeaderComponent :headerText="'Position:'" :headerValue="props.sampleToString(viewPortCurrentSample)">
+                </HeaderComponent>
             </div>
-            <div class="slider__segment slider__segment--middle" ref="containerRef"
-                :style="{ flex: '0 0 ' + (rightSliderPositionPercent - leftSliderPositionPercent) + '%' }"
-                @keydown="handleKeyDown" @pointerdown="startSliderInteraction" tabindex="0">
 
-                <div class="slider__thumb"
-                    :style="{ marginLeft: sliderPosition * thumbPercent + '%', width: thumbWidth + '%' }">
+            <div class="slider__row slider__row--slider">
+                <span class="slider__row-label">Current position:</span>
+                <div class="slider__track-area" ref="currentSliderRef" @pointerdown="startCurrentPositionInteraction"
+                    tabindex="0">
+                    <div class="slider__track"></div>
+                    <div class="slider__thumb"
+                        :style="{ marginLeft: sliderPosition * thumbPercent + '%', width: thumbWidth + '%' }">
+                    </div>
                 </div>
             </div>
-            <div class="slider__segment slider__segment--right"
-                :style="{ flex: '0 0 ' + (100 - rightSliderPositionPercent) + '%' }">
-                <span class="slider__text">
-                    {{ props.sampleToString(props.viewPortLargestValueSamples) }}
-                </span>
-            </div>
+
         </div>
     </div>
 </template>
+
 <style scoped>
 .slider {
     display: flex;
     flex-direction: column;
-    border: 2px solid orange;
+    gap: 4px;
+    padding: 4px;
+    color: #ffffff;
+    background: #000000;
+    border: 1px solid #2a2a2a;
+}
+
+.slider__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .slider__row {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    background-color: black;
-        color: white;
+    padding: 8px 10px;
+    background: #0b0b0b;
+    border: 1px solid #2a2a2a;
+    min-width: 0;
 }
 
 .slider__row--info {
-    gap: 10px;
-    padding: 10px;
-    flex-wrap: wrap;
-}
-
-.slider__segment {
     box-sizing: border-box;
-    border: 1px solid orange;
-    border-radius: 5px;
-}
-
-.slider__info {
-    border: 1px solid orange;
-    border-radius: 5px;
-}
-
-.slider__row--segment {
-    justify-content: center;
-    align-items: stretch;
-}
-
-
-.slider__segment--right {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 6px 4px;
+    justify-content: space-between;
 }
 
-.slider__segment--left {
+.slider__row--slider {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.slider__row-label {
+    font-size: clamp(12px, 1.5vw, 14px);
+    color: #9a9a9a;
+    text-transform: uppercase;
+}
+
+.slider__track-area {
+    position: relative;
+    display: flex;
     align-items: center;
+    height: 40px;
+    background: #0f0f0f;
+    border: 1px solid #2a2a2a;
+    cursor: ew-resize;
+}
+
+.slider__track-area:focus-visible {
+    outline: 1px solid #ffffff;
+    outline-offset: 1px;
+}
+
+.slider__track {
+    position: absolute;
+    inset: 8px 10px;
+    border: 1px solid #2a2a2a;
+    background: repeating-linear-gradient(90deg,
+            #1e1e1e,
+            #1e1e1e 1px,
+            #0b0b0b 1px,
+            #0b0b0b 12px);
+    pointer-events: none;
 }
 
 .slider__thumb {
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background-color: #0044ffcf;
+    position: relative;
+    height: 18px;
+    border-radius: 2px;
+    background: #ffffff;
+    border: 1px solid #2a2a2a;
 }
 
-.slider__text {
-    overflow-wrap: anywhere;
-    text-align: center;
+.slider__thumb::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -6px;
+    width: 2px;
+    height: 30px;
+    background: #ffffff;
+    transform: translateX(-50%);
 }
 </style>

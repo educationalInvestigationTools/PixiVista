@@ -10,7 +10,7 @@ import { PlotComponentContainer } from '@/plotComponent/domain/plotComponentCont
 import { useKeysForViewPort } from '@/plotComponent/presentation/plotComponent/utils/useKeysForViewPort';
 import { useWheelForZoom } from '@/plotComponent/presentation/plotComponent/utils/useWheelForZoom';
 import type { AnyChoice, AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
-import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/SliderComponent.vue';
+
 import { useResizeObserver } from '@/presentation/utils/useResizeObserver';
 import { fmtTime } from '@/utils/utils';
 import { ref, computed, onMounted, onBeforeUnmount, type Ref } from 'vue';
@@ -19,6 +19,7 @@ import SettingsComponent from '@/presentation/settingsComponent/SettingsComponen
 import AnnotationsComponent from '@/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue';
 import MetricsComponent from '@/metricsComponent/presentation/MetricsComponent.vue';
 import type { ObjectAnnotationData, ObjectVisibility } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
+import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/types';
 
 
 const props = defineProps<{
@@ -204,11 +205,11 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
             height: heightPerChannel * (visibleChannels + 1) + 'px'
         }">
         </div>
-        <SliderComponent :sampleToString="(x) => fmtTime(x, true)" :lengthToString="(x) => fmtTime(x, false)"
-            :leftSliderPositionPercent="5" :rightSliderPositionPercent="95" :currentViewPort="{
+        <SliderComponent :viewPortLowerBound="0" :sampleToString="(x) => fmtTime(x, true)" :lengthToString="(x) => fmtTime(x, false)"
+            :currentViewPort="{
                 currentSamplePosition: viewPortRef.startSeconds,
                 lengthSamples: viewPortRef.lengthSeconds,
-            }" :viewPortLargestValueSamples=signalsLargestDurationSeconds @update:viewPort='updateViewPortFromSlider'>
+            }" :viewPortUpperBound=signalsLargestDurationSeconds @update:viewPort='updateViewPortFromSlider'>
         </SliderComponent>
         <MetricsComponent :metrics="performanceMetricsRef" v-if="showMetricsPanel"></MetricsComponent>
     </div>

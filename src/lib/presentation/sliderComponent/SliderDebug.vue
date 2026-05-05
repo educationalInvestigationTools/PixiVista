@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
-import SliderComponent, { type CurrentViewPortSamples } from '@/presentation/sliderComponent/SliderComponent.vue'
+import SliderComponent from '@/presentation/sliderComponent/SliderComponent.vue'
+import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/types';
 
 const viewportRef: Ref<CurrentViewPortSamples> = ref({
     currentSamplePosition: 0,
@@ -10,8 +11,8 @@ const viewportRef: Ref<CurrentViewPortSamples> = ref({
 </script>
 
 <template>
-    <SliderComponent :left-slider-position-percent="10" :right-slider-position-percent="80" :currentViewPort="viewportRef"
-:view-port-largest-value-samples="1000" :sample-to-string="(x) => x.toFixed(2)"
+    <SliderComponent :currentViewPort="viewportRef" :viewPortUpperBound="1000" :viewPortLowerBound="0"
+        :sample-to-string="(x) => x.toFixed(2)"
         :length-to-string="(x) => x.toFixed(2)"
         @update:viewPort="(viewport) => viewportRef = viewport"></SliderComponent>
 </template>
