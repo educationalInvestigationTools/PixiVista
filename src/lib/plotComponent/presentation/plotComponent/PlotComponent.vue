@@ -19,7 +19,11 @@ import SliderComponent from '@/presentation/sliderComponent/SliderComponent.vue'
 import SettingsComponent from '@/presentation/settingsComponent/SettingsComponent.vue';
 import AnnotationsComponent from '@/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue';
 import MetricsComponent from '@/metricsComponent/presentation/MetricsComponent.vue';
-import type { ObjectAnnotationData, ObjectVisibility } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
+import type {
+    AnnotationNode,
+    AnnotationVisibilityChange,
+    AnnotationsTree,
+} from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
 import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/types';
 
 
@@ -29,20 +33,19 @@ const props = defineProps<{
     annotations: Record<string, IntervalGroup>
 }>()
 
-const objectsAnnotationsData: Ref<Record<string, Record<string, ObjectAnnotationData>>> = ref({})
+const annotationsTree: Ref<AnnotationsTree> = ref([])
 
 
 const heightPerChannel = ref(200)
 
 const visibleChannels = computed(() => {
-    let visible = 0
-    const channels = objectsAnnotationsData.value[channelsGroup]!
-    for (const label in channels) {
-        if (channels[label]!.visibility) {
-            visible++
-        }
+    const channelsNode = findNodeById(annotationsTree.value, channelsRootId)
+    if (!channelsNode?.children?.length) {
+        return 0
     }
-    return visible
+    return channelsNode.children.reduce((count, node) => {
+        return count + (node.state.visibility ? 1 : 0)
+    }, 0)
 })
 
 
@@ -67,7 +70,9 @@ const showAnnotationsPanel = ref(true)
 const showMetricsSettingId = 'show-metrics-panel'
 const showAnnotationsSettingId = 'show-annotations-panel'
 const heightPerChannelSettingId = 'height-per-channel'
-const channelsGroup = "Channels"
+const channelsRootId = 'channels'
+const channelsGroupLabel = 'Channels'
+const channelIdPrefix = 'channel:'
 
 const settingsChoices = computed<AnyChoice[]>(() => [
     {
@@ -91,14 +96,21 @@ const settingsChoices = computed<AnyChoice[]>(() => [
     }
 ])
 
-async function toggleObjectVisibility(objectVisibility: ObjectVisibility) {
-    const groupLabel = objectVisibility.groupLabel
-    const label = objectVisibility.label
-    const visibility = objectVisibility.visibility
-    objectsAnnotationsData.value[groupLabel]![label]!.visibility = visibility
-    if (groupLabel === channelsGroup) {
-        await diContainer?.eventMediator.publish(new ChangeChannelVisibilityCommand(label, visibility))
+function updateAnnotations(nextAnnotations: AnnotationsTree) {
+    annotationsTree.value = nextAnnotations
+}
+
+async function handleVisibilityChange(change: AnnotationVisibilityChange) {
+    const channelIds = change.ids.filter((id) => id.startsWith(channelIdPrefix))
+    if (channelIds.length === 0) {
+        return
     }
+    await Promise.all(
+        channelIds.map((id) => {
+            const channelLabel = id.slice(channelIdPrefix.length)
+            return diContainer?.eventMediator.publish(new ChangeChannelVisibilityCommand(channelLabel, change.visibility))
+        }),
+    )
 }
 
 function updateSettingChoice(settingUpdate: AnyUpdateChoice) {
@@ -119,33 +131,7 @@ onMounted(async () => {
     if (!htmlContainerRef.value) {
         return;
     }
-    objectsAnnotationsData.value[channelsGroup] = {}
-    const allSignalsBuildData = props.signalSourcesManager.allSignalsBuildData
-    for (let i = 0; i < allSignalsBuildData.length; i++) {
-        const signal = allSignalsBuildData[i]!
-        objectsAnnotationsData.value[channelsGroup][signal.label] = {
-            label: signal.label,
-            group: channelsGroup,
-            visibility: true,
-            shape: 'rectangle',
-            color: 'red'
-        }
-    }
-
-    for (const groupLabel in props.annotations) {
-        const intervalGroup = props.annotations[groupLabel]!
-        objectsAnnotationsData.value[groupLabel] = {}
-        for (let i = 0; i < intervalGroup.intervals.length; i++) {
-            const interval = intervalGroup.intervals[i]!
-            objectsAnnotationsData.value[groupLabel]![interval.label]! = {
-                label: interval.label,
-                group: groupLabel,
-                visibility: true,
-                shape: 'dashed-lines',
-                color: interval.drawingColor,
-            }
-        }
-    }
+    annotationsTree.value = buildAnnotationsTree()
 
     diContainer = new PlotComponentContainer()
     /*composables should go before the first await statment, Vue says*/
@@ -180,6 +166,73 @@ onMounted(async () => {
 
 })
 
+function buildAnnotationsTree(): AnnotationsTree {
+    const channelNodes: AnnotationNode[] = props.signalSourcesManager.allSignalsBuildData.map((signal) => ({
+        id: channelIdPrefix + signal.label,
+        label: signal.label,
+        style: {
+            color: '#ef4444',
+            drawingStyle: 'borders',
+            shape: 'rectangle',
+        },
+        state: { visibility: true },
+    }))
+
+    const channelsRoot: AnnotationNode = {
+        id: channelsRootId,
+        label: channelsGroupLabel,
+        style: {
+            color: '#334155',
+            drawingStyle: 'borders',
+            shape: 'rectangle',
+        },
+        state: { visibility: true },
+        children: channelNodes,
+    }
+
+    const intervalGroupNodes: AnnotationNode[] = []
+    for (const groupLabel in props.annotations) {
+        const intervalGroup = props.annotations[groupLabel]!
+        intervalGroupNodes.push({
+            id: `interval-group:${groupLabel}`,
+            label: groupLabel,
+            style: {
+                color: '#475569',
+                drawingStyle: 'borders',
+                shape: 'dashed-lines',
+            },
+            state: { visibility: true },
+            children: intervalGroup.intervals.map((interval) => ({
+                id: `interval:${groupLabel}:${interval.label}`,
+                label: interval.label,
+                style: {
+                    color: interval.drawingColor,
+                    drawingStyle: interval.drawingStyle,
+                    shape: 'dashed-lines',
+                },
+                state: { visibility: true },
+            })),
+        })
+    }
+
+    return [channelsRoot, ...intervalGroupNodes]
+}
+
+function findNodeById(nodes: AnnotationNode[], id: string): AnnotationNode | null {
+    for (const node of nodes) {
+        if (node.id === id) {
+            return node
+        }
+        if (node.children?.length) {
+            const match = findNodeById(node.children, id)
+            if (match) {
+                return match
+            }
+        }
+    }
+    return null
+}
+
 
 onBeforeUnmount(async () => {
     await diContainer?.eventMediator.publish(new DestroyCommand())
@@ -204,8 +257,8 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
     <div class="plot__container">
         <SettingsComponent :choices="settingsChoices" @update:choice="updateSettingChoice">
         </SettingsComponent>
-        <AnnotationsComponent v-if="showAnnotationsPanel" :objectsAnnotations="objectsAnnotationsData"
-            @toggleObjectVisibility="toggleObjectVisibility">
+        <AnnotationsComponent v-if="showAnnotationsPanel" :annotations="annotationsTree"
+            @update:annotations="updateAnnotations" @change:visibility="handleVisibilityChange">
         </AnnotationsComponent>
         <div ref="htmlContainerRef" class="canvas__container" tabindex="0" :style="{
             height: heightPerChannel * (visibleChannels + 1) + 'px'
