@@ -162,6 +162,7 @@ function normalizeColor(color: string) {
     padding: 0;
     font-size: clamp(12px, 1.4vw, 14px);
     line-height: 18px;
+    font-family: var(--ui-font);
 }
 
 .annotation-node--off {
@@ -173,8 +174,8 @@ function normalizeColor(color: string) {
 }
 
 .annotation-node__tree {
-    color: #9a9a9a;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: var(--ui-text-muted);
+    font-family: var(--ui-font-mono);
     font-size: 12px;
     white-space: pre;
     margin-right: 2px;
@@ -203,7 +204,7 @@ function normalizeColor(color: string) {
     width: 14px;
     height: 14px;
     transition: transform 0.15s ease;
-    filter: brightness(0) invert(1);
+    filter: var(--ui-icon-filter);
 }
 
 .annotation-node__collapse-icon--collapsed {
@@ -215,7 +216,7 @@ function normalizeColor(color: string) {
     width: 18px;
     height: 18px;
     border-radius: 3px;
-    border: 1px solid #2a2a2a;
+    border: 1px solid var(--ui-panel-border);
     padding: 0;
     background: transparent;
     cursor: pointer;
@@ -248,7 +249,7 @@ function normalizeColor(color: string) {
 .annotation-node__shape {
     width: 14px;
     height: 14px;
-    filter: brightness(0) invert(1);
+    filter: var(--ui-icon-filter);
 }
 
 .annotation-node__shape-menu {
@@ -259,8 +260,8 @@ function normalizeColor(color: string) {
     flex-direction: column;
     gap: 4px;
     padding: 6px;
-    background: #0b0b0b;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-panel-row-bg);
+    border: 1px solid var(--ui-panel-border);
     z-index: 2;
     min-width: 120px;
 }
@@ -272,26 +273,26 @@ function normalizeColor(color: string) {
     padding: 4px 6px;
     border: 1px solid transparent;
     background: transparent;
-    color: #ffffff;
+    color: var(--ui-text-primary);
     cursor: pointer;
     text-align: left;
 }
 
 .annotation-node__shape-option:hover {
-    border-color: #2a2a2a;
-    background: #101010;
+    border-color: var(--ui-panel-border);
+    background: var(--ui-hover-bg);
 }
 
 .annotation-node__shape-option-icon {
     width: 14px;
     height: 14px;
-    filter: brightness(0) invert(1);
+    filter: var(--ui-icon-filter);
 }
 
 .annotation-node__label {
     flex: 1;
     text-align: left;
-    color: #ffffff;
+    color: var(--ui-text-primary);
     font-size: inherit;
     word-break: break-word;
     font-family: inherit;
@@ -306,7 +307,7 @@ function normalizeColor(color: string) {
     padding: 0;
     border: none;
     background: transparent;
-    color: #9a9a9a;
+    color: var(--ui-text-muted);
     cursor: pointer;
 }
 

@@ -124,9 +124,10 @@ const thumbPercent = (100 - thumbWidth) / 100
     flex-direction: column;
     gap: 4px;
     padding: 4px;
-    color: #ffffff;
-    background: #000000;
-    border: 1px solid #2a2a2a;
+    color: var(--ui-text-primary);
+    background: var(--ui-panel-bg);
+    border: 1px solid var(--ui-panel-border);
+    font-family: var(--ui-font);
 }
 
 .slider__rows {
@@ -137,8 +138,8 @@ const thumbPercent = (100 - thumbWidth) / 100
 
 .slider__row {
     padding: 8px 10px;
-    background: #0b0b0b;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-panel-row-bg);
+    border: 1px solid var(--ui-panel-border);
     min-width: 0;
 }
 
@@ -159,7 +160,7 @@ const thumbPercent = (100 - thumbWidth) / 100
 
 .slider__row-label {
     font-size: clamp(12px, 1.5vw, 14px);
-    color: #9a9a9a;
+    color: var(--ui-text-muted);
     text-transform: uppercase;
 }
 
@@ -168,25 +169,25 @@ const thumbPercent = (100 - thumbWidth) / 100
     display: flex;
     align-items: center;
     height: 40px;
-    background: #0f0f0f;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-panel-surface);
+    border: 1px solid var(--ui-panel-border);
     cursor: ew-resize;
 }
 
 .slider__track-area:focus-visible {
-    outline: 1px solid #ffffff;
+    outline: 1px solid var(--ui-focus-color);
     outline-offset: 1px;
 }
 
 .slider__track {
     position: absolute;
     inset: 8px 10px;
-    border: 1px solid #2a2a2a;
+        border: 1px solid var(--ui-panel-border);
     background: repeating-linear-gradient(90deg,
-            #1e1e1e,
-            #1e1e1e 1px,
-            #0b0b0b 1px,
-            #0b0b0b 12px);
+            var(--ui-track-grid-dark),
+            var(--ui-track-grid-dark) 1px,
+            var(--ui-track-grid-light) 1px,
+            var(--ui-track-grid-light) 12px);
     pointer-events: none;
 }
 
@@ -194,8 +195,8 @@ const thumbPercent = (100 - thumbWidth) / 100
     position: relative;
     height: 18px;
     border-radius: 2px;
-    background: #ffffff;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-text-primary);
+    border: 1px solid var(--ui-panel-border);
 }
 
 .slider__thumb::after {
@@ -205,7 +206,7 @@ const thumbPercent = (100 - thumbWidth) / 100
     top: -6px;
     width: 2px;
     height: 30px;
-    background: #ffffff;
+    background: var(--ui-text-primary);
     transform: translateX(-50%);
 }
 </style>

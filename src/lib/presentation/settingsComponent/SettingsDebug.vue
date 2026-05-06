@@ -10,6 +10,7 @@ const showGridLines = ref(true)
 const showTimeMarkers = ref(false)
 const enableSmoothing = ref(false)
 const lockYAxis = ref(false)
+const isLightTheme = ref(getInitialTheme())
 
 const scaleMode = ref('Auto')
 const timeFormat = ref('Samples')
@@ -28,6 +29,7 @@ const showGridLinesSettingId = 'show-grid-lines'
 const showTimeMarkersSettingId = 'show-time-markers'
 const enableSmoothingSettingId = 'enable-smoothing'
 const lockYAxisSettingId = 'lock-y-axis'
+const themeSettingId = 'theme-light'
 
 const scaleModeSettingId = 'scale-mode'
 const timeFormatSettingId = 'time-format'
@@ -47,6 +49,7 @@ const booleanSettingById: Record<string, { value: boolean }> = {
     [showTimeMarkersSettingId]: showTimeMarkers,
     [enableSmoothingSettingId]: enableSmoothing,
     [lockYAxisSettingId]: lockYAxis,
+    [themeSettingId]: isLightTheme,
 }
 
 const stringSettingById: Record<string, { value: string }> = {
@@ -68,6 +71,9 @@ function applyUpdate(update: AnyUpdateChoice) {
     const booleanTarget = booleanSettingById[update.id]
     if (booleanTarget !== undefined) {
         booleanTarget.value = update.value as boolean
+        if (update.id === themeSettingId) {
+            applyTheme(update.value as boolean)
+        }
         return
     }
 
@@ -113,6 +119,11 @@ const settingsChoices = computed<AnyChoice[]>(() => [
         id: lockYAxisSettingId,
         label: 'Lock Y axis',
         value: lockYAxis.value,
+    },
+    {
+        id: themeSettingId,
+        label: 'Light theme',
+        value: isLightTheme.value,
     },
     {
         id: scaleModeSettingId,
@@ -181,6 +192,24 @@ const settingsChoices = computed<AnyChoice[]>(() => [
         format: (value: number) => value.toFixed(2) + 'x'
     },
 ])
+
+function getInitialTheme() {
+    if (typeof document === 'undefined') {
+        return false
+    }
+    return document.documentElement.getAttribute('data-theme') === 'light'
+}
+
+function applyTheme(isLight: boolean) {
+    if (typeof document === 'undefined') {
+        return
+    }
+    if (isLight) {
+        document.documentElement.setAttribute('data-theme', 'light')
+    } else {
+        document.documentElement.removeAttribute('data-theme')
+    }
+}
 
 
 </script>

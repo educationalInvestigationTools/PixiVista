@@ -217,9 +217,10 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
     flex-direction: column;
     gap: 4px;
     padding: 4px;
-    background: #000000;
-    border: 1px solid #2a2a2a;
-    color: #ffffff;
+    background: var(--ui-panel-bg);
+    border: 1px solid var(--ui-panel-border);
+    color: var(--ui-text-primary);
+    font-family: var(--ui-font);
 }
 
 .annotations__header {
@@ -228,8 +229,8 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
     justify-content: space-between;
     gap: 12px;
     padding: 8px 10px;
-    border: 1px solid #2a2a2a;
-    background: #0b0b0b;
+    border: 1px solid var(--ui-panel-border);
+    background: var(--ui-panel-row-bg);
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: clamp(12px, 1.5vw, 14px);
@@ -237,7 +238,7 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
 }
 
 .annotations__title {
-    color: #9a9a9a;
+    color: var(--ui-text-muted);
 }
 
 .annotations__panel {
@@ -245,8 +246,8 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
     flex-direction: row;
     gap: 10px;
     padding: 6px;
-    background: #0b0b0b;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-panel-row-bg);
+    border: 1px solid var(--ui-panel-border);
     height: auto;
     max-height: 240px;
     overflow: auto;
@@ -261,7 +262,7 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
 }
 
 .annotations__empty {
-    color: #9a9a9a;
+    color: var(--ui-text-muted);
     font-size: 13px;
 }
 </style>

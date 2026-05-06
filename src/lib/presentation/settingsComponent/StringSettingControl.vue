@@ -84,16 +84,17 @@ onBeforeUnmount(() => {
     justify-content: space-between;
     gap: 12px;
     padding: 6px 10px;
-    background: #0b0b0b;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-panel-row-bg);
+    border: 1px solid var(--ui-panel-border);
     box-sizing: border-box;
     height: 54px;
     width: max-content;
+    font-family: var(--ui-font);
 }
 
 .setting-label {
     font-size: clamp(12px, 1.5vw, 14px);
-    color: #9a9a9a;
+    color: var(--ui-text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
     white-space: nowrap;
@@ -108,9 +109,9 @@ onBeforeUnmount(() => {
     align-items: center;
     gap: 8px;
     padding: 6px 10px;
-    border: 1px solid #2a2a2a;
-    background: #0f0f0f;
-    color: #ffffff;
+    border: 1px solid var(--ui-panel-border);
+    background: var(--ui-panel-surface);
+    color: var(--ui-text-primary);
     cursor: pointer;
     font-size: clamp(12px, 1.5vw, 14px);
     text-transform: uppercase;
@@ -119,7 +120,7 @@ onBeforeUnmount(() => {
 }
 
 .string-select__button:focus-visible {
-    outline: 1px solid #ffffff;
+    outline: 1px solid var(--ui-focus-color);
     outline-offset: 1px;
 }
 
@@ -142,16 +143,16 @@ onBeforeUnmount(() => {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    background: #0b0b0b;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-panel-row-bg);
+    border: 1px solid var(--ui-panel-border);
     z-index: 20;
 }
 
 .string-select__option {
     padding: 6px 10px;
-    border: 1px solid #2a2a2a;
-    background: #000000;
-    color: #ffffff;
+    border: 1px solid var(--ui-panel-border);
+    background: var(--ui-panel-bg);
+    color: var(--ui-text-primary);
     cursor: pointer;
     font-size: clamp(12px, 1.5vw, 14px);
     text-transform: uppercase;
@@ -160,11 +161,11 @@ onBeforeUnmount(() => {
 }
 
 .string-select__option:focus-visible {
-    outline: 1px solid #ffffff;
+    outline: 1px solid var(--ui-focus-color);
     outline-offset: 1px;
 }
 
 .string-select__option:hover {
-    background: #111111;
+    background: var(--ui-hover-bg);
 }
 </style>

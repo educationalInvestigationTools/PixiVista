@@ -70,9 +70,11 @@ const showAnnotationsPanel = ref(true)
 const showMetricsSettingId = 'show-metrics-panel'
 const showAnnotationsSettingId = 'show-annotations-panel'
 const heightPerChannelSettingId = 'height-per-channel'
+const themeSettingId = 'theme-light'
 const channelsRootId = 'channels'
 const channelsGroupLabel = 'Channels'
 const channelIdPrefix = 'channel:'
+const isLightTheme = ref(getInitialTheme())
 
 const settingsChoices = computed<AnyChoice[]>(() => [
     {
@@ -84,6 +86,11 @@ const settingsChoices = computed<AnyChoice[]>(() => [
         id: showAnnotationsSettingId,
         label: 'Annotations',
         value: showAnnotationsPanel.value,
+    },
+    {
+        id: themeSettingId,
+        label: 'Light theme',
+        value: isLightTheme.value,
     },
     {
         id: heightPerChannelSettingId,
@@ -122,6 +129,11 @@ function updateSettingChoice(settingUpdate: AnyUpdateChoice) {
         showAnnotationsPanel.value = settingUpdate.value as boolean
     }
 
+    if (settingUpdate.id === themeSettingId) {
+        isLightTheme.value = settingUpdate.value as boolean
+        applyTheme(isLightTheme.value)
+    }
+
     if (settingUpdate.id === heightPerChannelSettingId) {
         heightPerChannel.value = settingUpdate.value as number
     }
@@ -132,6 +144,7 @@ onMounted(async () => {
         return;
     }
     annotationsTree.value = buildAnnotationsTree()
+    applyTheme(isLightTheme.value)
 
     diContainer = new PlotComponentContainer()
     /*composables should go before the first await statment, Vue says*/
@@ -165,6 +178,24 @@ onMounted(async () => {
     bindPerformanceMetrics(diContainer.eventMediator)
 
 })
+
+function getInitialTheme() {
+    if (typeof document === 'undefined') {
+        return false
+    }
+    return document.documentElement.getAttribute('data-theme') === 'light'
+}
+
+function applyTheme(isLight: boolean) {
+    if (typeof document === 'undefined') {
+        return
+    }
+    if (isLight) {
+        document.documentElement.setAttribute('data-theme', 'light')
+    } else {
+        document.documentElement.removeAttribute('data-theme')
+    }
+}
 
 function buildAnnotationsTree(): AnnotationsTree {
     const channelNodes: AnnotationNode[] = props.signalSourcesManager.allSignalsBuildData.map((signal) => ({

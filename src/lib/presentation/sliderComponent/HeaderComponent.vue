@@ -25,23 +25,24 @@ const props = defineProps<{
     box-sizing: border-box;
     justify-content: space-evenly;
     text-align: center;
-    background: #0f0f0f;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-panel-surface);
+    border: 1px solid var(--ui-panel-border);
     height: 50px;
     width : 100%;
     min-width: 0;
+    font-family: var(--ui-font);
 }
 
 .header__readout-label {
     font-size: clamp(12px, 1.5vw, 14px);
-    color: #9a9a9a;
+    color: var(--ui-text-muted);
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .header__readout-value {
     font-size: clamp(13px, 2.0vw, 15px);
-    color: #ffffff;
+    color: var(--ui-text-primary);
     overflow: hidden;
     text-overflow: ellipsis;
 }

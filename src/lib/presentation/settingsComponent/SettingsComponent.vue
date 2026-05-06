@@ -79,8 +79,9 @@ function updateStringChoice(choiceId: string, value: string) {
     flex-direction: column;
     gap: 4px;
     padding: 4px;
-    background: #000000;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-panel-bg);
+    border: 1px solid var(--ui-panel-border);
+    font-family: var(--ui-font);
 }
 
 .settings--collapsed {
@@ -93,9 +94,9 @@ function updateStringChoice(choiceId: string, value: string) {
     justify-content: space-between;
     gap: 12px;
     padding: 8px 10px;
-    border: 1px solid #2a2a2a;
-    background: #0b0b0b;
-    color: #ffffff;
+    border: 1px solid var(--ui-panel-border);
+    background: var(--ui-panel-row-bg);
+    color: var(--ui-text-primary);
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -104,16 +105,16 @@ function updateStringChoice(choiceId: string, value: string) {
 }
 
 .settings__toggle:focus-visible {
-    outline: 1px solid #ffffff;
+    outline: 1px solid var(--ui-focus-color);
     outline-offset: 1px;
 }
 
 .settings__toggle-label {
-    color: #9a9a9a;
+    color: var(--ui-text-muted);
 }
 
 .settings__toggle-state {
-    color: #ffffff;
+    color: var(--ui-text-primary);
 }
 
 .settings__panel {
@@ -122,7 +123,7 @@ function updateStringChoice(choiceId: string, value: string) {
     align-items: flex-start;
     gap: 6px 8px;
     padding: 4px;
-    background: #000000;
-    border: 1px solid #2a2a2a;
+    background: var(--ui-panel-bg);
+    border: 1px solid var(--ui-panel-border);
 }
 </style>
