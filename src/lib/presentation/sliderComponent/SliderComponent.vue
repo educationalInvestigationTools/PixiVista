@@ -50,9 +50,7 @@ function setCurrentPositionFromPointer(pointerX: number) {
     const maxStart = Math.max(0, props.viewPortUpperBound - windowLengthSamples.value)
     const nextStart = Math.round(ratio * maxStart)
 
-    if (nextStart !== viewPortCurrentSample.value) {
-        viewPortCurrentSample.value = nextStart
-    }
+    viewPortCurrentSample.value = nextStart
 }
 
 function startPointerDrag(e: PointerEvent, onPointerMove: (pointerX: number) => void) {

@@ -10,8 +10,8 @@ const props = defineProps<{
 <template>
 
     <div class="header__readout">
-        <span class="header__readout-label"> {{ props.headerText }}</span>
-        <span class="header__readout-value"> {{ props.headerValue }} </span>
+        <span class="header__readout-label header__text"> {{ props.headerText }}</span>
+        <span class="header__readout-value header__text"> {{ props.headerValue }} </span>
     </div>
 
 </template>
@@ -27,23 +27,23 @@ const props = defineProps<{
     text-align: center;
     background: var(--ui-panel-surface);
     border: 1px solid var(--ui-panel-border);
-    height: 50px;
     width : 100%;
     min-width: 0;
     font-family: var(--ui-font);
 }
 
+.header__text {
+    font-size: 12px;
+    overflow: scroll;
+    text-overflow:ellipsis
+
+}
+
 .header__readout-label {
-    font-size: clamp(12px, 1.5vw, 14px);
     color: var(--ui-text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .header__readout-value {
-    font-size: clamp(13px, 2.0vw, 15px);
     color: var(--ui-text-primary);
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 </style>

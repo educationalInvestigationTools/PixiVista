@@ -2,7 +2,7 @@ export type Choice<T> = {
     readonly id: string
     readonly label: string
     value: T
-    format?: (arg0 : T) => string
+    readonly format?: (arg0 : T) => string
 }
 
 export type UpdateChoice<T> = {
