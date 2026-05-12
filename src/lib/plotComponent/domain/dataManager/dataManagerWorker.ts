@@ -4,6 +4,9 @@ import type { ViewPort } from "@/plotComponent/application/types/viewPort"
 import type { DataManager } from "@/plotComponent/domain/dataManager/dataManager"
 import type { InitRequest, FetchDataRequest, ReceivedRequest } from "@/plotComponent/domain/dataManager/requests"
 
+function createRequestId(): string {
+    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+}
 
 export class DataManagerWorker implements DataManager {
     private worker: Worker
@@ -25,7 +28,7 @@ export class DataManagerWorker implements DataManager {
         viewPort: ViewPort,
         expectedWidth: number,
     ): Promise<OneDimNormalizedSignal[]> {
-        const requestId = crypto.randomUUID()
+        const requestId = createRequestId()
         const promise = new Promise<OneDimNormalizedSignal[]>((resolve) => {
             this.pendingRequests.set(requestId, resolve)
         })
