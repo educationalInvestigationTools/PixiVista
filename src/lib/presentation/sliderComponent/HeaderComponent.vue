@@ -34,9 +34,7 @@ const props = defineProps<{
 
 .header__text {
     font-size: 12px;
-    overflow: scroll;
-    text-overflow:ellipsis
-
+    overflow:hidden;
 }
 
 .header__readout-label {
