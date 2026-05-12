@@ -27,15 +27,14 @@ export class PlotComponentContainer {
             labels,
             this.eventMediator,
         )
-        const plotState = new PlotState()
+        const dataManagerWorker = new DataManagerWorker(workerCallback, signalsSourceGroup)
+        const plotState = new PlotState(dataManagerWorker)
         this.eventMediator.addHandler<ChangeViewPortCommand>(ChangeViewPortCommandEventLabel, async (command) => await plotState.changeViewPort(command.viewPort))
         await renderer.init(componentLayerApi.Component)
 
-        const dataManagerWorker = new DataManagerWorker(workerCallback, signalsSourceGroup)
         this.updateChannelsStateObserver = new UpdateChannelsStateObserver(
             plotState,
             renderer,
-            dataManagerWorker,
             componentLayerApi,
         )
         await this.updateChannelsStateObserver.init()

@@ -1,21 +1,18 @@
 import { Observer } from "@/core/observer"
 import type { RenderManager } from "@/core/rendering/renderManager"
 import type { OneDimNormalizedSignal } from "@/plotComponent/application/types/oneDimNormalizedSignal"
-import type { DataManager } from "@/plotComponent/domain/dataManager/dataManager"
 import type { ComponentLayerLogicApi } from "@/plotComponent/domain/plotComponentLayerApi"
 import type { PlotState } from "@/plotComponent/domain/plotState"
 import { RenderDependencies } from "@/plotComponent/domain/renderDependencies"
 
 
 export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {
-    private readonly dataManager: DataManager
-    private readonly plotState : PlotState
+    private readonly plotState: PlotState
     private readonly componentApi: ComponentLayerLogicApi
 
     constructor(
-        plotState : PlotState,
+        plotState: PlotState,
         renderManager: RenderManager,
-        dataManager: DataManager,
         componentApi: ComponentLayerLogicApi,
     ) {
         super(
@@ -29,7 +26,6 @@ export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {
                 ),
         )
         this.plotState = plotState
-        this.dataManager = dataManager
         this.componentApi = componentApi
     }
 
@@ -37,7 +33,7 @@ export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {
         await super.init()
     }
 
-    async destroy(): Promise<void> {}
+    async destroy(): Promise<void> { }
 
     async update(currentObserved: RenderDependencies): Promise<void> {
         await this.updateChannelsState(currentObserved)
@@ -47,7 +43,7 @@ export class UpdateChannelsStateObserver extends Observer<RenderDependencies> {
         const viewPort = dataToRender.viewPort
         const activeChannels = dataToRender.visibleChannels
         const expectedWidth = dataToRender.expectedWidth
-        const updatedData: OneDimNormalizedSignal[] = await this.dataManager.fetchData(
+        const updatedData: OneDimNormalizedSignal[] = await this.plotState.fetchData(
             activeChannels,
             viewPort,
             expectedWidth,

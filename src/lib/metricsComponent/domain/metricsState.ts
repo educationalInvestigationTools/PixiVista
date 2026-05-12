@@ -18,7 +18,7 @@ export class MetricsState {
         this.windowMs = windowMs
     }
 
-    processBucket() {
+    private processBucket() {
         if (this.bucket.length !== this.bucketMaxSize) {
             return
         }
