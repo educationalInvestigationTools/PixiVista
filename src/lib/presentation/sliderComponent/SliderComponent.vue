@@ -38,8 +38,6 @@ const sliderPosition = computed(() => {
 })
 
 const currentSliderRef = ref<HTMLElement | null>(null)
-const activePointerId = ref<number | null>(null)
-const activePointerTarget = ref<HTMLElement | null>(null)
 
 function setCurrentPositionFromPointer(pointerX: number) {
     const el = currentSliderRef.value
@@ -56,31 +54,13 @@ function setCurrentPositionFromPointer(pointerX: number) {
 }
 
 function startPointerDrag(e: PointerEvent, onPointerMove: (pointerX: number) => void) {
-    const target = e.currentTarget as HTMLElement | null
-    if (!target) return
-
-    target.focus()
-    e.preventDefault()
-    activePointerId.value = e.pointerId
-    activePointerTarget.value = target
-    target.setPointerCapture?.(e.pointerId)
     onPointerMove(e.clientX)
-    document.body.style.userSelect = "none"
 
     function onMove(event: PointerEvent) {
-        if (activePointerId.value !== event.pointerId) return
-        event.preventDefault()
         onPointerMove(event.clientX)
     }
 
-    function onUp(event?: PointerEvent) {
-        if (event && activePointerId.value !== event.pointerId) return
-        document.body.style.userSelect = ""
-        if (activePointerTarget.value && activePointerId.value !== null) {
-            activePointerTarget.value.releasePointerCapture?.(activePointerId.value)
-        }
-        activePointerId.value = null
-        activePointerTarget.value = null
+    function onUp() {
         window.removeEventListener("pointermove", onMove)
         window.removeEventListener("pointerup", onUp)
         window.removeEventListener("pointercancel", onUp)
@@ -175,7 +155,6 @@ const thumbPercent = (100 - thumbWidth) / 100
 .slider__row-label {
     font-size: clamp(12px, 1.5vw, 14px);
     color: var(--ui-text-muted);
-    text-transform: uppercase;
 }
 
 .slider__track-area {
@@ -203,7 +182,6 @@ const thumbPercent = (100 - thumbWidth) / 100
             var(--ui-track-grid-dark) 1px,
             var(--ui-track-grid-light) 1px,
             var(--ui-track-grid-light) 12px);
-    pointer-events: none;
 }
 
 .slider__thumb {
