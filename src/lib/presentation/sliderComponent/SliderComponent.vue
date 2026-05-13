@@ -38,6 +38,8 @@ const sliderPosition = computed(() => {
 })
 
 const currentSliderRef = ref<HTMLElement | null>(null)
+const activePointerId = ref<number | null>(null)
+const activePointerTarget = ref<HTMLElement | null>(null)
 
 function setCurrentPositionFromPointer(pointerX: number) {
     const el = currentSliderRef.value
@@ -54,22 +56,36 @@ function setCurrentPositionFromPointer(pointerX: number) {
 }
 
 function startPointerDrag(e: PointerEvent, onPointerMove: (pointerX: number) => void) {
-    (e.currentTarget as HTMLElement | null)?.focus()
+    const target = e.currentTarget as HTMLElement | null
+    if (!target) return
+
+    target.focus()
     e.preventDefault()
+    activePointerId.value = e.pointerId
+    activePointerTarget.value = target
+    target.setPointerCapture?.(e.pointerId)
     onPointerMove(e.clientX)
     document.body.style.userSelect = "none"
 
     function onMove(event: PointerEvent) {
+        if (activePointerId.value !== event.pointerId) return
         event.preventDefault()
         onPointerMove(event.clientX)
     }
 
-    function onUp() {
+    function onUp(event?: PointerEvent) {
+        if (event && activePointerId.value !== event.pointerId) return
         document.body.style.userSelect = ""
+        if (activePointerTarget.value && activePointerId.value !== null) {
+            activePointerTarget.value.releasePointerCapture?.(activePointerId.value)
+        }
+        activePointerId.value = null
+        activePointerTarget.value = null
         window.removeEventListener("pointermove", onMove)
         window.removeEventListener("pointerup", onUp)
         window.removeEventListener("pointercancel", onUp)
     }
+
 
     window.addEventListener("pointermove", onMove)
     window.addEventListener("pointerup", onUp)
@@ -170,6 +186,7 @@ const thumbPercent = (100 - thumbWidth) / 100
     background: var(--ui-panel-surface);
     border: 1px solid var(--ui-panel-border);
     cursor: ew-resize;
+    touch-action: none;
 }
 
 .slider__track-area:focus-visible {
