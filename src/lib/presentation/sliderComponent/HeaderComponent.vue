@@ -25,10 +25,10 @@ const props = defineProps<{
     box-sizing: border-box;
     justify-content: space-evenly;
     text-align: center;
-    background: var(--ui-panel-surface);
-    border: 1px solid var(--ui-panel-border);
     width : 100%;
     min-width: 0;
+    border: 1px solid var(--ui-panel-border);
+    background: var(--ui-panel-surface);
     font-family: var(--ui-font);
 }
 

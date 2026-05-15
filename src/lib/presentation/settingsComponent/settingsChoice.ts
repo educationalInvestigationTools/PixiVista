@@ -11,12 +11,12 @@ export type UpdateChoice<T> = {
 }
 
 export type NumberSettingChoice = Choice<number> & {
-    min: number
-    max: number
+    readonly min: number
+    readonly max: number
 }
 
 export type StringSettingChoice = Choice<string> & {
-    options: string[]
+    readonly options: string[]
 }
 
 export type BooleanUpdate = UpdateChoice<boolean>

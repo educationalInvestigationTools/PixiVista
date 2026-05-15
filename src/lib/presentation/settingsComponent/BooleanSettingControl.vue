@@ -33,11 +33,11 @@ function toggleValue() {
     justify-content: space-between;
     gap: 12px;
     padding: 6px 10px;
-    background: var(--ui-panel-row-bg);
-    border: 1px solid var(--ui-panel-border);
     box-sizing: border-box;
     height: 54px;
     width: max-content;
+    background: var(--ui-panel-row-bg);
+    border: 1px solid var(--ui-panel-border);
     font-family: var(--ui-font);
 }
 
