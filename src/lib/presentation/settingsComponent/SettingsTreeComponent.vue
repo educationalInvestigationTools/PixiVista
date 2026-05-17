@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import BooleanSettingControl from '@/presentation/settingsComponent/BooleanSettingControl.vue';
-import type { AnyUpdateChoice, ChoiceTreeNode, LabelTreeNode, NumberSettingChoice, SettingsTreeNode, StringSettingChoice } from '@/presentation/settingsComponent/settingsChoice';
 import { computed } from 'vue';
 
 import NumberSettingControl from '@/presentation/settingsComponent/NumberSettingControl.vue';
@@ -8,6 +7,8 @@ import NumberSettingControl from '@/presentation/settingsComponent/NumberSetting
 import StringSettingControl from '@/presentation/settingsComponent/StringSettingControl.vue';
 import TreeDraw from '@/presentation/settingsComponent/TreeDraw.vue';
 import LabelTreeNodeComponent from '@/presentation/settingsComponent/LabelTreeNodeComponent.vue';
+import type { AnyUpdateChoice, NumberSettingChoice, StringSettingChoice } from '@/presentation/settingsComponent/settingsChoice';
+import type { SettingsTreeNode, ChoiceTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
 
 const props = defineProps<{
     node: SettingsTreeNode,

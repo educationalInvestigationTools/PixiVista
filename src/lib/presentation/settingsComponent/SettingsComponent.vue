@@ -2,7 +2,8 @@
 import { ref } from 'vue';
 
 import SettingsTreeComponent from '@/presentation/settingsComponent/SettingsTreeComponent.vue';
-import type { AnyUpdateChoice, SettingsTreeNode } from '@/presentation/settingsComponent/settingsChoice';
+import type { AnyUpdateChoice} from '@/presentation/settingsComponent/settingsChoice';
+import type { SettingsTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
 
 const props = defineProps<{
     trees: SettingsTreeNode[]

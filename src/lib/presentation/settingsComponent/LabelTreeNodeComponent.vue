@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { LabelTreeNode } from '@/presentation/settingsComponent/settingsChoice';
+import type { LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
+
 
 
 const props = defineProps<{

@@ -10,12 +10,6 @@ import { PlotComponentContainer } from '@/plotComponent/domain/plotComponentCont
 import { useKeysForViewPort } from '@/plotComponent/presentation/plotComponent/utils/useKeysForViewPort';
 import { usePinchForZoom } from '@/plotComponent/presentation/plotComponent/utils/usePinchForZoom';
 import { useWheelForZoom } from '@/plotComponent/presentation/plotComponent/utils/useWheelForZoom';
-import {
-    ChoiceTreeNode,
-    LabelTreeNode,
-    type AnyUpdateChoice,
-    type SettingsTreeNode,
-} from '@/presentation/settingsComponent/settingsChoice';
 
 import { useResizeObserver } from '@/presentation/utils/useResizeObserver';
 import { fmtTime } from '@/utils/utils';
@@ -30,6 +24,8 @@ import type {
     AnnotationsTree,
 } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
 import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/types';
+import type { AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
+import { ChoiceTreeNode, type SettingsTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
 
 
 const props = defineProps<{

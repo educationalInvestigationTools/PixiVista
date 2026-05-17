@@ -2,12 +2,9 @@
 
 import { computed, ref } from 'vue';
 import SettingsComponent from '@/presentation/settingsComponent/SettingsComponent.vue';
-import {
-    ChoiceTreeNode,
-    LabelTreeNode,
-    type AnyUpdateChoice,
-    type SettingsTreeNode,
-} from '@/presentation/settingsComponent/settingsChoice';
+import type { AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
+import { ChoiceTreeNode, type SettingsTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
+
 
 const showMetricsPanel = ref(true)
 const showAnnotationsPanel = ref(true)
