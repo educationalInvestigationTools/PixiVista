@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
-
-
+import SettingRow from './SettingRow.vue';
 
 const props = defineProps<{
     node : LabelTreeNode
@@ -22,8 +21,8 @@ function toggleCollapse() {
 </script>
 
 <template>
-    <div class="setting-row">
-        <div class="setting-label-group">
+    <SettingRow :label="props.node.label">
+        <template #label-prefix>
             <button
                 class="setting-chevron"
                 :class="{
@@ -40,42 +39,12 @@ function toggleCollapse() {
                     <path d="M6 9l6 6 6-6" />
                 </svg>
             </button>
-            <span class="setting-label">{{ props.node.label }}</span>
-        </div>
+        </template>
         <span class="setting-spacer" aria-hidden="true"></span>
-    </div>
-
+    </SettingRow>
 </template>
 
 <style scoped>
-.setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 6px 10px;
-    box-sizing: border-box;
-    height: var(--ui-setting-row-height, 54px);
-    width: max-content;
-    background: var(--ui-panel-row-bg);
-    border: 1px solid var(--ui-panel-border);
-    font-family: var(--ui-font);
-}
-
-.setting-label {
-    font-size: clamp(12px, 1.5vw, 14px);
-    color: var(--ui-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    white-space: nowrap;
-}
-
-.setting-label-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
 .setting-chevron {
     display: inline-flex;
     align-items: center;

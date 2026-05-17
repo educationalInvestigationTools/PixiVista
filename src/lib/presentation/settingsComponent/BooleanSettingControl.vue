@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SettingRow from './SettingRow.vue';
+
 const props = defineProps<{
     label: string
     value: boolean
@@ -14,8 +16,7 @@ function toggleValue() {
 </script>
 
 <template>
-    <div class="setting-row">
-        <span class="setting-label">{{ props.label }}</span>
+    <SettingRow :label="props.label">
         <button
             class="setting-toggle"
             type="button"
@@ -23,32 +24,10 @@ function toggleValue() {
             @click="toggleValue">
             <span class="setting-toggle__text">{{ props.value ? 'ON' : 'OFF' }}</span>
         </button>
-    </div>
+    </SettingRow>
 </template>
 
 <style scoped>
-.setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 6px 10px;
-    box-sizing: border-box;
-    height: var(--ui-setting-row-height, 54px);
-    width: max-content;
-    background: var(--ui-panel-row-bg);
-    border: 1px solid var(--ui-panel-border);
-    font-family: var(--ui-font);
-}
-
-.setting-label {
-    font-size: clamp(12px, 1.5vw, 14px);
-    color: var(--ui-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    white-space: nowrap;
-}
-
 .setting-toggle {
     min-width: 70px;
     padding: 6px 12px;

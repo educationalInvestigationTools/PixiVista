@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, type VNodeRef } from 'vue';
+import SettingRow from './SettingRow.vue';
 
 const props = defineProps<{
     label: string
@@ -14,6 +15,10 @@ const emit = defineEmits<{
 
 const rootRef = ref<HTMLElement | null>(null)
 const isOpen = ref(false)
+
+const setRootRef: VNodeRef = (el) => {
+    rootRef.value = el as HTMLElement | null
+}
 
 const displayValue = computed(() => {
     if (props.format) {
@@ -50,8 +55,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="setting-row" ref="rootRef">
-        <span class="setting-label">{{ props.label }}</span>
+    <SettingRow :label="props.label" :root-ref="setRootRef">
         <div class="string-select">
             <button
                 class="string-select__button"
@@ -73,33 +77,10 @@ onBeforeUnmount(() => {
                 </button>
             </div>
         </div>
-    </div>
+    </SettingRow>
 </template>
 
 <style scoped>
-.setting-row {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 6px 10px;
-    background: var(--ui-panel-row-bg);
-    border: 1px solid var(--ui-panel-border);
-    box-sizing: border-box;
-    height: var(--ui-setting-row-height, 54px);
-    width: max-content;
-    font-family: var(--ui-font);
-}
-
-.setting-label {
-    font-size: clamp(12px, 1.5vw, 14px);
-    color: var(--ui-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    white-space: nowrap;
-}
-
 .string-select {
     position: relative;
 }

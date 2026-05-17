@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount } from 'vue';
+import SettingRow from './SettingRow.vue';
 
 const props = defineProps<{
     label: string
@@ -120,8 +121,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="setting-row">
-        <span class="setting-label">{{ props.label }}</span>
+    <SettingRow :label="props.label">
         <div class="number-control">
             <button
                 class="number-control__button"
@@ -159,32 +159,10 @@ onBeforeUnmount(() => {
                 +
             </button>
         </div>
-    </div>
+    </SettingRow>
 </template>
 
 <style scoped>
-.setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 6px 10px;
-    background: var(--ui-panel-row-bg);
-    border: 1px solid var(--ui-panel-border);
-    box-sizing: border-box;
-    height: var(--ui-setting-row-height, 54px);
-    width: max-content;
-    font-family: var(--ui-font);
-}
-
-.setting-label {
-    font-size: clamp(12px, 1.5vw, 14px);
-    color: var(--ui-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    white-space: nowrap;
-}
-
 .number-control {
     display: flex;
     align-items: center;
