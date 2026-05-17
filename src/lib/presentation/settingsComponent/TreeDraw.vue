@@ -29,12 +29,12 @@ const ancestorLineXs = computed(() =>
 </script>
 
 <template>
-    <span class="tree-draw" aria-hidden="true" :style="{ '--tree-draw-width': cssWidth }">
+    <span class="tree-draw" :style="{ '--tree-draw-width': cssWidth }">
         <svg
             class="tree-draw__svg"
             :viewBox="`0 0 ${svgWidth} ${viewBoxHeight}`"
             preserveAspectRatio="none"
-            aria-hidden="true">
+            >
             <line
                 v-for="(x, index) in ancestorLineXs"
                 :key="`ancestor-${index}`"
@@ -64,8 +64,8 @@ const ancestorLineXs = computed(() =>
 .tree-draw {
     display: inline-flex;
     align-items: center;
-    height: var(--ui-setting-row-height, 54px);
-    width: var(--tree-draw-width, 4ch);
+    height: var(--ui-setting-row-height);
+    width: var(--tree-draw-width);
     box-sizing: border-box;
     background: var(--ui-panel-row-bg);
     border: 1px solid var(--ui-panel-border);
@@ -74,7 +74,7 @@ const ancestorLineXs = computed(() =>
 }
 
 .tree-draw__svg {
-    width: var(--tree-draw-width, 4ch);
+    width: var(--tree-draw-width);
     height: 100%;
 }
 

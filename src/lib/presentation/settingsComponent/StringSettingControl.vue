@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, type VNodeRef } from 'vue';
-import SettingRow from './SettingRow.vue';
-
+import SettingRow from '@/presentation/settingsComponent/SettingRow.vue';
 const props = defineProps<{
     label: string
     value: string

@@ -24,7 +24,7 @@ function toggleCollapse(id: string) {
 </script>
 
 <template>
-    <div class="settings" :class="{ 'settings--collapsed': !showSettings }">
+    <div class="settings">
         <button class="settings__toggle" type="button"
             :title="showSettings ? 'Hide settings panel' : 'Show settings panel'" @click="showSettings = !showSettings">
             <span class="settings__toggle-label">Settings</span>
@@ -32,12 +32,12 @@ function toggleCollapse(id: string) {
         </button>
 
         <div v-show="showSettings" class="settings__panel">
-            <div v-for="(tree, index) in props.trees" :key="tree.id" class="settings__tree-root">
+            <div v-for="(tree) in props.trees" :key="tree.id" class="settings__tree-root">
                 <SettingsTreeComponent
                     :node="tree"
                     :ancestorHasNext="[]"
                     :depth="0"
-                    :isLast="index === props.trees.length - 1"
+                    :isLast="true"
                     :collapsedState="collapsedState"
                     @toggle-collapse="toggleCollapse"
                     @update:choice="(update) => emit('update:choice', update)">
@@ -62,10 +62,6 @@ function toggleCollapse(id: string) {
     font-family: var(--ui-font);
 }
 
-.settings--collapsed {
-    padding-bottom: 2px;
-}
-
 .settings__toggle {
     display: flex;
     align-items: center;
@@ -76,7 +72,6 @@ function toggleCollapse(id: string) {
     background: transparent;
     color: var(--ui-text-primary);
     cursor: pointer;
-    text-transform: uppercase;
     letter-spacing: 1px;
     font-size: clamp(12px, 1.5vw, 14px);
     font-weight: 600;
@@ -104,9 +99,7 @@ function toggleCollapse(id: string) {
     background: var(--ui-panel-bg);
     border: 1px solid var(--ui-panel-border);
     overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x proximity;
-    max-height: calc(var(--settings-max-height) - var(--settings-header-height));
+    overflow-y: auto;
 }
 
 .settings__tree-root {
@@ -114,8 +107,6 @@ function toggleCollapse(id: string) {
     padding: 6px;
     border: 1px solid var(--ui-panel-border);
     background: var(--ui-panel-row-bg);
-    scroll-snap-align: start;
     overflow-y: auto;
-    max-height: calc(var(--settings-max-height) - var(--settings-header-height));
 }
 </style>

@@ -12,10 +12,10 @@ import type { SettingsTreeNode, ChoiceTreeNode, LabelTreeNode } from '@/presenta
 
 const props = defineProps<{
     node: SettingsTreeNode,
-    isLast? : boolean
-    ancestorHasNext?: boolean[]
-    depth?: number
-    collapsedState?: Record<string, boolean>
+    isLast : boolean
+    ancestorHasNext: boolean[]
+    depth: number
+    collapsedState: Record<string, boolean>
 }>()
 
 const emit = defineEmits<{
@@ -27,11 +27,11 @@ const choice = computed(() => {
     return (props.node as ChoiceTreeNode).choice
 })
 
-const hasChildren = computed(() => (props.node.children?.length ?? 0) > 0)
+const hasChildren = computed(() => (props.node.children.length > 0))
 const isLabelNode = computed(() => props.node.type === 'LabelTreeNode')
-const ancestorHasNext = computed(() => props.ancestorHasNext ?? [])
-const isLast = computed(() => props.isLast ?? false)
-const depth = computed(() => props.depth ?? ancestorHasNext.value.length)
+const ancestorHasNext = computed(() => props.ancestorHasNext )
+const isLast = computed(() => props.isLast)
+const depth = computed(() => props.depth)
 const isCollapsed = computed(() => (isLabelNode.value ? !!props.collapsedState?.[props.node.id] : false))
 const childAncestorHasNext = computed(() => {
     if (depth.value === 0) {

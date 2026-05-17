@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
-import SettingRow from './SettingRow.vue';
+import SettingRow from '@/presentation/settingsComponent/SettingRow.vue';
 
 const props = defineProps<{
     node : LabelTreeNode
@@ -31,7 +31,7 @@ function toggleCollapse() {
                 }"
                 type="button"
                 :disabled="!props.hasChildren"
-                :aria-expanded="props.hasChildren ? !props.isCollapsed : undefined"
+                :aria-expanded="props.hasChildren"
                 :title="props.hasChildren ? (props.isCollapsed ? 'Expand' : 'Collapse') : 'No children'"
                 @click="toggleCollapse">
                 <svg class="setting-chevron__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
