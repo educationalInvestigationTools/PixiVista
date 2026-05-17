@@ -87,7 +87,7 @@ onBeforeUnmount(() => {
     background: var(--ui-panel-row-bg);
     border: 1px solid var(--ui-panel-border);
     box-sizing: border-box;
-    height: 54px;
+    height: var(--ui-setting-row-height, 54px);
     width: max-content;
     font-family: var(--ui-font);
 }

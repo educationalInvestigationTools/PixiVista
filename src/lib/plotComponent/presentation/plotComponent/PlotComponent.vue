@@ -10,7 +10,12 @@ import { PlotComponentContainer } from '@/plotComponent/domain/plotComponentCont
 import { useKeysForViewPort } from '@/plotComponent/presentation/plotComponent/utils/useKeysForViewPort';
 import { usePinchForZoom } from '@/plotComponent/presentation/plotComponent/utils/usePinchForZoom';
 import { useWheelForZoom } from '@/plotComponent/presentation/plotComponent/utils/useWheelForZoom';
-import type { AnyChoice, AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
+import {
+    ChoiceTreeNode,
+    LabelTreeNode,
+    type AnyUpdateChoice,
+    type SettingsTreeNode,
+} from '@/presentation/settingsComponent/settingsChoice';
 
 import { useResizeObserver } from '@/presentation/utils/useResizeObserver';
 import { fmtTime } from '@/utils/utils';
@@ -76,31 +81,32 @@ const channelsGroupLabel = 'Channels'
 const channelIdPrefix = 'channel:'
 const isLightTheme = ref(getInitialTheme())
 
-const settingsChoices = computed<AnyChoice[]>(() => [
-    {
-        id: showMetricsSettingId,
-        label: 'Metrics',
-        value: showMetricsPanel.value,
-    },
-    {
-        id: showAnnotationsSettingId,
-        label: 'Annotations',
-        value: showAnnotationsPanel.value,
-    },
-    {
-        id: themeSettingId,
-        label: 'Light theme',
-        value: isLightTheme.value,
-    },
-    {
-        id: heightPerChannelSettingId,
-        label: 'Height / channel',
-        value: heightPerChannel.value,
-        min: 60,
-        max: 600,
-        step: 10,
-        format: (x) => x + " px"
-    }
+const settingsTrees = computed<SettingsTreeNode[]>(() => [
+    new LabelTreeNode('plot-settings', 'Plot', [
+        new ChoiceTreeNode({
+            id: showMetricsSettingId,
+            label: 'Metrics',
+            value: showMetricsPanel.value,
+        }),
+        new ChoiceTreeNode({
+            id: showAnnotationsSettingId,
+            label: 'Annotations',
+            value: showAnnotationsPanel.value,
+        }),
+        new ChoiceTreeNode({
+            id: themeSettingId,
+            label: 'Light theme',
+            value: isLightTheme.value,
+        }),
+        new ChoiceTreeNode({
+            id: heightPerChannelSettingId,
+            label: 'Height / channel',
+            value: heightPerChannel.value,
+            min: 60,
+            max: 600,
+            format: (x) => x + " px",
+        }),
+    ]),
 ])
 
 function updateAnnotations(nextAnnotations: AnnotationsTree) {
@@ -286,7 +292,7 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
 
 <template>
     <div class="plot__container">
-        <SettingsComponent :choices="settingsChoices" @update:choice="updateSettingChoice">
+        <SettingsComponent :trees="settingsTrees" @update:choice="updateSettingChoice">
         </SettingsComponent>
         <AnnotationsComponent v-if="showAnnotationsPanel" :annotations="annotationsTree"
             @update:annotations="updateAnnotations" @change:visibility="handleVisibilityChange">

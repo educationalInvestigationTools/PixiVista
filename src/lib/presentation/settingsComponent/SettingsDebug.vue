@@ -2,7 +2,12 @@
 
 import { computed, ref } from 'vue';
 import SettingsComponent from '@/presentation/settingsComponent/SettingsComponent.vue';
-import type { AnyChoice, AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
+import {
+    ChoiceTreeNode,
+    LabelTreeNode,
+    type AnyUpdateChoice,
+    type SettingsTreeNode,
+} from '@/presentation/settingsComponent/settingsChoice';
 
 const showMetricsPanel = ref(true)
 const showAnnotationsPanel = ref(true)
@@ -89,108 +94,122 @@ function applyUpdate(update: AnyUpdateChoice) {
     }
 }
 
-const settingsChoices = computed<AnyChoice[]>(() => [
-    {
-        id: showMetricsSettingId,
-        label: 'Metrics',
-        value: showMetricsPanel.value,
-    },
-    {
-        id: showAnnotationsSettingId,
-        label: 'Annotations',
-        value: showAnnotationsPanel.value,
-    },
-    {
-        id: showGridLinesSettingId,
-        label: 'Grid lines',
-        value: showGridLines.value,
-    },
-    {
-        id: showTimeMarkersSettingId,
-        label: 'Time markers',
-        value: showTimeMarkers.value,
-    },
-    {
-        id: enableSmoothingSettingId,
-        label: 'Smoothing',
-        value: enableSmoothing.value,
-    },
-    {
-        id: lockYAxisSettingId,
-        label: 'Lock Y axis',
-        value: lockYAxis.value,
-    },
-    {
-        id: themeSettingId,
-        label: 'Light theme',
-        value: isLightTheme.value,
-    },
-    {
-        id: scaleModeSettingId,
-        label: 'Scale mode',
-        value: scaleMode.value,
-        options: ['Auto', 'Fixed', 'Adaptive']
-    },
-    {
-        id: timeFormatSettingId,
-        label: 'Time format',
-        value: timeFormat.value,
-        options: ['Samples', 'Seconds', 'HH:MM:SS']
-    },
-    {
-        id: colorPaletteSettingId,
-        label: 'Palette',
-        value: colorPalette.value,
-        options: ['Neutral', 'Warm', 'Cool', 'High Contrast']
-    },
-    {
-        id: heightPerChannelSettingId,
-        label: 'Height / channel',
-        value: heightPerChannel.value,
-        min: 60,
-        max: 600,
-        format: (value: number) => value.toFixed(0) + 'px'
-    },
-    {
-        id: lineThicknessSettingId,
-        label: 'Line thickness',
-        value: lineThickness.value,
-        min: 0.5,
-        max: 6,
-        format: (value: number) => value.toFixed(1) + 'px'
-    },
-    {
-        id: gridOpacitySettingId,
-        label: 'Grid opacity',
-        value: gridOpacity.value,
-        min: 0,
-        max: 1,
-        format: (value: number) => (value * 100).toFixed(0) + '%'
-    },
-    {
-        id: labelFontSizeSettingId,
-        label: 'Label size',
-        value: labelFontSize.value,
-        min: 8,
-        max: 24,
-        format: (value: number) => value.toFixed(0) + 'px'
-    },
-    {
-        id: updateRateSettingId,
-        label: 'Update rate',
-        value: updateRate.value,
-        min: 15,
-        max: 120,
-        format: (value: number) => value.toFixed(0) + 'Hz'
-    },
-    {
-        id: zoomFactorSettingId,
-        label: 'Zoom factor',
-        value: zoomFactor.value,
-        min: 0.5,
-        max: 4,
-        format: (value: number) => value.toFixed(2) + 'x'
-    },
+const settingsTrees = computed<SettingsTreeNode[]>(() => [
+    new LabelTreeNode('panel-settings', 'Panels', [
+        new ChoiceTreeNode({
+            id: showMetricsSettingId,
+            label: 'Metrics',
+            value: showMetricsPanel.value,
+        }),
+        new ChoiceTreeNode({
+            id: showAnnotationsSettingId,
+            label: 'Annotations',
+            value: showAnnotationsPanel.value,
+        }),
+    ]),
+    new LabelTreeNode('view-settings', 'View', [
+        new LabelTreeNode('grid-settings', 'Grid', [
+            new ChoiceTreeNode({
+                id: showGridLinesSettingId,
+                label: 'Grid lines',
+                value: showGridLines.value,
+            }),
+            new ChoiceTreeNode({
+                id: showTimeMarkersSettingId,
+                label: 'Time markers',
+                value: showTimeMarkers.value,
+            }),
+            new ChoiceTreeNode({
+                id: gridOpacitySettingId,
+                label: 'Grid opacity',
+                value: gridOpacity.value,
+                min: 0,
+                max: 1,
+                format: (value: number) => (value * 100).toFixed(0) + '%',
+            }),
+        ]),
+        new LabelTreeNode('labels-settings', 'Labels', [
+            new ChoiceTreeNode({
+                id: labelFontSizeSettingId,
+                label: 'Label size',
+                value: labelFontSize.value,
+                min: 8,
+                max: 24,
+                format: (value: number) => value.toFixed(0) + 'px',
+            }),
+        ]),
+        new LabelTreeNode('signal-settings', 'Signal', [
+            new ChoiceTreeNode({
+                id: scaleModeSettingId,
+                label: 'Scale mode',
+                value: scaleMode.value,
+                options: ['Auto', 'Fixed', 'Adaptive'],
+            }),
+            new ChoiceTreeNode({
+                id: timeFormatSettingId,
+                label: 'Time format',
+                value: timeFormat.value,
+                options: ['Samples', 'Seconds', 'HH:MM:SS'],
+            }),
+            new ChoiceTreeNode({
+                id: colorPaletteSettingId,
+                label: 'Palette',
+                value: colorPalette.value,
+                options: ['Neutral', 'Warm', 'Cool', 'High Contrast'],
+            }),
+        ]),
+    ]),
+    new LabelTreeNode('behavior-settings', 'Behavior', [
+        new ChoiceTreeNode({
+            id: enableSmoothingSettingId,
+            label: 'Smoothing',
+            value: enableSmoothing.value,
+        }),
+        new ChoiceTreeNode({
+            id: lockYAxisSettingId,
+            label: 'Lock Y axis',
+            value: lockYAxis.value,
+        }),
+        new ChoiceTreeNode({
+            id: updateRateSettingId,
+            label: 'Update rate',
+            value: updateRate.value,
+            min: 15,
+            max: 120,
+            format: (value: number) => value.toFixed(0) + 'Hz',
+        }),
+        new ChoiceTreeNode({
+            id: zoomFactorSettingId,
+            label: 'Zoom factor',
+            value: zoomFactor.value,
+            min: 0.5,
+            max: 4,
+            format: (value: number) => value.toFixed(2) + 'x',
+        }),
+    ]),
+    new LabelTreeNode('style-settings', 'Style', [
+        new ChoiceTreeNode({
+            id: heightPerChannelSettingId,
+            label: 'Height / channel',
+            value: heightPerChannel.value,
+            min: 60,
+            max: 600,
+            format: (value: number) => value.toFixed(0) + 'px',
+        }),
+        new ChoiceTreeNode({
+            id: lineThicknessSettingId,
+            label: 'Line thickness',
+            value: lineThickness.value,
+            min: 0.5,
+            max: 6,
+            format: (value: number) => value.toFixed(1) + 'px',
+        }),
+        new ChoiceTreeNode({
+            id: themeSettingId,
+            label: 'Light theme',
+            value: isLightTheme.value,
+        }),
+    ]),
 ])
 
 function getInitialTheme() {
@@ -216,7 +235,7 @@ function applyTheme(isLight: boolean) {
 
 <template>
     <SettingsComponent
-        :choices="settingsChoices"
+        :trees="settingsTrees"
         @update:choice="applyUpdate">
     </SettingsComponent>
 </template>

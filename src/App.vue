@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import PlotDebug from '@/plotComponent/presentation/plotComponent/PlotDebug.vue';
+
+import SettingsDebug from '@/presentation/settingsComponent/SettingsDebug.vue';
+
 </script>
 
 
 <template>
-    <PlotDebug></PlotDebug>
+<SettingsDebug></SettingsDebug>
 </template>
 
 <style scoped></style>
