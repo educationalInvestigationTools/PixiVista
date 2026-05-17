@@ -95,9 +95,7 @@ onBeforeUnmount(() => {
     color: var(--ui-text-primary);
     cursor: pointer;
     font-size: clamp(12px, 1.5vw, 14px);
-    text-transform: uppercase;
     letter-spacing: 1px;
-    min-width: 110px;
 }
 
 .string-select__button:focus-visible {
@@ -136,9 +134,8 @@ onBeforeUnmount(() => {
     color: var(--ui-text-primary);
     cursor: pointer;
     font-size: clamp(12px, 1.5vw, 14px);
-    text-transform: uppercase;
     letter-spacing: 1px;
-    text-align: left;
+    text-align: center;
 }
 
 .string-select__option:focus-visible {
