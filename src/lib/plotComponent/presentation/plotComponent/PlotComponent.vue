@@ -75,14 +75,14 @@ const showAnnotationsPanel = ref(true)
 const showMetricsSettingId = 'show-metrics-panel'
 const showAnnotationsSettingId = 'show-annotations-panel'
 const heightPerChannelSettingId = 'height-per-channel'
-const themeSettingId = 'theme-light'
+const themeSettingId = 'theme-mode'
 const channelsRootId = 'channels'
 const channelsGroupLabel = 'Channels'
 const channelIdPrefix = 'channel:'
-const isLightTheme = ref(getInitialTheme())
+const themeMode = ref(getInitialTheme())
 
 const settingsTrees = computed<SettingsTreeNode[]>(() => [
-    new LabelTreeNode('plot-settings', 'Plot', [
+    new LabelTreeNode('visibility-settings', 'Visibility', [
         new ChoiceTreeNode({
             id: showMetricsSettingId,
             label: 'Metrics',
@@ -93,18 +93,24 @@ const settingsTrees = computed<SettingsTreeNode[]>(() => [
             label: 'Annotations',
             value: showAnnotationsPanel.value,
         }),
-        new ChoiceTreeNode({
-            id: themeSettingId,
-            label: 'Light theme',
-            value: isLightTheme.value,
-        }),
+    ]),
+    new LabelTreeNode('plot-settings', 'Plot', [
         new ChoiceTreeNode({
             id: heightPerChannelSettingId,
-            label: 'Height / channel',
+            label: 'Channel height',
             value: heightPerChannel.value,
             min: 60,
             max: 600,
-            format: (x) => x + " px",
+            format: (x) => x + ' px',
+        }),
+    ]),
+    new LabelTreeNode('personalization-settings', 'Personalization', [
+        new ChoiceTreeNode({
+            id: themeSettingId,
+            label: 'Theme',
+            value: themeMode.value,
+            options: ['dark', 'light'],
+            format: (value: string) => value.charAt(0).toUpperCase() + value.slice(1),
         }),
     ]),
 ])
@@ -136,8 +142,8 @@ function updateSettingChoice(settingUpdate: AnyUpdateChoice) {
     }
 
     if (settingUpdate.id === themeSettingId) {
-        isLightTheme.value = settingUpdate.value as boolean
-        applyTheme(isLightTheme.value)
+        themeMode.value = settingUpdate.value as string
+        applyTheme(themeMode.value)
     }
 
     if (settingUpdate.id === heightPerChannelSettingId) {
@@ -150,7 +156,7 @@ onMounted(async () => {
         return;
     }
     annotationsTree.value = buildAnnotationsTree()
-    applyTheme(isLightTheme.value)
+    applyTheme(themeMode.value)
 
     diContainer = new PlotComponentContainer()
     /*composables should go before the first await statment, Vue says*/
@@ -187,16 +193,16 @@ onMounted(async () => {
 
 function getInitialTheme() {
     if (typeof document === 'undefined') {
-        return false
+        return 'dark'
     }
-    return document.documentElement.getAttribute('data-theme') === 'light'
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
 }
 
-function applyTheme(isLight: boolean) {
+function applyTheme(theme: string) {
     if (typeof document === 'undefined') {
         return
     }
-    if (isLight) {
+    if (theme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light')
     } else {
         document.documentElement.removeAttribute('data-theme')
