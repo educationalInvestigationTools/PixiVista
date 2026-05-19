@@ -2,7 +2,7 @@
 import type { VNodeRef } from 'vue';
 
 const props = defineProps<{
-    label?: string
+    label: string
     rootRef?: VNodeRef
 }>()
 </script>

@@ -4,8 +4,8 @@ import SettingRow from '@/presentation/settingsComponent/SettingRow.vue';
 
 const props = defineProps<{
     node : LabelTreeNode
-    hasChildren?: boolean
-    isCollapsed?: boolean
+    hasChildren: boolean
+    isCollapsed: boolean
 }>()
 
 const emit = defineEmits<{
@@ -22,7 +22,6 @@ function toggleCollapse() {
 
 <template>
     <SettingRow :label="props.node.label">
-        <template #label-prefix>
             <button
                 class="setting-chevron"
                 :class="{
@@ -39,8 +38,6 @@ function toggleCollapse() {
                     <path d="M6 9l6 6 6-6" />
                 </svg>
             </button>
-        </template>
-        <span class="setting-spacer" aria-hidden="true"></span>
     </SettingRow>
 </template>
 
@@ -77,8 +74,5 @@ function toggleCollapse() {
     height: 16px;
 }
 
-.setting-spacer {
-    min-width: 70px;
-}
 
 </style>

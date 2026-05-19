@@ -4,7 +4,7 @@ import { computed } from 'vue';
 const props = defineProps<{
     isLast: boolean
     depth: number
-    ancestorHasNext?: boolean[]
+    ancestorHasNext: boolean[]
 }>()
 
 const indentWidth = 4
