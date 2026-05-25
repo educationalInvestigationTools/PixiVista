@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import type { VNodeRef } from 'vue';
-
 const props = defineProps<{
     label: string
-    rootRef?: VNodeRef
 }>()
 </script>
 
 <template>
-    <div :ref="props.rootRef" class="setting-row">
+    <div class="setting-row">
         <div class="setting-label-area">
             <slot name="label-prefix" />
             <span v-if="props.label" class="setting-label">{{ props.label }}</span>

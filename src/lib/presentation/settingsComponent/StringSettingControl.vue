@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, type VNodeRef } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import SettingRow from '@/presentation/settingsComponent/SettingRow.vue';
 const props = defineProps<{
     label: string
@@ -15,9 +15,6 @@ const emit = defineEmits<{
 const rootRef = ref<HTMLElement | null>(null)
 const isOpen = ref(false)
 
-const setRootRef: VNodeRef = (el) => {
-    rootRef.value = el as HTMLElement | null
-}
 
 const displayValue = computed(() => {
     if (props.format) {
@@ -54,7 +51,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <SettingRow :label="props.label" :root-ref="setRootRef">
+    <SettingRow :label="props.label">
         <div class="string-select">
             <button
                 class="string-select__button"
