@@ -42,7 +42,7 @@ const fillPercent = computed(() => {
     const range = props.max - props.min
     if (range === 0) return 0
     const raw = ((props.value - props.min) / range) * 100
-    return Math.min(100, Math.max(0, raw))
+    return clamp(raw, 0, 100)
 })
 
 const canDecrement = computed(() => props.value > props.min)
@@ -58,11 +58,12 @@ function adjustValue(direction: number) {
     const step = stepSize.value
     if (step === 0) return
 
-    const next = clamp(props.value + step * direction, props.min, props.max)
-    const rounded = Math.round(next * 1000000) / 1000000
+    const value = props.value + step * direction
+    const rounded = Math.round(value * 1000000) / 1000000
+    const next = clamp(rounded, props.min, props.max)
 
-    if (rounded !== props.value) {
-        emit('update:value', rounded)
+    if (next !== props.value) {
+        emit('update:value', next)
     }
 }
 
