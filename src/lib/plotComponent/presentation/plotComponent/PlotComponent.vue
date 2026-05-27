@@ -41,7 +41,7 @@ const heightPerChannel = ref(200)
 
 const visibleChannels = computed(() => {
     const channelsNode = findNodeById(annotationsTree.value, channelsRootId)
-    if (!channelsNode?.children?.length) {
+    if (!channelsNode || channelsNode.children.length === 0) {
         return 0
     }
     return channelsNode.children.reduce((count, node) => {
@@ -264,7 +264,7 @@ function findNodeById(nodes: AnnotationNode[], id: string): AnnotationNode | nul
         if (node.id === id) {
             return node
         }
-        if (node.children?.length) {
+        if (node.children.length) {
             const match = findNodeById(node.children, id)
             if (match) {
                 return match

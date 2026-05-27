@@ -44,7 +44,7 @@ const collapsedState = ref<Record<string, boolean>>({})
 
 function applyVisibilityToSubtree(node: AnnotationNode, visibility: boolean): SubtreeUpdate {
     const ids: string[] = [node.id]
-    const nextChildren = node.children?.map((child) => {
+    const nextChildren = node.children.map((child) => {
         const result = applyVisibilityToSubtree(child, visibility)
         ids.push(...result.ids)
         return result.node
@@ -61,7 +61,7 @@ function applyVisibilityToSubtree(node: AnnotationNode, visibility: boolean): Su
 
 function applyColorToSubtree(node: AnnotationNode, color: string): SubtreeUpdate {
     const ids: string[] = [node.id]
-    const nextChildren = node.children?.map((child) => {
+    const nextChildren = node.children.map((child) => {
         const result = applyColorToSubtree(child, color)
         ids.push(...result.ids)
         return result.node
@@ -78,7 +78,7 @@ function applyColorToSubtree(node: AnnotationNode, color: string): SubtreeUpdate
 
 function applyShapeToSubtree(node: AnnotationNode, shape: AnnotationShape): SubtreeUpdate {
     const ids: string[] = [node.id]
-    const nextChildren = node.children?.map((child) => {
+    const nextChildren = node.children.map((child) => {
         const result = applyShapeToSubtree(child, shape)
         ids.push(...result.ids)
         return result.node
@@ -111,7 +111,7 @@ function updateTreeById(
             return result.node
         }
 
-        if (node.children?.length) {
+        if (node.children.length) {
             let childChanged = false
             const nextChildren = node.children.map((child) => {
                 const nextChild = visit(child)
