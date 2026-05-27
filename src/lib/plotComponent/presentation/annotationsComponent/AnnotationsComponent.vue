@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 
 import AnnotationTreeNode from '@/plotComponent/presentation/annotationsComponent/AnnotationTreeNode.vue'
+import TreeView from '@/presentation/tree/TreeView.vue'
 import type {
     AnnotationColorChange,
     AnnotationNode,
@@ -40,10 +41,6 @@ const emit = defineEmits<{
 }>()
 
 const collapsedState = ref<Record<string, boolean>>({})
-
-function toggleCollapse(id: string) {
-    collapsedState.value[id] = !collapsedState.value[id]
-}
 
 function applyVisibilityToSubtree(node: AnnotationNode, visibility: boolean): SubtreeUpdate {
     const ids: string[] = [node.id]
@@ -199,11 +196,25 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
         </div>
 
         <div class="annotations__panel">
-            <div v-for="(node, index) in props.annotations" :key="node.id" class="annotations__column">
-                <AnnotationTreeNode :node="node" :depth="0" :collapsedState="collapsedState"
-                    :ancestorHasNext="[index !== props.annotations.length - 1]" :isLast="index === props.annotations.length - 1"
-                    @toggle-collapse="toggleCollapse" @toggle-visibility="handleToggleVisibility"
-                    @change-color="handleChangeColor" @change-shape="handleChangeShape" />
+            <div v-for="node in props.annotations" :key="node.id" class="annotations__column">
+                <!-- @vue-generic {import('@/plotComponent/presentation/annotationsComponent/objectAnnotationData').AnnotationNode} -->
+                <TreeView
+                    :node="node"
+                    :depth="0"
+                    :ancestorHasNext="[]"
+                    :isLast="true"
+                    v-model:collapsedState="collapsedState">
+                    <template #default="{ node: slotNode, hasChildren, isCollapsed, toggleCollapse }">
+                        <AnnotationTreeNode
+                            :node="slotNode"
+                            :hasChildren="hasChildren"
+                            :isCollapsed="isCollapsed"
+                            :toggleCollapse="toggleCollapse"
+                            @toggle-visibility="handleToggleVisibility"
+                            @change-color="handleChangeColor"
+                            @change-shape="handleChangeShape" />
+                    </template>
+                </TreeView>
             </div>
             <span v-if="props.annotations.length === 0" class="annotations__empty">No annotations available.</span>
         </div>
@@ -258,6 +269,9 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
     flex-direction: column;
     gap: 6px;
     flex: 0 0 260px;
+    --tree-row-height: 18px;
+    --tree-connector-bg: transparent;
+    --tree-connector-border: transparent;
     min-width: 220px;
 }
 

@@ -215,6 +215,7 @@ function buildAnnotationsTree(): AnnotationsTree {
             shape: 'rectangle',
         },
         state: { visibility: true },
+        children : []
     }))
 
     const channelsRoot: AnnotationNode = {
@@ -250,6 +251,7 @@ function buildAnnotationsTree(): AnnotationsTree {
                     shape: 'dashed-lines',
                 },
                 state: { visibility: true },
+                children : []
             })),
         })
     }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 const props = defineProps<{
     isLast: boolean
@@ -29,61 +29,59 @@ const ancestorLineXs = computed(() =>
 </script>
 
 <template>
-    <span class="tree-draw" :style="{ '--tree-draw-width': cssWidth }">
+    <span class="tree-connector" :style="{ '--tree-connector-width': cssWidth }">
         <svg
-            class="tree-draw__svg"
+            class="tree-connector__svg"
             :viewBox="`0 0 ${svgWidth} ${viewBoxHeight}`"
             preserveAspectRatio="none"
             >
             <line
                 v-for="(x, index) in ancestorLineXs"
                 :key="`ancestor-${index}`"
-                class="tree-draw__line"
+                class="tree-connector__line"
                 :x1="x"
                 y1="0"
                 :x2="x"
                 :y2="viewBoxHeight" />
             <line
-                class="tree-draw__line"
+                class="tree-connector__line"
                 :x1="branchX"
                 y1="0"
                 :x2="branchX"
                 :y2="props.isLast ? midY : viewBoxHeight" />
             <line
-                class="tree-draw__line"
+                class="tree-connector__line"
                 :x1="branchX"
                 :y1="midY"
                 :x2="svgWidth"
                 :y2="midY" />
         </svg>
     </span>
-
 </template>
 
 <style scoped>
-.tree-draw {
+.tree-connector {
     display: inline-flex;
     align-items: center;
-    height: var(--ui-setting-row-height);
-    width: var(--tree-draw-width);
+    height: var(--tree-row-height, var(--ui-setting-row-height, 54px));
+    width: var(--tree-connector-width);
     box-sizing: border-box;
-    background: var(--ui-panel-row-bg);
-    border: 1px solid var(--ui-panel-border);
+    background: var(--tree-connector-bg, var(--ui-panel-row-bg));
+    border: 1px solid var(--tree-connector-border, var(--ui-panel-border));
     font-family: var(--ui-font-mono);
-    color: var(--ui-text-muted);
+    color: var(--tree-connector-color, var(--ui-text-muted));
 }
 
-.tree-draw__svg {
-    width: var(--tree-draw-width);
+.tree-connector__svg {
+    width: var(--tree-connector-width);
     height: 100%;
 }
 
-.tree-draw__line {
+.tree-connector__line {
     stroke: currentColor;
-    stroke-width: 2;
+    stroke-width: var(--tree-connector-stroke, 2);
     stroke-linecap: square;
     vector-effect: non-scaling-stroke;
     shape-rendering: crispEdges;
 }
-
 </style>

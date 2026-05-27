@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
 
 import chevronDownIcon from '@assets/icons/chevron-down.svg'
 import rectangleIcon from '@assets/icons/rectangle.svg'
@@ -10,30 +10,18 @@ defineOptions({ name: 'AnnotationTreeNode' })
 
 const props = defineProps<{
     node: AnnotationNode
-    depth: number
-    collapsedState: Record<string, boolean>
-    ancestorHasNext: boolean[]
-    isLast: boolean
+    hasChildren: boolean
+    isCollapsed: boolean
+    toggleCollapse: () => void
 }>()
 
 const emit = defineEmits<{
-    (e: 'toggle-collapse', id: string): void
     (e: 'toggle-visibility', id: string): void
     (e: 'change-color', id: string, color: string): void
     (e: 'change-shape', id: string, shape: AnnotationShape): void
 }>()
 
-const hasChildren = computed(() => (props.node.children?.length ?? 0) > 0)
-const isCollapsed = computed(() => !!props.collapsedState[props.node.id])
 const showShapePicker = ref(false)
-const treePrefix = computed(() => buildTreePrefix(props.ancestorHasNext, props.isLast))
-const treePrefixWidth = computed(() => `${props.ancestorHasNext.length * 4}ch`)
-
-function toggleCollapse() {
-    if (hasChildren.value) {
-        emit('toggle-collapse', props.node.id)
-    }
-}
 
 function toggleVisibility() {
     emit('toggle-visibility', props.node.id)
@@ -52,18 +40,6 @@ function toggleShapePicker() {
 function selectShape(shape: AnnotationShape) {
     emit('change-shape', props.node.id, shape)
     showShapePicker.value = false
-}
-
-function buildTreePrefix(ancestorHasNext: boolean[], isLast: boolean) {
-    if (ancestorHasNext.length === 0) {
-        return ''
-    }
-    const prefix = ancestorHasNext
-        .slice(0, -1)
-        .map((hasNext) => (hasNext ? '│   ' : '    '))
-        .join('')
-    const branch = isLast ? '└── ' : '├── '
-    return prefix + branch
 }
 
 function handleDocumentClick() {
@@ -89,10 +65,9 @@ function normalizeColor(color: string) {
 
 <template>
     <div class="annotation-node" :class="{ 'annotation-node--off': !props.node.state.visibility }">
-        <span v-if="treePrefix" class="annotation-node__tree" :style="{ width: treePrefixWidth }">{{ treePrefix }}</span>
-        <button class="annotation-node__collapse" type="button" :disabled="!hasChildren"
-            :title="hasChildren ? (isCollapsed ? 'Expand' : 'Collapse') : 'No children'" @click="toggleCollapse">
-            <img class="annotation-node__collapse-icon" :class="{ 'annotation-node__collapse-icon--collapsed': isCollapsed }"
+        <button class="annotation-node__collapse" type="button" :disabled="!props.hasChildren"
+            :title="props.hasChildren ? (props.isCollapsed ? 'Expand' : 'Collapse') : 'No children'" @click="toggleCollapse">
+            <img class="annotation-node__collapse-icon" :class="{ 'annotation-node__collapse-icon--collapsed': props.isCollapsed }"
                 :src="chevronDownIcon" alt="" />
         </button>
 
@@ -141,17 +116,6 @@ function normalizeColor(color: string) {
 
         <span class="annotation-node__label">{{ props.node.label }}</span>
     </div>
-
-    <div v-if="hasChildren && !isCollapsed" class="annotation-node__children">
-        <AnnotationTreeNode v-for="(child, index) in props.node.children" :key="child.id" :node="child"
-            :depth="props.depth + 1" :collapsedState="props.collapsedState"
-            :ancestorHasNext="[...props.ancestorHasNext, !props.isLast]"
-            :isLast="index === (props.node.children?.length ?? 0) - 1"
-            @toggle-collapse="(id) => emit('toggle-collapse', id)"
-            @toggle-visibility="(id) => emit('toggle-visibility', id)"
-            @change-color="(id, color) => emit('change-color', id, color)"
-            @change-shape="(id, shape) => emit('change-shape', id, shape)" />
-    </div>
 </template>
 
 <style scoped>
@@ -171,16 +135,6 @@ function normalizeColor(color: string) {
 
 .annotation-node--off .annotation-node__label {
     text-decoration: line-through;
-}
-
-.annotation-node__tree {
-    color: var(--ui-text-muted);
-    font-family: var(--ui-font-mono);
-    font-size: 12px;
-    white-space: pre;
-    margin-right: 2px;
-    line-height: 18px;
-    display: inline-block;
 }
 
 .annotation-node__collapse {

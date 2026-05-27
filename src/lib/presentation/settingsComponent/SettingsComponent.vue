@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import TreeView from '@/presentation/tree/TreeView.vue';
 import SettingsTreeComponent from '@/presentation/settingsComponent/SettingsTreeComponent.vue';
 import type { AnyUpdateChoice} from '@/presentation/settingsComponent/settingsChoice';
 import type { SettingsTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
@@ -15,12 +16,6 @@ const emit = defineEmits<{
 
 const showSettings = ref(true)
 const collapsedState = ref<Record<string, boolean>>({})
-
-
-
-function toggleCollapse(id: string) {
-    collapsedState.value[id] = !collapsedState.value[id]
-}
 </script>
 
 <template>
@@ -33,15 +28,22 @@ function toggleCollapse(id: string) {
 
         <div v-show="showSettings" class="settings__panel">
             <div v-for="(tree) in props.trees" :key="tree.id" class="settings__tree-root">
-                <SettingsTreeComponent
+                <!-- @vue-generic {import('@/presentation/settingsComponent/settingsTreeNodes').SettingsTreeNode} -->
+                <TreeView
                     :node="tree"
-                    :ancestorHasNext="[]"
                     :depth="0"
+                    :ancestorHasNext="[]"
                     :isLast="true"
-                    :collapsedState="collapsedState"
-                    @toggle-collapse="toggleCollapse"
-                    @update:choice="(update) => emit('update:choice', update)">
-                </SettingsTreeComponent>
+                    v-model:collapsedState="collapsedState">
+                    <template #default="{ node, hasChildren, isCollapsed, toggleCollapse }">
+                        <SettingsTreeComponent
+                            :node="node"
+                            :hasChildren="hasChildren"
+                            :isCollapsed="isCollapsed"
+                            :toggleCollapse="toggleCollapse"
+                            @update:choice="(update) => emit('update:choice', update)" />
+                    </template>
+                </TreeView>
             </div>
         </div>
     </div>

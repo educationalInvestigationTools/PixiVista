@@ -35,7 +35,6 @@ function toggleValue() {
     color: var(--ui-text-primary);
     cursor: pointer;
     font-size: clamp(12px, 1.5vw, 14px);
-    text-transform: uppercase;
     letter-spacing: 1px;
 }
 

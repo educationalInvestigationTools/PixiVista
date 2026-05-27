@@ -7,7 +7,6 @@ const props = defineProps<{
 <template>
     <div class="setting-row">
         <div class="setting-label-area">
-            <slot name="label-prefix" />
             <span v-if="props.label" class="setting-label">{{ props.label }}</span>
         </div>
         <div class="setting-control-area">

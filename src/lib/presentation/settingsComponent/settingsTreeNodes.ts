@@ -1,7 +1,7 @@
 import type { AnyChoice } from "@/presentation/settingsComponent/settingsChoice"
+import type { TreeNodeLike } from "@/presentation/tree/treeTypes"
 
-export interface SettingsTreeNode {
-    id: string
+export interface SettingsTreeNode extends TreeNodeLike<SettingsTreeNode> {
     type : string
     children: SettingsTreeNode[]
 }

@@ -24,6 +24,7 @@ const annotations = ref<AnnotationsTree>([
                     shape: 'rectangle',
                 },
                 state: { visibility: true },
+                children : []
             },
             {
                 id: 'channel:beta',
@@ -34,6 +35,7 @@ const annotations = ref<AnnotationsTree>([
                     shape: 'rectangle',
                 },
                 state: { visibility: true },
+                children : []
             },
             {
                 id: 'channel:gamma',
@@ -44,6 +46,7 @@ const annotations = ref<AnnotationsTree>([
                     shape: 'rectangle',
                 },
                 state: { visibility: true },
+                children : []
             },
         ],
     },
@@ -76,6 +79,7 @@ const annotations = ref<AnnotationsTree>([
                             shape: 'dashed-lines',
                         },
                         state: { visibility: true },
+                        children : []
                     },
                     {
                         id: 'intervals:artifacts:movement',
@@ -86,6 +90,7 @@ const annotations = ref<AnnotationsTree>([
                             shape: 'dashed-lines',
                         },
                         state: { visibility: true },
+                        children : []
                     },
                 ],
             },
@@ -118,6 +123,7 @@ const annotations = ref<AnnotationsTree>([
                                     shape: 'dashed-lines',
                                 },
                                 state: { visibility: true },
+                                children : []
                             },
                         ],
                     },
@@ -130,6 +136,7 @@ const annotations = ref<AnnotationsTree>([
                             shape: 'dashed-lines',
                         },
                         state: { visibility: true },
+                        children : []
                     },
                 ],
             },
