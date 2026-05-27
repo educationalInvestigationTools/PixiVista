@@ -197,7 +197,6 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
 
         <div class="annotations__panel">
             <div v-for="node in props.annotations" :key="node.id" class="annotations__column">
-                <!-- @vue-generic {import('@/plotComponent/presentation/annotationsComponent/objectAnnotationData').AnnotationNode} -->
                 <TreeView
                     :node="node"
                     :depth="0"

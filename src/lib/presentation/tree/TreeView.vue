@@ -37,7 +37,7 @@ const ancestorHasNext = computed(() => props.ancestorHasNext)
 const isLast = computed(() => props.isLast)
 
 const children = computed<T[]>(() => {
-    const value = props.node?.children
+    const value = props.node.children
     return Array.isArray(value) ? value : []
 })
 
