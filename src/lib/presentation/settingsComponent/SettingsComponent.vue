@@ -28,7 +28,6 @@ const collapsedState = ref<Record<string, boolean>>({})
 
         <div v-show="showSettings" class="settings__panel">
             <div v-for="(tree) in props.trees" :key="tree.id" class="settings__tree-root">
-                <!-- @vue-generic {import('@/presentation/settingsComponent/settingsTreeNodes').SettingsTreeNode} -->
                 <TreeView
                     :node="tree"
                     :depth="0"

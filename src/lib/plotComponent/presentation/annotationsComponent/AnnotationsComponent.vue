@@ -268,9 +268,6 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
     flex-direction: column;
     gap: 6px;
     flex: 0 0 260px;
-    --tree-row-height: 18px;
-    --tree-connector-bg: transparent;
-    --tree-connector-border: transparent;
     min-width: 220px;
 }
 

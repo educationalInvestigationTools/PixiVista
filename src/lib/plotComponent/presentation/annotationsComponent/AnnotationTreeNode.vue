@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watch } from 'vue'
 
-import chevronDownIcon from '@assets/icons/chevron-down.svg'
 import rectangleIcon from '@assets/icons/rectangle.svg'
 import dashedLinesIcon from '@assets/icons/dashed-line.svg'
 import type { AnnotationNode, AnnotationShape } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
+import TreeRow from '@/presentation/tree/TreeRow.vue'
 
 defineOptions({ name: 'AnnotationTreeNode' })
 
@@ -64,13 +64,12 @@ function normalizeColor(color: string) {
 </script>
 
 <template>
-    <div class="annotation-node" :class="{ 'annotation-node--off': !props.node.state.visibility }">
-        <button class="annotation-node__collapse" type="button" :disabled="!props.hasChildren"
-            :title="props.hasChildren ? (props.isCollapsed ? 'Expand' : 'Collapse') : 'No children'" @click="toggleCollapse">
-            <img class="annotation-node__collapse-icon" :class="{ 'annotation-node__collapse-icon--collapsed': props.isCollapsed }"
-                :src="chevronDownIcon" alt="" />
-        </button>
-
+    <TreeRow
+        class="annotation-node"
+        :class="{ 'annotation-node--off': !props.node.state.visibility }"
+        :hasChildren="props.hasChildren"
+        :isCollapsed="props.isCollapsed"
+        :toggleCollapse="props.toggleCollapse">
         <button class="annotation-node__visibility" type="button" @click="toggleVisibility"
             :title="props.node.state.visibility ? 'Hide' : 'Show'" :aria-label="props.node.state.visibility ? 'Hide' : 'Show'">
             <svg v-if="props.node.state.visibility" class="annotation-node__visibility-icon" viewBox="0 0 24 24"
@@ -115,54 +114,16 @@ function normalizeColor(color: string) {
         </div>
 
         <span class="annotation-node__label">{{ props.node.label }}</span>
-    </div>
+    </TreeRow>
 </template>
 
 <style scoped>
-.annotation-node {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 0;
-    font-size: clamp(12px, 1.4vw, 14px);
-    line-height: 18px;
-    font-family: var(--ui-font);
-}
-
 .annotation-node--off {
     opacity: 0.45;
 }
 
 .annotation-node--off .annotation-node__label {
     text-decoration: line-through;
-}
-
-.annotation-node__collapse {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-}
-
-.annotation-node__collapse:disabled {
-    cursor: default;
-    opacity: 0.35;
-}
-
-.annotation-node__collapse-icon {
-    width: 14px;
-    height: 14px;
-    transition: transform 0.15s ease;
-    filter: var(--ui-icon-filter);
-}
-
-.annotation-node__collapse-icon--collapsed {
-    transform: rotate(-90deg);
 }
 
 .annotation-node__color {
@@ -268,14 +229,5 @@ function normalizeColor(color: string) {
 .annotation-node__visibility-icon {
     width: 14px;
     height: 14px;
-}
-
-.annotation-node__children {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin: 0;
-    padding-left: 0;
-    border-left: none;
 }
 </style>

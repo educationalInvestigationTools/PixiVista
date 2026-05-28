@@ -8,6 +8,7 @@ import StringSettingControl from '@/presentation/settingsComponent/StringSetting
 import LabelTreeNodeComponent from '@/presentation/settingsComponent/LabelTreeNodeComponent.vue';
 import type { AnyUpdateChoice, NumberSettingChoice, StringSettingChoice } from '@/presentation/settingsComponent/settingsChoice';
 import type { SettingsTreeNode, ChoiceTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
+import TreeRow from '@/presentation/tree/TreeRow.vue';
 
 const props = defineProps<{
     node: SettingsTreeNode
@@ -39,13 +40,13 @@ function updateStringChoice(choiceId: string, value: string) {
 </script>
 
 <template>
-    <div class="settings__row">
+    <TreeRow
+        :hasChildren="props.hasChildren"
+        :isCollapsed="props.isCollapsed"
+        :toggleCollapse="props.toggleCollapse">
         <LabelTreeNodeComponent
             v-if="node.type === 'LabelTreeNode'"
-            :node="(node as LabelTreeNode)"
-            :hasChildren="props.hasChildren"
-            :isCollapsed="props.isCollapsed"
-            @toggle-collapse="props.toggleCollapse">
+            :node="(node as LabelTreeNode)">
         </LabelTreeNodeComponent>
 
         <BooleanSettingControl v-else-if="typeof choice.value === 'boolean'" :label="choice.label" :value="choice.value"
@@ -59,15 +60,5 @@ function updateStringChoice(choiceId: string, value: string) {
         <StringSettingControl v-else-if="typeof choice.value === 'string'" :label="choice.label" :value="choice.value"
             :options="(choice as StringSettingChoice).options" :format="(choice as StringSettingChoice).format"
             @update:value="(value) => updateStringChoice(choice.id, value)" />
-    </div>
+    </TreeRow>
 </template>
-
-<style scoped>
-
-.settings__row {
-    display: flex;
-    align-items: center;
-    gap: 0;
-}
-
-</style>

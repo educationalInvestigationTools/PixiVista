@@ -63,11 +63,11 @@ const ancestorLineXs = computed(() =>
 .tree-connector {
     display: inline-flex;
     align-items: center;
-    height: var(--tree-row-height, var(--ui-setting-row-height, 54px));
     width: var(--tree-connector-width);
     box-sizing: border-box;
-    background: var(--tree-connector-bg, var(--ui-panel-row-bg));
-    border: 1px solid var(--tree-connector-border, var(--ui-panel-border));
+    align-self: stretch;
+    background: var(--tree-connector-bg, transparent);
+    border: 1px solid var(--tree-connector-border, transparent);
     font-family: var(--ui-font-mono);
     color: var(--tree-connector-color, var(--ui-text-muted));
 }

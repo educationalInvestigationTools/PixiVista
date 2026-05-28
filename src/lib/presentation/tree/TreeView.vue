@@ -119,9 +119,11 @@ function toggleCollapse() {
 }
 
 .tree-node__row {
-    display: flex;
-    align-items: center;
-    gap: 0;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+    align-items: stretch;
+    column-gap: 0;
 }
 
 .tree-node__children {
