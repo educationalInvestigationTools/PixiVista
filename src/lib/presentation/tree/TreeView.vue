@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 import TreeConnector from '@/presentation/tree/TreeConnector.vue'
+import TreeRow from '@/presentation/tree/TreeRow.vue'
 import type { TreeNodeLike } from '@/presentation/tree/treeTypes'
 
 defineOptions({ name: 'TreeView' })
@@ -76,14 +77,19 @@ function toggleCollapse() {
                 :isLast="isLast"
                 :depth="depth"
                 :ancestorHasNext="ancestorHasNext" />
-            <slot
-                :node="props.node"
-                :depth="depth"
-                :isLast="isLast"
-                :ancestorHasNext="ancestorHasNext"
+            <TreeRow
                 :hasChildren="hasChildren"
                 :isCollapsed="isCollapsed"
-                :toggleCollapse="toggleCollapse" />
+                :toggleCollapse="toggleCollapse">
+                <slot
+                    :node="props.node"
+                    :depth="depth"
+                    :isLast="isLast"
+                    :ancestorHasNext="ancestorHasNext"
+                    :hasChildren="hasChildren"
+                    :isCollapsed="isCollapsed"
+                    :toggleCollapse="toggleCollapse" />
+            </TreeRow>
         </div>
 
         <div v-if="hasChildren && !isCollapsed" class="tree-node__children">
@@ -116,7 +122,6 @@ function toggleCollapse() {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    background-color: blue;
 }
 
 .tree-node__row {

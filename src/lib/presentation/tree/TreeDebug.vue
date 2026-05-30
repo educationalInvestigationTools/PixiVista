@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 
 import TreeView from '@/presentation/tree/TreeView.vue'
-import TreeRow from '@/presentation/tree/TreeRow.vue'
 import type { TreeNodeLike } from '@/presentation/tree/treeTypes'
 
 type TreeDebugNode = TreeNodeLike<TreeDebugNode> & {
@@ -56,11 +55,10 @@ const collapsedState = ref<Record<string, boolean>>({})
 <template>
     <div v-for="node in tree" :key="node.id" class="tree-debug__root">
         <TreeView :node="node" :depth="0" :ancestorHasNext="[]" :isLast="true" v-model:collapsedState="collapsedState">
-            <template #default="{ node, hasChildren, isCollapsed, toggleCollapse }">
-                <TreeRow class="tree-debug__node" :class="{ 'tree-debug__node--leaf': !hasChildren }"
-                    :hasChildren="hasChildren" :isCollapsed="isCollapsed" :toggleCollapse="toggleCollapse">
-                    <span class="tree-debug__label">{{ node.label }}</span>
-                </TreeRow>
+            <template #default="{ node, hasChildren }">
+                <span class="tree-debug__label" :class="{ 'tree-debug__label--leaf': !hasChildren }">
+                    {{ node.label }}
+                </span>
             </template>
         </TreeView>
     </div>
@@ -118,19 +116,13 @@ const collapsedState = ref<Record<string, boolean>>({})
     background: var(--ui-panel-row-bg);
 }
 
-.tree-debug__node {
-    min-height: 36px;
-    padding: 0 8px;
-    border-radius: 8px;
-    color: var(--ui-text-primary);
-}
-
-.tree-debug__node--leaf {
-    padding-left: 4px;
-}
-
 .tree-debug__label {
     font-size: 14px;
     line-height: 1.3;
+    color: var(--ui-text-primary);
+}
+
+.tree-debug__label--leaf {
+    text-decoration: none;
 }
 </style>

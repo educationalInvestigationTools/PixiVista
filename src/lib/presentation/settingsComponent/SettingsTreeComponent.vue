@@ -8,7 +8,6 @@ import StringSettingControl from '@/presentation/settingsComponent/StringSetting
 import LabelTreeNodeComponent from '@/presentation/settingsComponent/LabelTreeNodeComponent.vue';
 import type { AnyUpdateChoice, NumberSettingChoice, StringSettingChoice } from '@/presentation/settingsComponent/settingsChoice';
 import type { SettingsTreeNode, ChoiceTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
-import TreeRow from '@/presentation/tree/TreeRow.vue';
 
 const props = defineProps<{
     node: SettingsTreeNode
@@ -40,25 +39,20 @@ function updateStringChoice(choiceId: string, value: string) {
 </script>
 
 <template>
-    <TreeRow
-        :hasChildren="props.hasChildren"
-        :isCollapsed="props.isCollapsed"
-        :toggleCollapse="props.toggleCollapse">
-        <LabelTreeNodeComponent
-            v-if="node.type === 'LabelTreeNode'"
-            :node="(node as LabelTreeNode)">
-        </LabelTreeNodeComponent>
+    <LabelTreeNodeComponent
+        v-if="node.type === 'LabelTreeNode'"
+        :node="(node as LabelTreeNode)">
+    </LabelTreeNodeComponent>
 
-        <BooleanSettingControl v-else-if="typeof choice.value === 'boolean'" :label="choice.label" :value="choice.value"
-            @update:value="(value) => updateBooleanChoice(choice.id, value)" />
+    <BooleanSettingControl v-else-if="typeof choice.value === 'boolean'" :label="choice.label" :value="choice.value"
+        @update:value="(value) => updateBooleanChoice(choice.id, value)" />
 
-        <NumberSettingControl v-else-if="typeof choice.value === 'number'" :label="choice.label" :value="choice.value"
-            :min="(choice as NumberSettingChoice).min" :max="(choice as NumberSettingChoice).max"
-            :format="(choice as NumberSettingChoice).format"
-            @update:value="(value) => updateNumberChoice(choice as NumberSettingChoice, value)" />
+    <NumberSettingControl v-else-if="typeof choice.value === 'number'" :label="choice.label" :value="choice.value"
+        :min="(choice as NumberSettingChoice).min" :max="(choice as NumberSettingChoice).max"
+        :format="(choice as NumberSettingChoice).format"
+        @update:value="(value) => updateNumberChoice(choice as NumberSettingChoice, value)" />
 
-        <StringSettingControl v-else-if="typeof choice.value === 'string'" :label="choice.label" :value="choice.value"
-            :options="(choice as StringSettingChoice).options" :format="(choice as StringSettingChoice).format"
-            @update:value="(value) => updateStringChoice(choice.id, value)" />
-    </TreeRow>
+    <StringSettingControl v-else-if="typeof choice.value === 'string'" :label="choice.label" :value="choice.value"
+        :options="(choice as StringSettingChoice).options" :format="(choice as StringSettingChoice).format"
+        @update:value="(value) => updateStringChoice(choice.id, value)" />
 </template>

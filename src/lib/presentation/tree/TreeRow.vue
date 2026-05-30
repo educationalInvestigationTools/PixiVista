@@ -37,7 +37,6 @@ const props = defineProps<{
     align-items: center;
     font-size: clamp(12px, 1.4vw, 14px);
     font-family: var(--ui-font);
-    background-color: chartreuse;
 }
 
 .tree-row__toggle-slot {

@@ -4,7 +4,6 @@ import { onBeforeUnmount, ref, watch } from 'vue'
 import rectangleIcon from '@assets/icons/rectangle.svg'
 import dashedLinesIcon from '@assets/icons/dashed-line.svg'
 import type { AnnotationNode, AnnotationShape } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
-import TreeRow from '@/presentation/tree/TreeRow.vue'
 
 defineOptions({ name: 'AnnotationTreeNode' })
 
@@ -64,23 +63,18 @@ function normalizeColor(color: string) {
 </script>
 
 <template>
-    <TreeRow
-        class="annotation-node"
-        :class="{ 'annotation-node--off': !props.node.state.visibility }"
-        :hasChildren="props.hasChildren"
-        :isCollapsed="props.isCollapsed"
-        :toggleCollapse="props.toggleCollapse">
+    <div class="annotation-node" :class="{ 'annotation-node--off': !props.node.state.visibility }">
         <button class="annotation-node__visibility" type="button" @click="toggleVisibility"
-            :title="props.node.state.visibility ? 'Hide' : 'Show'" :aria-label="props.node.state.visibility ? 'Hide' : 'Show'">
+            :title="props.node.state.visibility ? 'Hide' : 'Show'"
+            :aria-label="props.node.state.visibility ? 'Hide' : 'Show'">
             <svg v-if="props.node.state.visibility" class="annotation-node__visibility-icon" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 aria-hidden="true">
                 <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z" />
                 <circle cx="12" cy="12" r="3" />
             </svg>
-            <svg v-else class="annotation-node__visibility-icon" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                aria-hidden="true">
+            <svg v-else class="annotation-node__visibility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M17.94 17.94A10.89 10.89 0 0 1 12 20c-6 0-10-8-10-8a21.35 21.35 0 0 1 5.06-6.94" />
                 <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
                 <path d="M1 1l22 22" />
@@ -114,10 +108,16 @@ function normalizeColor(color: string) {
         </div>
 
         <span class="annotation-node__label">{{ props.node.label }}</span>
-    </TreeRow>
+    </div>
 </template>
 
 <style scoped>
+.annotation-node {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .annotation-node--off {
     opacity: 0.45;
 }
