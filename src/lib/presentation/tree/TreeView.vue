@@ -122,6 +122,7 @@ function toggleCollapse() {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    --tree-connector-gap: var(--tree-row-gap, 6px);
 }
 
 .tree-node__row {
@@ -129,11 +130,14 @@ function toggleCollapse() {
     grid-auto-flow: column;
     grid-auto-columns: auto;
     align-items: stretch;
+    column-gap: var(--tree-row-inline-gap, 6px);
 }
 
 .tree-node__children {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--tree-row-gap, 6px);
+    margin-top: var(--tree-row-gap, 6px);
 }
 </style>

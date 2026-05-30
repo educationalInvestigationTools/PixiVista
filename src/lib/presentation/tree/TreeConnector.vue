@@ -9,6 +9,7 @@ const props = defineProps<{
     ancestorHasNext: boolean[]
 }>()
 
+const rowInlineGap = 6
 const columnWidth = TREE_TOGGLE_WIDTH
 const tailWidth = TREE_CONNECTOR_TAIL_WIDTH
 const viewBoxHeight = 5
@@ -16,17 +17,19 @@ const midY = viewBoxHeight / 2
 
 const ancestorHasNext = computed(() => props.ancestorHasNext)
 const columnCount = computed(() => Math.max(1, props.depth))
-const svgWidth = computed(() => columnCount.value * (columnWidth + tailWidth))
-const branchX = computed(() => (columnCount.value - 0.5) * columnWidth + Math.max(0, columnCount.value - 1) * tailWidth)
+const svgWidth = computed(() => columnCount.value * (columnWidth + tailWidth + rowInlineGap) - rowInlineGap)
+const branchX = computed(() =>
+    (columnCount.value - 0.5) * columnWidth + Math.max(0, columnCount.value - 1) * (tailWidth + rowInlineGap),
+)
 const effectiveAncestorHasNext = computed(() =>
     ancestorHasNext.value.slice(0, Math.max(0, columnCount.value - 1)),
 )
-const cssWidth = computed(() => `${columnCount.value * (columnWidth + tailWidth)}px`)
+const cssWidth = computed(() => `${columnCount.value * (columnWidth + tailWidth + rowInlineGap) - rowInlineGap}px`)
 
 const ancestorLineXs = computed(() =>
     effectiveAncestorHasNext.value
         .map((hasNext, index) =>
-            hasNext ? (index + 0.5) * columnWidth + index * tailWidth : null,
+            hasNext ? (index + 0.5) * columnWidth + index * (tailWidth + rowInlineGap) : null,
         )
         .filter((value): value is number => value !== null),
 )
@@ -70,12 +73,14 @@ const ancestorLineXs = computed(() =>
     width: var(--tree-connector-width);
     box-sizing: border-box;
     margin-left: var(--tree-row-offset, 0px);
+    margin-bottom: calc(var(--tree-connector-gap, 0px) * -1);
+    padding-bottom: var(--tree-connector-gap, 0px);
     color: var(--tree-connector-color, var(--ui-text-muted));
 }
 
 .tree-connector__svg {
     width: var(--tree-connector-width);
-    height: 100%;
+    height: calc(100% + var(--tree-connector-gap, 0px));
 }
 
 .tree-connector__line {

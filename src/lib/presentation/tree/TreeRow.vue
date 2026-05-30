@@ -35,6 +35,7 @@ const props = defineProps<{
 .tree-row {
     display: flex;
     align-items: center;
+    gap: var(--tree-row-inline-gap, 6px);
     font-size: clamp(12px, 1.4vw, 14px);
     font-family: var(--ui-font);
 }
