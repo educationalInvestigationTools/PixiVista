@@ -8,48 +8,45 @@ type TreeDebugNode = TreeNodeLike<TreeDebugNode> & {
     label: string
 }
 
-const tree = ref<TreeDebugNode[]>([
-    {
-        id: 'root-alpha',
-        label: 'Root Alpha',
-        children: [
-            {
-                id: 'alpha-1',
-                label: 'Alpha 1',
-                children: [],
-            },
-            {
-                id: 'alpha-2',
-                label: 'Alpha 2',
-                children: [
-                    {
-                        id: 'alpha-2-a',
-                        label: 'Alpha 2A',
-                        children: [],
-                    },
-                    {
-                        id: 'alpha-2-b',
-                        label: 'Alpha 2B',
-                        children: [],
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        id: 'root-beta',
-        label: 'Root Beta',
-        children: [
-            {
-                id: 'beta-1',
-                label: 'Beta 1',
-                children: [],
-            },
-        ],
-    },
-])
+const rootLabelPool = ['Root Alpha', 'Root Beta', 'Root Gamma', 'Root Delta']
+const branchLabelPool = ['Branch', 'Cluster', 'Twig', 'Node']
+const leafLabelPool = ['Leaf', 'Tip', 'Bud', 'Seed']
+
+let nextTreeNodeId = 0
+
+const tree = ref<TreeDebugNode[]>(createRandomTree())
 
 const collapsedState = ref<Record<string, boolean>>({})
+
+function createRandomTree(): TreeDebugNode[] {
+    nextTreeNodeId = 0
+
+    const rootCount = randomInt(2, 4)
+    const maxDepth = randomInt(2, 3)
+
+    return Array.from({ length: rootCount }, () => createTreeNode(0, maxDepth))
+}
+
+function createTreeNode(depth: number, maxDepth: number): TreeDebugNode {
+    const idNumber = nextTreeNodeId++
+    const label = pickRandom(depth === 0 ? rootLabelPool : depth === maxDepth ? leafLabelPool : branchLabelPool)
+    const canBranch = depth < maxDepth && (depth === 0 || Math.random() > 0.25)
+    const childCount = canBranch ? randomInt(depth === maxDepth - 1 ? 0 : 1, depth === 0 ? 3 : 2) : 0
+
+    return {
+        id: `tree-debug-${idNumber}`,
+        label: `${label} ${idNumber + 1}`,
+        children: Array.from({ length: childCount }, () => createTreeNode(depth + 1, maxDepth)),
+    }
+}
+
+function randomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function pickRandom<T>(values: readonly T[]): T {
+    return values[randomInt(0, values.length - 1)]!
+}
 </script>
 
 <template>
