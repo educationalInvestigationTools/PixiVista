@@ -16,8 +16,6 @@ let nextTreeNodeId = 0
 
 const tree = ref<TreeDebugNode[]>(createRandomTree())
 
-const collapsedState = ref<Record<string, boolean>>({})
-
 function createRandomTree(): TreeDebugNode[] {
     nextTreeNodeId = 0
 
@@ -57,8 +55,7 @@ function pickRandom<T>(values: readonly T[]): T {
                     :node="node"
                     :depth="0"
                     :ancestorHasNext="[]"
-                    :isLast="true"
-                    v-model:collapsedState="collapsedState">
+                    :isLast="true">
                     <template #default="{ node, hasChildren }">
                         <span class="tree-debug__label" :class="{ 'tree-debug__label--leaf': !hasChildren }">
                             {{ node.label }}

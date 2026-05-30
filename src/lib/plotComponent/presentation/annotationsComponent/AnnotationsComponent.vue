@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 
 import AnnotationTreeNode from '@/plotComponent/presentation/annotationsComponent/AnnotationTreeNode.vue'
 import TreeView from '@/presentation/tree/TreeView.vue'
@@ -39,8 +38,6 @@ const emit = defineEmits<{
     (e: 'change:color', value: AnnotationColorChange): void
     (e: 'change:shape', value: AnnotationShapeChange): void
 }>()
-
-const collapsedState = ref<Record<string, boolean>>({})
 
 function applyVisibilityToSubtree(node: AnnotationNode, visibility: boolean): SubtreeUpdate {
     const ids: string[] = [node.id]
@@ -201,8 +198,7 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
                     :node="node"
                     :depth="0"
                     :ancestorHasNext="[]"
-                    :isLast="true"
-                    v-model:collapsedState="collapsedState">
+                    :isLast="true">
                     <template #default="{ node: slotNode, hasChildren, isCollapsed, toggleCollapse }">
                         <AnnotationTreeNode
                             :node="slotNode"

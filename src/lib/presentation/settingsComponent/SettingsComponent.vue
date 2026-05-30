@@ -15,7 +15,6 @@ const emit = defineEmits<{
 }>()
 
 const showSettings = ref(true)
-const collapsedState = ref<Record<string, boolean>>({})
 </script>
 
 <template>
@@ -32,8 +31,7 @@ const collapsedState = ref<Record<string, boolean>>({})
                     :node="tree"
                     :depth="0"
                     :ancestorHasNext="[]"
-                    :isLast="true"
-                    v-model:collapsedState="collapsedState">
+                    :isLast="true">
                     <template #default="{ node, hasChildren, isCollapsed, toggleCollapse }">
                         <SettingsTreeComponent
                             :node="node"

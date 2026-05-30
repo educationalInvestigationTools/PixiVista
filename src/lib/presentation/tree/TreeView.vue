@@ -1,10 +1,10 @@
 <script setup lang="ts" generic="T extends TreeNodeLike<T>">
-import { computed, onBeforeUnmount, onMounted, provide, ref } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, provide, ref } from 'vue'
 
 import TreeConnector from '@/presentation/tree/TreeConnector.vue'
 import TreeRow from '@/presentation/tree/TreeRow.vue'
 import type { TreeNodeLike } from '@/presentation/tree/treeTypes'
-import { TREE_ROW_METRICS_KEY, resolveTreeToggleSize } from '@/presentation/tree/treeLayout'
+import { TREE_COLLAPSED_STATE_KEY, TREE_ROW_METRICS_KEY, resolveTreeToggleSize } from '@/presentation/tree/treeLayout'
 
 defineOptions({ name: 'TreeView' })
 
@@ -23,15 +23,10 @@ const props = defineProps<{
     depth: number
     ancestorHasNext: boolean[]
     isLast: boolean
-    collapsedState: Record<string, boolean>
 }>()
 
 defineSlots<{
     default(props: TreeSlotProps<T>): unknown
-}>()
-
-const emit = defineEmits<{
-    (e: 'update:collapsedState', value: Record<string, boolean>): void
 }>()
 
 const depth = computed(() => props.depth)
@@ -45,7 +40,8 @@ const children = computed<T[]>(() => {
 
 const hasChildren = computed(() => children.value.length > 0)
 
-const collapsedState = computed(() => props.collapsedState)
+const inheritedCollapsedState = inject(TREE_COLLAPSED_STATE_KEY, null)
+const collapsedState = inheritedCollapsedState ?? ref<Record<string, boolean>>({})
 const isCollapsed = computed(() => !!collapsedState.value[props.node.id])
 const rowElement = ref<HTMLElement | null>(null)
 const rowHeight = ref(0)
@@ -56,6 +52,8 @@ let resizeObserver: ResizeObserver | null = null
 provide(TREE_ROW_METRICS_KEY, {
     toggleSize,
 })
+
+provide(TREE_COLLAPSED_STATE_KEY, collapsedState)
 
 const childAncestorHasNext = computed(() => {
     if (depth.value === 0) {
@@ -93,16 +91,11 @@ onBeforeUnmount(() => {
     resizeObserver = null
 })
 
-function updateCollapsedState(nextState: Record<string, boolean>) {
-    emit('update:collapsedState', nextState)
-}
-
 function toggleCollapse() {
     if (!hasChildren.value) {
         return
     }
-    const nextState = { ...collapsedState.value, [props.node.id]: !isCollapsed.value }
-    updateCollapsedState(nextState)
+    collapsedState.value = { ...collapsedState.value, [props.node.id]: !isCollapsed.value }
 }
 </script>
 
@@ -136,9 +129,7 @@ function toggleCollapse() {
                 :node="child"
                 :depth="childDepth"
                 :ancestorHasNext="childAncestorHasNext"
-                :isLast="index === children.length - 1"
-                :collapsedState="collapsedState"
-                @update:collapsedState="updateCollapsedState">
+                :isLast="index === children.length - 1">
                 <template #default="{ node, depth, isLast, ancestorHasNext, hasChildren, isCollapsed, toggleCollapse }">
                     <slot
                         :node="node"
