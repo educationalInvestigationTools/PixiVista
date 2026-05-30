@@ -116,6 +116,7 @@ function toggleCollapse() {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    background-color: blue;
 }
 
 .tree-node__row {
@@ -123,7 +124,6 @@ function toggleCollapse() {
     grid-auto-flow: column;
     grid-auto-columns: auto;
     align-items: stretch;
-    column-gap: 0;
 }
 
 .tree-node__children {

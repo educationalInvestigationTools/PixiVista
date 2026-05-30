@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { TREE_TOGGLE_WIDTH } from '@/presentation/tree/treeLayout';
 import { computed } from 'vue'
+
 
 const props = defineProps<{
     isLast: boolean
@@ -7,19 +9,18 @@ const props = defineProps<{
     ancestorHasNext: boolean[]
 }>()
 
-const indentWidth = 4
-const columnWidth = indentWidth
-const viewBoxHeight = 24
+const columnWidth = TREE_TOGGLE_WIDTH
+const viewBoxHeight = 5
 const midY = viewBoxHeight / 2
 
-const ancestorHasNext = computed(() => props.ancestorHasNext ?? [])
+const ancestorHasNext = computed(() => props.ancestorHasNext)
 const columnCount = computed(() => Math.max(1, props.depth))
 const svgWidth = computed(() => columnCount.value * columnWidth)
 const branchX = computed(() => (columnCount.value - 0.5) * columnWidth)
 const effectiveAncestorHasNext = computed(() =>
     ancestorHasNext.value.slice(0, Math.max(0, columnCount.value - 1)),
 )
-const cssWidth = computed(() => `${columnCount.value * indentWidth}ch`)
+const cssWidth = computed(() => `${columnCount.value * columnWidth}px`)
 
 const ancestorLineXs = computed(() =>
     effectiveAncestorHasNext.value
@@ -65,10 +66,8 @@ const ancestorLineXs = computed(() =>
     align-items: center;
     width: var(--tree-connector-width);
     box-sizing: border-box;
-    align-self: stretch;
-    background: var(--tree-connector-bg, transparent);
-    border: 1px solid var(--tree-connector-border, transparent);
-    font-family: var(--ui-font-mono);
+    background-color: red;
+    margin-left: var(--tree-row-offset, 0px);
     color: var(--tree-connector-color, var(--ui-text-muted));
 }
 
@@ -79,7 +78,7 @@ const ancestorLineXs = computed(() =>
 
 .tree-connector__line {
     stroke: currentColor;
-    stroke-width: var(--tree-connector-stroke, 2);
+    stroke-width: 2;
     stroke-linecap: square;
     vector-effect: non-scaling-stroke;
     shape-rendering: crispEdges;
