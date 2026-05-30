@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { TREE_CONNECTOR_TAIL_WIDTH, TREE_TOGGLE_WIDTH } from '@/presentation/tree/treeLayout';
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
+
+import { TREE_ROW_METRICS_KEY, resolveTreeConnectorTailWidth } from '@/presentation/tree/treeLayout'
 
 
 const props = defineProps<{
@@ -9,36 +10,39 @@ const props = defineProps<{
     ancestorHasNext: boolean[]
 }>()
 
+const treeRowMetrics = inject(TREE_ROW_METRICS_KEY, null)
 const rowInlineGap = 6
-const columnWidth = TREE_TOGGLE_WIDTH
-const tailWidth = TREE_CONNECTOR_TAIL_WIDTH
+const columnWidth = computed(() => treeRowMetrics?.toggleSize.value ?? 16)
+const tailWidth = computed(() => resolveTreeConnectorTailWidth(columnWidth.value))
 const viewBoxHeight = 5
 const midY = viewBoxHeight / 2
 
 const ancestorHasNext = computed(() => props.ancestorHasNext)
 const columnCount = computed(() => Math.max(1, props.depth))
-const svgWidth = computed(() => columnCount.value * (columnWidth + tailWidth + rowInlineGap) - rowInlineGap)
+const svgWidth = computed(() => columnCount.value * (columnWidth.value + tailWidth.value + rowInlineGap) - rowInlineGap)
 const branchX = computed(() =>
-    (columnCount.value - 0.5) * columnWidth + Math.max(0, columnCount.value - 1) * (tailWidth + rowInlineGap),
+    (columnCount.value - 0.5) * columnWidth.value + Math.max(0, columnCount.value - 1) * (tailWidth.value + rowInlineGap),
 )
 const effectiveAncestorHasNext = computed(() =>
     ancestorHasNext.value.slice(0, Math.max(0, columnCount.value - 1)),
 )
-const cssWidth = computed(() => `${columnCount.value * (columnWidth + tailWidth + rowInlineGap) - rowInlineGap}px`)
+const cssWidth = computed(() => `${columnCount.value * (columnWidth.value + tailWidth.value + rowInlineGap) - rowInlineGap}px`)
 
 const ancestorLineXs = computed(() =>
     effectiveAncestorHasNext.value
         .map((hasNext, index) =>
-            hasNext ? (index + 0.5) * columnWidth + index * (tailWidth + rowInlineGap) : null,
+            hasNext ? (index + 0.5) * columnWidth.value + index * (tailWidth.value + rowInlineGap) : null,
         )
         .filter((value): value is number => value !== null),
 )
 </script>
 
 <template>
-    <span class="tree-connector" :style="{ '--tree-connector-width': cssWidth }">
+    <span class="tree-connector" :style="{ width: cssWidth }">
         <svg
             class="tree-connector__svg"
+            :width="svgWidth"
+            :height="viewBoxHeight"
             :viewBox="`0 0 ${svgWidth} ${viewBoxHeight}`"
             preserveAspectRatio="none"
             >
@@ -70,7 +74,6 @@ const ancestorLineXs = computed(() =>
 .tree-connector {
     display: inline-flex;
     align-items: center;
-    width: var(--tree-connector-width);
     box-sizing: border-box;
     margin-left: var(--tree-row-offset, 0px);
     margin-bottom: calc(var(--tree-connector-gap, 0px) * -1);
@@ -79,7 +82,6 @@ const ancestorLineXs = computed(() =>
 }
 
 .tree-connector__svg {
-    width: var(--tree-connector-width);
     height: calc(100% + var(--tree-connector-gap, 0px));
 }
 

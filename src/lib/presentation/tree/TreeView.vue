@@ -1,9 +1,10 @@
 <script setup lang="ts" generic="T extends TreeNodeLike<T>">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, provide, ref } from 'vue'
 
 import TreeConnector from '@/presentation/tree/TreeConnector.vue'
 import TreeRow from '@/presentation/tree/TreeRow.vue'
 import type { TreeNodeLike } from '@/presentation/tree/treeTypes'
+import { TREE_ROW_METRICS_KEY, resolveTreeToggleSize } from '@/presentation/tree/treeLayout'
 
 defineOptions({ name: 'TreeView' })
 
@@ -46,6 +47,15 @@ const hasChildren = computed(() => children.value.length > 0)
 
 const collapsedState = computed(() => props.collapsedState)
 const isCollapsed = computed(() => !!collapsedState.value[props.node.id])
+const rowElement = ref<HTMLElement | null>(null)
+const rowHeight = ref(0)
+const toggleSize = computed(() => resolveTreeToggleSize(rowHeight.value))
+
+let resizeObserver: ResizeObserver | null = null
+
+provide(TREE_ROW_METRICS_KEY, {
+    toggleSize,
+})
 
 const childAncestorHasNext = computed(() => {
     if (depth.value === 0) {
@@ -55,6 +65,33 @@ const childAncestorHasNext = computed(() => {
 })
 
 const childDepth = computed(() => depth.value + 1)
+
+function updateRowHeight(height: number) {
+    rowHeight.value = height > 0 ? height : rowHeight.value
+}
+
+onMounted(() => {
+    if (!rowElement.value) {
+        return
+    }
+
+    updateRowHeight(rowElement.value.getBoundingClientRect().height)
+
+    resizeObserver = new ResizeObserver((entries) => {
+        const entry = entries[0]
+        if (!entry) {
+            return
+        }
+        updateRowHeight(entry.contentRect.height)
+    })
+
+    resizeObserver.observe(rowElement.value)
+})
+
+onBeforeUnmount(() => {
+    resizeObserver?.disconnect()
+    resizeObserver = null
+})
 
 function updateCollapsedState(nextState: Record<string, boolean>) {
     emit('update:collapsedState', nextState)
@@ -71,7 +108,7 @@ function toggleCollapse() {
 
 <template>
     <div class="tree-node">
-        <div class="tree-node__row">
+        <div ref="rowElement" class="tree-node__row">
             <TreeConnector
                 v-if="depth > 0"
                 :isLast="isLast"

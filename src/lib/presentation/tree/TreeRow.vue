@@ -1,20 +1,26 @@
 <script setup lang="ts">
+import { computed, inject } from 'vue'
+
 import chevronDownIcon from '@assets/icons/chevron-down.svg'
 
-import { TREE_TOGGLE_WIDTH } from './treeLayout'
+import { TREE_ROW_METRICS_KEY, resolveTreeToggleSize } from './treeLayout'
 
 const props = defineProps<{
     hasChildren: boolean
     isCollapsed: boolean
     toggleCollapse: () => void
 }>()
+
+const treeRowMetrics = inject(TREE_ROW_METRICS_KEY, null)
+const toggleSize = computed(() => treeRowMetrics?.toggleSize.value ?? resolveTreeToggleSize(0))
 </script>
 
 <template>
-    <div class="tree-row" :style="{ '--tree-toggle-width': `${TREE_TOGGLE_WIDTH}px` }">
-        <div v-if="props.hasChildren" class="tree-row__toggle-slot">
+    <div class="tree-row">
+        <div v-if="props.hasChildren" class="tree-row__toggle-slot" :style="{ width: `${toggleSize}px`, flexBasis: `${toggleSize}px` }">
             <button
                 class="tree-row__toggle"
+                :style="{ width: `${toggleSize}px`, height: `${toggleSize}px` }"
                 type="button"
                 :title="props.isCollapsed ? 'Expand' : 'Collapse'"
                 :aria-label="props.isCollapsed ? 'Expand' : 'Collapse'"
@@ -23,6 +29,7 @@ const props = defineProps<{
                 <img
                     class="tree-row__toggle-icon"
                     :class="{ 'tree-row__toggle-icon--collapsed': props.isCollapsed }"
+                    :style="{ width: `${Math.max(toggleSize - 4, 0)}px`, height: `${Math.max(toggleSize - 4, 0)}px` }"
                     :src="chevronDownIcon"
                     />
             </button>
@@ -41,8 +48,6 @@ const props = defineProps<{
 }
 
 .tree-row__toggle-slot {
-    flex: 0 0 var(--tree-toggle-width);
-    width: var(--tree-toggle-width);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -52,8 +57,6 @@ const props = defineProps<{
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: var(--tree-toggle-width);
-    height: var(--tree-toggle-width);
     padding: 0;
     border: none;
     background: transparent;
@@ -61,8 +64,6 @@ const props = defineProps<{
 }
 
 .tree-row__toggle-icon {
-    width: calc(var(--tree-toggle-width) - 4px);
-    height: calc(var(--tree-toggle-width) - 4px);
     transition: transform 0.15s ease;
     filter: var(--ui-icon-filter);
 }

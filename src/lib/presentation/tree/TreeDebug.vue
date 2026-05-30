@@ -53,7 +53,12 @@ function pickRandom<T>(values: readonly T[]): T {
     <div class="tree-debug">
         <div class="tree-debug__panel">
             <div v-for="node in tree" :key="node.id" class="tree-debug__column">
-                <TreeView :node="node" :depth="0" :ancestorHasNext="[]" :isLast="true" v-model:collapsedState="collapsedState">
+                <TreeView
+                    :node="node"
+                    :depth="0"
+                    :ancestorHasNext="[]"
+                    :isLast="true"
+                    v-model:collapsedState="collapsedState">
                     <template #default="{ node, hasChildren }">
                         <span class="tree-debug__label" :class="{ 'tree-debug__label--leaf': !hasChildren }">
                             {{ node.label }}
@@ -87,7 +92,6 @@ function pickRandom<T>(values: readonly T[]): T {
     border: 1px solid var(--ui-panel-border);
     background: var(--ui-panel-row-bg);
     overflow: auto;
-    --tree-row-height: 36px;
     --tree-row-gap: 8px;
 }
 
