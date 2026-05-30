@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TREE_TOGGLE_WIDTH } from '@/presentation/tree/treeLayout';
+import { TREE_CONNECTOR_TAIL_WIDTH, TREE_TOGGLE_WIDTH } from '@/presentation/tree/treeLayout';
 import { computed } from 'vue'
 
 
@@ -10,21 +10,24 @@ const props = defineProps<{
 }>()
 
 const columnWidth = TREE_TOGGLE_WIDTH
+const tailWidth = TREE_CONNECTOR_TAIL_WIDTH
 const viewBoxHeight = 5
 const midY = viewBoxHeight / 2
 
 const ancestorHasNext = computed(() => props.ancestorHasNext)
 const columnCount = computed(() => Math.max(1, props.depth))
-const svgWidth = computed(() => columnCount.value * columnWidth)
-const branchX = computed(() => (columnCount.value - 0.5) * columnWidth)
+const svgWidth = computed(() => columnCount.value * (columnWidth + tailWidth))
+const branchX = computed(() => (columnCount.value - 0.5) * columnWidth + Math.max(0, columnCount.value - 1) * tailWidth)
 const effectiveAncestorHasNext = computed(() =>
     ancestorHasNext.value.slice(0, Math.max(0, columnCount.value - 1)),
 )
-const cssWidth = computed(() => `${columnCount.value * columnWidth}px`)
+const cssWidth = computed(() => `${columnCount.value * (columnWidth + tailWidth)}px`)
 
 const ancestorLineXs = computed(() =>
     effectiveAncestorHasNext.value
-        .map((hasNext, index) => (hasNext ? (index + 0.5) * columnWidth : null))
+        .map((hasNext, index) =>
+            hasNext ? (index + 0.5) * columnWidth + index * tailWidth : null,
+        )
         .filter((value): value is number => value !== null),
 )
 </script>
