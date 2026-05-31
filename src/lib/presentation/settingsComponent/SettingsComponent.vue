@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import TreeView from '@/presentation/tree/TreeView.vue';
 import SettingsTreeComponent from '@/presentation/settingsComponent/SettingsTreeComponent.vue';
-import type { AnyUpdateChoice} from '@/presentation/settingsComponent/settingsChoice';
+import type { AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
 import type { SettingsTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
 
 const props = defineProps<{
@@ -27,16 +27,8 @@ const showSettings = ref(true)
 
         <div v-show="showSettings" class="settings__panel">
             <div v-for="(tree) in props.trees" :key="tree.id" class="settings__tree-root">
-                <TreeView
-                    :node="tree"
-                    :depth="0"
-                    :ancestorHasNext="[]"
-                    :isLast="true">
-                    <template #default="{ node }">
-                        <SettingsTreeComponent
-                            :node="node"
-                            @update:choice="(update) => emit('update:choice', update)" />
-                    </template>
+                <TreeView :node="tree" :depth="0" :ancestorHasNext="[]" :isLast="true" v-slot="{ node }">
+                    <SettingsTreeComponent :node="node" @update:choice="(update) => emit('update:choice', update)" />
                 </TreeView>
             </div>
         </div>

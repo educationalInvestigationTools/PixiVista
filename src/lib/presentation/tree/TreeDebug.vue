@@ -51,12 +51,10 @@ function pickRandom<T>(values: readonly T[]): T {
     <div class="tree-debug">
         <div class="tree-debug__panel">
             <div v-for="node in tree" :key="node.id" class="tree-debug__column">
-                <TreeView :node="node" :depth="0" :ancestorHasNext="[]" :isLast="true">
-                    <template #default="{ node }">
-                        <span>
-                            {{ node.label }}
-                        </span>
-                    </template>
+                <TreeView :node="node" :depth="0" :ancestorHasNext="[]" :isLast="true" v-slot="{ node }">
+                    <span>
+                        {{ node.label }}
+                    </span>
                 </TreeView>
             </div>
         </div>

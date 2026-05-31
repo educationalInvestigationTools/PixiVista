@@ -29,7 +29,7 @@ const isLast = computed(() => props.isLast)
 
 const children = computed<T[]>(() => {
     const value = props.node.children
-    return Array.isArray(value) ? value : []
+    return value
 })
 
 const hasChildren = computed(() => children.value.length > 0)
@@ -104,10 +104,8 @@ function toggleCollapse() {
 
         <div v-if="hasChildren && !isCollapsed" class="tree-node__children">
             <TreeView v-for="(child, index) in children" :key="child.id" :node="child" :depth="childDepth"
-                :ancestorHasNext="childAncestorHasNext" :isLast="index === children.length - 1">
-                <template #default="{ node }">
-                    <slot :node="node" />
-                </template>
+                :ancestorHasNext="childAncestorHasNext" :isLast="index === children.length - 1" v-slot="{ node }">
+                <slot :node="node" />
             </TreeView>
         </div>
     </div>
