@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { computed } from 'vue'
 
-import { TREE_ROW_METRICS_KEY, resolveTreeConnectorTailWidth } from '@/presentation/tree/treeLayout'
+import { TREE_TOGGLE_LAYOUT_SIZE, resolveTreeConnectorTailWidth } from '@/presentation/tree/treeLayout'
 
 
 const props = defineProps<{
@@ -10,9 +10,8 @@ const props = defineProps<{
     ancestorHasNext: boolean[]
 }>()
 
-const treeRowMetrics = inject(TREE_ROW_METRICS_KEY, null)
 const rowInlineGap = 6
-const columnWidth = computed(() => treeRowMetrics?.toggleSize.value ?? 16)
+const columnWidth = computed(() => TREE_TOGGLE_LAYOUT_SIZE)
 const tailWidth = computed(() => resolveTreeConnectorTailWidth(columnWidth.value))
 const viewBoxHeight = 5
 const midY = viewBoxHeight / 2
