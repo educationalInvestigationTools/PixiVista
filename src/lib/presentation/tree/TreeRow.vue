@@ -2,8 +2,8 @@
 import { computed, inject } from 'vue'
 
 import chevronDownIcon from '@assets/icons/chevron-down.svg'
+import { resolveTreeToggleSize, TREE_ROW_METRICS_KEY } from '@/presentation/tree/treeLayout';
 
-import { TREE_ROW_METRICS_KEY, resolveTreeToggleSize } from './treeLayout'
 
 const props = defineProps<{
     hasChildren: boolean

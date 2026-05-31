@@ -194,17 +194,10 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
 
         <div class="annotations__panel">
             <div v-for="node in props.annotations" :key="node.id" class="annotations__column">
-                <TreeView
-                    :node="node"
-                    :depth="0"
-                    :ancestorHasNext="[]"
-                    :isLast="true">
-                        <template #default="{ node: slotNode }">
-                        <AnnotationTreeNode
-                            :node="slotNode"
-                            @toggle-visibility="handleToggleVisibility"
-                            @change-color="handleChangeColor"
-                            @change-shape="handleChangeShape" />
+                <TreeView :node="node" :depth="0" :ancestorHasNext="[]" :isLast="true">
+                    <template #default="{ node: slotNode }">
+                        <AnnotationTreeNode :node="slotNode" @toggle-visibility="handleToggleVisibility"
+                            @change-color="handleChangeColor" @change-shape="handleChangeShape" />
                     </template>
                 </TreeView>
             </div>

@@ -1,5 +1,5 @@
 import type { DrawingStyle } from '@/plotComponent/application/types/highlightedInterval'
-import type { TreeNodeLike } from '@/presentation/tree/treeTypes'
+import type { TreeNodeLike } from '@/presentation/tree/treeNode'
 
 export type AnnotationShape = 'rectangle' | 'dashed-lines'
 

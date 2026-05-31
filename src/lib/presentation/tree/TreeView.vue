@@ -3,7 +3,7 @@ import { computed, inject, onBeforeUnmount, onMounted, provide, ref } from 'vue'
 
 import TreeConnector from '@/presentation/tree/TreeConnector.vue'
 import TreeRow from '@/presentation/tree/TreeRow.vue'
-import type { TreeNodeLike } from '@/presentation/tree/treeTypes'
+import type { TreeNodeLike } from '@/presentation/tree/treeNode'
 import { TREE_COLLAPSED_STATE_KEY, TREE_ROW_METRICS_KEY, resolveTreeToggleSize } from '@/presentation/tree/treeLayout'
 
 defineOptions({ name: 'TreeView' })

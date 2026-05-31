@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 import TreeView from '@/presentation/tree/TreeView.vue'
-import type { TreeNodeLike } from '@/presentation/tree/treeTypes'
+import type { TreeNodeLike } from '@/presentation/tree/treeNode'
 
 type TreeDebugNode = TreeNodeLike<TreeDebugNode> & {
     label: string
@@ -51,13 +51,9 @@ function pickRandom<T>(values: readonly T[]): T {
     <div class="tree-debug">
         <div class="tree-debug__panel">
             <div v-for="node in tree" :key="node.id" class="tree-debug__column">
-                <TreeView
-                    :node="node"
-                    :depth="0"
-                    :ancestorHasNext="[]"
-                    :isLast="true">
-                    <template #default="{ node, hasChildren }">
-                        <span class="tree-debug__label" :class="{ 'tree-debug__label--leaf': !hasChildren }">
+                <TreeView :node="node" :depth="0" :ancestorHasNext="[]" :isLast="true">
+                    <template #default="{ node }">
+                        <span>
                             {{ node.label }}
                         </span>
                     </template>
@@ -107,9 +103,5 @@ function pickRandom<T>(values: readonly T[]): T {
     font-size: 14px;
     line-height: 1.3;
     color: var(--ui-text-primary);
-}
-
-.tree-debug__label--leaf {
-    text-decoration: none;
 }
 </style>
