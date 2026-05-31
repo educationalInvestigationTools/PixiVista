@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { TREE_TOGGLE_LAYOUT_SIZE, resolveTreeConnectorTailWidth } from '@/presentation/tree/treeLayout'
-
-
 const props = defineProps<{
     isLast: boolean
     depth: number
@@ -11,26 +8,26 @@ const props = defineProps<{
 }>()
 
 const rowInlineGap = 6
-const columnWidth = computed(() => TREE_TOGGLE_LAYOUT_SIZE)
-const tailWidth = computed(() => resolveTreeConnectorTailWidth(columnWidth.value))
+const columnWidth = 18
+const tailWidth = computed(() => 3 * Math.round(columnWidth / 2))
 const viewBoxHeight = 5
 const midY = viewBoxHeight / 2
 
 const ancestorHasNext = computed(() => props.ancestorHasNext)
 const columnCount = computed(() => Math.max(1, props.depth))
-const svgWidth = computed(() => columnCount.value * (columnWidth.value + tailWidth.value + rowInlineGap) - rowInlineGap)
+const svgWidth = computed(() => columnCount.value * (columnWidth + tailWidth.value + rowInlineGap) - rowInlineGap)
 const branchX = computed(() =>
-    (columnCount.value - 0.5) * columnWidth.value + Math.max(0, columnCount.value - 1) * (tailWidth.value + rowInlineGap),
+    (columnCount.value - 0.5) * columnWidth + Math.max(0, columnCount.value - 1) * (tailWidth.value + rowInlineGap),
 )
 const effectiveAncestorHasNext = computed(() =>
     ancestorHasNext.value.slice(0, Math.max(0, columnCount.value - 1)),
 )
-const cssWidth = computed(() => `${columnCount.value * (columnWidth.value + tailWidth.value + rowInlineGap) - rowInlineGap}px`)
+const cssWidth = computed(() => `${svgWidth.value}px`)
 
 const ancestorLineXs = computed(() =>
     effectiveAncestorHasNext.value
         .map((hasNext, index) =>
-            hasNext ? (index + 0.5) * columnWidth.value + index * (tailWidth.value + rowInlineGap) : null,
+            hasNext ? (index + 0.5) * columnWidth + index * (tailWidth.value + rowInlineGap) : null,
         )
         .filter((value): value is number => value !== null),
 )
@@ -71,17 +68,20 @@ const ancestorLineXs = computed(() =>
 
 <style scoped>
 .tree-connector {
-    display: inline-flex;
-    align-items: center;
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
     box-sizing: border-box;
-    margin-left: var(--tree-row-offset, 0px);
-    margin-bottom: calc(var(--tree-connector-gap, 0px) * -1);
-    padding-bottom: var(--tree-connector-gap, 0px);
+    pointer-events: none;
     color: var(--tree-connector-color, var(--ui-text-muted));
 }
 
 .tree-connector__svg {
-    height: calc(100% + var(--tree-connector-gap, 0px));
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .tree-connector__line {
