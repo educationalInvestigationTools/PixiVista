@@ -6,8 +6,6 @@ import TreeRow from '@/presentation/tree/TreeRow.vue'
 import type { TreeNodeLike } from '@/presentation/tree/treeNode'
 import { TREE_ROW_METRICS_KEY, resolveTreeToggleSize } from '@/presentation/tree/treeLayout'
 
-defineOptions({ name: 'TreeView' })
-
 type TreeSlotProps<TNode extends TreeNodeLike<TNode>> = {
     node: TNode
 }
@@ -36,6 +34,12 @@ const hasChildren = computed(() => children.value.length > 0)
 
 const collapsed = ref(false)
 const isCollapsed = computed(() => collapsed.value)
+
+function toggleCollapse() {
+    collapsed.value = !isCollapsed.value
+}
+
+
 const rowElement = ref<HTMLElement | null>(null)
 const rowHeight = ref(0)
 const toggleSize = computed(() => resolveTreeToggleSize(rowHeight.value))
@@ -82,9 +86,7 @@ onBeforeUnmount(() => {
     resizeObserver = null
 })
 
-function toggleCollapse() {
-    collapsed.value = !isCollapsed.value
-}
+
 </script>
 
 <template>

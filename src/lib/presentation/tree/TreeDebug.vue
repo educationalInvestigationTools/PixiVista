@@ -6,6 +6,7 @@ import type { TreeNodeLike } from '@/presentation/tree/treeNode'
 
 type TreeDebugNode = TreeNodeLike<TreeDebugNode> & {
     label: string
+    contentLines: string[]
 }
 
 const rootLabelPool = ['Root Alpha', 'Root Beta', 'Root Gamma', 'Root Delta']
@@ -31,9 +32,13 @@ function createTreeNode(depth: number, maxDepth: number): TreeDebugNode {
     const canBranch = depth < maxDepth && (depth === 0 || Math.random() > 0.25)
     const childCount = canBranch ? randomInt(depth === maxDepth - 1 ? 0 : 1, depth === 0 ? 3 : 2) : 0
 
+    const lineCount = randomInt(1, 4) // variable number of content lines to produce different heights
+    const contentLines = Array.from({ length: lineCount }, (_, i) => `${label} ${idNumber + 1} — line ${i + 1}`)
+
     return {
         id: `tree-debug-${idNumber}`,
         label: `${label} ${idNumber + 1}`,
+        contentLines,
         children: Array.from({ length: childCount }, () => createTreeNode(depth + 1, maxDepth)),
     }
 }
@@ -52,9 +57,9 @@ function pickRandom<T>(values: readonly T[]): T {
         <div class="tree-debug__panel">
             <div v-for="node in tree" :key="node.id" class="tree-debug__column">
                 <TreeView :node="node" :depth="0" :ancestorHasNext="[]" :isLast="true" v-slot="{ node }">
-                    <span>
-                        {{ node.label }}
-                    </span>
+                    <div class="tree-debug__label">
+                        <div v-for="(line, i) in node.contentLines" :key="i">{{ line }}</div>
+                    </div>
                 </TreeView>
             </div>
         </div>
