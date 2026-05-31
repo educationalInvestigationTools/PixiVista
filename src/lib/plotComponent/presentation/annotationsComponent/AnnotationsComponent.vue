@@ -199,12 +199,9 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
                     :depth="0"
                     :ancestorHasNext="[]"
                     :isLast="true">
-                    <template #default="{ node: slotNode, hasChildren, isCollapsed, toggleCollapse }">
+                        <template #default="{ node: slotNode }">
                         <AnnotationTreeNode
                             :node="slotNode"
-                            :hasChildren="hasChildren"
-                            :isCollapsed="isCollapsed"
-                            :toggleCollapse="toggleCollapse"
                             @toggle-visibility="handleToggleVisibility"
                             @change-color="handleChangeColor"
                             @change-shape="handleChangeShape" />

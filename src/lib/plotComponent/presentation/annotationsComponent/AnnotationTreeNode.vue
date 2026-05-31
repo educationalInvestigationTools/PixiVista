@@ -9,9 +9,6 @@ defineOptions({ name: 'AnnotationTreeNode' })
 
 const props = defineProps<{
     node: AnnotationNode
-    hasChildren: boolean
-    isCollapsed: boolean
-    toggleCollapse: () => void
 }>()
 
 const emit = defineEmits<{

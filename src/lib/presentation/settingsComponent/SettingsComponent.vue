@@ -32,12 +32,9 @@ const showSettings = ref(true)
                     :depth="0"
                     :ancestorHasNext="[]"
                     :isLast="true">
-                    <template #default="{ node, hasChildren, isCollapsed, toggleCollapse }">
+                    <template #default="{ node }">
                         <SettingsTreeComponent
                             :node="node"
-                            :hasChildren="hasChildren"
-                            :isCollapsed="isCollapsed"
-                            :toggleCollapse="toggleCollapse"
                             @update:choice="(update) => emit('update:choice', update)" />
                     </template>
                 </TreeView>

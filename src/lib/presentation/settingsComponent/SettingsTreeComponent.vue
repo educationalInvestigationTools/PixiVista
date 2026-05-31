@@ -11,9 +11,6 @@ import type { SettingsTreeNode, ChoiceTreeNode, LabelTreeNode } from '@/presenta
 
 const props = defineProps<{
     node: SettingsTreeNode
-    hasChildren: boolean
-    isCollapsed: boolean
-    toggleCollapse: () => void
 }>()
 
 const emit = defineEmits<{
