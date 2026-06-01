@@ -91,6 +91,7 @@ const childDepth = computed(() => depth.value + 1)
     display: flex;
     align-items: stretch;
     column-gap: var(--tree-row-inline-gap, 6px);
+    padding-block: calc(var(--tree-row-gap, 6px) / 2);
 }
 
 .tree-node__content {
@@ -108,7 +109,5 @@ const childDepth = computed(() => depth.value + 1)
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--tree-row-gap, 6px);
-    margin-top: var(--tree-row-gap, 6px);
 }
 </style>

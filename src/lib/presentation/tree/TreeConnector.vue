@@ -74,6 +74,8 @@ const ancestorLineXs = computed(() =>
     box-sizing: border-box;
     pointer-events: none;
     color: var(--tree-connector-color, var(--ui-text-muted));
+    /* make connector stretch through row padding */
+    margin-block: calc(var(--tree-row-gap, 6px) / -2);
 }
 
 .tree-connector__svg {
@@ -81,7 +83,8 @@ const ancestorLineXs = computed(() =>
     inset: 0;
     display: block;
     width: 100%;
-    height: 100%;
+    height: calc(100% + var(--tree-row-gap, 6px));
+    top: calc(var(--tree-row-gap, 6px) / -2);
 }
 
 .tree-connector__line {
