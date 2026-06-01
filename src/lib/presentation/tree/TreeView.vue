@@ -94,14 +94,13 @@ const childAncestorHasNext = computed(() => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    --tree-toggle-layout-size: 18px;
 }
 
 .tree-node__row {
     display: flex;
     align-items: stretch;
-    column-gap: var(--tree-row-inline-gap, 6px);
-    padding-block: calc(var(--tree-row-gap, 6px) / 2);
+    column-gap: 6px;
+    padding-block: calc(6px / 2);
 }
 
 .tree-node__content {

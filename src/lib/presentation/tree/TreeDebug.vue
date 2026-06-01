@@ -128,7 +128,6 @@ function collectTreeNodes(nodes: TreeDebugNode[]): TreeDebugNode[] {
     border: 1px solid var(--ui-panel-border);
     background: var(--ui-panel-row-bg);
     overflow: auto;
-    --tree-row-gap: 8px;
 }
 
 .tree-debug__column {
