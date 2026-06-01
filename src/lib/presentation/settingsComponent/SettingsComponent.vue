@@ -27,7 +27,7 @@ const showSettings = ref(true)
 
         <div v-show="showSettings" class="settings__panel">
             <div v-for="(tree) in props.trees" :key="tree.id" class="settings__tree-root">
-                <TreeView :node="tree" :depth="0" :ancestorHasNext="[]" :isLast="true" v-slot="{ node }">
+                <TreeView :node="tree" v-slot="{ node }">
                     <SettingsTreeComponent :node="node" @update:choice="(update) => emit('update:choice', update)" />
                 </TreeView>
             </div>

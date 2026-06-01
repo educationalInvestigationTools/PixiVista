@@ -9,20 +9,30 @@ type TreeSlotProps<TNode extends TreeNodeLike<TNode>> = {
     node: TNode
 }
 
-const props = defineProps<{
-    node: T
+type TreeData = {
     depth: number
     ancestorHasNext: boolean[]
     isLast: boolean
-}>()
+}
+
+const props = withDefaults(defineProps<{
+    node: T
+    treeData?: TreeData
+}>(), {
+    treeData: () => ({
+        depth: 0,
+        ancestorHasNext: [],
+        isLast: true,
+    }),
+})
 
 defineSlots<{
     default(props: TreeSlotProps<T>): unknown
 }>()
 
-const depth = computed(() => props.depth)
-const ancestorHasNext = computed(() => props.ancestorHasNext)
-const isLast = computed(() => props.isLast)
+const depth = computed(() => props.treeData.depth)
+const ancestorHasNext = computed(() => props.treeData.ancestorHasNext)
+const isLast = computed(() => props.treeData.isLast)
 
 const children = computed<T[]>(() => {
     const value = props.node.children
@@ -44,8 +54,6 @@ const childAncestorHasNext = computed(() => {
     }
     return [...ancestorHasNext.value, !isLast.value]
 })
-
-const childDepth = computed(() => depth.value + 1)
 </script>
 
 <template>
@@ -68,9 +76,11 @@ const childDepth = computed(() => depth.value + 1)
                 v-for="(child, index) in children"
                 :key="child.id"
                 :node="child"
-                :depth="childDepth"
-                :ancestorHasNext="childAncestorHasNext"
-                :isLast="index === children.length - 1"
+                :treeData="{
+                    depth: depth + 1,
+                    ancestorHasNext: childAncestorHasNext,
+                    isLast: index === children.length - 1,
+                }"
                 v-slot="{ node }"
             >
                 <slot :node="node" />

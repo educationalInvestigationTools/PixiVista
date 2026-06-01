@@ -96,7 +96,7 @@ function collectTreeNodes(nodes: TreeDebugNode[]): TreeDebugNode[] {
     <div class="tree-debug">
         <div class="tree-debug__panel">
             <div v-for="node in tree" :key="node.id" class="tree-debug__column">
-                <TreeView :node="node" :depth="0" :ancestorHasNext="[]" :isLast="true" v-slot="{ node }">
+                <TreeView :node="node" v-slot="{ node }">
                     <div class="tree-debug__label">
                         <div v-for="(line, i) in node.contentLines" :key="i">{{ line }}</div>
                     </div>
