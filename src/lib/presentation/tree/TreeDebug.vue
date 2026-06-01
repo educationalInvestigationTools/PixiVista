@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 import TreeView from '@/presentation/tree/TreeView.vue'
 import type { TreeNodeLike } from '@/presentation/tree/treeNode'
@@ -12,10 +12,46 @@ type TreeDebugNode = TreeNodeLike<TreeDebugNode> & {
 const rootLabelPool = ['Root Alpha', 'Root Beta', 'Root Gamma', 'Root Delta']
 const branchLabelPool = ['Branch', 'Cluster', 'Twig', 'Node']
 const leafLabelPool = ['Leaf', 'Tip', 'Bud', 'Seed']
+const treeMutationIntervalMs = 1800
 
 let nextTreeNodeId = 0
+let treeMutationTimer: number | undefined
 
 const tree = ref<TreeDebugNode[]>(createRandomTree())
+
+onMounted(() => {
+    treeMutationTimer = window.setInterval(() => {
+        const nodes = collectTreeNodes(tree.value)
+
+        if (nodes.length === 0) {
+            return
+        }
+
+        const node = pickRandom(nodes)
+        const shouldAddLine = node.contentLines.length === 0 || Math.random() > 0.5
+
+        if (shouldAddLine) {
+
+            const randomLines = Math.round(Math.random() * 10)
+            for (let i = 0; i < randomLines; i++){
+                const nextLineNumber = node.contentLines.length + 1
+                node.contentLines.push(`${node.label} — extra line ${nextLineNumber}`)
+            }
+            return
+        }
+
+        if (node.contentLines.length > 1) {
+            const lineIndex = randomInt(0, node.contentLines.length - 1)
+            node.contentLines.splice(lineIndex, 1)
+        }
+    }, treeMutationIntervalMs)
+})
+
+onBeforeUnmount(() => {
+    if (treeMutationTimer !== undefined) {
+        window.clearInterval(treeMutationTimer)
+    }
+})
 
 function createRandomTree(): TreeDebugNode[] {
     nextTreeNodeId = 0
@@ -49,6 +85,10 @@ function randomInt(min: number, max: number): number {
 
 function pickRandom<T>(values: readonly T[]): T {
     return values[randomInt(0, values.length - 1)]!
+}
+
+function collectTreeNodes(nodes: TreeDebugNode[]): TreeDebugNode[] {
+    return nodes.flatMap((node) => [node, ...collectTreeNodes(node.children)])
 }
 </script>
 
