@@ -188,9 +188,7 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
 
 <template>
     <div class="annotations">
-        <div class="annotations__header">
-            <span class="annotations__title">Annotations</span>
-        </div>
+        <span class="annotations__heading">Annotations</span>
 
         <div class="annotations__panel">
             <div v-for="node in props.annotations" :key="node.id" class="annotations__column">
@@ -210,27 +208,19 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 4px;
+    padding: 10px 4px 4px;
     background: var(--ui-panel-bg);
     border: 1px solid var(--ui-panel-border);
     color: var(--ui-text-primary);
     font-family: var(--ui-font);
 }
 
-.annotations__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 8px 10px;
-    border: 1px solid var(--ui-panel-border);
-    background: var(--ui-panel-row-bg);
+.annotations__heading {
+    display: block;
+    padding: 4px 4px 0;
     letter-spacing: 1px;
     font-size: clamp(12px, 1.5vw, 14px);
     font-weight: 600;
-}
-
-.annotations__title {
     color: var(--ui-text-muted);
 }
 
@@ -244,6 +234,7 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
     height: auto;
     max-height: 240px;
     overflow: auto;
+    font-size: clamp(13px, 1.5vw, 15px);
 }
 
 .annotations__column {

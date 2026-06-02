@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref, watch } from 'vue'
-
-import rectangleIcon from '@assets/icons/rectangle.svg'
-import dashedLinesIcon from '@assets/icons/dashed-line.svg'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import type { AnnotationNode, AnnotationShape } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
 
 defineOptions({ name: 'AnnotationTreeNode' })
@@ -17,6 +14,7 @@ const emit = defineEmits<{
     (e: 'change-shape', id: string, shape: AnnotationShape): void
 }>()
 
+const rootRef = ref<HTMLElement | null>(null)
 const showShapePicker = ref(false)
 
 function toggleVisibility() {
@@ -38,20 +36,24 @@ function selectShape(shape: AnnotationShape) {
     showShapePicker.value = false
 }
 
-function handleDocumentClick() {
-    showShapePicker.value = false
+function handleDocumentPointerDown(event: PointerEvent) {
+    if (!showShapePicker.value) {
+        return
+    }
+
+    const target = event.target as Node | null
+    const rootEl = rootRef.value
+    if (rootEl && target && !rootEl.contains(target)) {
+        showShapePicker.value = false
+    }
 }
 
-watch(showShapePicker, (open) => {
-    if (open) {
-        document.addEventListener('click', handleDocumentClick)
-    } else {
-        document.removeEventListener('click', handleDocumentClick)
-    }
+onMounted(() => {
+    document.addEventListener('pointerdown', handleDocumentPointerDown)
 })
 
 onBeforeUnmount(() => {
-    document.removeEventListener('click', handleDocumentClick)
+    document.removeEventListener('pointerdown', handleDocumentPointerDown)
 })
 
 function normalizeColor(color: string) {
@@ -60,7 +62,7 @@ function normalizeColor(color: string) {
 </script>
 
 <template>
-    <div class="annotation-node" :class="{ 'annotation-node--off': !props.node.state.visibility }">
+    <div ref="rootRef" class="annotation-node" :class="{ 'annotation-node--off': !props.node.state.visibility }">
         <button class="annotation-node__visibility" type="button" @click="toggleVisibility"
             :title="props.node.state.visibility ? 'Hide' : 'Show'"
             :aria-label="props.node.state.visibility ? 'Hide' : 'Show'">
@@ -80,25 +82,37 @@ function normalizeColor(color: string) {
             </svg>
         </button>
 
-        <button class="annotation-node__color" type="button" :title="'Pick color for ' + props.node.label"
-            :style="{ backgroundColor: props.node.style.color }">
-            <input class="annotation-node__color-input" type="color" :value="normalizeColor(props.node.style.color)"
-                :aria-label="'Pick color for ' + props.node.label" @input="changeColor" />
-        </button>
+        <label class="annotation-node__color" :title="'Pick color for ' + props.node.label">
+            <span class="annotation-node__color-swatch" :style="{ backgroundColor: props.node.style.color }"></span>
+            <input class="annotation-node__color-input" type="color"
+                :value="normalizeColor(props.node.style.color)" :aria-label="'Pick color for ' + props.node.label"
+                @input="changeColor" />
+        </label>
 
         <div class="annotation-node__shape-picker">
             <button class="annotation-node__shape-button" type="button" @click.stop="toggleShapePicker"
                 :title="'Pick shape for ' + props.node.label">
-                <img class="annotation-node__shape"
-                    :src="props.node.style.shape === 'rectangle' ? rectangleIcon : dashedLinesIcon" alt="" />
+                <svg v-if="props.node.style.shape === 'rectangle'" class="annotation-node__shape" viewBox="0 0 16 10"
+                    fill="none" aria-hidden="true">
+                    <rect x="1.25" y="1.25" width="13.5" height="7.5" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+                <svg v-else class="annotation-node__shape" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+                    <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-dasharray="3 2" />
+                </svg>
             </button>
             <div v-if="showShapePicker" class="annotation-node__shape-menu" @click.stop>
                 <button class="annotation-node__shape-option" type="button" @click="selectShape('rectangle')">
-                    <img class="annotation-node__shape-option-icon" :src="rectangleIcon" alt="" />
+                    <svg class="annotation-node__shape-option-icon" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+                        <rect x="1.25" y="1.25" width="13.5" height="7.5" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
                     <span>Rectangle</span>
                 </button>
                 <button class="annotation-node__shape-option" type="button" @click="selectShape('dashed-lines')">
-                    <img class="annotation-node__shape-option-icon" :src="dashedLinesIcon" alt="" />
+                    <svg class="annotation-node__shape-option-icon" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+                        <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-dasharray="3 2" />
+                    </svg>
                     <span>Dashed</span>
                 </button>
             </div>
@@ -125,18 +139,30 @@ function normalizeColor(color: string) {
 
 .annotation-node__color {
     position: relative;
+    display: inline-block;
     width: 18px;
     height: 18px;
     border-radius: 3px;
     border: 1px solid var(--ui-panel-border);
     padding: 0;
-    background: transparent;
+    background: var(--ui-panel-surface);
     cursor: pointer;
+}
+
+.annotation-node__color-swatch {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
 }
 
 .annotation-node__color-input {
     position: absolute;
     inset: 0;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
     opacity: 0;
     cursor: pointer;
 }
@@ -161,7 +187,7 @@ function normalizeColor(color: string) {
 .annotation-node__shape {
     width: 14px;
     height: 14px;
-    filter: var(--ui-icon-filter);
+    color: var(--ui-text-primary);
 }
 
 .annotation-node__shape-menu {
@@ -198,7 +224,7 @@ function normalizeColor(color: string) {
 .annotation-node__shape-option-icon {
     width: 14px;
     height: 14px;
-    filter: var(--ui-icon-filter);
+    color: var(--ui-text-primary);
 }
 
 .annotation-node__label {
