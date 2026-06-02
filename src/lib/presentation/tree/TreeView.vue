@@ -35,8 +35,7 @@ const ancestorHasNext = computed(() => props.treeData.ancestorHasNext)
 const isLast = computed(() => props.treeData.isLast)
 
 const children = computed<T[]>(() => {
-    const value = props.node.children
-    return value
+    return props.node.children
 })
 
 const hasChildren = computed(() => children.value.length > 0)
@@ -98,15 +97,12 @@ const childAncestorHasNext = computed(() => {
 
 .tree-node__row {
     display: flex;
-    align-items: stretch;
     column-gap: 6px;
-    padding-block: calc(6px / 2);
+    padding-block: 3px;
 }
 
 .tree-node__content {
     flex: 1 1 auto;
-    min-width: 0;
-    display: block;
 }
 
 .tree-node__toggle {
