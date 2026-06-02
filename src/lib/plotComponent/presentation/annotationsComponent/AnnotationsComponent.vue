@@ -225,7 +225,6 @@ function handleChangeShape(id: string, shape: AnnotationShape) {
     padding: 8px 10px;
     border: 1px solid var(--ui-panel-border);
     background: var(--ui-panel-row-bg);
-    text-transform: uppercase;
     letter-spacing: 1px;
     font-size: clamp(12px, 1.5vw, 14px);
     font-weight: 600;

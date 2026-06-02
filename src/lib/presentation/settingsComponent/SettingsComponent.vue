@@ -37,14 +37,12 @@ const showSettings = ref(true)
 
 <style scoped>
 .settings {
-    --settings-max-height: 360px;
-    --settings-header-height: 40px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 4px;
     padding: 4px;
-    max-height: var(--settings-max-height);
+    max-height: 360px;
     background: var(--ui-panel-bg);
     border: 1px solid var(--ui-panel-border);
     font-family: var(--ui-font);

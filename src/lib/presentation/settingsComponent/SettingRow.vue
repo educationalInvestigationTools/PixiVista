@@ -23,7 +23,7 @@ const props = defineProps<{
     gap: 12px;
     padding: 6px 10px;
     box-sizing: border-box;
-    height: var(--tree-row-height, var(--ui-setting-row-height, 54px));
+    height: 40px;
     width: max-content;
     background: var(--ui-panel-row-bg);
     border: 1px solid var(--ui-panel-border);
@@ -44,7 +44,6 @@ const props = defineProps<{
 .setting-label {
     font-size: clamp(12px, 1.5vw, 14px);
     color: var(--ui-text-muted);
-    text-transform: uppercase;
     letter-spacing: 1px;
     white-space: nowrap;
 }

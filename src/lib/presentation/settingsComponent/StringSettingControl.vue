@@ -52,7 +52,7 @@ onBeforeUnmount(() => {
 
 <template>
     <SettingRow :label="props.label">
-        <div class="string-select">
+        <div ref="rootRef" class="string-select">
             <button
                 class="string-select__button"
                 type="button"
