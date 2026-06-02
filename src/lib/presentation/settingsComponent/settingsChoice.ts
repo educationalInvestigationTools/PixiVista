@@ -23,5 +23,7 @@ export type BooleanUpdate = UpdateChoice<boolean>
 export type NumberUpdate = UpdateChoice<number>
 export type StringUpdate = UpdateChoice<string>
 
+export type AnyUpdateChoiceValue = AnyUpdateChoice extends UpdateChoice<infer TValue> ? TValue : never
+
 export type AnyChoice = Choice<boolean> | NumberSettingChoice | StringSettingChoice
 export type AnyUpdateChoice = UpdateChoice<boolean> | UpdateChoice<number> | UpdateChoice<string>

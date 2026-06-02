@@ -6,7 +6,7 @@ import NumberSettingControl from '@/presentation/settingsComponent/NumberSetting
 
 import StringSettingControl from '@/presentation/settingsComponent/StringSettingControl.vue';
 import LabelTreeNodeComponent from '@/presentation/settingsComponent/LabelTreeNodeComponent.vue';
-import type { AnyUpdateChoice, NumberSettingChoice, StringSettingChoice } from '@/presentation/settingsComponent/settingsChoice';
+import type { AnyUpdateChoice, AnyUpdateChoiceValue, NumberSettingChoice, StringSettingChoice } from '@/presentation/settingsComponent/settingsChoice';
 import type { SettingsTreeNode, ChoiceTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
 
 const props = defineProps<{
@@ -21,16 +21,8 @@ const choice = computed(() => {
     return (props.node as ChoiceTreeNode).choice
 })
 
-function updateBooleanChoice(choiceId: string, value: boolean) {
-    emit('update:choice', { id: choiceId, value })
-}
-
-function updateNumberChoice(choice: NumberSettingChoice, value: number) {
-    emit('update:choice', { id: choice.id, value })
-}
-
-function updateStringChoice(choiceId: string, value: string) {
-    emit('update:choice', { id: choiceId, value })
+function updateChoice<T extends AnyUpdateChoiceValue>(choiceId: string, value: T) {
+    emit('update:choice', { id: choiceId, value } as AnyUpdateChoice)
 }
 
 </script>
@@ -42,14 +34,14 @@ function updateStringChoice(choiceId: string, value: string) {
     </LabelTreeNodeComponent>
 
     <BooleanSettingControl v-else-if="typeof choice.value === 'boolean'" :label="choice.label" :value="choice.value"
-        @update:value="(value) => updateBooleanChoice(choice.id, value)" />
+        @update:value="(value) => updateChoice(choice.id, value)" />
 
     <NumberSettingControl v-else-if="typeof choice.value === 'number'" :label="choice.label" :value="choice.value"
         :min="(choice as NumberSettingChoice).min" :max="(choice as NumberSettingChoice).max"
         :format="(choice as NumberSettingChoice).format"
-        @update:value="(value) => updateNumberChoice(choice as NumberSettingChoice, value)" />
+        @update:value="(value) => updateChoice((choice as NumberSettingChoice).id, value)" />
 
     <StringSettingControl v-else-if="typeof choice.value === 'string'" :label="choice.label" :value="choice.value"
         :options="(choice as StringSettingChoice).options" :format="(choice as StringSettingChoice).format"
-        @update:value="(value) => updateStringChoice(choice.id, value)" />
+        @update:value="(value) => updateChoice(choice.id, value)" />
 </template>
