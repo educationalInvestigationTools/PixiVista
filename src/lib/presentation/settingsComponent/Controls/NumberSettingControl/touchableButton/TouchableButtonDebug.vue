@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import TouchableButton from '@/presentation/touchableButton/TouchableButton.vue';
+import TouchableButton from '@/presentation/settingsComponent/Controls/NumberSettingControl/touchableButton/TouchableButton.vue';
 
 const value = ref<number>(0)
 
