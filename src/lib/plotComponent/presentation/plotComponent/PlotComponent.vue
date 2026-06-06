@@ -222,7 +222,6 @@ function buildAnnotationsTree(): AnnotationNode[] {
         label: channelsGroupLabel,
         style: {
             color: '#334155',
-            drawingStyle: 'borders',
             shape: 'rectangle',
         },
         state: { visibility: true },
@@ -237,7 +236,6 @@ function buildAnnotationsTree(): AnnotationNode[] {
             label: groupLabel,
             style: {
                 color: '#475569',
-                drawingStyle: 'borders',
                 shape: 'dashed-lines',
             },
             state: { visibility: true },
