@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount } from 'vue';
+import { computed } from 'vue';
 import SettingRow from '@/presentation/settingsComponent/SettingRow.vue';
+import TouchableButton from '@/presentation/touchableButton/TouchableButton.vue';
 
 const props = defineProps<{
     label: string
@@ -18,12 +19,28 @@ function clamp(value: number, min: number, max: number) {
     return Math.min(max, Math.max(min, value))
 }
 
+
 const stepSize = computed(() => {
     const range = props.max - props.min
     if (range === 0) return 0
     const step = range / 100
     return step === 0 ? 1 : step
 })
+
+function adjustValue(direction: number) {
+
+    const step = stepSize.value
+    if (step === 0) return
+
+    const value = props.value + step * direction
+    const rounded = Math.round(value * 1000000) / 1000000
+    const next = clamp(rounded, props.min, props.max)
+
+    if (next !== props.value) {
+        emit('update:value', next)
+    }
+}
+
 
 const inputStep = computed(() => {
     const step = stepSize.value
@@ -45,67 +62,6 @@ const fillPercent = computed(() => {
     return clamp(raw, 0, 100)
 })
 
-const canDecrement = computed(() => props.value > props.min)
-const canIncrement = computed(() => props.value < props.max)
-
-const HOLD_DELAY_MS = 300
-const HOLD_INTERVAL_MS = 60
-
-let holdTimeout: ReturnType<typeof window.setTimeout> | null = null
-let holdInterval: ReturnType<typeof window.setInterval> | null = null
-
-function adjustValue(direction: number) {
-    const step = stepSize.value
-    if (step === 0) return
-
-    const value = props.value + step * direction
-    const rounded = Math.round(value * 1000000) / 1000000
-    const next = clamp(rounded, props.min, props.max)
-
-    if (next !== props.value) {
-        emit('update:value', next)
-    }
-}
-
-function canMove(direction: number) {
-    return direction < 0 ? canDecrement.value : canIncrement.value
-}
-
-function stopAdjust() {
-    if (holdTimeout !== null) {
-        window.clearTimeout(holdTimeout)
-        holdTimeout = null
-    }
-
-    if (holdInterval !== null) {
-        window.clearInterval(holdInterval)
-        holdInterval = null
-    }
-}
-
-function startAdjust(direction: number) {
-    if (!canMove(direction)) return
-
-    stopAdjust()
-    adjustValue(direction)
-
-    holdTimeout = window.setTimeout(() => {
-        holdInterval = window.setInterval(() => {
-            if (!canMove(direction)) {
-                stopAdjust()
-                return
-            }
-
-            adjustValue(direction)
-        }, HOLD_INTERVAL_MS)
-    }, HOLD_DELAY_MS)
-}
-
-function handleClick(direction: number, event: MouseEvent) {
-    if (event.detail !== 0) return
-    adjustValue(direction)
-}
-
 function handleRangeInput(event: Event) {
     const target = event.target as HTMLInputElement | null
     if (!target) return
@@ -116,49 +72,18 @@ function handleRangeInput(event: Event) {
     }
 }
 
-onBeforeUnmount(() => {
-    stopAdjust()
-})
 </script>
 
 <template>
     <SettingRow :label="props.label">
         <div class="number-control">
-            <button
-                class="number-control__button"
-                type="button"
-                :disabled="!canDecrement"
-                aria-label="Decrease value"
-                @pointerdown="startAdjust(-1)"
-                @pointerup="stopAdjust"
-                @pointerleave="stopAdjust"
-                @pointercancel="stopAdjust"
-                @click="handleClick(-1, $event)">
-                -
-            </button>
+            <TouchableButton :isPositive="false" @buttonPressed="adjustValue"></TouchableButton>
             <div class="number-control__slider" :style="{ '--fill-percent': fillPercent + '%' }">
-                <input
-                    class="number-control__range"
-                    type="range"
-                    :min="props.min"
-                    :max="props.max"
-                    :step="inputStep"
-                    :value="props.value"
-                    @input="handleRangeInput" />
+                <input class="number-control__range" type="range" :min="props.min" :max="props.max" :step="inputStep"
+                    :value="props.value" @input="handleRangeInput" />
                 <span class="number-control__value">{{ displayValue }}</span>
             </div>
-            <button
-                class="number-control__button"
-                type="button"
-                :disabled="!canIncrement"
-                aria-label="Increase value"
-                @pointerdown="startAdjust(1)"
-                @pointerup="stopAdjust"
-                @pointerleave="stopAdjust"
-                @pointercancel="stopAdjust"
-                @click="handleClick(1, $event)">
-                +
-            </button>
+            <TouchableButton :isPositive="true" @buttonPressed="adjustValue"></TouchableButton>
         </div>
     </SettingRow>
 </template>
@@ -173,27 +98,6 @@ onBeforeUnmount(() => {
     border: 1px solid var(--ui-panel-border);
 }
 
-.number-control__button {
-    width: 28px;
-    height: 28px;
-    border: 1px solid var(--ui-panel-border);
-    background: var(--ui-panel-bg);
-    color: var(--ui-text-primary);
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 1;
-}
-
-.number-control__button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-.number-control__button:focus-visible {
-    outline: 1px solid var(--ui-focus-color);
-    outline-offset: 1px;
-}
-
 .number-control__slider {
     position: relative;
     display: flex;
@@ -201,13 +105,11 @@ onBeforeUnmount(() => {
     min-width: 140px;
     height: 28px;
     padding: 0;
-    background: linear-gradient(
-        to right,
-        var(--ui-panel-border) 0%,
-        var(--ui-panel-border) var(--fill-percent),
-        var(--ui-panel-bg) var(--fill-percent),
-        var(--ui-panel-bg) 100%
-    );
+    background: linear-gradient(to right,
+            var(--ui-panel-border) 0%,
+            var(--ui-panel-border) var(--fill-percent),
+            var(--ui-panel-bg) var(--fill-percent),
+            var(--ui-panel-bg) 100%);
     border: 1px solid var(--ui-panel-border);
     overflow: hidden;
 }
