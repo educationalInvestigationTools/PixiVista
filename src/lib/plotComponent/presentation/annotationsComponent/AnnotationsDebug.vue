@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 import AnnotationsComponent from '@/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue'
-import type { AnnotationNode, AnnotationShape, AnnotationStyle, AnnotationsTree } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
+import type { AnnotationNode, AnnotationShape, AnnotationStyle } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
 
 const rootLabelPool = ['Channels', 'Intervals', 'Events', 'Regions', 'Markers']
 const branchLabelPool = ['Artifact', 'Signal', 'Window', 'Epoch', 'Cluster', 'Segment']
@@ -13,9 +13,9 @@ const shapePool: AnnotationShape[] = ['rectangle', 'dashed-lines']
 
 let nextAnnotationId = 0
 
-const annotations = ref<AnnotationsTree>(createRandomAnnotationsTree())
+const annotations = ref<AnnotationNode[]>(createRandomAnnotationsTree())
 
-function createRandomAnnotationsTree(): AnnotationsTree {
+function createRandomAnnotationsTree(): AnnotationNode[] {
     nextAnnotationId = 0
 
     const rootCount = randomInt(2, 4)
@@ -55,7 +55,7 @@ function pickRandom<T>(values: readonly T[]): T {
     return values[randomInt(0, values.length - 1)]!
 }
 
-function updateAnnotations(nextAnnotations: AnnotationsTree) {
+function updateAnnotations(nextAnnotations: AnnotationNode[]) {
     annotations.value = nextAnnotations
 }
 </script>

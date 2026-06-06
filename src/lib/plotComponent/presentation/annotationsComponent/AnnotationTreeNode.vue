@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AnnotationNode, AnnotationShape } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
+import type { AnnotationNode, AnnotationShape, Color } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
 
 import ToggleVisibility from '@/plotComponent/presentation/annotationsComponent/PropertySelectors/ToggleVisibility.vue';
 import ColorPicker from '@/plotComponent/presentation/annotationsComponent/PropertySelectors/ColorPicker.vue';
@@ -10,7 +10,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'toggle-visibility', id: string): void
-    (e: 'change-color', id: string, color: string): void
+    (e: 'change-color', id: string, color: Color): void
     (e: 'change-shape', id: string, shape: AnnotationShape): void
 }>()
 

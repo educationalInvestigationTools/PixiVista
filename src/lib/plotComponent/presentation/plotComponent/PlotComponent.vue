@@ -21,7 +21,6 @@ import MetricsComponent from '@/metricsComponent/presentation/MetricsComponent.v
 import type {
     AnnotationNode,
     AnnotationVisibilityChange,
-    AnnotationsTree,
 } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
 import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/types';
 import type { AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
@@ -34,7 +33,7 @@ const props = defineProps<{
     annotations: Record<string, IntervalGroup>
 }>()
 
-const annotationsTree: Ref<AnnotationsTree> = ref([])
+const annotationsTree: Ref<AnnotationNode[]> = ref([])
 
 
 const heightPerChannel = ref(200)
@@ -111,7 +110,7 @@ const settingsTrees = computed<SettingsTreeNode[]>(() => [
     ]),
 ])
 
-function updateAnnotations(nextAnnotations: AnnotationsTree) {
+function updateAnnotations(nextAnnotations: AnnotationNode[]) {
     annotationsTree.value = nextAnnotations
 }
 
@@ -205,7 +204,7 @@ function applyTheme(theme: string) {
     }
 }
 
-function buildAnnotationsTree(): AnnotationsTree {
+function buildAnnotationsTree(): AnnotationNode[] {
     const channelNodes: AnnotationNode[] = props.signalSourcesManager.allSignalsBuildData.map((signal) => ({
         id: channelIdPrefix + signal.label,
         label: signal.label,
@@ -215,7 +214,7 @@ function buildAnnotationsTree(): AnnotationsTree {
             shape: 'rectangle',
         },
         state: { visibility: true },
-        children : []
+        children: []
     }))
 
     const channelsRoot: AnnotationNode = {
@@ -251,7 +250,7 @@ function buildAnnotationsTree(): AnnotationsTree {
                     shape: 'dashed-lines',
                 },
                 state: { visibility: true },
-                children : []
+                children: []
             })),
         })
     }
@@ -305,8 +304,8 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
             height: heightPerChannel * (visibleChannels + 1) + 'px'
         }">
         </div>
-        <SliderComponent :viewPortLowerBound="0" :sampleToString="(x) => fmtTime(x, true)" :lengthToString="(x) => fmtTime(x, false)"
-            :currentViewPort="{
+        <SliderComponent :viewPortLowerBound="0" :sampleToString="(x) => fmtTime(x, true)"
+            :lengthToString="(x) => fmtTime(x, false)" :currentViewPort="{
                 currentSamplePosition: viewPortRef.startSeconds,
                 lengthSamples: viewPortRef.lengthSeconds,
             }" :viewPortUpperBound=signalsLargestDurationSeconds @update:viewPort='updateViewPortFromSlider'>

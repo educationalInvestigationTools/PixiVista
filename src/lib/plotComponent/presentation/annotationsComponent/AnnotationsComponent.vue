@@ -8,7 +8,7 @@ import type {
     AnnotationShape,
     AnnotationShapeChange,
     AnnotationVisibilityChange,
-    AnnotationsTree,
+    Color,
 } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
 
 type UpdatePayload = {
@@ -29,11 +29,11 @@ type TreeUpdateResult = {
 }
 
 const props = defineProps<{
-    annotations: AnnotationsTree
+    annotations: AnnotationNode[]
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:annotations', value: AnnotationsTree): void
+    (e: 'update:annotations', value: AnnotationNode[]): void
     (e: 'change:visibility', value: AnnotationVisibilityChange): void
     (e: 'change:color', value: AnnotationColorChange): void
     (e: 'change:shape', value: AnnotationShapeChange): void
@@ -56,7 +56,7 @@ function applyVisibilityToSubtree(node: AnnotationNode, visibility: boolean): Su
     }
 }
 
-function applyColorToSubtree(node: AnnotationNode, color: string): SubtreeUpdate {
+function applyColorToSubtree(node: AnnotationNode, color: Color): SubtreeUpdate {
     const ids: string[] = [node.id]
     const nextChildren = node.children.map((child) => {
         const result = applyColorToSubtree(child, color)
@@ -149,7 +149,7 @@ function handleToggleVisibility(id: string) {
     })
 }
 
-function handleChangeColor(id: string, color: string) {
+function handleChangeColor(id: string, color: Color) {
     const result = updateTreeById(props.annotations, id, (node) => {
         const updated = applyColorToSubtree(node, color)
         return { node: updated.node, payload: { ids: updated.ids, color } }

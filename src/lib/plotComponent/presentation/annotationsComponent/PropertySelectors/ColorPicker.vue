@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import type { Color } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
+
 
 const props = defineProps<{
-    color: string
+    color : Color
     label: string
 }>()
 
 const emit = defineEmits<{
-    (e: 'changeColor', color: string): void
+    (e: 'changeColor', color : Color): void
 }>()
 
-function normalizeColor(color: string) {
+function normalizeColor(color : Color) {
     return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(color) ? color : '#ffffff'
 }
 
