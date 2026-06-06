@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import SettingRow from '@/presentation/settingsComponent/SettingRow.vue';
-import TouchableButton from '@/presentation/touchableButton/TouchableButton.vue';
+import TouchableButton from '@/presentation/settingsComponent/Controls/NumberSettingControl/touchableButton/TouchableButton.vue';
 
 const props = defineProps<{
     label: string

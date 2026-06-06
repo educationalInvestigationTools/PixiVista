@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import BooleanSettingControl from '@/presentation/settingsComponent/BooleanSettingControl.vue';
+import BooleanSettingControl from '@/presentation/settingsComponent/Controls/BooleanSettingControl.vue';
 import { computed } from 'vue';
 
-import NumberSettingControl from '@/presentation/settingsComponent/NumberSettingControl.vue';
+import NumberSettingControl from '@/presentation/settingsComponent/Controls/NumberSettingControl/NumberSettingControl.vue';
 
-import StringSettingControl from '@/presentation/settingsComponent/StringSettingControl.vue';
+import StringSettingControl from '@/presentation/settingsComponent/Controls/StringSettingControl.vue';
 import LabelTreeNodeComponent from '@/presentation/settingsComponent/LabelTreeNodeComponent.vue';
 import type { AnyUpdateChoice, AnyUpdateChoiceValue, NumberSettingChoice, StringSettingChoice } from '@/presentation/settingsComponent/settingsChoice';
 import type { SettingsTreeNode, ChoiceTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
