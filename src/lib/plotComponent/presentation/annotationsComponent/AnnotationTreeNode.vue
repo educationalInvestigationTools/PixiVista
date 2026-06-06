@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import type { AnnotationNode, AnnotationShape } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
+import ColorPicker from '@/plotComponent/presentation/annotationsComponent/ColorPicker.vue';
 
 defineOptions({ name: 'AnnotationTreeNode' })
 
@@ -19,12 +20,6 @@ const showShapePicker = ref(false)
 
 function toggleVisibility() {
     emit('toggle-visibility', props.node.id)
-}
-
-function changeColor(event: Event) {
-    const input = event.target as HTMLInputElement | null
-    if (!input) return
-    emit('change-color', props.node.id, input.value)
 }
 
 function toggleShapePicker() {
@@ -56,9 +51,7 @@ onBeforeUnmount(() => {
     document.removeEventListener('pointerdown', handleDocumentPointerDown)
 })
 
-function normalizeColor(color: string) {
-    return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(color) ? color : '#ffffff'
-}
+
 </script>
 
 <template>
@@ -82,12 +75,7 @@ function normalizeColor(color: string) {
             </svg>
         </button>
 
-        <label class="annotation-node__color" :title="'Pick color for ' + props.node.label">
-            <span class="annotation-node__color-swatch" :style="{ backgroundColor: props.node.style.color }"></span>
-            <input class="annotation-node__color-input" type="color"
-                :value="normalizeColor(props.node.style.color)" :aria-label="'Pick color for ' + props.node.label"
-                @input="changeColor" />
-        </label>
+        <ColorPicker :color="props.node.style.color" :label="props.node.label" @changeColor="(color) => emit('change-color', props.node.id, color)"></ColorPicker>
 
         <div class="annotation-node__shape-picker">
             <button class="annotation-node__shape-button" type="button" @click.stop="toggleShapePicker"
@@ -97,8 +85,8 @@ function normalizeColor(color: string) {
                     <rect x="1.25" y="1.25" width="13.5" height="7.5" stroke="currentColor" stroke-width="1.5" />
                 </svg>
                 <svg v-else class="annotation-node__shape" viewBox="0 0 16 10" fill="none" aria-hidden="true">
-                    <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5"
-                        stroke-linecap="round" stroke-dasharray="3 2" />
+                    <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-dasharray="3 2" />
                 </svg>
             </button>
             <div v-if="showShapePicker" class="annotation-node__shape-menu" @click.stop>
@@ -137,35 +125,7 @@ function normalizeColor(color: string) {
     text-decoration: line-through;
 }
 
-.annotation-node__color {
-    position: relative;
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border-radius: 3px;
-    border: 1px solid var(--ui-panel-border);
-    padding: 0;
-    background: var(--ui-panel-surface);
-    cursor: pointer;
-}
 
-.annotation-node__color-swatch {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: 2px;
-}
-
-.annotation-node__color-input {
-    position: absolute;
-    inset: 0;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: 0;
-    opacity: 0;
-    cursor: pointer;
-}
 
 .annotation-node__shape-picker {
     position: relative;
