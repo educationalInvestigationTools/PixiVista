@@ -223,30 +223,6 @@ onBeforeUnmount(() => {
     opacity: 0;
 }
 
-.number-control__range::-webkit-slider-runnable-track {
-    height: 100%;
-    background: transparent;
-}
-
-.number-control__range::-webkit-slider-thumb {
-    appearance: none;
-    width: 0;
-    height: 0;
-    border: none;
-    background: transparent;
-}
-
-.number-control__range::-moz-range-track {
-    height: 100%;
-    background: transparent;
-}
-
-.number-control__range::-moz-range-thumb {
-    width: 0;
-    height: 0;
-    border: none;
-    background: transparent;
-}
 
 .number-control__slider:focus-within {
     outline: 1px solid var(--ui-focus-color);
