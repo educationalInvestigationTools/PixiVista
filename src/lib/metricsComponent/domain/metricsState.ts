@@ -1,4 +1,3 @@
-import { clamp } from '@/utils/utils'
 import type { PointsData } from '@/metricsComponent/domain/types/pointsData'
 import type { MetricsPoints } from '@/metricsComponent/domain/types/metricsPoints'
 
@@ -7,6 +6,17 @@ export type MetricsSample = {
     renderTimeMs: number
     refreshRateFps: number
 }
+
+function clamp(value: number, minValue: number, maxValue: number) {
+    if (value < minValue) {
+        return minValue
+    }
+    if (value > maxValue) {
+        return maxValue
+    }
+    return value
+}
+
 
 export class MetricsState {
     private samples: MetricsSample[] = []

@@ -12,7 +12,7 @@ import { usePinchForZoom } from '@/plotComponent/presentation/plotComponent/util
 import { useWheelForZoom } from '@/plotComponent/presentation/plotComponent/utils/useWheelForZoom';
 
 import { useResizeObserver } from '@/presentation/utils/useResizeObserver';
-import { fmtTime } from '@/utils/utils';
+import { fmtTime } from '@/utils/timeFormatters';
 import { ref, computed, onMounted, onBeforeUnmount, type Ref } from 'vue';
 import SliderComponent from '@/presentation/sliderComponent/SliderComponent.vue';
 import SettingsComponent from '@/presentation/settingsComponent/SettingsComponent.vue';

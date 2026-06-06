@@ -9,7 +9,7 @@ import type { PointsData } from "@/metricsComponent/domain/types/pointsData"
 import { MetricsChartLayout } from "@/metricsComponent/infrastructure/rendering/chartLayer/metricsChartLayout"
 import type { MetricsChartStyle } from "@/metricsComponent/infrastructure/rendering/chartLayer/types/metricsChartStyle"
 import { LineMonitorLayer } from "@/metricsComponent/infrastructure/rendering/lineMonitorLayer/lineMonitorLayer"
-import { formatSecondsAsMinuteSeconds } from "@/utils/utils"
+import { formatSecondsAsMinuteSeconds } from "@/utils/timeFormatters"
 
 
 export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {

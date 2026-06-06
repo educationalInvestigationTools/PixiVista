@@ -1,6 +1,6 @@
 
 import { ViewPort } from "@/plotComponent/application/types/viewPort"
-import {sameSet} from "@/utils/utils.ts"
+import { sameSet } from "@/utils/setHelpers"
 
 export class RenderDependencies {
     viewPort: ViewPort

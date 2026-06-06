@@ -24,29 +24,3 @@ export function formatSecondsAsMinuteSeconds(value: number): string {
     const seconds = safeValue % 60
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
-
-export function sameSet<T>(one: Array<T>, two: Array<T>) {
-    const set1 = new Set(one)
-    const set2 = new Set(two)
-
-    if (set1.size !== set2.size) {
-        return false
-    }
-
-    for (const item of set1) {
-        if (!set2.has(item)) {
-            return false
-        }
-    }
-    return true
-}
-
-export function clamp(value: number, minValue: number, maxValue: number) {
-    if (value < minValue) {
-        return minValue
-    }
-    if (value > maxValue) {
-        return maxValue
-    }
-    return value
-}
