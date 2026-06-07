@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { AnnotationShape } from '@/presentation/annotationsComponent/objectAnnotationData';
-import { ref } from 'vue';
-
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps<{
     label: string
@@ -13,6 +12,7 @@ const emit = defineEmits<{
 }>()
 
 const showShapePicker = ref(false)
+const shapePickerRef = ref<HTMLElement | null>(null)
 
 function toggleShapePicker() {
     showShapePicker.value = !showShapePicker.value
@@ -23,10 +23,28 @@ function selectShape(shape: AnnotationShape) {
     showShapePicker.value = false
 }
 
-</script>
+function handleClickOutside(event: MouseEvent) {
+    const target = event.target as Node
 
+    if (
+        shapePickerRef.value &&
+        !shapePickerRef.value.contains(target)
+    ) {
+        showShapePicker.value = false
+    }
+}
+
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside)
+})
+
+</script>
 <template>
-    <div class="annotation-node__shape-picker">
+    <div ref="shapePickerRef" class="annotation-node__shape-picker">
         <button class="annotation-node__shape-button" type="button" @click.stop="toggleShapePicker"
             :title="'Pick shape for ' + props.label">
             <svg v-if="props.shape === 'rectangle'" class="annotation-node__shape" viewBox="0 0 16 10" fill="none"
@@ -91,7 +109,6 @@ function selectShape(shape: AnnotationShape) {
     padding: 6px;
     background: var(--ui-panel-row-bg);
     border: 1px solid var(--ui-panel-border);
-    z-index: 2;
     min-width: 120px;
 }
 

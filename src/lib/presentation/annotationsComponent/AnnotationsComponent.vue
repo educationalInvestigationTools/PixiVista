@@ -58,7 +58,7 @@ const props = defineProps<{
     border: 1px solid var(--ui-panel-border);
     height: auto;
     max-height: 240px;
-    overflow-y: visible;
+    overflow-y: auto;
     font-size: clamp(13px, 1.5vw, 15px);
 }
 
