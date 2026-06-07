@@ -14,9 +14,4 @@ export type {
 
 export type { ViewPort } from '@/plotComponent/application/types/viewPort'
 
-export type {
-    HighlightedInterval,
-    IntervalGroup,
-} from '@/plotComponent/application/types/highlightedInterval'
-
 export { default as PlotComponent } from '@/plotComponent/presentation/plotComponent/PlotComponent.vue'

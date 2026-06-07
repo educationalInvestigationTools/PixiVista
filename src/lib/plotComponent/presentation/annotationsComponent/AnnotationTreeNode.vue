@@ -1,31 +1,30 @@
 <script setup lang="ts">
-import type { AnnotationNode, AnnotationShape, Color } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
+import type { AnnotationNode, ColorProperty, ShapeProperty } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
 
 import ToggleVisibility from '@/plotComponent/presentation/annotationsComponent/PropertySelectors/ToggleVisibility.vue';
 import ColorPicker from '@/plotComponent/presentation/annotationsComponent/PropertySelectors/ColorPicker.vue';
 import ShapePicker from '@/plotComponent/presentation/annotationsComponent/PropertySelectors/ShapePicker.vue';
+
 const props = defineProps<{
     node: AnnotationNode
-}>()
-
-const emit = defineEmits<{
-    (e: 'toggle-visibility', id: string): void
-    (e: 'change-color', id: string, color: Color): void
-    (e: 'change-shape', id: string, shape: AnnotationShape): void
 }>()
 
 </script>
 
 <template>
-    <div ref="rootRef" class="annotation-node" :class="{ 'annotation-node--off': !props.node.state.visibility }">
+    <div ref="rootRef" class="annotation-node" :class="{ 'annotation-node--off': !props.node.visibility.Value }">
 
-        <ToggleVisibility :visibility="props.node.state.visibility" @toggleVisibility="() => emit('toggle-visibility', node.id)"></ToggleVisibility>
+        <ToggleVisibility :visibility="props.node.visibility.Value" @toggleVisibility="() => node.updateVisibility(!props.node.visibility.Value)">
+        </ToggleVisibility>
 
-        <ColorPicker :color="props.node.style.color" :label="props.node.label"
-            @changeColor="(color) => emit('change-color', props.node.id, color)"></ColorPicker>
+        <div v-for="[propertyId, property] of props.node.getProperties()" :key="propertyId">
+            <ColorPicker v-if="property.type === 'color'" :color="(property as ColorProperty).Value"
+                :label="props.node.label" @changeColor="(color) => node.updateProperty(propertyId, color)">
+            </ColorPicker>
 
-        <ShapePicker :label="props.node.label" :shape="props.node.style.shape"
-            @changeShape="(shape) => emit('change-shape', props.node.id, shape)"></ShapePicker>
+            <ShapePicker v-if="property.type === 'shape'" :label="props.node.label" :shape="(property as ShapeProperty).Value"
+                @changeShape="(shape) => props.node.updateProperty(propertyId, shape)"></ShapePicker>
+        </div>
 
         <span class="annotation-node__label">{{ props.node.label }}</span>
     </div>
@@ -54,6 +53,4 @@ const emit = defineEmits<{
     word-break: break-word;
     font-family: inherit;
 }
-
-
 </style>

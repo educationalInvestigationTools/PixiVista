@@ -39,7 +39,7 @@ function updateChoice<T extends AnyUpdateChoiceValue>(choiceId: string, value: T
     <NumberSettingControl v-else-if="typeof choice.value === 'number'" :label="choice.label" :value="choice.value"
         :min="(choice as NumberSettingChoice).min" :max="(choice as NumberSettingChoice).max"
         :format="(choice as NumberSettingChoice).format"
-        @update:value="(value) => updateChoice((choice as NumberSettingChoice).id, value)" />
+        @update:value="(value) => updateChoice(choice.id, value)" />
 
     <StringSettingControl v-else-if="typeof choice.value === 'string'" :label="choice.label" :value="choice.value"
         :options="(choice as StringSettingChoice).options" :format="(choice as StringSettingChoice).format"
