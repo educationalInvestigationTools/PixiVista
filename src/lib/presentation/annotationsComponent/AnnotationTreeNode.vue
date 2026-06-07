@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { AnnotationNode, ColorProperty, ShapeProperty } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
+import type { AnnotationNode, ColorProperty, ShapeProperty } from '@/presentation/annotationsComponent/objectAnnotationData'
 
-import ToggleVisibility from '@/plotComponent/presentation/annotationsComponent/PropertySelectors/ToggleVisibility.vue';
-import ColorPicker from '@/plotComponent/presentation/annotationsComponent/PropertySelectors/ColorPicker.vue';
-import ShapePicker from '@/plotComponent/presentation/annotationsComponent/PropertySelectors/ShapePicker.vue';
+import ToggleVisibility from '@/presentation/annotationsComponent/PropertySelectors/ToggleVisibility.vue';
+import ColorPicker from '@/presentation/annotationsComponent/PropertySelectors/ColorPicker.vue';
+import ShapePicker from '@/presentation/annotationsComponent/PropertySelectors/ShapePicker.vue';
 
 const props = defineProps<{
     node: AnnotationNode

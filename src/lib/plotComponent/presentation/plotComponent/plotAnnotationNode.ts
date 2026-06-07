@@ -1,5 +1,5 @@
 import { ChangeChannelVisibilityCommand } from "@/plotComponent/application/commands/changeChannelVisibilityCommand"
-import { AnnotationNode, AnnotationProperty, ColorProperty, ShapeProperty, VisibilityProperty, type AnnotationShape, type Color, type ImplementedProperties, type Visibility } from "@/plotComponent/presentation/annotationsComponent/objectAnnotationData"
+import { AnnotationNode, AnnotationProperty, ColorProperty, ShapeProperty, VisibilityProperty, type AnnotationShape, type Color, type ImplementedProperties, type Visibility } from "@/presentation/annotationsComponent/objectAnnotationData"
 import type { EventMediator } from "@/utils/eventMediator"
 
 

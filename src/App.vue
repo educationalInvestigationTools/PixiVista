@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import AnnotationsDebug from '@/plotComponent/presentation/annotationsComponent/AnnotationsDebug.vue';
-import SettingsDebug from '@/presentation/settingsComponent/SettingsDebug.vue';
+import AnnotationsDebug from '@/presentation/annotationsComponent/AnnotationsDebug.vue';
+import PlotDebug from '@/plotComponent/presentation/plotComponent/PlotDebug.vue';
 </script>
 
 
 <template>
     <AnnotationsDebug></AnnotationsDebug>
-    <span> Leave some space </span>
-    <SettingsDebug></SettingsDebug>
+    <PlotDebug></PlotDebug>
 </template>
 
 <style scoped></style>

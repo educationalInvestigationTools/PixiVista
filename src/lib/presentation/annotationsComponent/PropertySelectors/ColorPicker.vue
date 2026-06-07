@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Color } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
+import type { Color } from '@/presentation/annotationsComponent/objectAnnotationData';
 
 
 const props = defineProps<{

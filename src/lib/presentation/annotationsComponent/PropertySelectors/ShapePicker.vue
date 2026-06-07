@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AnnotationShape } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
+import type { AnnotationShape } from '@/presentation/annotationsComponent/objectAnnotationData';
 import { ref } from 'vue';
 
 

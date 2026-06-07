@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import AnnotationsComponent from '@/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue'
-import { type AnnotationShape } from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
-import { DebugAnnotationNode } from '@/plotComponent/presentation/annotationsComponent/DebugNode'
+import AnnotationsComponent from '@/presentation/annotationsComponent/AnnotationsComponent.vue'
+import { type AnnotationShape } from '@/presentation/annotationsComponent/objectAnnotationData'
+import { DebugAnnotationNode } from '@/presentation/annotationsComponent/DebugNode'
 
 const rootLabelPool = ['Channels', 'Intervals', 'Events', 'Regions', 'Markers']
 const branchLabelPool = ['Artifact', 'Signal', 'Window', 'Epoch', 'Cluster', 'Segment']

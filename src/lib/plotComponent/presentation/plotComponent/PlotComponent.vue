@@ -14,13 +14,13 @@ import { fmtTime } from '@/utils/timeFormatters';
 import { ref, computed, onMounted, onBeforeUnmount, type Ref } from 'vue';
 import SliderComponent from '@/presentation/sliderComponent/SliderComponent.vue';
 import SettingsComponent from '@/presentation/settingsComponent/SettingsComponent.vue';
-import AnnotationsComponent from '@/plotComponent/presentation/annotationsComponent/AnnotationsComponent.vue';
+import AnnotationsComponent from '@/presentation/annotationsComponent/AnnotationsComponent.vue';
 import MetricsComponent from '@/metricsComponent/presentation/MetricsComponent.vue';
 import {
     ColorProperty,
     ShapeProperty,
     type AnnotationNode,
-} from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData';
+} from '@/presentation/annotationsComponent/objectAnnotationData';
 import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/types';
 import type { AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
 import { ChoiceTreeNode, type SettingsTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
@@ -33,9 +33,6 @@ const props = defineProps<{
 }>()
 
 const heightPerChannel = ref(200)
-
-
-
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
 let diContainer: PlotComponentContainer | null = null;

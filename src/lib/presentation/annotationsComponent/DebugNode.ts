@@ -1,4 +1,4 @@
-import { AnnotationNode, ColorProperty, ShapeProperty, type AnnotationShape, type Visibility, AnnotationProperty, type ImplementedProperties, type Color } from "@/plotComponent/presentation/annotationsComponent/objectAnnotationData"
+import { AnnotationNode, ColorProperty, ShapeProperty, type AnnotationShape, type Visibility, AnnotationProperty, type ImplementedProperties, type Color } from "@/presentation/annotationsComponent/objectAnnotationData"
 
 export class DebugAnnotationNode extends AnnotationNode {
     private readonly colorProperty: ColorProperty

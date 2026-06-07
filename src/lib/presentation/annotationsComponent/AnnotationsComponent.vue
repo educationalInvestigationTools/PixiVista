@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
-import AnnotationTreeNode from '@/plotComponent/presentation/annotationsComponent/AnnotationTreeNode.vue'
+import AnnotationTreeNode from '@/presentation/annotationsComponent/AnnotationTreeNode.vue'
 import TreeView from '@/presentation/tree/TreeView.vue'
 import type {
     AnnotationNode,
-} from '@/plotComponent/presentation/annotationsComponent/objectAnnotationData'
+} from '@/presentation/annotationsComponent/objectAnnotationData'
 
 const props = defineProps<{
     annotations: AnnotationNode[]
