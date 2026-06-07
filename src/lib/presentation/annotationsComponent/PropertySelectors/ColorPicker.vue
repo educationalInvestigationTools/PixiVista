@@ -1,36 +1,51 @@
 <script setup lang="ts">
-import type { Color } from '@/presentation/annotationsComponent/objectAnnotationData';
+import { onMounted, onUnmounted, ref, watch } from 'vue'
+import Picker from 'vanilla-picker'
 
+import type { Color } from '@/presentation/annotationsComponent/objectAnnotationData'
 
 const props = defineProps<{
-    color : Color
+    color: Color
     label: string
 }>()
 
 const emit = defineEmits<{
-    (e: 'changeColor', color : Color): void
+    (e: 'changeColor', color: Color): void
 }>()
 
-function normalizeColor(color : Color) {
-    return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(color) ? color : '#ffffff'
-}
+const swatchRef = ref<HTMLElement | null>(null)
 
-function changeColor(event: Event) {
-    const input = event.target as HTMLInputElement | null
-    if (!input) return
-    emit('changeColor', input.value)
-}
+let picker: Picker | null = null
 
+onMounted(() => {
+    if (!swatchRef.value) return
+
+    picker = new Picker({
+        parent: swatchRef.value,
+        color: props.color
+    })
+
+    picker.onChange = (color) => {
+        emit('changeColor', color.hex)
+    }
+})
+
+watch(
+    () => props.color,
+    (newColor) => {
+        picker?.setColor(newColor, false)
+    }
+)
+
+onUnmounted(() => {
+    picker?.destroy()
+})
 </script>
 
 <template>
-
-    <label class="annotation-node__color" :title="'Pick color for ' + props.label">
-        <span class="annotation-node__color-swatch" :style="{ backgroundColor: props.color }"></span>
-        <input class="annotation-node__color-input" type="color" :value="normalizeColor(props.color)"
-            :aria-label="'Pick color for ' + props.label" @input="changeColor" />
-    </label>
-
+    <button ref="swatchRef" class="annotation-node__color" :title="'Pick color for ' + props.label">
+        <span class="annotation-node__color-swatch" :style="{ backgroundColor: props.color }" />
+    </button>
 </template>
 
 <style scoped>
@@ -51,16 +66,5 @@ function changeColor(event: Event) {
     width: 100%;
     height: 100%;
     border-radius: 2px;
-}
-
-.annotation-node__color-input {
-    position: absolute;
-    inset: 0;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: 0;
-    opacity: 0;
-    cursor: pointer;
 }
 </style>

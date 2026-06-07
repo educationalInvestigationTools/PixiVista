@@ -19,7 +19,7 @@ const props = defineProps<{
         <div class="annotations__panel">
             <div v-for="node in props.annotations" :key="node.id" class="annotations__column">
                 <TreeView :node="node" v-slot="{ node: slotNode }">
-                    <AnnotationTreeNode :node="slotNode"/>
+                    <AnnotationTreeNode :node="slotNode" />
                 </TreeView>
             </div>
             <span v-if="props.annotations.length === 0" class="annotations__empty">No annotations available.</span>
@@ -58,7 +58,7 @@ const props = defineProps<{
     border: 1px solid var(--ui-panel-border);
     height: auto;
     max-height: 240px;
-    overflow: auto;
+    overflow-y: visible;
     font-size: clamp(13px, 1.5vw, 15px);
 }
 

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "pixi.js": "^8.18.1",
+    "vanilla-picker": "^2.12.3",
     "vue": "^3.5.35"
   },
   "devDependencies": {
