@@ -49,7 +49,7 @@ export class RootAnnotationNode extends AnnotationNode {
 }
 
 export class ChannelAnnotationNode extends RootAnnotationNode {
-    eventMediator: EventMediator
+    private readonly eventMediator: EventMediator
     constructor(id: string, label: string, color: ColorProperty, shape: ShapeProperty, eventMediator: EventMediator) {
         super(id, label, [], color, shape)
         this.eventMediator = eventMediator
@@ -65,5 +65,4 @@ export class ChannelAnnotationNode extends RootAnnotationNode {
         super.updateVisibility(visibility)
         this.eventMediator.publish(new ChangeChannelVisibilityCommand(this.label, visibility))
     }
-
 }
