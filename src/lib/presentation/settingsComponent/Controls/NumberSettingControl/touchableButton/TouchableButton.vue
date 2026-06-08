@@ -49,7 +49,7 @@ function startAdjust(direction: number) {
 
 <template>
 
-    <button class="number-control__button" type="button" aria-label="Decrease value" @pointerdown="startAdjust(direction)"
+    <button class="number-control__button" type="button" aria-label="Decrease value" @contextmenu.prevent @pointerdown="startAdjust(direction)"
         @pointerup="stopAdjust" @pointerleave="stopAdjust" @pointercancel="stopAdjust" @click="handleClick(-1, $event)">
         {{ props.isPositive ? '+' : '-' }}
     </button>
