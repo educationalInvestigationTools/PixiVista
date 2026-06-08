@@ -25,7 +25,7 @@ onMounted(() => {
         color: props.color
     })
 
-    picker.onChange = (color) => {
+    picker.onDone = (color) => {
         emit('changeColor', color.hex)
     }
 })

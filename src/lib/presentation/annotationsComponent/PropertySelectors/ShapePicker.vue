@@ -110,6 +110,7 @@ onUnmounted(() => {
     background: var(--ui-panel-row-bg);
     border: 1px solid var(--ui-panel-border);
     min-width: 120px;
+    z-index: 20;
 }
 
 .annotation-node__shape-option {

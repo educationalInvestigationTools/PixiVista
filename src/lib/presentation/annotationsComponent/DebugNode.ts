@@ -46,7 +46,7 @@ export class DebugAnnotationNode extends AnnotationNode {
         }
     }
 
-    updateVisibility(visibility : Visibility): void {
+    updateVisibility(visibility: Visibility): void {
         this.visibility.Value = visibility
         for (const child of this.children) {
             child.updateVisibility(visibility)
