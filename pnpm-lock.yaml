@@ -8,12 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@simonwep/pickr':
+        specifier: ^1.9.1
+        version: 1.9.1
       pixi.js:
         specifier: ^8.18.1
         version: 8.18.1
-      vanilla-picker:
-        specifier: ^2.12.3
-        version: 2.12.3
       vue:
         specifier: ^3.5.35
         version: 3.5.35(typescript@5.9.3)
@@ -663,8 +663,8 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@sphinxxxx/color-conversion@2.2.2':
-    resolution: {integrity: sha512-XExJS3cLqgrmNBIP3bBw6+1oQ1ksGjFh0+oClDKFYpCCqx/hlqwWO5KO/S63fzUo67SxI9dMrF0y5T/Ey7h8Zw==}
+  '@simonwep/pickr@1.9.1':
+    resolution: {integrity: sha512-fR3qmfAcPf/HSFS7GEnTmZLM3+xERv1+jyMBbzT63ilRRM8veYjI7ELvkHHKk0/du3lHp7uh/FqatjM3646X1g==}
 
   '@tsconfig/node24@24.0.4':
     resolution: {integrity: sha512-2A933l5P5oCbv6qSxHs7ckKwobs8BDAe9SJ/Xr2Hy+nDlwmLE1GhFh/g/vXGRZWgxBg9nX/5piDtHR9Dkw/XuA==}
@@ -914,6 +914,9 @@ packages:
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+
+  core-js@3.37.0:
+    resolution: {integrity: sha512-fu5vHevQ8ZG4og+LXug8ulUtVxjOcEYvifJr7L5Bfq9GOztVqsKd9/59hUk2ZSbCrS3BqUr3EpaYGIYzq7g3Ug==}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -1327,6 +1330,9 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanopop@2.4.2:
+    resolution: {integrity: sha512-NzOgmMQ+elxxHeIha+OG/Pv3Oc3p4RU2aBhwWwAqDpXrdTbtRylbRLQztLy8dMMwfl6pclznBdfUhccEn9ZIzw==}
+
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -1557,9 +1563,6 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
-
-  vanilla-picker@2.12.3:
-    resolution: {integrity: sha512-qVkT1E7yMbUsB2mmJNFmaXMWE2hF8ffqzMMwe9zdAikd8u2VfnsVY2HQcOUi2F38bgbxzlJBEdS1UUhOXdF9GQ==}
 
   vite-dev-rpc@2.0.0:
     resolution: {integrity: sha512-yKwbTwdHKSD2k/aGqyWpPHepo45OQc8lH3/6IfT4ZqeKE26ooKvi4WIEKzqWav8v+9Is8u1k8q54hvOmqASazA==}
@@ -2161,7 +2164,10 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@sphinxxxx/color-conversion@2.2.2': {}
+  '@simonwep/pickr@1.9.1':
+    dependencies:
+      core-js: 3.37.0
+      nanopop: 2.4.2
 
   '@tsconfig/node24@24.0.4': {}
 
@@ -2473,6 +2479,8 @@ snapshots:
   caniuse-lite@1.0.30001793: {}
 
   convert-source-map@2.0.0: {}
+
+  core-js@3.37.0: {}
 
   cross-spawn@7.0.6:
     dependencies:
@@ -2810,6 +2818,8 @@ snapshots:
 
   nanoid@3.3.12: {}
 
+  nanopop@2.4.2: {}
+
   natural-compare@1.4.0: {}
 
   node-releases@2.0.47: {}
@@ -3073,10 +3083,6 @@ snapshots:
       punycode: 2.3.1
 
   util-deprecate@1.0.2: {}
-
-  vanilla-picker@2.12.3:
-    dependencies:
-      '@sphinxxxx/color-conversion': 2.2.2
 
   vite-dev-rpc@2.0.0(vite@8.0.0-beta.18(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@24.12.4)(jiti@2.7.0)(yaml@2.8.3)):
     dependencies:

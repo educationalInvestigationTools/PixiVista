@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
-import Picker from 'vanilla-picker'
+import Pickr from '@simonwep/pickr'
 
 import type { Color } from '@/presentation/annotationsComponent/objectAnnotationData'
 
@@ -15,30 +15,49 @@ const emit = defineEmits<{
 
 const swatchRef = ref<HTMLElement | null>(null)
 
-let picker: Picker | null = null
+let pickr: Pickr | null = null
 
 onMounted(() => {
     if (!swatchRef.value) return
 
-    picker = new Picker({
-        parent: swatchRef.value,
-        color: props.color
+    pickr = Pickr.create({
+        el: swatchRef.value,
+        theme: 'classic',
+
+        default: props.color,
+
+        components: {
+            preview: true,
+            opacity: false,
+            hue: true,
+
+            interaction: {
+                input: true,
+                save: true,
+                cancel: true,
+                clear: false,
+            },
+        },
     })
 
-    picker.onDone = (color) => {
-        emit('changeColor', color.hex)
-    }
+    pickr.on('save', (color: Pickr.HSVaColor) => {
+        if (!color) return
+
+        emit('changeColor', color.toHEXA().toString())
+        pickr?.hide()
+    })
 })
 
 watch(
     () => props.color,
     (newColor) => {
-        picker?.setColor(newColor, false)
+        if (!pickr) return
+        pickr.setColor(newColor, true)
     }
 )
 
 onUnmounted(() => {
-    picker?.destroy()
+    pickr?.destroyAndRemove()
 })
 </script>
 
@@ -56,7 +75,6 @@ onUnmounted(() => {
     height: 18px;
     border-radius: 3px;
     border: 1px solid var(--ui-panel-border);
-    padding: 0;
     background: var(--ui-panel-surface);
     cursor: pointer;
 }
