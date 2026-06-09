@@ -13,13 +13,12 @@ const emit = defineEmits<{
 
 function handleSelectShape(shape: AnnotationShape, closeMenu: () => void) {
     emit('changeShape', shape);
-    closeMenu(); // Execute the callback passed up from the popover slot
+    closeMenu();
 }
 </script>
 
 <template>
     <FloatingPopover placement="bottom-start" :offset-value="6">
-        <!-- 1. The Trigger Button Slot -->
         <template #trigger="{ toggle }">
             <button
                 class="annotation-node__shape-button"
@@ -36,7 +35,6 @@ function handleSelectShape(shape: AnnotationShape, closeMenu: () => void) {
             </button>
         </template>
 
-        <!-- 2. The Pop-up Menu Content Slot -->
         <template #content="{ close }">
             <div class="annotation-node__shape-menu">
                 <button class="annotation-node__shape-option" type="button" @click="handleSelectShape('rectangle', close)">
@@ -57,7 +55,6 @@ function handleSelectShape(shape: AnnotationShape, closeMenu: () => void) {
 </template>
 
 <style scoped>
-/* NOTE: You can remove .annotation-node__shape-picker entirely from your CSS */
 
 .annotation-node__shape-button {
     display: inline-flex;
@@ -79,7 +76,6 @@ function handleSelectShape(shape: AnnotationShape, closeMenu: () => void) {
 }
 
 .annotation-node__shape-menu {
-    /* No absolute positions needed here; Floating UI handles coordination wrapper styling */
     display: flex;
     flex-direction: column;
     gap: 4px;

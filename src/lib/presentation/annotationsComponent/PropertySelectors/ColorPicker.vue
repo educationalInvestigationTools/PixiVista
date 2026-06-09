@@ -25,6 +25,7 @@ onMounted(() => {
         theme: 'classic',
 
         default: props.color,
+        useAsButton: true,
 
         components: {
             preview: true,
@@ -44,6 +45,11 @@ onMounted(() => {
         if (!color) return
 
         emit('changeColor', color.toHEXA().toString())
+        pickr?.hide()
+    })
+
+    pickr.on('cancel', (color: Pickr.HSVaColor) => {
+        if (!color) return
         pickr?.hide()
     })
 })
