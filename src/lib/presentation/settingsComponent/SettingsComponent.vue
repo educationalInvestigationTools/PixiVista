@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import TreeView from '@/presentation/tree/TreeView.vue';
 import SettingsTreeComponent from '@/presentation/settingsComponent/SettingsTreeComponent.vue';
 import type { AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
 import type { SettingsTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
+
+import TreePanel from '@/presentation/tree/TreePanel.vue';
 
 const props = defineProps<{
     trees: SettingsTreeNode[]
@@ -18,36 +19,23 @@ const showSettings = ref(true)
 </script>
 
 <template>
-    <div class="settings">
-        <button class="settings__toggle" type="button"
-            :title="showSettings ? 'Hide settings panel' : 'Show settings panel'" @click="showSettings = !showSettings">
-            <span class="settings__toggle-label">Settings</span>
-            <span class="settings__toggle-state">{{ showSettings ? 'HIDE' : 'SHOW' }}</span>
-        </button>
-
-        <div v-show="showSettings" class="settings__panel">
-            <div v-for="(tree) in props.trees" :key="tree.id" class="settings__tree-root">
-                <TreeView :node="tree" v-slot="{ node }">
-                    <SettingsTreeComponent :node="node" @update:choice="(update) => emit('update:choice', update)" />
-                </TreeView>
+    <TreePanel :nodes="props.trees">
+        <template #header>
+            <div>
+                <span>Settings</span>
+                <button class="settings__toggle" @click="showSettings = !showSettings">
+                    <span>{{ showSettings ? 'HIDE' : 'SHOW' }}</span>
+                </button>
             </div>
-        </div>
-    </div>
+        </template>
+
+        <template #node="{ node }">
+            <SettingsTreeComponent :node="node" @update:choice="(update) => emit('update:choice', update)" />
+        </template>
+    </TreePanel>
 </template>
 
 <style scoped>
-.settings {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 4px;
-    max-height: 360px;
-    background: var(--ui-panel-bg);
-    border: 1px solid var(--ui-panel-border);
-    font-family: var(--ui-font);
-}
-
 .settings__toggle {
     display: flex;
     align-items: center;
@@ -76,23 +64,4 @@ const showSettings = ref(true)
     color: var(--ui-text-primary);
 }
 
-.settings__panel {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    gap: 8px;
-    padding: 4px;
-    background: var(--ui-panel-bg);
-    border: 1px solid var(--ui-panel-border);
-    overflow-x: auto;
-    overflow-y: auto;
-}
-
-.settings__tree-root {
-    flex: 0 0 auto;
-    padding: 6px;
-    border: 1px solid var(--ui-panel-border);
-    background: var(--ui-panel-row-bg);
-    overflow-y: auto;
-}
 </style>

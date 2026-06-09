@@ -23,7 +23,7 @@ const displayValue = computed(() => {
 
 function selectOption(option: string, closeMenu: () => void) {
     emit('update:value', option)
-    closeMenu() // Closes the generic floating container
+    closeMenu()
 }
 </script>
 
@@ -90,14 +90,13 @@ function selectOption(option: string, closeMenu: () => void) {
 }
 
 .string-select__menu {
-    /* Absolute positions and top/left offsets are completely handled by FloatingPopover */
     padding: 6px;
     display: flex;
     flex-direction: column;
     gap: 4px;
     background: var(--ui-panel-row-bg);
     border: 1px solid var(--ui-panel-border);
-    min-width: 140px; /* Replaces min-width 100% since element is now teleported to <body> */
+    min-width: 140px;
 }
 
 .string-select__option {

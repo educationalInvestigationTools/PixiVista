@@ -20,32 +20,33 @@ function handleSelectShape(shape: AnnotationShape, closeMenu: () => void) {
 <template>
     <FloatingPopover placement="bottom-start" :offset-value="6">
         <template #trigger="{ toggle }">
-            <button
-                class="annotation-node__shape-button"
-                type="button"
-                @click="toggle"
-                :title="'Pick shape for ' + props.label"
-            >
-                <svg v-if="props.shape === 'rectangle'" class="annotation-node__shape" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+            <button class="annotation-node__shape-button" type="button" @click="toggle"
+                :title="'Pick shape for ' + props.label">
+                <svg v-if="props.shape === 'rectangle'" class="annotation-node__shape" viewBox="0 0 16 10" fill="none"
+                    aria-hidden="true">
                     <rect x="1.25" y="1.25" width="13.5" height="7.5" stroke="currentColor" stroke-width="1.5" />
                 </svg>
                 <svg v-else class="annotation-node__shape" viewBox="0 0 16 10" fill="none" aria-hidden="true">
-                    <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 2" />
+                    <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-dasharray="3 2" />
                 </svg>
             </button>
         </template>
 
         <template #content="{ close }">
             <div class="annotation-node__shape-menu">
-                <button class="annotation-node__shape-option" type="button" @click="handleSelectShape('rectangle', close)">
+                <button class="annotation-node__shape-option" type="button"
+                    @click="handleSelectShape('rectangle', close)">
                     <svg class="annotation-node__shape-option-icon" viewBox="0 0 16 10" fill="none" aria-hidden="true">
                         <rect x="1.25" y="1.25" width="13.5" height="7.5" stroke="currentColor" stroke-width="1.5" />
                     </svg>
                     <span>Rectangle</span>
                 </button>
-                <button class="annotation-node__shape-option" type="button" @click="handleSelectShape('dashed-lines', close)">
+                <button class="annotation-node__shape-option" type="button"
+                    @click="handleSelectShape('dashed-lines', close)">
                     <svg class="annotation-node__shape-option-icon" viewBox="0 0 16 10" fill="none" aria-hidden="true">
-                        <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 2" />
+                        <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-dasharray="3 2" />
                     </svg>
                     <span>Dashed</span>
                 </button>
@@ -55,11 +56,12 @@ function handleSelectShape(shape: AnnotationShape, closeMenu: () => void) {
 </template>
 
 <style scoped>
-
 .annotation-node__shape-button {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
+    vertical-align: middle;
+    box-sizing:content-box;
     width: 18px;
     height: 18px;
     padding: 0;

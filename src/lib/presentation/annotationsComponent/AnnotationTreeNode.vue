@@ -14,15 +14,18 @@ const props = defineProps<{
 <template>
     <div ref="rootRef" class="annotation-node" :class="{ 'annotation-node--off': !props.node.visibility.Value }">
 
-        <ToggleVisibility :visibility="props.node.visibility.Value" @toggleVisibility="() => node.updateVisibility(!props.node.visibility.Value)">
+        <ToggleVisibility :visibility="props.node.visibility.Value"
+            @toggleVisibility="() => node.updateVisibility(!props.node.visibility.Value)">
         </ToggleVisibility>
 
-        <div v-for="[propertyId, property] of props.node.getProperties()" :key="propertyId">
+        <div class="annotation_property_selectors" v-for="[propertyId, property] of props.node.getProperties()"
+            :key="propertyId">
             <ColorPicker v-if="property.type === 'color'" :color="(property as ColorProperty).Value"
                 :label="props.node.label" @changeColor="(color) => node.updateProperty(propertyId, color)">
             </ColorPicker>
 
-            <ShapePicker v-if="property.type === 'shape'" :label="props.node.label" :shape="(property as ShapeProperty).Value"
+            <ShapePicker v-if="property.type === 'shape'" :label="props.node.label"
+                :shape="(property as ShapeProperty).Value"
                 @changeShape="(shape) => props.node.updateProperty(propertyId, shape)"></ShapePicker>
         </div>
 
@@ -34,7 +37,17 @@ const props = defineProps<{
 .annotation-node {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    box-sizing: border-box;
+    padding: 3px 3px 0 0;
+
+}
+
+.annotation_property_selectors {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .annotation-node--off {
@@ -47,7 +60,9 @@ const props = defineProps<{
 
 .annotation-node__label {
     flex: 1;
-    text-align: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: var(--ui-text-primary);
     font-size: inherit;
     word-break: break-word;
