@@ -12,7 +12,7 @@ const props = defineProps<{
 </script>
 
 <template>
-<TreePanel :nodes="props.annotations">
+<TreePanel :show="true" :nodes="props.annotations">
     <template #header>
         <span class="annotations__heading">
             Annotations
@@ -33,12 +33,9 @@ const props = defineProps<{
 
 
 .annotations__heading {
-    display: block;
-    padding: 8px 8px 0;
-    letter-spacing: 1px;
-    font-size: clamp(12px, 1.5vw, 14px);
-    font-weight: 600;
-    color: var(--ui-text-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 </style>

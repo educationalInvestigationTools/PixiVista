@@ -4,6 +4,7 @@ import TreeView from '@/presentation/tree/TreeView.vue'
 
 defineProps<{
     nodes: T[]
+    show: boolean
 }>()
 </script>
 
@@ -13,7 +14,7 @@ defineProps<{
             <slot name="header" />
         </div>
 
-        <div class="tree-panel__content">
+        <div v-if="show" class="tree-panel__content">
             <div v-for="node in nodes" :key="node.id" class="tree-panel__root">
                 <TreeView :node="node" v-slot="{ node: slotNode }">
                     <slot name="node" :node="slotNode" />
@@ -37,6 +38,12 @@ defineProps<{
     border: 1px solid var(--ui-panel-border);
     font-family: var(--ui-font);
     color: var(--ui-text-muted);
+    font-weight: 600;
+}
+
+.tree-panel__header {
+    height: 30px;
+    padding: 5px 10px;
 }
 
 .tree-panel__content {

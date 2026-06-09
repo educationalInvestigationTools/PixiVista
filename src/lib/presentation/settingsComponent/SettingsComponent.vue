@@ -19,12 +19,12 @@ const showSettings = ref(true)
 </script>
 
 <template>
-    <TreePanel :nodes="props.trees">
+    <TreePanel :show="showSettings" :nodes="props.trees">
         <template #header>
-            <div>
+            <div class="settings-header">
                 <span>Settings</span>
                 <button class="settings__toggle" @click="showSettings = !showSettings">
-                    <span>{{ showSettings ? 'HIDE' : 'SHOW' }}</span>
+                    {{ showSettings ? 'Hide' : 'Show' }}
                 </button>
             </div>
         </template>
@@ -36,6 +36,12 @@ const showSettings = ref(true)
 </template>
 
 <style scoped>
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .settings__toggle {
     display: flex;
     align-items: center;
@@ -47,7 +53,7 @@ const showSettings = ref(true)
     color: var(--ui-text-primary);
     cursor: pointer;
     letter-spacing: 1px;
-    font-size: clamp(12px, 1.5vw, 14px);
+    font-size: inherit;
     font-weight: 600;
 }
 
@@ -63,5 +69,4 @@ const showSettings = ref(true)
 .settings__toggle-state {
     color: var(--ui-text-primary);
 }
-
 </style>
