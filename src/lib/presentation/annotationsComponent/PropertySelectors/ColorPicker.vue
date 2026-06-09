@@ -76,9 +76,11 @@ onUnmounted(() => {
 <style scoped>
 .annotation-node__color {
     position: relative;
+    box-sizing: content-box;
     display: inline-block;
     width: 18px;
     height: 18px;
+    padding: 0;
     border-radius: 3px;
     border: 1px solid var(--ui-panel-border);
     background: var(--ui-panel-surface);
