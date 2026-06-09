@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AnnotationShape } from '@/presentation/annotationsComponent/objectAnnotationData';
-import { ref, onMounted, onUnmounted } from 'vue';
+import FloatingPopover from '@/presentation/utils/FloatingPopover.vue';
 
 const props = defineProps<{
     label: string
@@ -11,74 +11,53 @@ const emit = defineEmits<{
     (e: 'changeShape', shape: AnnotationShape): void
 }>()
 
-const showShapePicker = ref(false)
-const shapePickerRef = ref<HTMLElement | null>(null)
-
-function toggleShapePicker() {
-    showShapePicker.value = !showShapePicker.value
+function handleSelectShape(shape: AnnotationShape, closeMenu: () => void) {
+    emit('changeShape', shape);
+    closeMenu(); // Execute the callback passed up from the popover slot
 }
-
-function selectShape(shape: AnnotationShape) {
-    emit('changeShape', shape)
-    showShapePicker.value = false
-}
-
-function handleClickOutside(event: MouseEvent) {
-    const target = event.target as Node
-
-    if (
-        shapePickerRef.value &&
-        !shapePickerRef.value.contains(target)
-    ) {
-        showShapePicker.value = false
-    }
-}
-
-onMounted(() => {
-    document.addEventListener('click', handleClickOutside)
-})
-
-onUnmounted(() => {
-    document.removeEventListener('click', handleClickOutside)
-})
-
 </script>
+
 <template>
-    <div ref="shapePickerRef" class="annotation-node__shape-picker">
-        <button class="annotation-node__shape-button" type="button" @click.stop="toggleShapePicker"
-            :title="'Pick shape for ' + props.label">
-            <svg v-if="props.shape === 'rectangle'" class="annotation-node__shape" viewBox="0 0 16 10" fill="none"
-                aria-hidden="true">
-                <rect x="1.25" y="1.25" width="13.5" height="7.5" stroke="currentColor" stroke-width="1.5" />
-            </svg>
-            <svg v-else class="annotation-node__shape" viewBox="0 0 16 10" fill="none" aria-hidden="true">
-                <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                    stroke-dasharray="3 2" />
-            </svg>
-        </button>
-        <div v-if="showShapePicker" class="annotation-node__shape-menu" @click.stop>
-            <button class="annotation-node__shape-option" type="button" @click="selectShape('rectangle')">
-                <svg class="annotation-node__shape-option-icon" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+    <FloatingPopover placement="bottom-start" :offset-value="6">
+        <!-- 1. The Trigger Button Slot -->
+        <template #trigger="{ toggle }">
+            <button
+                class="annotation-node__shape-button"
+                type="button"
+                @click="toggle"
+                :title="'Pick shape for ' + props.label"
+            >
+                <svg v-if="props.shape === 'rectangle'" class="annotation-node__shape" viewBox="0 0 16 10" fill="none" aria-hidden="true">
                     <rect x="1.25" y="1.25" width="13.5" height="7.5" stroke="currentColor" stroke-width="1.5" />
                 </svg>
-                <span>Rectangle</span>
-            </button>
-            <button class="annotation-node__shape-option" type="button" @click="selectShape('dashed-lines')">
-                <svg class="annotation-node__shape-option-icon" viewBox="0 0 16 10" fill="none" aria-hidden="true">
-                    <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-dasharray="3 2" />
+                <svg v-else class="annotation-node__shape" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+                    <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 2" />
                 </svg>
-                <span>Dashed</span>
             </button>
-        </div>
-    </div>
+        </template>
 
+        <!-- 2. The Pop-up Menu Content Slot -->
+        <template #content="{ close }">
+            <div class="annotation-node__shape-menu">
+                <button class="annotation-node__shape-option" type="button" @click="handleSelectShape('rectangle', close)">
+                    <svg class="annotation-node__shape-option-icon" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+                        <rect x="1.25" y="1.25" width="13.5" height="7.5" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                    <span>Rectangle</span>
+                </button>
+                <button class="annotation-node__shape-option" type="button" @click="handleSelectShape('dashed-lines', close)">
+                    <svg class="annotation-node__shape-option-icon" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+                        <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 2" />
+                    </svg>
+                    <span>Dashed</span>
+                </button>
+            </div>
+        </template>
+    </FloatingPopover>
 </template>
 
 <style scoped>
-.annotation-node__shape-picker {
-    position: relative;
-}
+/* NOTE: You can remove .annotation-node__shape-picker entirely from your CSS */
 
 .annotation-node__shape-button {
     display: inline-flex;
@@ -100,9 +79,7 @@ onUnmounted(() => {
 }
 
 .annotation-node__shape-menu {
-    position: absolute;
-    top: 26px;
-    left: 0;
+    /* No absolute positions needed here; Floating UI handles coordination wrapper styling */
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -110,7 +87,6 @@ onUnmounted(() => {
     background: var(--ui-panel-row-bg);
     border: 1px solid var(--ui-panel-border);
     min-width: 120px;
-    z-index: 20;
 }
 
 .annotation-node__shape-option {

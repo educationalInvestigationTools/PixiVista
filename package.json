@@ -18,7 +18,9 @@
     "format": "oxfmt src/"
   },
   "dependencies": {
+    "@floating-ui/vue": "^1.1.11",
     "@simonwep/pickr": "^1.9.1",
+    "@vueuse/core": "^14.3.0",
     "pixi.js": "^8.18.1",
     "vue": "^3.5.35"
   },

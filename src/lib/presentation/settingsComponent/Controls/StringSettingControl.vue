@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 import SettingRow from '@/presentation/settingsComponent/SettingRow.vue';
+import FloatingPopover from '@/presentation/utils/FloatingPopover.vue';
+
 const props = defineProps<{
     label: string
     value: string
@@ -12,10 +14,6 @@ const emit = defineEmits<{
     (e: 'update:value', value: string): void
 }>()
 
-const rootRef = ref<HTMLElement | null>(null)
-const isOpen = ref(false)
-
-
 const displayValue = computed(() => {
     if (props.format) {
         return props.format(props.value)
@@ -23,64 +21,46 @@ const displayValue = computed(() => {
     return props.value
 })
 
-function toggleOpen() {
-    isOpen.value = !isOpen.value
-}
-
-function selectOption(option: string) {
+function selectOption(option: string, closeMenu: () => void) {
     emit('update:value', option)
-    isOpen.value = false
+    closeMenu() // Closes the generic floating container
 }
-
-function handleClickAway(event: PointerEvent) {
-    if (!isOpen.value) return
-    const target = event.target as Node | null
-    const rootEl = rootRef.value
-    if (rootEl && target && !rootEl.contains(target)) {
-        isOpen.value = false
-    }
-}
-
-onMounted(() => {
-    document.addEventListener('pointerdown', handleClickAway)
-})
-
-onBeforeUnmount(() => {
-    document.removeEventListener('pointerdown', handleClickAway)
-})
 </script>
 
 <template>
     <SettingRow :label="props.label">
-        <div ref="rootRef" class="string-select">
-            <button
-                class="string-select__button"
-                type="button"
-                :aria-expanded="isOpen"
-                @click="toggleOpen">
-                <span class="string-select__value">{{ displayValue }}</span>
-                <span class="string-select__chevron">▼</span>
-            </button>
-            <div v-if="isOpen" class="string-select__menu" role="listbox">
+        <FloatingPopover placement="bottom-start" :offset-value="4">
+
+            <template #trigger="{ toggle, isOpen }">
                 <button
-                    v-for="option in props.options"
-                    :key="option"
-                    class="string-select__option"
+                    class="string-select__button"
                     type="button"
-                    role="option"
-                    @click="selectOption(option)">
-                    {{ option }}
+                    :aria-expanded="isOpen"
+                    @click="toggle">
+                    <span class="string-select__value">{{ displayValue }}</span>
+                    <span class="string-select__chevron">▼</span>
                 </button>
-            </div>
-        </div>
+            </template>
+
+            <template #content="{ close }">
+                <div class="string-select__menu" role="listbox">
+                    <button
+                        v-for="option in props.options"
+                        :key="option"
+                        class="string-select__option"
+                        type="button"
+                        role="option"
+                        @click="selectOption(option, close)">
+                        {{ option }}
+                    </button>
+                </div>
+            </template>
+
+        </FloatingPopover>
     </SettingRow>
 </template>
 
 <style scoped>
-.string-select {
-    position: relative;
-}
-
 .string-select__button {
     display: flex;
     align-items: center;
@@ -110,17 +90,14 @@ onBeforeUnmount(() => {
 }
 
 .string-select__menu {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    min-width: 100%;
+    /* Absolute positions and top/left offsets are completely handled by FloatingPopover */
     padding: 6px;
     display: flex;
     flex-direction: column;
     gap: 4px;
     background: var(--ui-panel-row-bg);
     border: 1px solid var(--ui-panel-border);
-    z-index: 20;
+    min-width: 140px; /* Replaces min-width 100% since element is now teleported to <body> */
 }
 
 .string-select__option {
