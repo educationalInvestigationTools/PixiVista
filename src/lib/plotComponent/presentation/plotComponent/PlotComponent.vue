@@ -25,6 +25,7 @@ import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/type
 import type { AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
 import { ChoiceTreeNode, type SettingsTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
 import { ChannelAnnotationNode, RootAnnotationNode } from '@/plotComponent/presentation/plotComponent/plotAnnotationNode';
+import { useViewPortDrag } from '@/plotComponent/presentation/plotComponent/utils/useHorizontalScrolling';
 
 
 const props = defineProps<{
@@ -161,6 +162,13 @@ onMounted(async () => {
             const nextSeconds = currentSeconds + (left ? -1 : 1)
             updateViewPort(nextSeconds, undefined)
         })
+
+    useViewPortDrag(
+        htmlContainerRef,
+        (nextSeconds) => updateViewPort(nextSeconds, undefined),
+        () => viewPortRef.value.startSeconds,
+        () => viewPortRef.value.lengthSeconds,
+    )
 
     await diContainer.init(htmlContainerRef.value, props.signalSourcesManager, props.workerCallback)
     updateViewPort(viewPortRef.value.startSeconds, viewPortRef.value.lengthSeconds)
