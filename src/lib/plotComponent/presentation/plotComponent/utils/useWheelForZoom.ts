@@ -5,6 +5,18 @@ export function useWheelForZoom(htmlContainerRef: Ref<HTMLDivElement | null>, ca
     const wheelListenerOptions: AddEventListenerOptions = { passive: false }
 
     function handleCanvasWheel(event: WheelEvent) {
+
+        if (event.ctrlKey) {
+            event.preventDefault()
+
+            const zoomFactor = event.deltaY > 0
+                ? 0.99
+                : 1.01
+
+            callback(zoomFactor)
+            return
+        }
+
         const canScroll = document.documentElement.scrollHeight > window.innerHeight
         if (!canScroll) {
             event.preventDefault()

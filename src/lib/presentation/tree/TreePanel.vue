@@ -32,8 +32,9 @@ defineProps<{
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 4px;
+    padding: 15px;
     max-height: 360px;
+
     background: var(--ui-panel-bg);
     border: 1px solid var(--ui-panel-border);
     font-family: var(--ui-font);

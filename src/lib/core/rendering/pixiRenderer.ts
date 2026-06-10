@@ -28,6 +28,7 @@ export class PixiRenderer {
             resolution: window.devicePixelRatio,
             autoDensity: true,
         })
+        this.app.canvas.style.touchAction = "pan-x pan-y"
     }
 
     async resize(sizeData: SizeData) {
