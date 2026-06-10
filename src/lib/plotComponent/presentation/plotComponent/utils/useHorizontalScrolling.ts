@@ -12,7 +12,6 @@ export function useViewPortDrag(
 
     const el = containerRef.value
     if (el) {
-        el.style.touchAction = 'pan-y'
         el.addEventListener('pointerdown', onPointerDown)
     }
 
