@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import SettingRow from '@/presentation/settingsComponent/SettingRow.vue';
+import SettingRow from '@/presentation/settingsComponent/SettingRow.vue'
+
 const props = defineProps<{
     label: string
     value: boolean
@@ -16,18 +17,16 @@ function toggleValue() {
 
 <template>
     <SettingRow :label="props.label">
-        <button
-            class="setting-toggle"
-            type="button"
-            :aria-pressed="props.value"
-            @click="toggleValue">
-            <span class="setting-toggle__text">{{ props.value ? 'ON' : 'OFF' }}</span>
+        <button class="toggle-button" type="button" :aria-pressed="props.value" @click="toggleValue">
+            <span class="toggle-button__text">
+                {{ props.value ? 'ON' : 'OFF' }}
+            </span>
         </button>
     </SettingRow>
 </template>
 
 <style scoped>
-.setting-toggle {
+.toggle-button {
     min-width: 70px;
     padding: 6px 12px;
     border: 1px solid var(--ui-panel-border);
@@ -38,17 +37,17 @@ function toggleValue() {
     letter-spacing: 1px;
 }
 
-.setting-toggle[aria-pressed="true"] {
+.toggle-button[aria-pressed="true"] {
     background: var(--ui-text-primary);
     color: var(--ui-text-inverse);
 }
 
-.setting-toggle:focus-visible {
+.toggle-button:focus-visible {
     outline: 1px solid var(--ui-focus-color);
     outline-offset: 1px;
 }
 
-.setting-toggle__text {
+.toggle-button__text {
     display: inline-block;
     min-width: 28px;
     text-align: center;

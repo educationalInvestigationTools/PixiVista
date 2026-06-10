@@ -68,13 +68,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <button ref="swatchRef" class="annotation-node__color" :title="'Pick color for ' + props.label">
-        <span class="annotation-node__color-swatch" :style="{ backgroundColor: props.color }" />
+    <button ref="swatchRef" class="color-picker__button" :title="'Pick color for ' + props.label">
+        <span class="color-picker__swatch" :style="{ backgroundColor: props.color }" />
     </button>
 </template>
 
 <style scoped>
-.annotation-node__color {
+.color-picker__button {
     position: relative;
     box-sizing: content-box;
     display: inline-block;
@@ -87,7 +87,7 @@ onUnmounted(() => {
     cursor: pointer;
 }
 
-.annotation-node__color-swatch {
+.color-picker__swatch {
     display: block;
     width: 100%;
     height: 100%;
