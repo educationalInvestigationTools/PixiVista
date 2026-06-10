@@ -64,8 +64,6 @@ const props = defineProps<{
     justify-content: center;
     align-items: center;
     color: var(--ui-text-primary);
-    font-size: inherit;
     word-break: break-word;
-    font-family: inherit;
 }
 </style>

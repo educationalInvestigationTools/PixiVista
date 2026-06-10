@@ -12,30 +12,25 @@ const props = defineProps<{
 </script>
 
 <template>
-<TreePanel :show="true" :nodes="props.annotations">
-    <template #header>
-        <span class="annotations__heading">
-            Annotations
-        </span>
-    </template>
+    <TreePanel :show="true" :nodes="props.annotations">
+        <template #header>
+            <div class="annotations-header">
+                <span>
+                    Annotations
+                </span>
+            </div>
+        </template>
 
-    <template #node="{ node }">
-        <AnnotationTreeNode :node="node" />
-    </template>
+        <template #node="{ node }">
+            <AnnotationTreeNode :node="node" />
+        </template>
 
-    <template #empty>
-        <span>No annotations available.</span>
-    </template>
-</TreePanel>
+        <template #empty>
+            <span>No annotations available.</span>
+        </template>
+    </TreePanel>
 </template>
 
 <style scoped>
-
-
-.annotations__heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
 </style>

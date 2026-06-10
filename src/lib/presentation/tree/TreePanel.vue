@@ -43,7 +43,10 @@ defineProps<{
 
 .tree-panel__header {
     height: 30px;
-    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 0px 5px;
+    margin-left: 5px;
 }
 
 .tree-panel__content {
