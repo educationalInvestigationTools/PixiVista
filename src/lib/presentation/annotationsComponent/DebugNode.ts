@@ -40,7 +40,6 @@ export class DebugAnnotationNode extends AnnotationNode {
             default:
                 return
         }
-        // Propagate to all children
         for (const child of this.children) {
             child.updateProperty(propertyId, value)
         }

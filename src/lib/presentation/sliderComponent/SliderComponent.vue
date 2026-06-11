@@ -6,10 +6,9 @@ import { computed, ref } from "vue";
 
 const props = defineProps<{
     viewPortUpperBound: number,
-    viewPortLowerBound: number,
     currentViewPort: CurrentViewPortSamples,
     sampleToString: ((arg0: number) => string),
-    lengthToString: ((arg0: number) => string)
+    lengthToString: ((arg0: number) => string),
 }>()
 
 const emit = defineEmits<{
@@ -84,7 +83,7 @@ const thumbPercent = (100 - thumbWidth) / 100
     <div class="slider">
         <div class="slider__rows">
             <div class="slider__row slider__row--info">
-                <HeaderComponent :headerText="'Start:'" :headerValue="props.sampleToString(props.viewPortLowerBound)">
+                <HeaderComponent :headerText="'Start:'" :headerValue="props.sampleToString(0)">
                 </HeaderComponent>
 
                 <HeaderComponent :headerText="'End:'" :headerValue="props.sampleToString(props.viewPortUpperBound)">
@@ -98,7 +97,6 @@ const thumbPercent = (100 - thumbWidth) / 100
             </div>
 
             <div class="slider__row slider__row--slider">
-                <span class="slider__row-label">Current position:</span>
                 <div class="slider__track-area" ref="currentSliderRef" @pointerdown="startCurrentPositionInteraction"
                     tabindex="0">
                     <div class="slider__track"></div>
@@ -150,11 +148,6 @@ const thumbPercent = (100 - thumbWidth) / 100
     display: flex;
     flex-direction: column;
     gap: 2px;
-}
-
-.slider__row-label {
-    font-size: clamp(12px, 1.5vw, 14px);
-    color: var(--ui-text-muted);
 }
 
 .slider__track-area {
