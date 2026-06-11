@@ -256,6 +256,6 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
 }
 
 .canvas__container {
-    touch-action: pan-x pan-y;
+    touch-action: pan-y;
 }
 </style>
