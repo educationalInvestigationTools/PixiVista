@@ -255,7 +255,4 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
     flex-direction: column;
 }
 
-.canvas__container {
-    touch-action: pan-y;
-}
 </style>
