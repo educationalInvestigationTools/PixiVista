@@ -27,6 +27,7 @@ import { ChoiceTreeNode, type SettingsTreeNode, LabelTreeNode } from '@/presenta
 import { ChannelAnnotationNode, RootAnnotationNode } from '@/plotComponent/presentation/plotComponent/plotAnnotationNode';
 import { useViewPortDrag } from '@/plotComponent/presentation/plotComponent/utils/useHorizontalScrolling';
 import { isScaledViewport } from '@/plotComponent/presentation/plotComponent/utils/isScaledViewport';
+import { useViewportTouchAction } from '@/plotComponent/presentation/plotComponent/utils/useViewportTouchAction';
 
 const props = defineProps<{
     workerCallback: () => Worker,
@@ -142,6 +143,9 @@ onMounted(async () => {
     htmlContainerRef.value.addEventListener('touchstart', (e: TouchEvent) => {
         if (e.touches.length > 1 && !isScaledViewport()) { e.preventDefault() }
     }, { passive: false })
+
+    useViewportTouchAction(htmlContainerRef)
+
     useWheelForZoom(htmlContainerRef, (zoomFactor: number) => {
         const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
         updateViewPort(undefined, newLengthSeconds)
