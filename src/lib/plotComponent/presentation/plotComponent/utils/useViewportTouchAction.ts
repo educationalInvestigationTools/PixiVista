@@ -7,7 +7,6 @@ export function useViewportTouchAction(
 
     function handleViewportResize() {
         if (!window.visualViewport || !htmlElementRef.value) return
-        // Find the actual element causing the trap
         const container = htmlElementRef.value
         const target = container.querySelector('canvas')
         if (!target) return

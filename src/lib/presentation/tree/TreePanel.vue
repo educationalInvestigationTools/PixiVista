@@ -31,8 +31,7 @@ defineProps<{
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 15px;
+    padding: 0 15px 15px 15px;
     max-height: 360px;
 
     background: var(--ui-panel-bg);
@@ -43,11 +42,11 @@ defineProps<{
 }
 
 .tree-panel__header {
-    height: 15px;
     display: flex;
     align-items: center;
-    gap: 0px 5px;
-    margin-left: 5px;
+    border-bottom: 1px solid var(--ui-panel-border);
+    padding-bottom: 4px;
+    padding-top : 6px;
 }
 
 .tree-panel__content {
@@ -55,11 +54,12 @@ defineProps<{
     gap: 8px;
     overflow-x: auto;
     overflow-y: auto;
+    padding-top: 3px;
 }
 
 .tree-panel__root {
     flex: 0 0 auto;
-    padding: 6px;
+    padding: 3px;
     border: 1px solid var(--ui-panel-border);
     background: var(--ui-panel-row-bg);
     overflow-y: auto;
