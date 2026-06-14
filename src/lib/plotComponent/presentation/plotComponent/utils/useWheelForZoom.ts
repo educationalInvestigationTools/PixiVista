@@ -1,27 +1,25 @@
 import { onBeforeUnmount, type Ref } from "vue"
 
+const ZOOM_SENSITIVITY = 0.001
+
 export function useWheelForZoom(htmlContainerRef: Ref<HTMLDivElement | null>, callback: (zoomFactor: number) => void) {
 
     const wheelListenerOptions: AddEventListenerOptions = { passive: false }
+    /*
+    The passive option in addEventListener is a boolean that tells the browser whether your event handler will ever call event.preventDefault().
+    */
 
     function handleCanvasWheel(event: WheelEvent) {
 
         if (event.ctrlKey) {
-            event.preventDefault()
-
-            const zoomFactor = event.deltaY > 0
-                ? 0.99
-                : 1.01
-
-            callback(zoomFactor)
             return
         }
 
         const canScroll = document.documentElement.scrollHeight > window.innerHeight
         if (!canScroll) {
             event.preventDefault()
-            const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1
-            callback(zoomFactor)
+            const factor = Math.exp(-event.deltaY * ZOOM_SENSITIVITY)
+            callback(factor)
         }
     }
 

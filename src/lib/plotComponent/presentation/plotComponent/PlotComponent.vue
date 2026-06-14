@@ -33,7 +33,7 @@ const props = defineProps<{
     signalSourcesManager: SignalSourceManager
 }>()
 
-const heightPerChannel = ref(200)
+const heightPerChannel = ref(100)
 
 const htmlContainerRef = ref<HTMLDivElement | null>(null);
 let diContainer: PlotComponentContainer | null = null;
