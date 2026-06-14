@@ -53,7 +53,6 @@ function setCurrentPositionFromPointer(pointerX: number) {
 }
 
 function startPointerDrag(e: PointerEvent, onPointerMove: (pointerX: number) => void) {
-    onPointerMove(e.clientX)
 
     function onMove(event: PointerEvent) {
         onPointerMove(event.clientX)

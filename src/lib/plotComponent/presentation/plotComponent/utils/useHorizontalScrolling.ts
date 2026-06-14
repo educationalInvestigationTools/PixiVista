@@ -1,6 +1,6 @@
-// composables/useViewPortDrag.ts
 import { onBeforeUnmount, type Ref } from 'vue'
 import interact from 'interactjs'
+import { isScaledViewport } from '@/plotComponent/presentation/plotComponent/utils/isScaledViewport'
 
 export function useViewPortDrag(
     containerRef: Ref<HTMLElement | null>,
@@ -20,12 +20,14 @@ export function useViewPortDrag(
                     initialSeconds = getCurrentSeconds()
                 },
                 move(event) {
-                    const deltaX = event.clientX - event.clientX0
-                    const containerWidth = el!.getBoundingClientRect().width
-                    if (containerWidth === 0) return
-                    const dragRatio = deltaX / containerWidth
-                    const secondsOffset = Math.round(dragRatio * getCurrentLength())
-                    onDragUpdate(initialSeconds - secondsOffset)
+                    if (!isScaledViewport()) {
+                        const deltaX = event.clientX - event.clientX0
+                        const containerWidth = el!.getBoundingClientRect().width
+                        if (containerWidth === 0) return
+                        const dragRatio = deltaX / containerWidth
+                        const secondsOffset = Math.round(dragRatio * getCurrentLength())
+                        onDragUpdate(initialSeconds - secondsOffset)
+                    }
                 }
             }
         })

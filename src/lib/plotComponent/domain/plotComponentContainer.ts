@@ -32,6 +32,9 @@ export class PlotComponentContainer {
         this.eventMediator.addHandler<ChangeViewPortCommand>(ChangeViewPortCommandEventLabel, async (command) => await plotState.changeViewPort(command.viewPort))
         await renderer.init(componentLayerApi.Component)
 
+        const target = htmlElement.querySelector('canvas')
+        target!.style.touchAction = 'pan-y'
+
         this.updateChannelsStateObserver = new UpdateChannelsStateObserver(
             plotState,
             renderer,

@@ -26,7 +26,7 @@ import type { AnyUpdateChoice } from '@/presentation/settingsComponent/settingsC
 import { ChoiceTreeNode, type SettingsTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
 import { ChannelAnnotationNode, RootAnnotationNode } from '@/plotComponent/presentation/plotComponent/plotAnnotationNode';
 import { useViewPortDrag } from '@/plotComponent/presentation/plotComponent/utils/useHorizontalScrolling';
-
+import { isScaledViewport } from '@/plotComponent/presentation/plotComponent/utils/isScaledViewport';
 
 const props = defineProps<{
     workerCallback: () => Worker,
@@ -139,6 +139,9 @@ onMounted(async () => {
     diContainer = new PlotComponentContainer()
     annotationsTree.value = buildAnnotationsTree()
     /*composables should go before the first await statment, Vue says*/
+    htmlContainerRef.value.addEventListener('touchstart', (e: TouchEvent) => {
+        if (e.touches.length > 1 && !isScaledViewport()) { e.preventDefault() }
+    }, { passive: false })
     useWheelForZoom(htmlContainerRef, (zoomFactor: number) => {
         const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
         updateViewPort(undefined, newLengthSeconds)
@@ -254,5 +257,4 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
     display: flex;
     flex-direction: column;
 }
-
 </style>

@@ -5,10 +5,6 @@ const ZOOM_SENSITIVITY = 0.001
 export function useWheelForZoom(htmlContainerRef: Ref<HTMLDivElement | null>, callback: (zoomFactor: number) => void) {
 
     const wheelListenerOptions: AddEventListenerOptions = { passive: false }
-    /*
-    The passive option in addEventListener is a boolean that tells the browser whether your event handler will ever call event.preventDefault().
-    */
-
     function handleCanvasWheel(event: WheelEvent) {
 
         if (event.ctrlKey) {
