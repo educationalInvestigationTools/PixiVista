@@ -25,14 +25,12 @@ export class PixiRenderer {
             canvas: this._canvas,
             backgroundColor: '#000000',
             backgroundAlpha: 1,
-            resolution: window.devicePixelRatio,
-            autoDensity: true,
+            autoDensity: false,
         })
     }
 
     async resize(sizeData: SizeData) {
         this._pendingSize = sizeData
-
         if (this._resizeId !== null) {
             cancelAnimationFrame(this._resizeId)
         }
@@ -46,9 +44,10 @@ export class PixiRenderer {
     }
 
     sizeData(): SizeData {
+        const rect = this._canvas.getBoundingClientRect()
         return {
-            width: this._canvas.clientWidth,
-            height: this._canvas.clientHeight,
+            width: rect.width,
+            height: rect.height,
         }
     }
 

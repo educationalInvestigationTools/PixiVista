@@ -8,8 +8,9 @@ export function useResizeObserver() {
     function bindResizeObserver(htmlContainerRef: Ref<HTMLDivElement | null>, eventMediator: EventMediator) {
         resizeObserverRef.value = new ResizeObserver(async () => {
             if (htmlContainerRef.value) {
-                const width = htmlContainerRef.value.clientWidth
-                const height = htmlContainerRef.value.clientHeight
+                const rect = htmlContainerRef.value.getBoundingClientRect()
+                const width = rect.width
+                const height = rect.height
                 await eventMediator.publish(new ResizeCommand(width, height))
             }
         })
