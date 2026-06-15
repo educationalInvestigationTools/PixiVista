@@ -33,14 +33,10 @@ export class RenderManager {
             this.pixiRenderer.destroy(),
         )
     }
-
     async init(componentRenderLayer: RenderLayer<LayoutDesign>) {
         await this.pixiRenderer.init()
         const componentLayer = componentRenderLayer
         this.pixiRenderer.app.stage.addChild(componentLayer.container)
-        this.pixiRenderer.app.ticker.add(() => {
-            this.pixiRenderer.app.renderer.resolution = window.devicePixelRatio
-        })
         this.pixiRenderer.app.ticker.add(() => {
             const sizeData = this.sizeData
             const timeStart = performance.now()
