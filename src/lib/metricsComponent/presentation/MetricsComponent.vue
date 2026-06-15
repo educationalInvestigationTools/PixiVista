@@ -34,7 +34,7 @@ onMounted(async () => {
 
     if (props.metrics) {
         await metricsContainer.eventMediator.publish(new AddPerformanceMetricsCommand(props.metrics))
-        sizeInfo.value = `Resolution ${Math.round(props.metrics.sizeData.width)} x ${Math.round(props.metrics.sizeData.height)}, DPR ${props.metrics.windowDevicePixelRatio.toFixed(2)}`
+        sizeInfo.value = `Resolution ${Math.round(props.metrics.sizeData.width)} x ${Math.round(props.metrics.sizeData.height)}, DPR ${props.metrics.resolution.toFixed(2)}`
     }
 })
 
@@ -49,7 +49,7 @@ watch(
             new AddPerformanceMetricsCommand(metricsValue),
         )
 
-        sizeInfo.value = `Resolution ${Math.round(metricsValue.sizeData.width)} x ${Math.round(metricsValue.sizeData.height)}, DPR ${metricsValue.windowDevicePixelRatio.toFixed(2)}`
+        sizeInfo.value = `Canvas Width =  ${Math.round(metricsValue.sizeData.width)}, Canvas Height = ${Math.round(metricsValue.sizeData.height)}, Resolution = ${metricsValue.resolution.toFixed(2)}`
     },
 )
 

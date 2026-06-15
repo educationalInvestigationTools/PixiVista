@@ -42,16 +42,16 @@ export class RenderManager {
             const timeStart = performance.now()
             componentLayer.Draw()
             const timeEnd = performance.now()
-            const windowDevicePixelRatio = this.pixiRenderer.app.renderer.resolution
+            const windowDevicePixelRatio = this.pixiRenderer.resolution
             const performanceMetrics: PerformanceMetrics = {
                 renderTimeMs: timeEnd - timeStart,
                 sizeData: {
                     width: sizeData.width,
                     height: sizeData.height,
                 },
-                windowDevicePixelRatio: Math.round(windowDevicePixelRatio * 100) / 100,
+                resolution: windowDevicePixelRatio,
                 refreshRateFps: this.pixiRenderer.app.ticker.FPS,
-                observedAt : new Date()
+                observedAt: new Date()
             }
             this.eventMediator.publish(new GetPerformanceMetrics(performanceMetrics))
         })
@@ -62,7 +62,7 @@ export class RenderManager {
     }
 
     get expectedWidth() {
-        const devicePixelRatio = window.devicePixelRatio
+        const devicePixelRatio = this.pixiRenderer.resolution
         return Math.floor(this.sizeData.width * devicePixelRatio)
     }
 }

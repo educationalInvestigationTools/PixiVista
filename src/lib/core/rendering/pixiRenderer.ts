@@ -34,7 +34,8 @@ export class PixiRenderer {
             height: sizeData.height,
             canvas: this._canvas,
             backgroundColor: '#000000',
-            backgroundAlpha: window.devicePixelRatio,
+            backgroundAlpha : 1,
+            resolution: window.devicePixelRatio,
             autoDensity: false,
         })
         const gl = this._canvas.getContext('webgl');
@@ -64,6 +65,9 @@ export class PixiRenderer {
             width: rect.width,
             height: rect.height,
         }
+    }
+    get resolution(): number {
+        return this.app.renderer.resolution
     }
 
     destroy(): void {

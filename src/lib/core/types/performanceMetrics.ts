@@ -3,7 +3,7 @@ import type { SizeData } from '@/core/types/sizeData'
 export type PerformanceMetrics = {
     renderTimeMs: number
     sizeData: SizeData
-    windowDevicePixelRatio: number
+    resolution: number
     refreshRateFps: number
     observedAt : Date
 }

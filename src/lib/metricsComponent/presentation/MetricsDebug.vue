@@ -6,7 +6,7 @@ import MetricsComponent from '@/metricsComponent/presentation/MetricsComponent.v
 const metrics = ref<PerformanceMetrics | undefined>({
     renderTimeMs: 5,
     refreshRateFps: 60,
-    windowDevicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
+    resolution: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
     sizeData: { width: 800, height: 400 },
     observedAt : new Date()
 })
@@ -30,7 +30,7 @@ function emitSample() {
     metrics.value = {
         renderTimeMs: Number(renderTime.toFixed(2)),
         refreshRateFps: Number(refreshRate.toFixed(2)),
-        windowDevicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
+        resolution: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
         sizeData: {
             width: 680 + Math.round(Math.sin(elapsedSeconds) * 30),
             height: 280,
