@@ -1,10 +1,12 @@
 import type { SizeData } from '@/core/types/sizeData'
-import { Application } from 'pixi.js'
+import { Application, WebGLRenderer } from 'pixi.js'
 
 
 export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
-    private maxTextureSize: number = 8192
+    private maxRendererBufferSize: number = 0
+    private maxTextureSize: number = 0
+    private maxViewPortDims: [number, number] = [0, 0]
     private proportion = 0.5
     app: Application
 
@@ -18,10 +20,12 @@ export class PixiRenderer {
     }
 
     getMaxSafeResolution(width: number, height: number): number {
+        const absoluteMaxWidth = Math.min(this.maxTextureSize, this.maxRendererBufferSize, this.maxViewPortDims[0]);
+        const absoluteMaxHeight = Math.min(this.maxTextureSize, this.maxRendererBufferSize, this.maxViewPortDims[1]);
         return Math.min(
-            this.maxTextureSize / width,
-            this.maxTextureSize / height,
-        )
+            absoluteMaxWidth / width,
+            absoluteMaxHeight / height
+        );
     }
 
 
@@ -36,12 +40,16 @@ export class PixiRenderer {
             canvas: this._canvas,
             backgroundColor: '#000000',
             backgroundAlpha: 1,
+            preference : 'webgl',
             resolution: window.devicePixelRatio,
             autoDensity: false,
         })
-        const gl = this._canvas.getContext('webgl');
+        const renderer = this.app.renderer as WebGLRenderer
+        const gl = renderer.gl
         if (gl) {
             this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
+            this.maxRendererBufferSize = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)
+            this.maxViewPortDims = gl.getParameter(gl.MAX_VIEWPORT_DIMS)
         }
     }
 
@@ -59,8 +67,8 @@ export class PixiRenderer {
 
         this._resizeId = requestAnimationFrame(() => {
             const { width, height } = this._pendingSize!
-            const maxResolution = Math.floor(this.getMaxSafeResolution(width, height))
-            const minResolution = 1
+            const maxResolution = this.getMaxSafeResolution(width, height)
+            const minResolution = 0
             const resolution = minResolution + (maxResolution - minResolution) * this.proportion
             this.app.renderer.resize(width, height, resolution)
             this.app.render()

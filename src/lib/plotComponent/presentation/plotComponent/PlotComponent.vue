@@ -66,7 +66,7 @@ const channelIdPrefix = 'channel:'
 const themeMode = ref(getInitialTheme())
 
 const canvasResolutionId = 'canvas-resolution'
-const canvasResolution = ref(0.5)
+const canvasResolution = ref(0.2)
 
 const settingsTrees = computed<SettingsTreeNode[]>(() => [
     new LabelTreeNode('visibility-settings', 'Visibility', [
@@ -87,7 +87,7 @@ const settingsTrees = computed<SettingsTreeNode[]>(() => [
             label: 'Channel height',
             value: heightPerChannel.value,
             min: 60,
-            max: 600,
+            max: 200,
             format: (x) => x + ' px',
         }),
     ]),
