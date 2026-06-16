@@ -5,6 +5,7 @@ import { Application } from 'pixi.js'
 export class PixiRenderer {
     private readonly _canvas: HTMLCanvasElement
     private maxTextureSize: number = 8192
+    private proportion = 0.5
     app: Application
 
     private _resizeId: number | null = null
@@ -34,7 +35,7 @@ export class PixiRenderer {
             height: sizeData.height,
             canvas: this._canvas,
             backgroundColor: '#000000',
-            backgroundAlpha : 1,
+            backgroundAlpha: 1,
             resolution: window.devicePixelRatio,
             autoDensity: false,
         })
@@ -42,6 +43,12 @@ export class PixiRenderer {
         if (gl) {
             this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
         }
+    }
+
+    async updateResolutionProportion(proportion: number) {
+        this.proportion = proportion
+        const sizeData = this.sizeData()
+        await this.resize(sizeData)
     }
 
     async resize(sizeData: SizeData) {
@@ -52,7 +59,9 @@ export class PixiRenderer {
 
         this._resizeId = requestAnimationFrame(() => {
             const { width, height } = this._pendingSize!
-            const resolution = Math.min(5, Math.floor(this.getMaxSafeResolution(width, height)))
+            const maxResolution = Math.floor(this.getMaxSafeResolution(width, height))
+            const minResolution = 1
+            const resolution = minResolution + (maxResolution - minResolution) * this.proportion
             this.app.renderer.resize(width, height, resolution)
             this.app.render()
             this._resizeId = null

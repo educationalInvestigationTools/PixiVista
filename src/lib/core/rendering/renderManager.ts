@@ -13,6 +13,7 @@ import type { RenderLayer } from '@/core/rendering/renderLayer'
 import { PixiRenderer } from '@/core/rendering/pixiRenderer'
 import type { PerformanceMetrics } from '@/core/types/performanceMetrics'
 import type { EventMediator } from '@/utils/eventMediator'
+import { ChangeCanvasResolutionCommandLabel, type ChangeCanvasResolutionCommand } from '@/application/commands/changeCanvasResolutionCommand'
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer
@@ -32,6 +33,9 @@ export class RenderManager {
         this.eventMediator.addHandler<DestroyCommand>(DestroyCommandEventLabel, async () =>
             this.pixiRenderer.destroy(),
         )
+        this.eventMediator.addHandler<ChangeCanvasResolutionCommand>(ChangeCanvasResolutionCommandLabel, async (command) => {
+            await this.pixiRenderer.updateResolutionProportion(command.proportion)
+        })
     }
     async init(componentRenderLayer: RenderLayer<LayoutDesign>) {
         await this.pixiRenderer.init()

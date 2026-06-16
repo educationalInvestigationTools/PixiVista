@@ -28,6 +28,7 @@ import { ChannelAnnotationNode, RootAnnotationNode } from '@/plotComponent/prese
 import { useViewPortDrag } from '@/plotComponent/presentation/plotComponent/utils/useHorizontalScrolling';
 import { isScaledViewport } from '@/plotComponent/presentation/plotComponent/utils/isScaledViewport';
 import { useViewportTouchAction } from '@/plotComponent/presentation/plotComponent/utils/useViewportTouchAction';
+import { ChangeCanvasResolutionCommand } from '@/application/commands/changeCanvasResolutionCommand';
 
 const props = defineProps<{
     workerCallback: () => Worker,
@@ -64,6 +65,9 @@ const channelsGroupLabel = 'Channels'
 const channelIdPrefix = 'channel:'
 const themeMode = ref(getInitialTheme())
 
+const canvasResolutionId = 'canvas-resolution'
+const canvasResolution = ref(0.5)
+
 const settingsTrees = computed<SettingsTreeNode[]>(() => [
     new LabelTreeNode('visibility-settings', 'Visibility', [
         new ChoiceTreeNode({
@@ -96,6 +100,15 @@ const settingsTrees = computed<SettingsTreeNode[]>(() => [
             format: (value: string) => value.charAt(0).toUpperCase() + value.slice(1),
         }),
     ]),
+    new LabelTreeNode('quality', 'Quality', [
+        new ChoiceTreeNode({
+            id: canvasResolutionId,
+            label: 'Canvas Resolution',
+            value: canvasResolution.value,
+            min: 0,
+            max: 1,
+        })
+    ])
 ])
 
 function updateSettingChoice(settingUpdate: AnyUpdateChoice) {
@@ -114,6 +127,11 @@ function updateSettingChoice(settingUpdate: AnyUpdateChoice) {
 
     if (settingUpdate.id === heightPerChannelSettingId) {
         heightPerChannel.value = settingUpdate.value as number
+    }
+
+    if (settingUpdate.id === canvasResolutionId) {
+        canvasResolution.value = settingUpdate.value as number
+        diContainer?.eventMediator.publish(new ChangeCanvasResolutionCommand(canvasResolution.value))
     }
 }
 
