@@ -61,11 +61,16 @@ export class MockSignalSource implements SignalSource {
         return this._label
     }
 
+    clamp(sample: number) {
+        return Math.max(0, Math.min(sample, this.totalSamples - 1))
+    }
+
     read(viewport: ViewPort): Promise<OneDimSignalRaw> {
         const startSeconds = viewport.startSeconds
         const endSeconds = startSeconds + viewport.lengthSeconds
-        const startSample = this.samplingFrequency * startSeconds
-        const endSample = Math.min(this.samplingFrequency * endSeconds, this.totalSamples - 1)
+        const startSample = this.clamp(Math.ceil(this.samplingFrequency * startSeconds))
+        const endSample = this.clamp(Math.floor(this.samplingFrequency * endSeconds))
+
         const n = Math.max(0, endSample - startSample + 1)
         const xValues = new Float32Array(n)
         const yValues = new Float32Array(n)

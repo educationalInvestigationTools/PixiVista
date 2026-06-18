@@ -8,6 +8,6 @@ export class ViewPort {
     }
 
     static equal(a: ViewPort, b: ViewPort) {
-        return a.lengthSeconds === b.lengthSeconds && b.startSeconds === a.startSeconds
+        return Math.abs(a.lengthSeconds - b.lengthSeconds) <= 1e-10 && Math.abs(a.startSeconds - a.lengthSeconds) <= 1e-10
     }
 }

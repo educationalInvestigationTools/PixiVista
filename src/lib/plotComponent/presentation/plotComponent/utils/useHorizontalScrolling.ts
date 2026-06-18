@@ -25,7 +25,7 @@ export function useViewPortDrag(
                         const containerWidth = el!.getBoundingClientRect().width
                         if (containerWidth === 0) return
                         const dragRatio = deltaX / containerWidth
-                        const secondsOffset = Math.round(dragRatio * getCurrentLength())
+                        const secondsOffset = dragRatio * getCurrentLength()
                         onDragUpdate(initialSeconds - secondsOffset)
                     }
                 }

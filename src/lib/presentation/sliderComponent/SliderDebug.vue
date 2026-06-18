@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
 import SliderComponent from '@/presentation/sliderComponent/SliderComponent.vue'
-import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/types';
+import type { SliderViewPort } from '@/presentation/sliderComponent/types';
 
-const viewportRef: Ref<CurrentViewPortSamples> = ref({
-    currentSamplePosition: 0,
-    lengthSamples: 10,
+const viewportRef: Ref<SliderViewPort> = ref({
+    currentPositionSeconds: 0,
+    lengthSeconds: 10,
 })
 
 </script>

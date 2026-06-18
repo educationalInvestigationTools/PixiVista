@@ -21,7 +21,7 @@ import {
     ShapeProperty,
     type AnnotationNode,
 } from '@/presentation/annotationsComponent/objectAnnotationData';
-import type { CurrentViewPortSamples } from '@/presentation/sliderComponent/types';
+import type { SliderViewPort } from '@/presentation/sliderComponent/types';
 import type { AnyUpdateChoice } from '@/presentation/settingsComponent/settingsChoice';
 import { ChoiceTreeNode, type SettingsTreeNode, LabelTreeNode } from '@/presentation/settingsComponent/settingsTreeNodes';
 import { ChannelAnnotationNode, RootAnnotationNode } from '@/plotComponent/presentation/plotComponent/plotAnnotationNode';
@@ -164,15 +164,14 @@ onMounted(async () => {
 
     useViewportTouchAction(htmlContainerRef)
 
-    useWheelForZoom(htmlContainerRef, (zoomFactor: number) => {
+    const zoomFactorCallback = (zoomFactor: number) => {
         const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
         updateViewPort(undefined, newLengthSeconds)
-    })
+    }
 
-    usePinchForZoom(htmlContainerRef, (zoomFactor: number) => {
-        const newLengthSeconds = viewPortRef.value.lengthSeconds * zoomFactor
-        updateViewPort(undefined, newLengthSeconds)
-    })
+    useWheelForZoom(htmlContainerRef, zoomFactorCallback)
+
+    usePinchForZoom(htmlContainerRef, zoomFactorCallback)
 
 
     useKeysForViewPort(
@@ -184,7 +183,8 @@ onMounted(async () => {
         },
         (left: boolean) => {
             const currentSeconds = viewPortRef.value.startSeconds
-            const nextSeconds = currentSeconds + (left ? -1 : 1)
+            const currentLength = viewPortRef.value.lengthSeconds
+            const nextSeconds = currentSeconds + (left ? -1 : 1) * currentLength / 10
             updateViewPort(nextSeconds, undefined)
         })
 
@@ -241,14 +241,14 @@ onBeforeUnmount(async () => {
 
 async function updateViewPort(startSeconds?: number, lengthSeconds?: number) {
     viewPortRef.value = {
-        startSeconds: startSeconds === undefined ? viewPortRef.value.startSeconds : Math.max(0, startSeconds),
+        startSeconds: startSeconds === undefined ? viewPortRef.value.startSeconds : Math.min(signalsLargestDurationSeconds, Math.max(0, startSeconds)),
         lengthSeconds: lengthSeconds === undefined ? viewPortRef.value.lengthSeconds : Math.min(60, lengthSeconds)
     }
     await diContainer?.eventMediator.publish(new ChangeViewPortCommand(viewPortRef.value))
 }
 
-async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
-    await updateViewPort(viewPort.currentSamplePosition, viewPort.lengthSamples)
+async function updateViewPortFromSlider(viewPort: SliderViewPort) {
+    await updateViewPort(viewPort.currentPositionSeconds, viewPort.lengthSeconds)
 }
 
 </script>
@@ -265,8 +265,8 @@ async function updateViewPortFromSlider(viewPort: CurrentViewPortSamples) {
         </div>
         <SliderComponent :viewPortLowerBound="0" :sampleToString="(x) => fmtTime(x, true)"
             :lengthToString="(x) => fmtTime(x, false)" :currentViewPort="{
-                currentSamplePosition: viewPortRef.startSeconds,
-                lengthSamples: viewPortRef.lengthSeconds,
+                currentPositionSeconds: viewPortRef.startSeconds,
+                lengthSeconds: viewPortRef.lengthSeconds,
             }" :viewPortUpperBound=signalsLargestDurationSeconds @update:viewPort='updateViewPortFromSlider'>
         </SliderComponent>
         <MetricsComponent :metrics="performanceMetricsRef" v-if="showMetricsPanel"></MetricsComponent>

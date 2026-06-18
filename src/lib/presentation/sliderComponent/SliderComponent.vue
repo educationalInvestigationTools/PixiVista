@@ -1,32 +1,32 @@
 <script setup lang="ts">
 import HeaderComponent from "@/presentation/sliderComponent/HeaderComponent.vue";
-import type { CurrentViewPortSamples } from "@/presentation/sliderComponent/types";
+import type { SliderViewPort } from "@/presentation/sliderComponent/types";
 import { computed, ref } from "vue";
 
 
 const props = defineProps<{
     viewPortUpperBound: number,
-    currentViewPort: CurrentViewPortSamples,
+    currentViewPort: SliderViewPort,
     sampleToString: ((arg0: number) => string),
     lengthToString: ((arg0: number) => string),
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:viewPort', value: CurrentViewPortSamples): void
+    (e: 'update:viewPort', value: SliderViewPort): void
 }>()
 
 
 const viewPortCurrentSample = computed({
-    get: () => props.currentViewPort.currentSamplePosition,
+    get: () => props.currentViewPort.currentPositionSeconds,
     set: (v) => {
         emit('update:viewPort', {
-            currentSamplePosition: v,
-            lengthSamples: windowLengthSamples.value
+            currentPositionSeconds: v,
+            lengthSeconds: windowLengthSamples.value
         })
     }
 })
 
-const windowLengthSamples = computed(() => props.currentViewPort.lengthSamples)
+const windowLengthSamples = computed(() => props.currentViewPort.lengthSeconds)
 
 const sliderPosition = computed(() => {
     const maxStart = Math.max(0, props.viewPortUpperBound - windowLengthSamples.value)
@@ -47,7 +47,7 @@ function setCurrentPositionFromPointer(pointerX: number) {
 
     const ratio = Math.max(0, Math.min(1, (pointerX - rect.left) / rect.width))
     const maxStart = Math.max(0, props.viewPortUpperBound - windowLengthSamples.value)
-    const nextStart = Math.round(ratio * maxStart)
+    const nextStart = ratio * maxStart
 
     viewPortCurrentSample.value = nextStart
 }
