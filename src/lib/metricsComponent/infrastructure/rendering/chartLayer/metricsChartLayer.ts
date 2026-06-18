@@ -1,5 +1,6 @@
 import type { LayoutDesign } from "@/core/rendering/layoutDesign"
 import { RenderLayer } from "@/core/rendering/renderLayer"
+import { themeManager } from "@/infrastructure/themes/themeManager"
 import type { Point2D } from "@/core/types/point2D"
 import type { SizeData } from "@/core/types/sizeData"
 import { GridLayer } from "@/infrastructure/rendering/gridLayer/gridLayer"
@@ -86,10 +87,11 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
     }
 
     protected _draw(): void {
+        const theme = themeManager.colors
         this.graphics
             .rect(0, 0, this.layoutDesign.width, this.layoutDesign.height)
-            .fill({ color: '#06090d', alpha: 1 })
-            .stroke({ color: '#2f3a48', width: 1, alpha: 0.8 })
+            .fill({ color: theme.panelBg, alpha: 1 })
+            .stroke({ color: theme.textMuted, width: 1, alpha: 0.8 })
 
         const plotX = this.layoutDesign.plotX
         const plotY = this.layoutDesign.plotY
@@ -98,8 +100,8 @@ export class MetricsChartLayer extends RenderLayer<MetricsChartLayout> {
 
         this.graphics
             .rect(plotX, plotY, plotWidth, plotHeight)
-            .fill({ color: '#0d131a', alpha: 1 })
-            .stroke({ color: '#1f2937', width: 1, alpha: 1 })
+            .fill({ color: theme.panelBg, alpha: 1 })
+            .stroke({ color: theme.textMuted, width: 1, alpha: 1 })
     }
 
     private updateHeaderLabels() {

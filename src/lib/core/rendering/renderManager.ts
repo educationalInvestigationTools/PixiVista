@@ -14,6 +14,8 @@ import { PixiRenderer } from '@/core/rendering/pixiRenderer'
 import type { PerformanceMetrics } from '@/core/types/performanceMetrics'
 import type { EventMediator } from '@/utils/eventMediator'
 import { ChangeCanvasResolutionCommandLabel, type ChangeCanvasResolutionCommand } from '@/application/commands/changeCanvasResolutionCommand'
+import { themes } from '@/infrastructure/themes/theme'
+import { ChangeThemeCommand, ChangeThemeCommandLabel } from '@/application/commands/changeThemeCommand'
 
 export class RenderManager {
     private pixiRenderer: PixiRenderer
@@ -36,9 +38,17 @@ export class RenderManager {
         this.eventMediator.addHandler<ChangeCanvasResolutionCommand>(ChangeCanvasResolutionCommandLabel, async (command) => {
             await this.pixiRenderer.updateResolutionProportion(command.proportion)
         })
+
+
     }
     async init(componentRenderLayer: RenderLayer<LayoutDesign>) {
         await this.pixiRenderer.init()
+        this.eventMediator.addHandler<ChangeThemeCommand>(ChangeThemeCommandLabel, async (command) => {
+            const theme = command.theme
+            const hexColor = parseInt(themes[theme].panelBg.replace('#', ''), 16)
+            this.pixiRenderer.app.renderer.background.color = hexColor
+            componentRenderLayer.markAsDirty()
+        })
         const componentLayer = componentRenderLayer
         this.pixiRenderer.app.stage.addChild(componentLayer.container)
         this.pixiRenderer.app.ticker.add(() => {

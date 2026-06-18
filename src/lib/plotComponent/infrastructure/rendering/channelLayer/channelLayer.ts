@@ -1,5 +1,6 @@
 import type { LayoutDesign } from "@/core/rendering/layoutDesign"
 import { RenderLayer } from "@/core/rendering/renderLayer"
+import { themeManager } from "@/infrastructure/themes/themeManager"
 import type { Point2D } from "@/core/types/point2D"
 import type { SizeData } from "@/core/types/sizeData"
 import { GridLayer } from "@/infrastructure/rendering/gridLayer/gridLayer"
@@ -39,8 +40,9 @@ export class ChannelLayer extends RenderLayer<ChannelLayout> {
     }
 
     protected _draw(): void {
+        const theme = themeManager.colors
         this.graphics.rect(0, 0, this.layoutDesign.width, this.layoutDesign.height).fill({
-            color: '#000000',
+            color: theme.panelBg,
             alpha: 1,
         })
     }

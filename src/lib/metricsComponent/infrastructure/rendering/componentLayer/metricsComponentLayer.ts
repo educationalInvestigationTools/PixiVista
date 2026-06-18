@@ -1,5 +1,6 @@
 import type { LayoutDesign } from "@/core/rendering/layoutDesign"
 import { RenderLayer } from "@/core/rendering/renderLayer"
+import { themeManager } from "@/infrastructure/themes/themeManager"
 import type { Point2D } from "@/core/types/point2D"
 import type { SizeData } from "@/core/types/sizeData"
 import type { MetricsPoints } from "@/metricsComponent/domain/types/metricsPoints"
@@ -40,8 +41,9 @@ export class MetricsComponentLayer extends RenderLayer<MetricsComponentLayout> {
     }
 
     protected _draw(): void {
+        const theme = themeManager.colors
         this.graphics.rect(0, 0, this.layoutDesign.width, this.layoutDesign.height).fill({
-            color: '#020617',
+            color: theme.panelBg,
             alpha: 1,
         })
     }

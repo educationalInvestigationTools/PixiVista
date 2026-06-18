@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ChangeThemeCommand } from '@/application/commands/changeThemeCommand';
 import { DestroyCommand } from '@/application/commands/destroyCommand';
 import type { PerformanceMetrics } from '@/core/types/performanceMetrics';
 import { AddPerformanceMetricsCommand } from '@/metricsComponent/application/commands/addPerformanceMetricsCommand';
@@ -36,6 +37,11 @@ onMounted(async () => {
         await metricsContainer.eventMediator.publish(new AddPerformanceMetricsCommand(props.metrics))
         sizeInfo.value = `Resolution ${Math.round(props.metrics.sizeData.width)} x ${Math.round(props.metrics.sizeData.height)}, DPR ${props.metrics.resolution.toFixed(2)}`
     }
+
+    window.addEventListener('themechanged', (event) => {
+        const theme = (event as CustomEvent).detail.theme
+        metricsContainer?.eventMediator.publish(new ChangeThemeCommand(theme))
+    })
 })
 
 watch(
@@ -77,15 +83,15 @@ onBeforeUnmount(async () => {
     flex-direction: column;
     gap: 8px;
     padding: 10px;
-    border: 1px solid #1f2937;
-    background: linear-gradient(140deg, #030712, #0b1220 40%, #0f172a);
+    border: var(--ui-panel-border);
+    background: var(--ui-panel-bg);
 }
 
 .metrics__header {
-    color: #cbd5e1;
-    font-family: 'JetBrains Mono', Menlo, monospace;
-    font-size: 12px;
-    letter-spacing: 0.02em;
+    color: var(--ui-text-primary);
+    font-family: var(--ui-font-mono);
+    font-size: 16px;
+    letter-spacing: 0.5px;
 }
 
 .metrics__canvas {

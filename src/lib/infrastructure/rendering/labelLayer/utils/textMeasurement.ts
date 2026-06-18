@@ -2,22 +2,23 @@ import { CanvasTextMetrics, TextStyle } from 'pixi.js'
 import type { TextAlignments } from '@/infrastructure/rendering/labelLayer/types/types.ts'
 import type { SizeData } from '@/core/types/sizeData'
 import type { MinMaxValues } from '@/plotComponent/application/types/minMaxValues'
+import { themeManager } from '@/infrastructure/themes/themeManager'
 
 const LABEL_FONT_WEIGHT = 'bold'
-const LABEL_COLOR = '#d1d5db'
 export class MeasureText {
     private textStyleByFontSizeAndAlignment = new Map<string, TextStyle>()
     resolveTextStyle(fontSize: number, textAlignment: TextAlignments): TextStyle {
         const cacheKey = `${fontSize}-${textAlignment}`
         const cachedStyle = this.textStyleByFontSizeAndAlignment.get(cacheKey)
+        const currentTheme = themeManager.colors
         if (cachedStyle !== undefined) {
+            cachedStyle['fill'] = currentTheme.textPrimary
             return cachedStyle
         }
-
         const textStyle = new TextStyle({
             fontSize,
             fontWeight: LABEL_FONT_WEIGHT,
-            fill: LABEL_COLOR,
+            fill: currentTheme.textPrimary,
             align: textAlignment,
         })
         this.textStyleByFontSizeAndAlignment.set(cacheKey, textStyle)

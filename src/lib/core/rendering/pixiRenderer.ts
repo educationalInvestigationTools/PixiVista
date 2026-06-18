@@ -20,14 +20,13 @@ export class PixiRenderer {
     }
 
     getMaxSafeResolution(width: number, height: number): number {
-        const absoluteMaxWidth = Math.min(this.maxTextureSize, this.maxRendererBufferSize, this.maxViewPortDims[0]);
-        const absoluteMaxHeight = Math.min(this.maxTextureSize, this.maxRendererBufferSize, this.maxViewPortDims[1]);
+        const absoluteMaxWidth = Math.min(this.maxTextureSize, this.maxRendererBufferSize, this.maxViewPortDims[0])
+        const absoluteMaxHeight = Math.min(this.maxTextureSize, this.maxRendererBufferSize, this.maxViewPortDims[1])
         return Math.min(
             absoluteMaxWidth / width,
             absoluteMaxHeight / height
-        );
+        )
     }
-
 
     async init() {
         const sizeData = {
@@ -84,6 +83,9 @@ export class PixiRenderer {
         }
     }
     get resolution(): number {
+        if (this.app.renderer === null) {
+            return 1
+        }
         return this.app.renderer.resolution
     }
 

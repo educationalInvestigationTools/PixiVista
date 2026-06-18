@@ -1,5 +1,6 @@
 import type { LayoutDesign } from "@/core/rendering/layoutDesign"
 import { RenderLayer } from "@/core/rendering/renderLayer"
+import { themeManager } from "@/infrastructure/themes/themeManager"
 import type { Point2D } from "@/core/types/point2D"
 import type { SizeData } from "@/core/types/sizeData"
 import { GridLayout } from "@/infrastructure/rendering/gridLayer/gridLayout"
@@ -120,6 +121,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
         const yDivisions = this.layoutDesign.horizontalDivisions
         this.graphics.rect(x0, y0, width, height).stroke({ width: 1, color: 'white', alpha: 0.2 })
 
+        const currentTheme = themeManager.colors
         for (let i = 0; i <= xDivisions; i++) {
             const ratio = xDivisions <= 0 ? 0.5 : i / xDivisions
             const xDivision = x0 + ratio * width
@@ -127,7 +129,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
                 .moveTo(xDivision, y0 + height)
                 .lineTo(xDivision, y0)
                 .stroke({
-                    color: 'white',
+                    color: currentTheme.textPrimary,
                     width: 1,
                     alpha: 0.15,
                 })
@@ -139,7 +141,7 @@ export class GridLayer extends RenderLayer<GridLayout> {
             this.graphics
                 .moveTo(x0, yDivision)
                 .lineTo(x0 + width, yDivision)
-                .stroke({ color: 'white', width: 1, alpha: 0.15 })
+                .stroke({ color: currentTheme.textPrimary, width: 1, alpha: 0.15 })
         }
     }
 

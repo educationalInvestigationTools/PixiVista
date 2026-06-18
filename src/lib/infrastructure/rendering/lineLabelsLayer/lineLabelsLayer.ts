@@ -22,16 +22,7 @@ export class LineLabelsLayer extends RenderLayer<LineLabelsLayout> {
         })
     }
 
-    protected _draw(): void {
-        this.labels.map((x, i) => {
-            const sizeData = this.layoutDesign.buildLabelSize(i)
-            const posData = this.layoutDesign.buildLabelPosition(i)
-            this.graphics.rect(posData.x, posData.y, sizeData.width, sizeData.height).stroke({
-                width: 2,
-                color: 'green',
-            })
-        })
-    }
+    protected _draw(): void {}
     get Children(): RenderLayer<LayoutDesign>[] {
         return this.labels
     }

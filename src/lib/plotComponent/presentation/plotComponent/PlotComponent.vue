@@ -29,6 +29,9 @@ import { useViewPortDrag } from '@/plotComponent/presentation/plotComponent/util
 import { isScaledViewport } from '@/plotComponent/presentation/plotComponent/utils/isScaledViewport';
 import { useViewportTouchAction } from '@/plotComponent/presentation/plotComponent/utils/useViewportTouchAction';
 import { ChangeCanvasResolutionCommand } from '@/application/commands/changeCanvasResolutionCommand';
+import { themeManager } from '@/infrastructure/themes/themeManager';
+import type { ThemeName } from '@/infrastructure/themes/theme';
+import { ChangeThemeCommand } from '@/application/commands/changeThemeCommand';
 
 const props = defineProps<{
     workerCallback: () => Worker,
@@ -121,7 +124,7 @@ function updateSettingChoice(settingUpdate: AnyUpdateChoice) {
     }
 
     if (settingUpdate.id === themeSettingId) {
-        themeMode.value = settingUpdate.value as string
+        themeMode.value = settingUpdate.value as ThemeName
         applyTheme(themeMode.value)
     }
 
@@ -203,21 +206,12 @@ onMounted(async () => {
 })
 
 function getInitialTheme() {
-    if (typeof document === 'undefined') {
-        return 'dark'
-    }
-    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+    return themeManager.CurrentTheme
 }
 
-function applyTheme(theme: string) {
-    if (typeof document === 'undefined') {
-        return
-    }
-    if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light')
-    } else {
-        document.documentElement.removeAttribute('data-theme')
-    }
+function applyTheme(theme: ThemeName) {
+    themeManager.setTheme(theme)
+    diContainer?.eventMediator.publish(new ChangeThemeCommand(theme))
 }
 
 function buildAnnotationsTree(): AnnotationNode[] {

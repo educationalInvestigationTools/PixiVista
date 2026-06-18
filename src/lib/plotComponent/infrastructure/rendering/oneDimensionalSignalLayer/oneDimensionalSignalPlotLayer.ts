@@ -1,5 +1,6 @@
 import type { LayoutDesign } from "@/core/rendering/layoutDesign"
 import { RenderLayer } from "@/core/rendering/renderLayer"
+import { themeManager } from "@/infrastructure/themes/themeManager"
 import type { Point2D } from "@/core/types/point2D"
 import type { SizeData } from "@/core/types/sizeData"
 import { OneDimensionalSignalLayout } from "@/plotComponent/infrastructure/rendering/oneDimensionalSignalLayer/oneDimensionalSignalLayout"
@@ -37,7 +38,8 @@ export class OneDimensionalSignalLayer extends RenderLayer<OneDimensionalSignalL
                 this.graphics.lineTo(xMappedCord, yMappedCord)
             }
         }
-        this.graphics.stroke({ color: 'white', width: 1 })
+        const currentTheme = themeManager.colors
+        this.graphics.stroke({ color: currentTheme.textPrimary, width: 1 })
     }
 
     updateData(normalizedPoints: Point2D[]) {
