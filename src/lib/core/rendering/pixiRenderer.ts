@@ -1,4 +1,5 @@
 import type { SizeData } from '@/core/types/sizeData'
+import { themeManager } from '@/infrastructure/themes/themeManager'
 import { Application, WebGLRenderer } from 'pixi.js'
 
 
@@ -33,11 +34,12 @@ export class PixiRenderer {
             width: this._canvas.clientWidth,
             height: this._canvas.clientHeight,
         }
+        const theme = themeManager.colors
         await this.app.init({
             width: sizeData.width,
             height: sizeData.height,
             canvas: this._canvas,
-            backgroundColor: '#000000',
+            backgroundColor: theme.panelBg,
             backgroundAlpha: 1,
             preference : 'webgl',
             resolution: window.devicePixelRatio,
