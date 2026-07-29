@@ -19,19 +19,19 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^1.1.11",
-    "@simonwep/pickr": "^1.9.1",
+    "@simonwep/pickr": "^1.10.0",
     "@vueuse/core": "^14.3.0",
     "interactjs": "^1.10.27",
     "pixi.js": "^8.19.0",
-    "vue": "^3.5.39"
+    "vue": "^3.5.40"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
-    "@types/node": "^24.13.2",
-    "@vitejs/plugin-vue": "^6.0.7",
+    "@types/node": "^24.13.3",
+    "@vitejs/plugin-vue": "^6.0.8",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.8.1",
-    "eslint": "^10.6.0",
+    "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-oxlint": "~1.50.0",
     "eslint-plugin-vue": "~10.8.0",
@@ -41,8 +41,8 @@
     "oxlint": "~1.50.0",
     "typescript": "~5.9.3",
     "vite": "beta",
-    "vite-plugin-vue-devtools": "^8.1.4",
-    "vue-tsc": "^3.3.5"
+    "vite-plugin-vue-devtools": "^8.2.1",
+    "vue-tsc": "^3.3.8"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
