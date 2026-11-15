@@ -2,6 +2,7 @@
   "name": "@pixivsta/core",
   "version": "0.0.0",
   "private": true,
+  "packageManager": "pnpm@12.5.1",
   "type": "module",
   "exports": {
     ".": "./src/lib/index.ts"
@@ -18,31 +19,31 @@
     "format": "oxfmt src/"
   },
   "dependencies": {
-    "@floating-ui/vue": "^1.1.11",
-    "@simonwep/pickr": "^1.10.0",
-    "@vueuse/core": "^14.3.0",
-    "interactjs": "^1.10.27",
-    "pixi.js": "^8.19.0",
-    "vue": "^3.5.40"
+    "@floating-ui/vue": "^2.0.1",
+    "@simonwep/pickr": "^1.10.3",
+    "@vueuse/core": "^15.0.0",
+    "interactjs": "^1.10.28",
+    "pixi.js": "^8.22.0",
+    "vue": "^3.5.45"
   },
   "devDependencies": {
-    "@tsconfig/node24": "^24.0.4",
-    "@types/node": "^24.13.3",
-    "@vitejs/plugin-vue": "^6.0.8",
+    "@tsconfig/node24": "^24.0.5",
+    "@types/node": "^26.6.6",
+    "@vitejs/plugin-vue": "^6.0.10",
     "@vue/eslint-config-typescript": "^14.9.0",
-    "@vue/tsconfig": "^0.8.1",
-    "eslint": "^10.8.0",
+    "@vue/tsconfig": "^0.9.1",
+    "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-oxlint": "~1.50.0",
-    "eslint-plugin-vue": "~10.8.0",
+    "eslint-plugin-oxlint": "~1.92.0",
+    "eslint-plugin-vue": "~10.12.0",
     "jiti": "^2.7.0",
-    "npm-run-all2": "^8.0.4",
-    "oxfmt": "^0.35.0",
-    "oxlint": "~1.50.0",
-    "typescript": "~5.9.3",
-    "vite": "beta",
+    "npm-run-all2": "^9.0.4",
+    "oxfmt": "^0.77.0",
+    "oxlint": "~1.92.0",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.7",
     "vite-plugin-vue-devtools": "^8.2.1",
-    "vue-tsc": "^3.3.8"
+    "vue-tsc": "^3.3.14"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"

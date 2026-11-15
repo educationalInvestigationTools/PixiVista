@@ -1,6 +1,7 @@
 # Logs
 logs
 Plans.md
+Issues.md
 *.log
 npm-debug.log*
 yarn-debug.log*
